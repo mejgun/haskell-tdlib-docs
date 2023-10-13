@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.CountryInfo</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier">CountryInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>    </span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#defaultCountryInfo"><span class="hs-identifier">defaultCountryInfo</span></a></span><span> </span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="CountryInfo"><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-var">CountryInfo</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="CountryInfo"><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-var">CountryInfo</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about a country</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="country_code"><span class="annot"><span class="annottext">CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#country_code"><span class="hs-identifier hs-var hs-var">country_code</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ A two-letter ISO 3166-1 alpha-2 country code</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="name"><span class="annot"><span class="annottext">CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#name"><span class="hs-identifier hs-var hs-var">name</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ Native name of the country</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="english_name"><span class="annot"><span class="annottext">CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#english_name"><span class="hs-identifier hs-var hs-var">english_name</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ English name of the country</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_hidden"><span class="annot"><span class="annottext">CountryInfo -&gt; Maybe Bool
+</span><a href="TD.Data.CountryInfo.html#is_hidden"><span class="hs-identifier hs-var hs-var">is_hidden</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>     </span><span class="annot"><span class="hs-comment">-- ^ True, if the country must be hidden from the list of all countries</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="calling_codes"><span class="annot"><span class="annottext">CountryInfo -&gt; Maybe [Text]
+</span><a href="TD.Data.CountryInfo.html#calling_codes"><span class="hs-identifier hs-var hs-var">calling_codes</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="hs-comment">-- ^ List of country calling codes</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679515177"><span id="local-6989586621679515188"><span class="annot"><span class="annottext">CountryInfo -&gt; CountryInfo -&gt; Bool
+(CountryInfo -&gt; CountryInfo -&gt; Bool)
+-&gt; (CountryInfo -&gt; CountryInfo -&gt; Bool) -&gt; Eq CountryInfo
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: CountryInfo -&gt; CountryInfo -&gt; Bool
+== :: CountryInfo -&gt; CountryInfo -&gt; Bool
+$c/= :: CountryInfo -&gt; CountryInfo -&gt; Bool
+/= :: CountryInfo -&gt; CountryInfo -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679515196"><span id="local-6989586621679515201"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679515215"><span class="annot"><span class="annottext">show :: CountryInfo -&gt; String
+</span><a href="#local-6989586621679515215"><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">country_code :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#country_code"><span class="hs-identifier hs-var">country_code</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515217"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515217"><span class="hs-identifier hs-var">country_code_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515218"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515218"><span class="hs-identifier hs-var">name_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">english_name :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#english_name"><span class="hs-identifier hs-var">english_name</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515219"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515219"><span class="hs-identifier hs-var">english_name_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_hidden :: CountryInfo -&gt; Maybe Bool
+</span><a href="TD.Data.CountryInfo.html#is_hidden"><span class="hs-identifier hs-var">is_hidden</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515220"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515220"><span class="hs-identifier hs-var">is_hidden_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">calling_codes :: CountryInfo -&gt; Maybe [Text]
+</span><a href="TD.Data.CountryInfo.html#calling_codes"><span class="hs-identifier hs-var">calling_codes</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515221"><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515221"><span class="hs-identifier hs-var">calling_codes_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CountryInfo&quot;</span></span><span>
+</span><span id="line-30"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;country_code&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515217"><span class="hs-identifier hs-var">country_code_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;name&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515218"><span class="hs-identifier hs-var">name_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;english_name&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515219"><span class="hs-identifier hs-var">english_name_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_hidden&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515220"><span class="hs-identifier hs-var">is_hidden_</span></a></span><span>
+</span><span id="line-35"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;calling_codes&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe [Text] -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515221"><span class="hs-identifier hs-var">calling_codes_</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679515226"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>  </span><span id="local-6989586621679515265"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser CountryInfo
+</span><a href="#local-6989586621679515265"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679515267"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679515267"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679515269"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515269"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679515270"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679515270"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515269"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679515270"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-43"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;countryInfo&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser CountryInfo
+</span><a href="#local-6989586621679515272"><span class="hs-identifier hs-var">parseCountryInfo</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679515267"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-44"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser CountryInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-45"></span><span>    </span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-47"></span><span>      </span><span class="annot"><a href="#local-6989586621679515272"><span class="hs-identifier hs-type">parseCountryInfo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-48"></span><span>      </span><span id="local-6989586621679515272"><span class="annot"><span class="annottext">parseCountryInfo :: Value -&gt; Parser CountryInfo
+</span><a href="#local-6989586621679515272"><span class="hs-identifier hs-var hs-var">parseCountryInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser CountryInfo) -&gt; Value -&gt; Parser CountryInfo
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CountryInfo&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser CountryInfo) -&gt; Value -&gt; Parser CountryInfo)
+-&gt; (Object -&gt; Parser CountryInfo) -&gt; Value -&gt; Parser CountryInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679515274"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679515275"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515275"><span class="hs-identifier hs-var">country_code_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;country_code&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679515277"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515277"><span class="hs-identifier hs-var">name_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;name&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679515278"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515278"><span class="hs-identifier hs-var">english_name_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;english_name&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span id="local-6989586621679515279"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515279"><span class="hs-identifier hs-var">is_hidden_</span></a></span></span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_hidden&quot;</span></span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679515280"><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515280"><span class="hs-identifier hs-var">calling_codes_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679515274"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe [Text])
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;calling_codes&quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span class="annot"><span class="annottext">CountryInfo -&gt; Parser CountryInfo
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(CountryInfo -&gt; Parser CountryInfo)
+-&gt; CountryInfo -&gt; Parser CountryInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">country_code :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#country_code"><span class="hs-identifier hs-var">country_code</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515275"><span class="hs-identifier hs-var">country_code_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515277"><span class="hs-identifier hs-var">name_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">english_name :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#english_name"><span class="hs-identifier hs-var">english_name</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515278"><span class="hs-identifier hs-var">english_name_</span></a></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_hidden :: Maybe Bool
+</span><a href="TD.Data.CountryInfo.html#is_hidden"><span class="hs-identifier hs-var">is_hidden</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515279"><span class="hs-identifier hs-var">is_hidden_</span></a></span><span>
+</span><span id="line-59"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">calling_codes :: Maybe [Text]
+</span><a href="TD.Data.CountryInfo.html#calling_codes"><span class="hs-identifier hs-var">calling_codes</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515280"><span class="hs-identifier hs-var">calling_codes_</span></a></span><span>
+</span><span id="line-60"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-61"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser CountryInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679515283"><span id="local-6989586621679515287"><span id="local-6989586621679515290"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-64"></span><span>  </span><span id="local-6989586621679515324"><span class="annot"><span class="annottext">toJSON :: CountryInfo -&gt; Value
+</span><a href="#local-6989586621679515324"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">country_code :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#country_code"><span class="hs-identifier hs-var">country_code</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515326"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515326"><span class="hs-identifier hs-var">country_code_</span></a></span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515327"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515327"><span class="hs-identifier hs-var">name_</span></a></span></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">english_name :: CountryInfo -&gt; Maybe Text
+</span><a href="TD.Data.CountryInfo.html#english_name"><span class="hs-identifier hs-var">english_name</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515328"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515328"><span class="hs-identifier hs-var">english_name_</span></a></span></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_hidden :: CountryInfo -&gt; Maybe Bool
+</span><a href="TD.Data.CountryInfo.html#is_hidden"><span class="hs-identifier hs-var">is_hidden</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515329"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515329"><span class="hs-identifier hs-var">is_hidden_</span></a></span></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">calling_codes :: CountryInfo -&gt; Maybe [Text]
+</span><a href="TD.Data.CountryInfo.html#calling_codes"><span class="hs-identifier hs-var">calling_codes</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679515330"><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515330"><span class="hs-identifier hs-var">calling_codes_</span></a></span></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-71"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-72"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;countryInfo&quot;</span></span><span>
+</span><span id="line-73"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;country_code&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515326"><span class="hs-identifier hs-var">country_code_</span></a></span><span>
+</span><span id="line-74"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;name&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515327"><span class="hs-identifier hs-var">name_</span></a></span><span>
+</span><span id="line-75"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;english_name&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679515328"><span class="hs-identifier hs-var">english_name_</span></a></span><span>
+</span><span id="line-76"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_hidden&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679515329"><span class="hs-identifier hs-var">is_hidden_</span></a></span><span>
+</span><span id="line-77"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;calling_codes&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe [Text] -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+</span><a href="#local-6989586621679515330"><span class="hs-identifier hs-var">calling_codes_</span></a></span><span>
+</span><span id="line-78"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-79"></span><span>
+</span><span id="line-80"></span><span class="annot"><a href="TD.Data.CountryInfo.html#defaultCountryInfo"><span class="hs-identifier hs-type">defaultCountryInfo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-81"></span><span id="defaultCountryInfo"><span class="annot"><span class="annottext">defaultCountryInfo :: CountryInfo
+</span><a href="TD.Data.CountryInfo.html#defaultCountryInfo"><span class="hs-identifier hs-var hs-var">defaultCountryInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-82"></span><span>  </span><span class="annot"><a href="TD.Data.CountryInfo.html#CountryInfo"><span class="hs-identifier hs-type">CountryInfo</span></a></span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">country_code :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#country_code"><span class="hs-identifier hs-var">country_code</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">english_name :: Maybe Text
+</span><a href="TD.Data.CountryInfo.html#english_name"><span class="hs-identifier hs-var">english_name</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_hidden :: Maybe Bool
+</span><a href="TD.Data.CountryInfo.html#is_hidden"><span class="hs-identifier hs-var">is_hidden</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">calling_codes :: Maybe [Text]
+</span><a href="TD.Data.CountryInfo.html#calling_codes"><span class="hs-identifier hs-var">calling_codes</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Text]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-89"></span><span>
+</span><span id="line-90"></span></pre></body></html>

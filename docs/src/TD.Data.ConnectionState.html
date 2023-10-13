@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.ConnectionState</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionState"><span class="hs-identifier">ConnectionState</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span> </span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><span class="hs-comment">-- | Describes the current state of the connection to Telegram servers</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="ConnectionState"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionState"><span class="hs-identifier hs-var">ConnectionState</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ConnectionStateWaitingForNetwork"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionStateWaitingForNetwork"><span class="hs-identifier hs-var">ConnectionStateWaitingForNetwork</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Currently waiting for the network to become available. Use setNetworkType to change the available network type</span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="ConnectionStateConnectingToProxy"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionStateConnectingToProxy"><span class="hs-identifier hs-var">ConnectionStateConnectingToProxy</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Currently establishing a connection with a proxy server</span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="ConnectionStateConnecting"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionStateConnecting"><span class="hs-identifier hs-var">ConnectionStateConnecting</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Currently establishing a connection to the Telegram servers</span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="ConnectionStateUpdating"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionStateUpdating"><span class="hs-identifier hs-var">ConnectionStateUpdating</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Downloading data received while the application was offline</span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="ConnectionStateReady"><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionStateReady"><span class="hs-identifier hs-var">ConnectionStateReady</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ There is a working connection to the Telegram servers</span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679471631"><span id="local-6989586621679471633"><span class="annot"><span class="annottext">ConnectionState -&gt; ConnectionState -&gt; Bool
+(ConnectionState -&gt; ConnectionState -&gt; Bool)
+-&gt; (ConnectionState -&gt; ConnectionState -&gt; Bool)
+-&gt; Eq ConnectionState
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: ConnectionState -&gt; ConnectionState -&gt; Bool
+== :: ConnectionState -&gt; ConnectionState -&gt; Bool
+$c/= :: ConnectionState -&gt; ConnectionState -&gt; Bool
+/= :: ConnectionState -&gt; ConnectionState -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679471638"><span id="local-6989586621679471643"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionState"><span class="hs-identifier hs-type">ConnectionState</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-18"></span><span>  </span><span id="local-6989586621679471646"><span class="annot"><span class="annottext">show :: ConnectionState -&gt; String
+</span><a href="#local-6989586621679471646"><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></a></span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateWaitingForNetwork"><span class="hs-identifier hs-var">ConnectionStateWaitingForNetwork</span></a></span><span>
+</span><span id="line-19"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectionStateWaitingForNetwork&quot;</span></span><span>
+</span><span id="line-20"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnectingToProxy"><span class="hs-identifier hs-var">ConnectionStateConnectingToProxy</span></a></span><span>
+</span><span id="line-21"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectionStateConnectingToProxy&quot;</span></span><span>
+</span><span id="line-22"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnecting"><span class="hs-identifier hs-var">ConnectionStateConnecting</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectionStateConnecting&quot;</span></span><span>
+</span><span id="line-24"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateUpdating"><span class="hs-identifier hs-var">ConnectionStateUpdating</span></a></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectionStateUpdating&quot;</span></span><span>
+</span><span id="line-26"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateReady"><span class="hs-identifier hs-var">ConnectionStateReady</span></a></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectionStateReady&quot;</span></span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679471650"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionState"><span class="hs-identifier hs-type">ConnectionState</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-30"></span><span>  </span><span id="local-6989586621679471686"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser ConnectionState
+</span><a href="#local-6989586621679471686"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679471689"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679471689"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-31"></span><span>    </span><span id="local-6989586621679471690"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679471690"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679471689"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679471690"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-34"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;connectionStateWaitingForNetwork&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ConnectionState -&gt; Parser ConnectionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateWaitingForNetwork"><span class="hs-identifier hs-var">ConnectionStateWaitingForNetwork</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;connectionStateConnectingToProxy&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ConnectionState -&gt; Parser ConnectionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnectingToProxy"><span class="hs-identifier hs-var">ConnectionStateConnectingToProxy</span></a></span><span>
+</span><span id="line-36"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;connectionStateConnecting&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ConnectionState -&gt; Parser ConnectionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnecting"><span class="hs-identifier hs-var">ConnectionStateConnecting</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;connectionStateUpdating&quot;</span></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ConnectionState -&gt; Parser ConnectionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateUpdating"><span class="hs-identifier hs-var">ConnectionStateUpdating</span></a></span><span>
+</span><span id="line-38"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;connectionStateReady&quot;</span></span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ConnectionState -&gt; Parser ConnectionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateReady"><span class="hs-identifier hs-var">ConnectionStateReady</span></a></span><span>
+</span><span id="line-39"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser ConnectionState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-40"></span><span>    </span><span>
+</span><span id="line-41"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser ConnectionState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679471694"><span id="local-6989586621679471698"><span id="local-6989586621679471701"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.ConnectionState.html#ConnectionState"><span class="hs-identifier hs-type">ConnectionState</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-44"></span><span>  </span><span id="local-6989586621679471729"><span class="annot"><span class="annottext">toJSON :: ConnectionState -&gt; Value
+</span><a href="#local-6989586621679471729"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateWaitingForNetwork"><span class="hs-identifier hs-var">ConnectionStateWaitingForNetwork</span></a></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectionStateWaitingForNetwork&quot;</span></span><span>
+</span><span id="line-47"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-48"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnectingToProxy"><span class="hs-identifier hs-var">ConnectionStateConnectingToProxy</span></a></span><span>
+</span><span id="line-49"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-50"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectionStateConnectingToProxy&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-52"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateConnecting"><span class="hs-identifier hs-var">ConnectionStateConnecting</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-54"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectionStateConnecting&quot;</span></span><span>
+</span><span id="line-55"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-56"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateUpdating"><span class="hs-identifier hs-var">ConnectionStateUpdating</span></a></span><span>
+</span><span id="line-57"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-58"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectionStateUpdating&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-60"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">ConnectionState
+</span><a href="TD.Data.ConnectionState.html#ConnectionStateReady"><span class="hs-identifier hs-var">ConnectionStateReady</span></a></span><span>
+</span><span id="line-61"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-62"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectionStateReady&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span></pre></body></html>

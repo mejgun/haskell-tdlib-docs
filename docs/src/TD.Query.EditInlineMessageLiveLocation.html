@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EditInlineMessageLiveLocation</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier">EditInlineMessageLiveLocation</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#defaultEditInlineMessageLiveLocation"><span class="hs-identifier">defaultEditInlineMessageLiveLocation</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html"><span class="hs-identifier">TD.Data.ReplyMarkup</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ReplyMarkup</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Location.html"><span class="hs-identifier">TD.Data.Location</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Location</span></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><span class="hs-comment">-- | Edits the content of a live location in an inline message sent via a bot; for bots only</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">data</span><span> </span><span id="EditInlineMessageLiveLocation"><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-var">EditInlineMessageLiveLocation</span></a></span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EditInlineMessageLiveLocation"><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-var">EditInlineMessageLiveLocation</span></a></span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="inline_message_id"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#inline_message_id"><span class="hs-identifier hs-var hs-var">inline_message_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                  </span><span class="annot"><span class="hs-comment">-- ^ Inline message identifier</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="reply_markup"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#reply_markup"><span class="hs-identifier hs-var hs-var">reply_markup</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html#ReplyMarkup"><span class="hs-identifier hs-type">ReplyMarkup.ReplyMarkup</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The new message reply markup; pass null if none</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="location"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation -&gt; Maybe Location
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#location"><span class="hs-identifier hs-var hs-var">location</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Location.html#Location"><span class="hs-identifier hs-type">Location.Location</span></a></span><span>       </span><span class="annot"><span class="hs-comment">-- ^ New location content of the message; pass null to stop sharing the live location</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="heading"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#heading"><span class="hs-identifier hs-var hs-var">heading</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                     </span><span class="annot"><span class="hs-comment">-- ^ The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="proximity_alert_radius"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#proximity_alert_radius"><span class="hs-identifier hs-var hs-var">proximity_alert_radius</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                     </span><span class="annot"><span class="hs-comment">-- ^ The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679584579"><span id="local-6989586621679584591"><span class="annot"><span class="annottext">EditInlineMessageLiveLocation
+-&gt; EditInlineMessageLiveLocation -&gt; Bool
+(EditInlineMessageLiveLocation
+ -&gt; EditInlineMessageLiveLocation -&gt; Bool)
+-&gt; (EditInlineMessageLiveLocation
+    -&gt; EditInlineMessageLiveLocation -&gt; Bool)
+-&gt; Eq EditInlineMessageLiveLocation
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EditInlineMessageLiveLocation
+-&gt; EditInlineMessageLiveLocation -&gt; Bool
+== :: EditInlineMessageLiveLocation
+-&gt; EditInlineMessageLiveLocation -&gt; Bool
+$c/= :: EditInlineMessageLiveLocation
+-&gt; EditInlineMessageLiveLocation -&gt; Bool
+/= :: EditInlineMessageLiveLocation
+-&gt; EditInlineMessageLiveLocation -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679584600"><span id="local-6989586621679584605"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>  </span><span id="local-6989586621679584620"><span class="annot"><span class="annottext">show :: EditInlineMessageLiveLocation -&gt; String
+</span><a href="#local-6989586621679584620"><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: EditInlineMessageLiveLocation -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584622"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584622"><span class="hs-identifier hs-var">inline_message_id_</span></a></span></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: EditInlineMessageLiveLocation -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584623"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584623"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">location :: EditInlineMessageLiveLocation -&gt; Maybe Location
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#location"><span class="hs-identifier hs-var">location</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584624"><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679584624"><span class="hs-identifier hs-var">location_</span></a></span></span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">heading :: EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#heading"><span class="hs-identifier hs-var">heading</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584625"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584625"><span class="hs-identifier hs-var">heading_</span></a></span></span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proximity_alert_radius :: EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#proximity_alert_radius"><span class="hs-identifier hs-var">proximity_alert_radius</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584626"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584626"><span class="hs-identifier hs-var">proximity_alert_radius_</span></a></span></span><span>
+</span><span id="line-32"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EditInlineMessageLiveLocation&quot;</span></span><span>
+</span><span id="line-34"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-35"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inline_message_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584622"><span class="hs-identifier hs-var">inline_message_id_</span></a></span><span>
+</span><span id="line-36"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe ReplyMarkup -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584623"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-37"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;location&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe Location -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679584624"><span class="hs-identifier hs-var">location_</span></a></span><span>
+</span><span id="line-38"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;heading&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584625"><span class="hs-identifier hs-var">heading_</span></a></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;proximity_alert_radius&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584626"><span class="hs-identifier hs-var">proximity_alert_radius_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679584631"><span id="local-6989586621679584635"><span id="local-6989586621679584638"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-43"></span><span>  </span><span id="local-6989586621679584675"><span class="annot"><span class="annottext">toJSON :: EditInlineMessageLiveLocation -&gt; Value
+</span><a href="#local-6989586621679584675"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: EditInlineMessageLiveLocation -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584677"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584677"><span class="hs-identifier hs-var">inline_message_id_</span></a></span></span><span>
+</span><span id="line-46"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: EditInlineMessageLiveLocation -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584678"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584678"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-47"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">location :: EditInlineMessageLiveLocation -&gt; Maybe Location
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#location"><span class="hs-identifier hs-var">location</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584679"><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679584679"><span class="hs-identifier hs-var">location_</span></a></span></span><span>
+</span><span id="line-48"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">heading :: EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#heading"><span class="hs-identifier hs-var">heading</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584680"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584680"><span class="hs-identifier hs-var">heading_</span></a></span></span><span>
+</span><span id="line-49"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proximity_alert_radius :: EditInlineMessageLiveLocation -&gt; Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#proximity_alert_radius"><span class="hs-identifier hs-var">proximity_alert_radius</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584681"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584681"><span class="hs-identifier hs-var">proximity_alert_radius_</span></a></span></span><span>
+</span><span id="line-50"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-51"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;editInlineMessageLiveLocation&quot;</span></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;inline_message_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584677"><span class="hs-identifier hs-var">inline_message_id_</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe ReplyMarkup -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584678"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;location&quot;</span></span><span>               </span><span class="annot"><span class="annottext">Key -&gt; Maybe Location -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679584679"><span class="hs-identifier hs-var">location_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;heading&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584680"><span class="hs-identifier hs-var">heading_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;proximity_alert_radius&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679584681"><span class="hs-identifier hs-var">proximity_alert_radius_</span></a></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#defaultEditInlineMessageLiveLocation"><span class="hs-identifier hs-type">defaultEditInlineMessageLiveLocation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span><span>
+</span><span id="line-61"></span><span id="defaultEditInlineMessageLiveLocation"><span class="annot"><span class="annottext">defaultEditInlineMessageLiveLocation :: EditInlineMessageLiveLocation
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#defaultEditInlineMessageLiveLocation"><span class="hs-identifier hs-var hs-var">defaultEditInlineMessageLiveLocation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-62"></span><span>  </span><span class="annot"><a href="TD.Query.EditInlineMessageLiveLocation.html#EditInlineMessageLiveLocation"><span class="hs-identifier hs-type">EditInlineMessageLiveLocation</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: Maybe Text
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">location :: Maybe Location
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#location"><span class="hs-identifier hs-var">location</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Location
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">heading :: Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#heading"><span class="hs-identifier hs-var">heading</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proximity_alert_radius :: Maybe Int
+</span><a href="TD.Query.EditInlineMessageLiveLocation.html#proximity_alert_radius"><span class="hs-identifier hs-var">proximity_alert_radius</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span></pre></body></html>

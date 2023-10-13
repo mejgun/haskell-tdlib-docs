@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EditInlineMessageReplyMarkup</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier">EditInlineMessageReplyMarkup</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#defaultEditInlineMessageReplyMarkup"><span class="hs-identifier">defaultEditInlineMessageReplyMarkup</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html"><span class="hs-identifier">TD.Data.ReplyMarkup</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ReplyMarkup</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Edits the reply markup of an inline message sent via a bot; for bots only</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="EditInlineMessageReplyMarkup"><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-var">EditInlineMessageReplyMarkup</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EditInlineMessageReplyMarkup"><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-var">EditInlineMessageReplyMarkup</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="inline_message_id"><span class="annot"><span class="annottext">EditInlineMessageReplyMarkup -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#inline_message_id"><span class="hs-identifier hs-var hs-var">inline_message_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                  </span><span class="annot"><span class="hs-comment">-- ^ Inline message identifier</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="reply_markup"><span class="annot"><span class="annottext">EditInlineMessageReplyMarkup -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#reply_markup"><span class="hs-identifier hs-var hs-var">reply_markup</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html#ReplyMarkup"><span class="hs-identifier hs-type">ReplyMarkup.ReplyMarkup</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The new message reply markup; pass null if none</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679584830"><span id="local-6989586621679584837"><span class="annot"><span class="annottext">EditInlineMessageReplyMarkup
+-&gt; EditInlineMessageReplyMarkup -&gt; Bool
+(EditInlineMessageReplyMarkup
+ -&gt; EditInlineMessageReplyMarkup -&gt; Bool)
+-&gt; (EditInlineMessageReplyMarkup
+    -&gt; EditInlineMessageReplyMarkup -&gt; Bool)
+-&gt; Eq EditInlineMessageReplyMarkup
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EditInlineMessageReplyMarkup
+-&gt; EditInlineMessageReplyMarkup -&gt; Bool
+== :: EditInlineMessageReplyMarkup
+-&gt; EditInlineMessageReplyMarkup -&gt; Bool
+$c/= :: EditInlineMessageReplyMarkup
+-&gt; EditInlineMessageReplyMarkup -&gt; Bool
+/= :: EditInlineMessageReplyMarkup
+-&gt; EditInlineMessageReplyMarkup -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679584844"><span id="local-6989586621679584849"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679584859"><span class="annot"><span class="annottext">show :: EditInlineMessageReplyMarkup -&gt; String
+</span><a href="#local-6989586621679584859"><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: EditInlineMessageReplyMarkup -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584861"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584861"><span class="hs-identifier hs-var">inline_message_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: EditInlineMessageReplyMarkup -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584862"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584862"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EditInlineMessageReplyMarkup&quot;</span></span><span>
+</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inline_message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584861"><span class="hs-identifier hs-var">inline_message_id_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe ReplyMarkup -&gt; String
+forall a. Show a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584862"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679584867"><span id="local-6989586621679584871"><span id="local-6989586621679584874"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>  </span><span id="local-6989586621679584898"><span class="annot"><span class="annottext">toJSON :: EditInlineMessageReplyMarkup -&gt; Value
+</span><a href="#local-6989586621679584898"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: EditInlineMessageReplyMarkup -&gt; Maybe Text
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584900"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584900"><span class="hs-identifier hs-var">inline_message_id_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: EditInlineMessageReplyMarkup -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679584901"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584901"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;editInlineMessageReplyMarkup&quot;</span></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;inline_message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679584900"><span class="hs-identifier hs-var">inline_message_id_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe ReplyMarkup -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621679584901"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#defaultEditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">defaultEditInlineMessageReplyMarkup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span><span>
+</span><span id="line-45"></span><span id="defaultEditInlineMessageReplyMarkup"><span class="annot"><span class="annottext">defaultEditInlineMessageReplyMarkup :: EditInlineMessageReplyMarkup
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#defaultEditInlineMessageReplyMarkup"><span class="hs-identifier hs-var hs-var">defaultEditInlineMessageReplyMarkup</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>  </span><span class="annot"><a href="TD.Query.EditInlineMessageReplyMarkup.html#EditInlineMessageReplyMarkup"><span class="hs-identifier hs-type">EditInlineMessageReplyMarkup</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">inline_message_id :: Maybe Text
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#inline_message_id"><span class="hs-identifier hs-var">inline_message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: Maybe ReplyMarkup
+</span><a href="TD.Query.EditInlineMessageReplyMarkup.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span></pre></body></html>
