@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.InputStoryAreaType</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier">InputStoryAreaType</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Location.html"><span class="hs-identifier">TD.Data.Location</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Location</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ReactionType.html"><span class="hs-identifier">TD.Data.ReactionType</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ReactionType</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Describes type of a clickable rectangle area on a story media to be added</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="InputStoryAreaType"><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-var">InputStoryAreaType</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="InputStoryAreaTypeLocation"><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeLocation"><span class="hs-identifier hs-var">InputStoryAreaTypeLocation</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ An area pointing to a location</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="location"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Location
+</span><a href="TD.Data.InputStoryAreaType.html#location"><span class="hs-identifier hs-var hs-var">location</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Location.html#Location"><span class="hs-identifier hs-type">Location.Location</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The location</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="InputStoryAreaTypeFoundVenue"><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeFoundVenue"><span class="hs-identifier hs-var">InputStoryAreaTypeFoundVenue</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ An area pointing to a venue found by the bot getOption(&quot;venue_search_bot_username&quot;)</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="query_id"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Int
+</span><a href="TD.Data.InputStoryAreaType.html#query_id"><span class="hs-identifier hs-var hs-var">query_id</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the inline query, used to found the venue</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="result_id"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#result_id"><span class="hs-identifier hs-var hs-var">result_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the inline query result</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="InputStoryAreaTypePreviousVenue"><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypePreviousVenue"><span class="hs-identifier hs-var">InputStoryAreaTypePreviousVenue</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ An area pointing to a venue already added to the story</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="venue_provider"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_provider"><span class="hs-identifier hs-var hs-var">venue_provider</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Provider of the venue</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="venue_id"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_id"><span class="hs-identifier hs-var hs-var">venue_id</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the venue in the provider database</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-24"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="InputStoryAreaTypeSuggestedReaction"><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeSuggestedReaction"><span class="hs-identifier hs-var">InputStoryAreaTypeSuggestedReaction</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ An area pointing to a suggested reaction</span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="reaction_type"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe ReactionType
+</span><a href="TD.Data.InputStoryAreaType.html#reaction_type"><span class="hs-identifier hs-var hs-var">reaction_type</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ReactionType.html#ReactionType"><span class="hs-identifier hs-type">ReactionType.ReactionType</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Type of the reaction</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_dark"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_dark"><span class="hs-identifier hs-var hs-var">is_dark</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                      </span><span class="annot"><span class="hs-comment">-- ^ True, if reaction has a dark background</span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_flipped"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_flipped"><span class="hs-identifier hs-var hs-var">is_flipped</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                      </span><span class="annot"><span class="hs-comment">-- ^ True, if reaction corner is flipped</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679541284"><span id="local-6989586621679541300"><span class="annot"><span class="annottext">InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool
+(InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool)
+-&gt; (InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool)
+-&gt; Eq InputStoryAreaType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool
+== :: InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool
+$c/= :: InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool
+/= :: InputStoryAreaType -&gt; InputStoryAreaType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679541310"><span id="local-6989586621679541331"><span id="local-6989586621679541335"><span class="annot"><span class="annottext">Int -&gt; InputStoryAreaType -&gt; ShowS
+[InputStoryAreaType] -&gt; ShowS
+InputStoryAreaType -&gt; String
+(Int -&gt; InputStoryAreaType -&gt; ShowS)
+-&gt; (InputStoryAreaType -&gt; String)
+-&gt; ([InputStoryAreaType] -&gt; ShowS)
+-&gt; Show InputStoryAreaType
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; InputStoryAreaType -&gt; ShowS
+showsPrec :: Int -&gt; InputStoryAreaType -&gt; ShowS
+$cshow :: InputStoryAreaType -&gt; String
+show :: InputStoryAreaType -&gt; String
+$cshowList :: [InputStoryAreaType] -&gt; ShowS
+showList :: [InputStoryAreaType] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-32"></span><span>  </span><span id="local-6989586621679541365"><span class="annot"><span class="annottext">shortShow :: InputStoryAreaType -&gt; String
+</span><a href="#local-6989586621679541365"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeLocation"><span class="hs-identifier hs-type">InputStoryAreaTypeLocation</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">location :: InputStoryAreaType -&gt; Maybe Location
+</span><a href="TD.Data.InputStoryAreaType.html#location"><span class="hs-identifier hs-var">location</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541367"><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541367"><span class="hs-identifier hs-var">location_</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeLocation&quot;</span></span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;location&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Location -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541367"><span class="hs-identifier hs-var">location_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-39"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeFoundVenue"><span class="hs-identifier hs-type">InputStoryAreaTypeFoundVenue</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">query_id :: InputStoryAreaType -&gt; Maybe Int
+</span><a href="TD.Data.InputStoryAreaType.html#query_id"><span class="hs-identifier hs-var">query_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541370"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541370"><span class="hs-identifier hs-var">query_id_</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">result_id :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#result_id"><span class="hs-identifier hs-var">result_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541371"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541371"><span class="hs-identifier hs-var">result_id_</span></a></span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeFoundVenue&quot;</span></span><span>
+</span><span id="line-44"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;query_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541370"><span class="hs-identifier hs-var">query_id_</span></a></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;result_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541371"><span class="hs-identifier hs-var">result_id_</span></a></span><span>
+</span><span id="line-47"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-48"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypePreviousVenue"><span class="hs-identifier hs-type">InputStoryAreaTypePreviousVenue</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">venue_provider :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_provider"><span class="hs-identifier hs-var">venue_provider</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541372"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541372"><span class="hs-identifier hs-var">venue_provider_</span></a></span></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">venue_id :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_id"><span class="hs-identifier hs-var">venue_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541373"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541373"><span class="hs-identifier hs-var">venue_id_</span></a></span></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-52"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypePreviousVenue&quot;</span></span><span>
+</span><span id="line-53"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-54"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;venue_provider&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541372"><span class="hs-identifier hs-var">venue_provider_</span></a></span><span>
+</span><span id="line-55"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;venue_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541373"><span class="hs-identifier hs-var">venue_id_</span></a></span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-57"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeSuggestedReaction"><span class="hs-identifier hs-type">InputStoryAreaTypeSuggestedReaction</span></a></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">reaction_type :: InputStoryAreaType -&gt; Maybe ReactionType
+</span><a href="TD.Data.InputStoryAreaType.html#reaction_type"><span class="hs-identifier hs-var">reaction_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541374"><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541374"><span class="hs-identifier hs-var">reaction_type_</span></a></span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_dark :: InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_dark"><span class="hs-identifier hs-var">is_dark</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541375"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541375"><span class="hs-identifier hs-var">is_dark_</span></a></span></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_flipped :: InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_flipped"><span class="hs-identifier hs-var">is_flipped</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541376"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541376"><span class="hs-identifier hs-var">is_flipped_</span></a></span></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-62"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeSuggestedReaction&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-64"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;reaction_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe ReactionType -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541374"><span class="hs-identifier hs-var">reaction_type_</span></a></span><span>
+</span><span id="line-65"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_dark&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541375"><span class="hs-identifier hs-var">is_dark_</span></a></span><span>
+</span><span id="line-66"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_flipped&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541376"><span class="hs-identifier hs-var">is_flipped_</span></a></span><span>
+</span><span id="line-67"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679541379"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-70"></span><span>  </span><span id="local-6989586621679541443"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541443"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679541445"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679541445"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679541447"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541447"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-71"></span><span>    </span><span id="local-6989586621679541448"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679541448"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541447"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-72"></span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679541448"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-74"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inputStoryAreaTypeLocation&quot;</span></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541450"><span class="hs-identifier hs-var">parseInputStoryAreaTypeLocation</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679541445"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-75"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inputStoryAreaTypeFoundVenue&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541451"><span class="hs-identifier hs-var">parseInputStoryAreaTypeFoundVenue</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679541445"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-76"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inputStoryAreaTypePreviousVenue&quot;</span></span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541452"><span class="hs-identifier hs-var">parseInputStoryAreaTypePreviousVenue</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679541445"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-77"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inputStoryAreaTypeSuggestedReaction&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541453"><span class="hs-identifier hs-var">parseInputStoryAreaTypeSuggestedReaction</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679541445"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-78"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser InputStoryAreaType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-79"></span><span>    </span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-81"></span><span>      </span><span class="annot"><a href="#local-6989586621679541450"><span class="hs-identifier hs-type">parseInputStoryAreaTypeLocation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span><span>
+</span><span id="line-82"></span><span>      </span><span id="local-6989586621679541450"><span class="annot"><span class="annottext">parseInputStoryAreaTypeLocation :: Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541450"><span class="hs-identifier hs-var hs-var">parseInputStoryAreaTypeLocation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeLocation&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser InputStoryAreaType)
+ -&gt; Value -&gt; Parser InputStoryAreaType)
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679541455"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541455"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-83"></span><span>        </span><span id="local-6989586621679541456"><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541456"><span class="hs-identifier hs-var">location_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541455"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Location)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;location&quot;</span></span><span>
+</span><span id="line-84"></span><span>        </span><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(InputStoryAreaType -&gt; Parser InputStoryAreaType)
+-&gt; InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeLocation"><span class="hs-identifier hs-type">InputStoryAreaTypeLocation</span></a></span><span>
+</span><span id="line-85"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">location :: Maybe Location
+</span><a href="TD.Data.InputStoryAreaType.html#location"><span class="hs-identifier hs-var">location</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541456"><span class="hs-identifier hs-var">location_</span></a></span><span>
+</span><span id="line-86"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-87"></span><span>      </span><span class="annot"><a href="#local-6989586621679541451"><span class="hs-identifier hs-type">parseInputStoryAreaTypeFoundVenue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span><span>
+</span><span id="line-88"></span><span>      </span><span id="local-6989586621679541451"><span class="annot"><span class="annottext">parseInputStoryAreaTypeFoundVenue :: Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541451"><span class="hs-identifier hs-var hs-var">parseInputStoryAreaTypeFoundVenue</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeFoundVenue&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser InputStoryAreaType)
+ -&gt; Value -&gt; Parser InputStoryAreaType)
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679541458"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541458"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-89"></span><span>        </span><span id="local-6989586621679541459"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541459"><span class="hs-identifier hs-var">query_id_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541458"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;query_id&quot;</span></span><span>
+</span><span id="line-90"></span><span>        </span><span id="local-6989586621679541462"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541462"><span class="hs-identifier hs-var">result_id_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541458"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;result_id&quot;</span></span><span>
+</span><span id="line-91"></span><span>        </span><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(InputStoryAreaType -&gt; Parser InputStoryAreaType)
+-&gt; InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeFoundVenue"><span class="hs-identifier hs-type">InputStoryAreaTypeFoundVenue</span></a></span><span>
+</span><span id="line-92"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">query_id :: Maybe Int
+</span><a href="TD.Data.InputStoryAreaType.html#query_id"><span class="hs-identifier hs-var">query_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541459"><span class="hs-identifier hs-var">query_id_</span></a></span><span>
+</span><span id="line-93"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">result_id :: Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#result_id"><span class="hs-identifier hs-var">result_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541462"><span class="hs-identifier hs-var">result_id_</span></a></span><span>
+</span><span id="line-94"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-95"></span><span>      </span><span class="annot"><a href="#local-6989586621679541452"><span class="hs-identifier hs-type">parseInputStoryAreaTypePreviousVenue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span><span>
+</span><span id="line-96"></span><span>      </span><span id="local-6989586621679541452"><span class="annot"><span class="annottext">parseInputStoryAreaTypePreviousVenue :: Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541452"><span class="hs-identifier hs-var hs-var">parseInputStoryAreaTypePreviousVenue</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypePreviousVenue&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser InputStoryAreaType)
+ -&gt; Value -&gt; Parser InputStoryAreaType)
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679541463"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541463"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-97"></span><span>        </span><span id="local-6989586621679541464"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541464"><span class="hs-identifier hs-var">venue_provider_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541463"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;venue_provider&quot;</span></span><span>
+</span><span id="line-98"></span><span>        </span><span id="local-6989586621679541465"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541465"><span class="hs-identifier hs-var">venue_id_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541463"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;venue_id&quot;</span></span><span>
+</span><span id="line-99"></span><span>        </span><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(InputStoryAreaType -&gt; Parser InputStoryAreaType)
+-&gt; InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypePreviousVenue"><span class="hs-identifier hs-type">InputStoryAreaTypePreviousVenue</span></a></span><span>
+</span><span id="line-100"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">venue_provider :: Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_provider"><span class="hs-identifier hs-var">venue_provider</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541464"><span class="hs-identifier hs-var">venue_provider_</span></a></span><span>
+</span><span id="line-101"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">venue_id :: Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_id"><span class="hs-identifier hs-var">venue_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541465"><span class="hs-identifier hs-var">venue_id_</span></a></span><span>
+</span><span id="line-102"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-103"></span><span>      </span><span class="annot"><a href="#local-6989586621679541453"><span class="hs-identifier hs-type">parseInputStoryAreaTypeSuggestedReaction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span><span>
+</span><span id="line-104"></span><span>      </span><span id="local-6989586621679541453"><span class="annot"><span class="annottext">parseInputStoryAreaTypeSuggestedReaction :: Value -&gt; Parser InputStoryAreaType
+</span><a href="#local-6989586621679541453"><span class="hs-identifier hs-var hs-var">parseInputStoryAreaTypeSuggestedReaction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputStoryAreaTypeSuggestedReaction&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser InputStoryAreaType)
+ -&gt; Value -&gt; Parser InputStoryAreaType)
+-&gt; (Object -&gt; Parser InputStoryAreaType)
+-&gt; Value
+-&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679541466"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541466"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-105"></span><span>        </span><span id="local-6989586621679541467"><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541467"><span class="hs-identifier hs-var">reaction_type_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541466"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe ReactionType)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reaction_type&quot;</span></span><span>
+</span><span id="line-106"></span><span>        </span><span id="local-6989586621679541468"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541468"><span class="hs-identifier hs-var">is_dark_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541466"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_dark&quot;</span></span><span>
+</span><span id="line-107"></span><span>        </span><span id="local-6989586621679541469"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541469"><span class="hs-identifier hs-var">is_flipped_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679541466"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_flipped&quot;</span></span><span>
+</span><span id="line-108"></span><span>        </span><span class="annot"><span class="annottext">InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(InputStoryAreaType -&gt; Parser InputStoryAreaType)
+-&gt; InputStoryAreaType -&gt; Parser InputStoryAreaType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeSuggestedReaction"><span class="hs-identifier hs-type">InputStoryAreaTypeSuggestedReaction</span></a></span><span>
+</span><span id="line-109"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">reaction_type :: Maybe ReactionType
+</span><a href="TD.Data.InputStoryAreaType.html#reaction_type"><span class="hs-identifier hs-var">reaction_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541467"><span class="hs-identifier hs-var">reaction_type_</span></a></span><span>
+</span><span id="line-110"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_dark :: Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_dark"><span class="hs-identifier hs-var">is_dark</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541468"><span class="hs-identifier hs-var">is_dark_</span></a></span><span>
+</span><span id="line-111"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_flipped :: Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_flipped"><span class="hs-identifier hs-var">is_flipped</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541469"><span class="hs-identifier hs-var">is_flipped_</span></a></span><span>
+</span><span id="line-112"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-113"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser InputStoryAreaType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-114"></span><span>
+</span><span id="line-115"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679541472"><span id="local-6989586621679541476"><span id="local-6989586621679541479"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaType"><span class="hs-identifier hs-type">InputStoryAreaType</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-116"></span><span>  </span><span id="local-6989586621679541537"><span class="annot"><span class="annottext">toJSON :: InputStoryAreaType -&gt; Value
+</span><a href="#local-6989586621679541537"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeLocation"><span class="hs-identifier hs-type">InputStoryAreaTypeLocation</span></a></span><span>
+</span><span id="line-117"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">location :: InputStoryAreaType -&gt; Maybe Location
+</span><a href="TD.Data.InputStoryAreaType.html#location"><span class="hs-identifier hs-var">location</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541539"><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541539"><span class="hs-identifier hs-var">location_</span></a></span></span><span>
+</span><span id="line-118"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-119"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-120"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;inputStoryAreaTypeLocation&quot;</span></span><span>
+</span><span id="line-121"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;location&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Location -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Location
+</span><a href="#local-6989586621679541539"><span class="hs-identifier hs-var">location_</span></a></span><span>
+</span><span id="line-122"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-123"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeFoundVenue"><span class="hs-identifier hs-type">InputStoryAreaTypeFoundVenue</span></a></span><span>
+</span><span id="line-124"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">query_id :: InputStoryAreaType -&gt; Maybe Int
+</span><a href="TD.Data.InputStoryAreaType.html#query_id"><span class="hs-identifier hs-var">query_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541543"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541543"><span class="hs-identifier hs-var">query_id_</span></a></span></span><span>
+</span><span id="line-125"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">result_id :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#result_id"><span class="hs-identifier hs-var">result_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541544"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541544"><span class="hs-identifier hs-var">result_id_</span></a></span></span><span>
+</span><span id="line-126"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-127"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-128"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;inputStoryAreaTypeFoundVenue&quot;</span></span><span>
+</span><span id="line-129"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;query_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679541543"><span class="hs-identifier hs-var">query_id_</span></a></span><span>
+</span><span id="line-130"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;result_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541544"><span class="hs-identifier hs-var">result_id_</span></a></span><span>
+</span><span id="line-131"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-132"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypePreviousVenue"><span class="hs-identifier hs-type">InputStoryAreaTypePreviousVenue</span></a></span><span>
+</span><span id="line-133"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">venue_provider :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_provider"><span class="hs-identifier hs-var">venue_provider</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541546"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541546"><span class="hs-identifier hs-var">venue_provider_</span></a></span></span><span>
+</span><span id="line-134"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">venue_id :: InputStoryAreaType -&gt; Maybe Text
+</span><a href="TD.Data.InputStoryAreaType.html#venue_id"><span class="hs-identifier hs-var">venue_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541547"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541547"><span class="hs-identifier hs-var">venue_id_</span></a></span></span><span>
+</span><span id="line-135"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-136"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-137"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;inputStoryAreaTypePreviousVenue&quot;</span></span><span>
+</span><span id="line-138"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;venue_provider&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541546"><span class="hs-identifier hs-var">venue_provider_</span></a></span><span>
+</span><span id="line-139"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;venue_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679541547"><span class="hs-identifier hs-var">venue_id_</span></a></span><span>
+</span><span id="line-140"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-141"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreaType.html#InputStoryAreaTypeSuggestedReaction"><span class="hs-identifier hs-type">InputStoryAreaTypeSuggestedReaction</span></a></span><span>
+</span><span id="line-142"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">reaction_type :: InputStoryAreaType -&gt; Maybe ReactionType
+</span><a href="TD.Data.InputStoryAreaType.html#reaction_type"><span class="hs-identifier hs-var">reaction_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541548"><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541548"><span class="hs-identifier hs-var">reaction_type_</span></a></span></span><span>
+</span><span id="line-143"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_dark :: InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_dark"><span class="hs-identifier hs-var">is_dark</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541549"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541549"><span class="hs-identifier hs-var">is_dark_</span></a></span></span><span>
+</span><span id="line-144"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_flipped :: InputStoryAreaType -&gt; Maybe Bool
+</span><a href="TD.Data.InputStoryAreaType.html#is_flipped"><span class="hs-identifier hs-var">is_flipped</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679541550"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541550"><span class="hs-identifier hs-var">is_flipped_</span></a></span></span><span>
+</span><span id="line-145"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-146"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-147"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;inputStoryAreaTypeSuggestedReaction&quot;</span></span><span>
+</span><span id="line-148"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reaction_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe ReactionType -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679541548"><span class="hs-identifier hs-var">reaction_type_</span></a></span><span>
+</span><span id="line-149"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_dark&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541549"><span class="hs-identifier hs-var">is_dark_</span></a></span><span>
+</span><span id="line-150"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_flipped&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679541550"><span class="hs-identifier hs-var">is_flipped_</span></a></span><span>
+</span><span id="line-151"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-152"></span><span>
+</span><span id="line-153"></span></pre></body></html>
