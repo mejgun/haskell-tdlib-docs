@@ -4,11 +4,12 @@
 </span><span id="line-4"></span><span>
 </span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
-</span><span id="line-7"></span><span>
-</span><span id="line-8"></span><span class="annot"><span class="hs-comment">-- | Resends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed, or when the current authorization state is authorizationStateWaitEmailCode</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="ResendAuthenticationCode"><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span></span><span>
-</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ResendAuthenticationCode"><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span></span><span>
-</span><span id="line-11"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679538731"><span id="local-6989586621679538733"><span class="annot"><span class="annottext">ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="annot"><span class="hs-comment">-- | Resends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed, or when the current authorization state is authorizationStateWaitEmailCode</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="ResendAuthenticationCode"><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ResendAuthenticationCode"><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679636600"><span id="local-6989586621679636602"><span class="annot"><span class="annottext">ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
 (ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool)
 -&gt; (ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool)
 -&gt; Eq ResendAuthenticationCode
@@ -17,30 +18,45 @@ $c== :: ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
 == :: ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
 $c/= :: ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
 /= :: ResendAuthenticationCode -&gt; ResendAuthenticationCode -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-12"></span><span>
-</span><span id="line-13"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679538738"><span id="local-6989586621679538743"><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-type">ResendAuthenticationCode</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-14"></span><span>  </span><span id="local-6989586621679538746"><span class="annot"><span class="annottext">show :: ResendAuthenticationCode -&gt; String
-</span><a href="#local-6989586621679538746"><span class="hs-identifier hs-var hs-var hs-var hs-var">show</span></a></span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="annot"><span class="annottext">ResendAuthenticationCode
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679636607"><span id="local-6989586621679636609"><span id="local-6989586621679636613"><span class="annot"><span class="annottext">Int -&gt; ResendAuthenticationCode -&gt; ShowS
+[ResendAuthenticationCode] -&gt; ShowS
+ResendAuthenticationCode -&gt; String
+(Int -&gt; ResendAuthenticationCode -&gt; ShowS)
+-&gt; (ResendAuthenticationCode -&gt; String)
+-&gt; ([ResendAuthenticationCode] -&gt; ShowS)
+-&gt; Show ResendAuthenticationCode
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; ResendAuthenticationCode -&gt; ShowS
+showsPrec :: Int -&gt; ResendAuthenticationCode -&gt; ShowS
+$cshow :: ResendAuthenticationCode -&gt; String
+show :: ResendAuthenticationCode -&gt; String
+$cshowList :: [ResendAuthenticationCode] -&gt; ShowS
+showList :: [ResendAuthenticationCode] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-type">ResendAuthenticationCode</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-15"></span><span>  </span><span id="local-6989586621679636619"><span class="annot"><span class="annottext">shortShow :: ResendAuthenticationCode -&gt; String
+</span><a href="#local-6989586621679636619"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="annot"><span class="annottext">ResendAuthenticationCode
 </span><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span><span>
-</span><span id="line-16"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-17"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;ResendAuthenticationCode&quot;</span></span><span>
-</span><span id="line-17"></span><span>
-</span><span id="line-18"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679538750"><span id="local-6989586621679538754"><span id="local-6989586621679538757"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-type">ResendAuthenticationCode</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-19"></span><span>  </span><span id="local-6989586621679538770"><span class="annot"><span class="annottext">toJSON :: ResendAuthenticationCode -&gt; Value
-</span><a href="#local-6989586621679538770"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-20"></span><span>    </span><span class="annot"><span class="annottext">ResendAuthenticationCode
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679636623"><span id="local-6989586621679636627"><span id="local-6989586621679636630"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-type">ResendAuthenticationCode</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679636643"><span class="annot"><span class="annottext">toJSON :: ResendAuthenticationCode -&gt; Value
+</span><a href="#local-6989586621679636643"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><span class="annottext">ResendAuthenticationCode
 </span><a href="TD.Query.ResendAuthenticationCode.html#ResendAuthenticationCode"><span class="hs-identifier hs-var">ResendAuthenticationCode</span></a></span><span>
-</span><span id="line-21"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span id="line-22"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-22"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span id="line-23"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;resendAuthenticationCode&quot;</span></span><span>
-</span><span id="line-23"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-24"></span><span>
-</span><span id="line-25"></span></pre></body></html>
+</span><span id="line-24"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span></pre></body></html>
