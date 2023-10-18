@@ -8,7 +8,7 @@
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
 </span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSource.html"><span class="hs-identifier">TD.Data.MessageSource</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSource</span></span><span>
 </span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)</span></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels). Returns 'TD.Data.Ok.Ok'</span></span><span>
 </span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="ViewMessages"><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-var">ViewMessages</span></a></span></span><span>
 </span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ViewMessages"><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-var">ViewMessages</span></a></span></span><span>
 </span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">ViewMessages -&gt; Maybe Int
@@ -20,7 +20,7 @@
 </span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="force_read"><span class="annot"><span class="annottext">ViewMessages -&gt; Maybe Bool
 </span><a href="TD.Query.ViewMessages.html#force_read"><span class="hs-identifier hs-var hs-var">force_read</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                        </span><span class="annot"><span class="hs-comment">-- ^ Pass true to mark as read the specified messages even the chat is closed</span></span><span>
 </span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679684552"><span id="local-6989586621679684563"><span class="annot"><span class="annottext">ViewMessages -&gt; ViewMessages -&gt; Bool
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679684536"><span id="local-6989586621679684547"><span class="annot"><span class="annottext">ViewMessages -&gt; ViewMessages -&gt; Bool
 (ViewMessages -&gt; ViewMessages -&gt; Bool)
 -&gt; (ViewMessages -&gt; ViewMessages -&gt; Bool) -&gt; Eq ViewMessages
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -28,7 +28,7 @@ $c== :: ViewMessages -&gt; ViewMessages -&gt; Bool
 == :: ViewMessages -&gt; ViewMessages -&gt; Bool
 $c/= :: ViewMessages -&gt; ViewMessages -&gt; Bool
 /= :: ViewMessages -&gt; ViewMessages -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679684572"><span id="local-6989586621679684585"><span id="local-6989586621679684589"><span class="annot"><span class="annottext">Int -&gt; ViewMessages -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679684556"><span id="local-6989586621679684569"><span id="local-6989586621679684573"><span class="annot"><span class="annottext">Int -&gt; ViewMessages -&gt; ShowS
 [ViewMessages] -&gt; ShowS
 ViewMessages -&gt; String
 (Int -&gt; ViewMessages -&gt; ShowS)
@@ -46,21 +46,21 @@ showList :: [ViewMessages] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-20"></span><span>
 </span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-22"></span><span>  </span><span id="local-6989586621679684610"><span class="annot"><span class="annottext">shortShow :: ViewMessages -&gt; String
-</span><a href="#local-6989586621679684610"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679684594"><span class="annot"><span class="annottext">shortShow :: ViewMessages -&gt; String
+</span><a href="#local-6989586621679684594"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
 </span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span><span>
 </span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ViewMessages -&gt; Maybe Int
-</span><a href="TD.Query.ViewMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684612"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679684612"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684596"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679684596"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ViewMessages -&gt; Maybe [Int]
-</span><a href="TD.Query.ViewMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684613"><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679684613"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684597"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679684597"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
 </span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">source :: ViewMessages -&gt; Maybe MessageSource
-</span><a href="TD.Query.ViewMessages.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684614"><span class="annot"><span class="annottext">Maybe MessageSource
-</span><a href="#local-6989586621679684614"><span class="hs-identifier hs-var">source_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684598"><span class="annot"><span class="annottext">Maybe MessageSource
+</span><a href="#local-6989586621679684598"><span class="hs-identifier hs-var">source_</span></a></span></span><span>
 </span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">force_read :: ViewMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ViewMessages.html#force_read"><span class="hs-identifier hs-var">force_read</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684615"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679684615"><span class="hs-identifier hs-var">force_read_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#force_read"><span class="hs-identifier hs-var">force_read</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684599"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679684599"><span class="hs-identifier hs-var">force_read_</span></a></span></span><span>
 </span><span id="line-28"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-29"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;ViewMessages&quot;</span></span><span>
@@ -72,40 +72,40 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-string">&quot;chat_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679684612"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679684596"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;message_ids&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe [Int] -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679684613"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
+</span><a href="#local-6989586621679684597"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
 </span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;source&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSource -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSource
-</span><a href="#local-6989586621679684614"><span class="hs-identifier hs-var">source_</span></a></span><span>
+</span><a href="#local-6989586621679684598"><span class="hs-identifier hs-var">source_</span></a></span><span>
 </span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;force_read&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679684615"><span class="hs-identifier hs-var">force_read_</span></a></span><span>
+</span><a href="#local-6989586621679684599"><span class="hs-identifier hs-var">force_read_</span></a></span><span>
 </span><span id="line-35"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-36"></span><span>
-</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679684620"><span id="local-6989586621679684624"><span id="local-6989586621679684627"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-38"></span><span>  </span><span id="local-6989586621679684661"><span class="annot"><span class="annottext">toJSON :: ViewMessages -&gt; Value
-</span><a href="#local-6989586621679684661"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679684604"><span id="local-6989586621679684608"><span id="local-6989586621679684611"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-38"></span><span>  </span><span id="local-6989586621679684645"><span class="annot"><span class="annottext">toJSON :: ViewMessages -&gt; Value
+</span><a href="#local-6989586621679684645"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
 </span><span id="line-39"></span><span>    </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span><span>
 </span><span id="line-40"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ViewMessages -&gt; Maybe Int
-</span><a href="TD.Query.ViewMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684663"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679684663"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684647"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679684647"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ViewMessages -&gt; Maybe [Int]
-</span><a href="TD.Query.ViewMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684664"><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679684664"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684648"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679684648"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
 </span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">source :: ViewMessages -&gt; Maybe MessageSource
-</span><a href="TD.Query.ViewMessages.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684665"><span class="annot"><span class="annottext">Maybe MessageSource
-</span><a href="#local-6989586621679684665"><span class="hs-identifier hs-var">source_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684649"><span class="annot"><span class="annottext">Maybe MessageSource
+</span><a href="#local-6989586621679684649"><span class="hs-identifier hs-var">source_</span></a></span></span><span>
 </span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">force_read :: ViewMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ViewMessages.html#force_read"><span class="hs-identifier hs-var">force_read</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684666"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679684666"><span class="hs-identifier hs-var">force_read_</span></a></span></span><span>
+</span><a href="TD.Query.ViewMessages.html#force_read"><span class="hs-identifier hs-var">force_read</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679684650"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679684650"><span class="hs-identifier hs-var">force_read_</span></a></span></span><span>
 </span><span id="line-44"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-45"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
@@ -121,25 +121,25 @@ forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679684663"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679684647"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;message_ids&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe [Int] -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679684664"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
+</span><a href="#local-6989586621679684648"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
 </span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;source&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSource -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSource
-</span><a href="#local-6989586621679684665"><span class="hs-identifier hs-var">source_</span></a></span><span>
+</span><a href="#local-6989586621679684649"><span class="hs-identifier hs-var">source_</span></a></span><span>
 </span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;force_read&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679684666"><span class="hs-identifier hs-var">force_read_</span></a></span><span>
+</span><a href="#local-6989586621679684650"><span class="hs-identifier hs-var">force_read_</span></a></span><span>
 </span><span id="line-51"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-52"></span><span>
 </span><span id="line-53"></span><span class="annot"><a href="TD.Query.ViewMessages.html#defaultViewMessages"><span class="hs-identifier hs-type">defaultViewMessages</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ViewMessages.html#ViewMessages"><span class="hs-identifier hs-type">ViewMessages</span></a></span><span>
