@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.7.0
+@version 2.0.8.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2910,8 +2910,8 @@ PremiumGiftCodeInfo :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe I
 -- | True, if the gift code was created for a giveaway
 [is_from_giveaway] :: PremiumGiftCodeInfo -> Maybe Bool
 
--- | Identifier of the corresponding giveaway message; can be 0 or an
---   identifier of a deleted message
+-- | Identifier of the corresponding giveaway message in the creator_id
+--   chat; can be 0 or an identifier of a deleted message
 [giveaway_message_id] :: PremiumGiftCodeInfo -> Maybe Int
 
 -- | Number of month the Telegram Premium subscription will be active after
@@ -2979,9 +2979,9 @@ MessageSchedulingStateSendAtDate :: Maybe Int -> MessageSchedulingState
 --   must be within 367 days in the future
 [send_date] :: MessageSchedulingState -> Maybe Int
 
--- | The message will be sent when the peer will be online. Applicable to
---   private chats only and when the exact online status of the peer is
---   known
+-- | The message will be sent when the other user is online. Applicable to
+--   private chats only and when the exact online status of the other user
+--   is known
 MessageSchedulingStateSendWhenOnline :: MessageSchedulingState
 instance GHC.Show.Show TD.Data.MessageSchedulingState.MessageSchedulingState
 instance GHC.Classes.Eq TD.Data.MessageSchedulingState.MessageSchedulingState
@@ -3073,7 +3073,7 @@ MessageReaction :: Maybe ReactionType -> Maybe Int -> Maybe Bool -> Maybe Messag
 [is_chosen] :: MessageReaction -> Maybe Bool
 
 -- | Identifier of the message sender used by the current user to add the
---   reaction; null if unknown or the reaction isn't chosen
+--   reaction; may be null if unknown or the reaction isn't chosen
 [used_sender_id] :: MessageReaction -> Maybe MessageSender
 
 -- | Identifiers of at most 3 recent message senders, added the reaction;
@@ -4823,7 +4823,7 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool ->
 [scheduled_start_date] :: GroupCall -> Maybe Int
 
 -- | True, if the group call is scheduled and the current user will receive
---   a notification when the group call will start
+--   a notification when the group call starts
 [enabled_start_notification] :: GroupCall -> Maybe Bool
 
 -- | True, if the call is active
@@ -7191,9 +7191,8 @@ InputMessageDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool ->
 -- | Animation thumbnail; pass null to skip thumbnail uploading
 [thumbnail] :: InputMessageContent -> Maybe InputThumbnail
 
--- | If true, automatic file type detection will be disabled and the
---   document will always be sent as file. Always true for files sent to
---   secret chats
+-- | True, if automatic file type detection is disabled and the document
+--   must be sent as a file. Always true for files sent to secret chats
 [disable_content_type_detection] :: InputMessageContent -> Maybe Bool
 
 -- | Animation caption; pass null to use an empty caption;
@@ -8431,7 +8430,7 @@ data ChatMessageSender
 --   chat
 ChatMessageSender :: Maybe MessageSender -> Maybe Bool -> ChatMessageSender
 
--- | Available message senders
+-- | The message sender
 [sender] :: ChatMessageSender -> Maybe MessageSender
 
 -- | True, if Telegram Premium is needed to use the message sender
@@ -10854,7 +10853,7 @@ ChatActionBarReportAddBlock :: Maybe Bool -> Maybe Int -> ChatActionBar
 --   setChatNotificationSettings
 [can_unarchive] :: ChatActionBar -> Maybe Bool
 
--- | If non-negative, the current user was found by the peer through
+-- | If non-negative, the current user was found by the other user through
 --   searchChatsNearby and this is the distance between the users
 [distance] :: ChatActionBar -> Maybe Int
 
@@ -11261,7 +11260,7 @@ CallStateExchangingKeys :: CallState
 -- | The call is ready to use
 CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Maybe ByteString -> Maybe [Text] -> Maybe Bool -> CallState
 
--- | Call protocols supported by the peer
+-- | Call protocols supported by the other call participant
 [protocol] :: CallState -> Maybe CallProtocol
 
 -- | List of available call servers
@@ -11317,7 +11316,7 @@ Call :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe CallState ->
 -- | Call identifier, not persistent
 [_id] :: Call -> Maybe Int
 
--- | Peer user identifier
+-- | User identifier of the other call participant
 [user_id] :: Call -> Maybe Int
 
 -- | True, if the call is outgoing
@@ -16089,10 +16088,9 @@ UpdateNewMessage :: Maybe Message -> Update
 [message] :: Update -> Maybe Message
 
 -- | A request to send a message has reached the Telegram server. This
---   doesn't mean that the message will be sent successfully or even that
---   the send message request will be processed. This update will be sent
---   only if the option "use_quick_ack" is set to true. This update may be
---   sent multiple times for the same message
+--   doesn't mean that the message will be sent successfully. This update
+--   is sent only if the option "use_quick_ack" is set to true. This update
+--   may be sent multiple times for the same message
 UpdateMessageSendAcknowledged :: Maybe Int -> Maybe Int -> Update
 
 -- | The chat identifier of the sent message
@@ -16265,8 +16263,8 @@ UpdateChatBackgroundCustomEmoji :: Maybe Int -> Maybe Int -> Update
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | The new tdentifier of a custom emoji to be shown on the reply header
---   background
+-- | The new identifier of a custom emoji to be shown on the reply header
+--   background; 0 if none
 [background_custom_emoji_id] :: Update -> Maybe Int
 
 -- | Chat permissions was changed
@@ -16522,8 +16520,8 @@ UpdateChatFolders :: Maybe [ChatFolderInfo] -> Maybe Int -> Update
 
 -- | The number of online group members has changed. This update with
 --   non-zero number of online group members is sent only for currently
---   opened chats. There is no guarantee that it will be sent just after
---   the number of online users has changed
+--   opened chats. There is no guarantee that it is sent just after the
+--   number of online users has changed
 UpdateChatOnlineMemberCount :: Maybe Int -> Maybe Int -> Update
 
 -- | The chat identifier of the sent message
@@ -24603,8 +24601,8 @@ module TD.Query.PreliminaryUploadFile
 --   message, which can be useful for uploading of being recorded voice and
 --   video notes. Updates updateFile will be used to notify about upload
 --   progress and successful completion of the upload. The file will not
---   have a persistent remote identifier until it will be sent in a
---   message. Returns <a>File</a>
+--   have a persistent remote identifier until it is sent in a message.
+--   Returns <a>File</a>
 data PreliminaryUploadFile
 PreliminaryUploadFile :: Maybe InputFile -> Maybe FileType -> Maybe Int -> PreliminaryUploadFile
 
@@ -29160,7 +29158,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGeneralForumTopicIsHidden
 module TD.Query.ToggleGroupCallEnabledStartNotification
 
 -- | Toggles whether the current user will receive a notification when the
---   group call will start; scheduled group calls only. Returns <a>Ok</a>
+--   group call starts; scheduled group calls only. Returns <a>Ok</a>
 data ToggleGroupCallEnabledStartNotification
 ToggleGroupCallEnabledStartNotification :: Maybe Int -> Maybe Bool -> ToggleGroupCallEnabledStartNotification
 
