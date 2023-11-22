@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.9.0
+@version 2.0.11.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -6008,7 +6008,8 @@ SpeechRecognitionResultText :: Maybe Text -> SpeechRecognitionResult
 -- | The speech recognition failed
 SpeechRecognitionResultError :: Maybe Error -> SpeechRecognitionResult
 
--- | Recognition error
+-- | Recognition error. An error with a message <a>MSG_VOICE_TOO_LONG</a>
+--   is returned when media duration is too big to be recognized
 [_error] :: SpeechRecognitionResult -> Maybe Error
 instance GHC.Show.Show TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
 instance GHC.Classes.Eq TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
@@ -24831,9 +24832,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadFilePart.ReadFilePart
 module TD.Query.RecognizeSpeech
 
 -- | Recognizes speech in a video note or a voice note message. The message
---   must be successfully sent and must not be scheduled. May return an
---   error with a message <a>MSG_VOICE_TOO_LONG</a> if media duration is
---   too big to be recognized. Returns <a>Ok</a>
+--   must be successfully sent and must not be scheduled. Returns <a>Ok</a>
 data RecognizeSpeech
 RecognizeSpeech :: Maybe Int -> Maybe Int -> RecognizeSpeech
 
