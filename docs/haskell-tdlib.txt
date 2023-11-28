@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.11.0
+@version 2.0.12.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -1394,11 +1394,11 @@ ScopeNotificationSettings :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool 
 -- | True, if message content must be displayed in notifications
 [show_preview] :: ScopeNotificationSettings -> Maybe Bool
 
--- | If true, mute_stories is ignored and story notifications are received
---   only for the first 5 chats from topChatCategoryUsers
+-- | If true, story notifications are received only for the first 5 chats
+--   from topChatCategoryUsers regardless of the value of mute_stories
 [use_default_mute_stories] :: ScopeNotificationSettings -> Maybe Bool
 
--- | True, if story notifications are disabled for the chat
+-- | True, if story notifications are disabled
 [mute_stories] :: ScopeNotificationSettings -> Maybe Bool
 
 -- | Identifier of the notification sound to be played for stories; 0 if
@@ -7494,17 +7494,18 @@ module TD.Data.ConnectionState
 -- | Describes the current state of the connection to Telegram servers
 data ConnectionState
 
--- | Currently waiting for the network to become available. Use
---   setNetworkType to change the available network type
+-- | Waiting for the network to become available. Use setNetworkType to
+--   change the available network type
 ConnectionStateWaitingForNetwork :: ConnectionState
 
--- | Currently establishing a connection with a proxy server
+-- | Establishing a connection with a proxy server
 ConnectionStateConnectingToProxy :: ConnectionState
 
--- | Currently establishing a connection to the Telegram servers
+-- | Establishing a connection to the Telegram servers
 ConnectionStateConnecting :: ConnectionState
 
--- | Downloading data received while the application was offline
+-- | Downloading data supposed to be received while the application was
+--   offline
 ConnectionStateUpdating :: ConnectionState
 
 -- | There is a working connection to the Telegram servers
@@ -8326,8 +8327,8 @@ data ChatNotificationSettings
 --   topic
 ChatNotificationSettings :: Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatNotificationSettings
 
--- | If true, mute_for is ignored and the value for the relevant type of
---   chat or the forum chat is used instead
+-- | If true, the value for the relevant type of chat or the forum chat is
+--   used instead of mute_for
 [use_default_mute_for] :: ChatNotificationSettings -> Maybe Bool
 
 -- | Time left before notifications will be unmuted, in seconds
@@ -8341,15 +8342,15 @@ ChatNotificationSettings :: Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -
 --   sound is disabled
 [sound_id] :: ChatNotificationSettings -> Maybe Int
 
--- | If true, show_preview is ignored and the value for the relevant type
---   of chat or the forum chat is used instead
+-- | If true, the value for the relevant type of chat or the forum chat is
+--   used instead of show_preview
 [use_default_show_preview] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if message content must be displayed in notifications
 [show_preview] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, mute_stories is ignored and the value for the relevant type
---   of chat is used instead
+-- | If true, the value for the relevant type of chat is used instead of
+--   mute_stories
 [use_default_mute_stories] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if story notifications are disabled for the chat
@@ -8363,23 +8364,23 @@ ChatNotificationSettings :: Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -
 --   sound is disabled
 [story_sound_id] :: ChatNotificationSettings -> Maybe Int
 
--- | If true, show_story_sender is ignored and the value for the relevant
---   type of chat is used instead
+-- | If true, the value for the relevant type of chat is used instead of
+--   show_story_sender
 [use_default_show_story_sender] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if the sender of stories must be displayed in notifications
 [show_story_sender] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, disable_pinned_message_notifications is ignored and the value
---   for the relevant type of chat or the forum chat is used instead
+-- | If true, the value for the relevant type of chat or the forum chat is
+--   used instead of disable_pinned_message_notifications
 [use_default_disable_pinned_message_notifications] :: ChatNotificationSettings -> Maybe Bool
 
 -- | If true, notifications for incoming pinned messages will be created as
 --   for an ordinary unread message
 [disable_pinned_message_notifications] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, disable_mention_notifications is ignored and the value for
---   the relevant type of chat or the forum chat is used instead
+-- | If true, the value for the relevant type of chat or the forum chat is
+--   used instead of disable_mention_notifications
 [use_default_disable_mention_notifications] :: ChatNotificationSettings -> Maybe Bool
 
 -- | If true, notifications for messages with mentions will be created as
@@ -10642,10 +10643,11 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 
 -- | Number of members in the supergroup or channel; 0 if unknown.
 --   Currently, it is guaranteed to be known only if the supergroup or
---   channel was received through searchPublicChats, searchChatsNearby,
---   getInactiveSupergroupChats, getSuitableDiscussionChats,
---   getGroupsInCommon, getUserPrivacySettingRules, or in
---   chatFolderInviteLinkInfo.missing_chat_ids
+--   channel was received through getChatsToSendStories,
+--   getCreatedPublicChats, getGroupsInCommon, getInactiveSupergroupChats,
+--   getSuitableDiscussionChats, getUserPrivacySettingRules,
+--   getVideoChatAvailableParticipants, searchChatsNearby,
+--   searchPublicChats, or in chatFolderInviteLinkInfo.missing_chat_ids
 [member_count] :: Supergroup -> Maybe Int
 
 -- | True, if the channel has a discussion group, or the supergroup is the
@@ -11825,7 +11827,7 @@ AvailableReactions :: Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> 
 -- | List of popular reactions
 [popular_reactions] :: AvailableReactions -> Maybe [AvailableReaction]
 
--- | True, if custom emoji reactions could be added by Telegram Premium
+-- | True, if any custom emoji reaction can be added by Telegram Premium
 --   subscribers
 [allow_custom_emoji] :: AvailableReactions -> Maybe Bool
 instance GHC.Show.Show TD.Data.AvailableReactions.AvailableReactions
@@ -14097,8 +14099,8 @@ MessageText :: Maybe FormattedText -> Maybe WebPage -> Maybe LinkPreviewOptions 
 -- | A link preview attached to the message; may be null
 [web_page] :: MessageContent -> Maybe WebPage
 
--- | Options which was used for generation of the link preview; may be null
---   if default options were used
+-- | Options which were used for generation of the link preview; may be
+--   null if default options were used
 [link_preview_options] :: MessageContent -> Maybe LinkPreviewOptions
 
 -- | An animation message (GIF-style).
@@ -16591,7 +16593,7 @@ UpdateNotificationGroup :: Maybe Int -> Maybe NotificationGroupType -> Maybe Int
 --   identifier
 [removed_notification_ids] :: Update -> Maybe [Int]
 
--- | Contains active notifications that was shown on previous application
+-- | Contains active notifications that were shown on previous application
 --   launches. This update is sent only if the message database is used. In
 --   that case it comes once before any updateNotification and
 --   updateNotificationGroup update
@@ -29058,8 +29060,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatIsPinned.ToggleChatIs
 
 module TD.Query.ToggleChatIsTranslatable
 
--- | Changes the translatable state of a chat; for Telegram Premium users
---   only. Returns <a>Ok</a>
+-- | Changes the translatable state of a chat. Returns <a>Ok</a>
 data ToggleChatIsTranslatable
 ToggleChatIsTranslatable :: Maybe Int -> Maybe Bool -> ToggleChatIsTranslatable
 
