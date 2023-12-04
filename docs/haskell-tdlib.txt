@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.12.0
+@version 2.0.13.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -876,6 +876,47 @@ instance TD.Lib.Internal.ShortShow TD.Data.StoryPrivacySettings.StoryPrivacySett
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryPrivacySettings.StoryPrivacySettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StoryPrivacySettings.StoryPrivacySettings
 
+module TD.Data.StoryOrigin
+
+-- | Contains information about the origin of a story that was reposted
+data StoryOrigin
+
+-- | The original story was a public story with known sender
+StoryOriginPublicStory :: Maybe Int -> Maybe Int -> StoryOrigin
+
+-- | Identifier of the chat that posted original story
+[chat_id] :: StoryOrigin -> Maybe Int
+
+-- | Story identifier of the original story
+[story_id] :: StoryOrigin -> Maybe Int
+
+-- | The original story was sent by an unknown user
+StoryOriginHiddenUser :: Maybe Text -> StoryOrigin
+
+-- | Name of the story sender
+[sender_name] :: StoryOrigin -> Maybe Text
+instance GHC.Show.Show TD.Data.StoryOrigin.StoryOrigin
+instance GHC.Classes.Eq TD.Data.StoryOrigin.StoryOrigin
+instance TD.Lib.Internal.ShortShow TD.Data.StoryOrigin.StoryOrigin
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryOrigin.StoryOrigin
+
+module TD.Data.StoryRepostInfo
+data StoryRepostInfo
+
+-- | Contains information about original story that was reposted
+StoryRepostInfo :: Maybe StoryOrigin -> Maybe Bool -> StoryRepostInfo
+
+-- | Origin of the story that was reposted
+[origin] :: StoryRepostInfo -> Maybe StoryOrigin
+
+-- | True, if story content was modified during reposting; otherwise, story
+--   wasn't modified
+[is_content_modified] :: StoryRepostInfo -> Maybe Bool
+instance GHC.Show.Show TD.Data.StoryRepostInfo.StoryRepostInfo
+instance GHC.Classes.Eq TD.Data.StoryRepostInfo.StoryRepostInfo
+instance TD.Lib.Internal.ShortShow TD.Data.StoryRepostInfo.StoryRepostInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryRepostInfo.StoryRepostInfo
+
 module TD.Data.StoryList
 
 -- | Describes a list of stories
@@ -932,6 +973,24 @@ instance GHC.Show.Show TD.Data.StoryInfo.StoryInfo
 instance GHC.Classes.Eq TD.Data.StoryInfo.StoryInfo
 instance TD.Lib.Internal.ShortShow TD.Data.StoryInfo.StoryInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryInfo.StoryInfo
+
+module TD.Data.StoryFullId
+data StoryFullId
+
+-- | Contains identifier of a story along with identifier of its sender
+StoryFullId :: Maybe Int -> Maybe Int -> StoryFullId
+
+-- | Identifier of the chat that posted the story
+[sender_chat_id] :: StoryFullId -> Maybe Int
+
+-- | Unique story identifier among stories of the given sender
+[story_id] :: StoryFullId -> Maybe Int
+defaultStoryFullId :: StoryFullId
+instance GHC.Show.Show TD.Data.StoryFullId.StoryFullId
+instance GHC.Classes.Eq TD.Data.StoryFullId.StoryFullId
+instance TD.Lib.Internal.ShortShow TD.Data.StoryFullId.StoryFullId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryFullId.StoryFullId
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StoryFullId.StoryFullId
 
 module TD.Data.StoryAreaPosition
 data StoryAreaPosition
@@ -1075,6 +1134,22 @@ instance GHC.Show.Show TD.Data.StatisticalGraph.StatisticalGraph
 instance GHC.Classes.Eq TD.Data.StatisticalGraph.StatisticalGraph
 instance TD.Lib.Internal.ShortShow TD.Data.StatisticalGraph.StatisticalGraph
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StatisticalGraph.StatisticalGraph
+
+module TD.Data.StoryStatistics
+data StoryStatistics
+
+-- | A detailed statistics about a story
+StoryStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> StoryStatistics
+
+-- | A graph containing number of story views and shares
+[story_interaction_graph] :: StoryStatistics -> Maybe StatisticalGraph
+
+-- | A graph containing number of story reactions
+[story_reaction_graph] :: StoryStatistics -> Maybe StatisticalGraph
+instance GHC.Show.Show TD.Data.StoryStatistics.StoryStatistics
+instance GHC.Classes.Eq TD.Data.StoryStatistics.StoryStatistics
+instance TD.Lib.Internal.ShortShow TD.Data.StoryStatistics.StoryStatistics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryStatistics.StoryStatistics
 
 module TD.Data.SessionType
 
@@ -1724,6 +1799,52 @@ instance GHC.Classes.Eq TD.Data.Proxies.Proxies
 instance TD.Lib.Internal.ShortShow TD.Data.Proxies.Proxies
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Proxies.Proxies
 
+module TD.Data.ProfileAccentColors
+data ProfileAccentColors
+
+-- | Contains information about supported accent colors for user profile
+--   photo background in RGB format
+ProfileAccentColors :: Maybe [Int] -> Maybe [Int] -> Maybe [Int] -> ProfileAccentColors
+
+-- | The list of 1-2 colors in RGB format, describing the colors, as
+--   expected to be shown in the color palette settings
+[palette_colors] :: ProfileAccentColors -> Maybe [Int]
+
+-- | The list of 1-2 colors in RGB format, describing the colors, as
+--   expected to be used for the profile photo background
+[background_colors] :: ProfileAccentColors -> Maybe [Int]
+
+-- | The list of 2 colors in RGB format, describing the colors of the
+--   gradient to be used for the unread active story indicator around
+--   profile photo
+[story_colors] :: ProfileAccentColors -> Maybe [Int]
+instance GHC.Show.Show TD.Data.ProfileAccentColors.ProfileAccentColors
+instance GHC.Classes.Eq TD.Data.ProfileAccentColors.ProfileAccentColors
+instance TD.Lib.Internal.ShortShow TD.Data.ProfileAccentColors.ProfileAccentColors
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProfileAccentColors.ProfileAccentColors
+
+module TD.Data.ProfileAccentColor
+data ProfileAccentColor
+
+-- | Contains information about supported accent color for user profile
+--   photo background
+ProfileAccentColor :: Maybe Int -> Maybe ProfileAccentColors -> Maybe ProfileAccentColors -> ProfileAccentColor
+
+-- | Profile accent color identifier
+[_id] :: ProfileAccentColor -> Maybe Int
+
+-- | The list of 1-3 colors in RGB format, describing the accent color, as
+--   expected to be shown in light themes
+[light_theme_colors] :: ProfileAccentColor -> Maybe ProfileAccentColors
+
+-- | The list of 1-3 colors in RGB format, describing the accent color, as
+--   expected to be shown in dark themes
+[dark_theme_colors] :: ProfileAccentColor -> Maybe ProfileAccentColors
+instance GHC.Show.Show TD.Data.ProfileAccentColor.ProfileAccentColor
+instance GHC.Classes.Eq TD.Data.ProfileAccentColor.ProfileAccentColor
+instance TD.Lib.Internal.ShortShow TD.Data.ProfileAccentColor.ProfileAccentColor
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProfileAccentColor.ProfileAccentColor
+
 module TD.Data.PrepaidPremiumGiveaway
 data PrepaidPremiumGiveaway
 
@@ -1834,6 +1955,9 @@ PremiumLimitTypeStoryCaptionLength :: PremiumLimitType
 
 -- | The maximum number of suggested reaction areas on a story
 PremiumLimitTypeStorySuggestedReactionAreaCount :: PremiumLimitType
+
+-- | The maximum number of received similar chats
+PremiumLimitTypeSimilarChatCount :: PremiumLimitType
 instance GHC.Show.Show TD.Data.PremiumLimitType.PremiumLimitType
 instance GHC.Classes.Eq TD.Data.PremiumLimitType.PremiumLimitType
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumLimitType.PremiumLimitType
@@ -2194,8 +2318,11 @@ PremiumFeatureUpgradedStories :: PremiumFeature
 -- | The ability to boost chats
 PremiumFeatureChatBoost :: PremiumFeature
 
--- | The ability to choose accent color
+-- | The ability to choose accent color for replies and user profile
 PremiumFeatureAccentColor :: PremiumFeature
+
+-- | The ability to set private chat background for both users
+PremiumFeatureBackgroundForBoth :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
@@ -2780,10 +2907,13 @@ module TD.Data.MessageStatistics
 data MessageStatistics
 
 -- | A detailed statistics about a message
-MessageStatistics :: Maybe StatisticalGraph -> MessageStatistics
+MessageStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> MessageStatistics
 
 -- | A graph containing number of message views and shares
 [message_interaction_graph] :: MessageStatistics -> Maybe StatisticalGraph
+
+-- | A graph containing number of message reactions
+[message_reaction_graph] :: MessageStatistics -> Maybe StatisticalGraph
 instance GHC.Show.Show TD.Data.MessageStatistics.MessageStatistics
 instance GHC.Classes.Eq TD.Data.MessageStatistics.MessageStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.MessageStatistics.MessageStatistics
@@ -3260,19 +3390,19 @@ module TD.Data.MessageFileType
 --   app
 data MessageFileType
 
--- | The messages was exported from a private chat
+-- | The messages were exported from a private chat
 MessageFileTypePrivate :: Maybe Text -> MessageFileType
 
 -- | Name of the other party; may be empty if unrecognized
 [name] :: MessageFileType -> Maybe Text
 
--- | The messages was exported from a group chat
+-- | The messages were exported from a group chat
 MessageFileTypeGroup :: Maybe Text -> MessageFileType
 
 -- | Title of the group chat; may be empty if unrecognized
 [title] :: MessageFileType -> Maybe Text
 
--- | The messages was exported from a chat of unknown type
+-- | The messages were exported from a chat of unknown type
 MessageFileTypeUnknown :: MessageFileType
 instance GHC.Show.Show TD.Data.MessageFileType.MessageFileType
 instance GHC.Classes.Eq TD.Data.MessageFileType.MessageFileType
@@ -5046,6 +5176,27 @@ instance GHC.Classes.Eq TD.Data.UserSupportInfo.UserSupportInfo
 instance TD.Lib.Internal.ShortShow TD.Data.UserSupportInfo.UserSupportInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserSupportInfo.UserSupportInfo
 
+module TD.Data.TextQuote
+data TextQuote
+
+-- | Describes manually or automatically chosen quote from another message
+TextQuote :: Maybe FormattedText -> Maybe Int -> Maybe Bool -> TextQuote
+
+-- | Text of the quote. Only Bold, Italic, Underline, Strikethrough,
+--   Spoiler, and CustomEmoji entities can be present in the text
+[text] :: TextQuote -> Maybe FormattedText
+
+-- | Approximate quote position in the original message in UTF-16 code
+--   units
+[position] :: TextQuote -> Maybe Int
+
+-- | True, if the quote was manually chosen by the message sender
+[is_manual] :: TextQuote -> Maybe Bool
+instance GHC.Show.Show TD.Data.TextQuote.TextQuote
+instance GHC.Classes.Eq TD.Data.TextQuote.TextQuote
+instance TD.Lib.Internal.ShortShow TD.Data.TextQuote.TextQuote
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextQuote.TextQuote
+
 module TD.Data.TermsOfService
 data TermsOfService
 
@@ -5164,13 +5315,34 @@ instance TD.Lib.Internal.ShortShow TD.Data.MessageCopyOptions.MessageCopyOptions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageCopyOptions.MessageCopyOptions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageCopyOptions.MessageCopyOptions
 
+module TD.Data.InputTextQuote
+data InputTextQuote
+
+-- | Describes manually chosen quote from another message
+InputTextQuote :: Maybe FormattedText -> Maybe Int -> InputTextQuote
+
+-- | Text of the quote; 0-getOption("message_reply_quote_length_max")
+--   characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, and
+--   CustomEmoji entities are allowed to be kept and must be kept in the
+--   quote
+[text] :: InputTextQuote -> Maybe FormattedText
+
+-- | Quote position in the original message in UTF-16 code units
+[position] :: InputTextQuote -> Maybe Int
+defaultInputTextQuote :: InputTextQuote
+instance GHC.Show.Show TD.Data.InputTextQuote.InputTextQuote
+instance GHC.Classes.Eq TD.Data.InputTextQuote.InputTextQuote
+instance TD.Lib.Internal.ShortShow TD.Data.InputTextQuote.InputTextQuote
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputTextQuote.InputTextQuote
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputTextQuote.InputTextQuote
+
 module TD.Data.InputMessageReplyTo
 
 -- | Contains information about the message or the story to be replied
 data InputMessageReplyTo
 
 -- | Describes a message to be replied
-InputMessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe FormattedText -> InputMessageReplyTo
+InputMessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQuote -> InputMessageReplyTo
 
 -- | The identifier of the chat to which the message to be replied belongs;
 --   pass 0 if the message to be replied is in the same chat. Must always
@@ -5182,12 +5354,9 @@ InputMessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe FormattedText -> I
 --   specified chat
 [message_id] :: InputMessageReplyTo -> Maybe Int
 
--- | Manually chosen quote from the message to be replied; pass null if
---   none; 0-getOption("message_reply_quote_length_max") characters. Must
---   always be null for replies in secret chats. Only Bold, Italic,
---   Underline, Strikethrough, Spoiler, and CustomEmoji entities are
---   allowed to be kept and must be kept in the quote
-[quote] :: InputMessageReplyTo -> Maybe FormattedText
+-- | Quote from the message to be replied; pass null if none. Must always
+--   be null for replies in secret chats
+[quote] :: InputMessageReplyTo -> Maybe InputTextQuote
 
 -- | Describes a story to be replied
 InputMessageReplyToStory :: Maybe Int -> Maybe Int -> InputMessageReplyTo
@@ -5756,7 +5925,7 @@ module TD.Data.Story
 data Story
 
 -- | Represents a story
-Story :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Story
+Story :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Story
 
 -- | Unique story identifier among stories of the given sender
 [_id] :: Story -> Maybe Int
@@ -5799,6 +5968,9 @@ Story :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Mayb
 -- | True, if the story's is_pinned value can be changed
 [can_toggle_is_pinned] :: Story -> Maybe Bool
 
+-- | True, if the story statistics are available through getStoryStatistics
+[can_get_statistics] :: Story -> Maybe Bool
+
 -- | True, if users viewed the story can be received through
 --   getStoryViewers
 [can_get_viewers] :: Story -> Maybe Bool
@@ -5807,6 +5979,10 @@ Story :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Mayb
 --   has expired more than getOption("story_viewers_expiration_delay")
 --   seconds ago
 [has_expired_viewers] :: Story -> Maybe Bool
+
+-- | Information about the original story; may be null if the story wasn't
+--   reposted
+[repost_info] :: Story -> Maybe StoryRepostInfo
 
 -- | Information about interactions with the story; may be null if the
 --   story isn't owned or there were no interactions
@@ -6187,7 +6363,7 @@ module TD.Data.User
 data User
 
 -- | Represents a user
-User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
+User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
 
 -- | User identifier
 [_id] :: User -> Maybe Int
@@ -6211,12 +6387,20 @@ User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -
 [profile_photo] :: User -> Maybe ProfilePhoto
 
 -- | Identifier of the accent color for name, and backgrounds of profile
---   photo, reply header, and link preview
+--   photo, reply header, and link preview. For Telegram Premium users only
 [accent_color_id] :: User -> Maybe Int
 
 -- | Identifier of a custom emoji to be shown on the reply header
 --   background; 0 if none. For Telegram Premium users only
 [background_custom_emoji_id] :: User -> Maybe Int
+
+-- | Identifier of the accent color for the user's profile; -1 if none. For
+--   Telegram Premium users only
+[profile_accent_color_id] :: User -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the background of the
+--   user's profile; 0 if none. For Telegram Premium users only
+[profile_background_custom_emoji_id] :: User -> Maybe Int
 
 -- | Emoji status to be shown instead of the default Telegram Premium
 --   badge; may be null. For Telegram Premium users only
@@ -8003,6 +8187,27 @@ instance GHC.Classes.Eq TD.Data.ChatType.ChatType
 instance TD.Lib.Internal.ShortShow TD.Data.ChatType.ChatType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatType.ChatType
 
+module TD.Data.ChatStatisticsObjectType
+
+-- | Describes type of an object, for which statistics are provided
+data ChatStatisticsObjectType
+
+-- | Describes a message sent in the chat
+ChatStatisticsObjectTypeMessage :: Maybe Int -> ChatStatisticsObjectType
+
+-- | Message identifier
+[message_id] :: ChatStatisticsObjectType -> Maybe Int
+
+-- | Describes a story sent by the chat
+ChatStatisticsObjectTypeStory :: Maybe Int -> ChatStatisticsObjectType
+
+-- | Story identifier
+[story_id] :: ChatStatisticsObjectType -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatStatisticsObjectType.ChatStatisticsObjectType
+instance GHC.Classes.Eq TD.Data.ChatStatisticsObjectType.ChatStatisticsObjectType
+instance TD.Lib.Internal.ShortShow TD.Data.ChatStatisticsObjectType.ChatStatisticsObjectType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatStatisticsObjectType.ChatStatisticsObjectType
+
 module TD.Data.ChatStatisticsMessageSenderInfo
 data ChatStatisticsMessageSenderInfo
 
@@ -8022,25 +8227,6 @@ instance GHC.Classes.Eq TD.Data.ChatStatisticsMessageSenderInfo.ChatStatisticsMe
 instance TD.Lib.Internal.ShortShow TD.Data.ChatStatisticsMessageSenderInfo.ChatStatisticsMessageSenderInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatStatisticsMessageSenderInfo.ChatStatisticsMessageSenderInfo
 
-module TD.Data.ChatStatisticsMessageInteractionInfo
-data ChatStatisticsMessageInteractionInfo
-
--- | Contains statistics about interactions with a message
-ChatStatisticsMessageInteractionInfo :: Maybe Int -> Maybe Int -> Maybe Int -> ChatStatisticsMessageInteractionInfo
-
--- | Message identifier
-[message_id] :: ChatStatisticsMessageInteractionInfo -> Maybe Int
-
--- | Number of times the message was viewed
-[view_count] :: ChatStatisticsMessageInteractionInfo -> Maybe Int
-
--- | Number of times the message was forwarded
-[forward_count] :: ChatStatisticsMessageInteractionInfo -> Maybe Int
-instance GHC.Show.Show TD.Data.ChatStatisticsMessageInteractionInfo.ChatStatisticsMessageInteractionInfo
-instance GHC.Classes.Eq TD.Data.ChatStatisticsMessageInteractionInfo.ChatStatisticsMessageInteractionInfo
-instance TD.Lib.Internal.ShortShow TD.Data.ChatStatisticsMessageInteractionInfo.ChatStatisticsMessageInteractionInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatStatisticsMessageInteractionInfo.ChatStatisticsMessageInteractionInfo
-
 module TD.Data.ChatStatisticsInviterInfo
 data ChatStatisticsInviterInfo
 
@@ -8056,6 +8242,29 @@ instance GHC.Show.Show TD.Data.ChatStatisticsInviterInfo.ChatStatisticsInviterIn
 instance GHC.Classes.Eq TD.Data.ChatStatisticsInviterInfo.ChatStatisticsInviterInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ChatStatisticsInviterInfo.ChatStatisticsInviterInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatStatisticsInviterInfo.ChatStatisticsInviterInfo
+
+module TD.Data.ChatStatisticsInteractionInfo
+data ChatStatisticsInteractionInfo
+
+-- | Contains statistics about interactions with a message sent in the chat
+--   or a story sent by the chat
+ChatStatisticsInteractionInfo :: Maybe ChatStatisticsObjectType -> Maybe Int -> Maybe Int -> Maybe Int -> ChatStatisticsInteractionInfo
+
+-- | Type of the object
+[object_type] :: ChatStatisticsInteractionInfo -> Maybe ChatStatisticsObjectType
+
+-- | Number of times the object was viewed
+[view_count] :: ChatStatisticsInteractionInfo -> Maybe Int
+
+-- | Number of times the object was forwarded
+[forward_count] :: ChatStatisticsInteractionInfo -> Maybe Int
+
+-- | Number of times reactions were added to the object
+[reaction_count] :: ChatStatisticsInteractionInfo -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatStatisticsInteractionInfo.ChatStatisticsInteractionInfo
+instance GHC.Classes.Eq TD.Data.ChatStatisticsInteractionInfo.ChatStatisticsInteractionInfo
+instance TD.Lib.Internal.ShortShow TD.Data.ChatStatisticsInteractionInfo.ChatStatisticsInteractionInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatStatisticsInteractionInfo.ChatStatisticsInteractionInfo
 
 module TD.Data.ChatStatisticsAdministratorActionsInfo
 data ChatStatisticsAdministratorActionsInfo
@@ -8136,7 +8345,7 @@ ChatStatisticsSupergroup :: Maybe DateRange -> Maybe StatisticalValue -> Maybe S
 [top_inviters] :: ChatStatistics -> Maybe [ChatStatisticsInviterInfo]
 
 -- | A detailed statistics about a channel chat
-ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe Double -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe [ChatStatisticsMessageInteractionInfo] -> ChatStatistics
+ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe StatisticalValue -> Maybe Double -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe [ChatStatisticsInteractionInfo] -> ChatStatistics
 
 -- | A period to which the statistics applies
 [period] :: ChatStatistics -> Maybe DateRange
@@ -8144,11 +8353,24 @@ ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe Stat
 -- | Number of members in the chat
 [member_count] :: ChatStatistics -> Maybe StatisticalValue
 
--- | Mean number of times the recently sent messages was viewed
-[mean_view_count] :: ChatStatistics -> Maybe StatisticalValue
+-- | Mean number of times the recently sent messages were viewed
+[mean_message_view_count] :: ChatStatistics -> Maybe StatisticalValue
 
--- | Mean number of times the recently sent messages was shared
-[mean_share_count] :: ChatStatistics -> Maybe StatisticalValue
+-- | Mean number of times the recently sent messages were shared
+[mean_message_share_count] :: ChatStatistics -> Maybe StatisticalValue
+
+-- | Mean number of times reactions were added to the recently sent
+--   messages
+[mean_message_reaction_count] :: ChatStatistics -> Maybe StatisticalValue
+
+-- | Mean number of times the recently sent stories were viewed
+[mean_story_view_count] :: ChatStatistics -> Maybe StatisticalValue
+
+-- | Mean number of times the recently sent stories were shared
+[mean_story_share_count] :: ChatStatistics -> Maybe StatisticalValue
+
+-- | Mean number of times reactions were added to the recently sent stories
+[mean_story_reaction_count] :: ChatStatistics -> Maybe StatisticalValue
 
 -- | A percentage of users with enabled notifications for the chat; 0-100
 [enabled_notifications_percentage] :: ChatStatistics -> Maybe Double
@@ -8178,13 +8400,22 @@ ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe Stat
 -- | A graph containing number of chat message views and shares
 [message_interaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
 
+-- | A graph containing number of reactions on messages
+[message_reaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
+
+-- | A graph containing number of story views and shares
+[story_interaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
+
+-- | A graph containing number of reactions on stories
+[story_reaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
+
 -- | A graph containing number of views of associated with the chat instant
 --   views
 [instant_view_interaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
 
 -- | Detailed statistics about number of views and shares of recently sent
---   messages
-[recent_message_interactions] :: ChatStatistics -> Maybe [ChatStatisticsMessageInteractionInfo]
+--   messages and stories
+[recent_interactions] :: ChatStatistics -> Maybe [ChatStatisticsInteractionInfo]
 instance GHC.Show.Show TD.Data.ChatStatistics.ChatStatistics
 instance GHC.Classes.Eq TD.Data.ChatStatistics.ChatStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.ChatStatistics.ChatStatistics
@@ -9327,7 +9558,8 @@ FoundChatBoosts :: Maybe Int -> Maybe [ChatBoost] -> Maybe Text -> FoundChatBoos
 -- | List of boosts
 [boosts] :: FoundChatBoosts -> Maybe [ChatBoost]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: FoundChatBoosts -> Maybe Text
 instance GHC.Show.Show TD.Data.FoundChatBoosts.FoundChatBoosts
 instance GHC.Classes.Eq TD.Data.FoundChatBoosts.FoundChatBoosts
@@ -10486,6 +10718,15 @@ MessageSponsorTypeBot :: Maybe Int -> Maybe InternalLinkType -> MessageSponsorTy
 -- | An internal link to be opened when the sponsored message is clicked
 [link] :: MessageSponsorType -> Maybe InternalLinkType
 
+-- | The sponsor is a web app
+MessageSponsorTypeWebApp :: Maybe Text -> Maybe InternalLinkType -> MessageSponsorType
+
+-- | Web App title
+[web_app_title] :: MessageSponsorType -> Maybe Text
+
+-- | An internal link to be opened when the sponsored message is clicked
+[link] :: MessageSponsorType -> Maybe InternalLinkType
+
 -- | The sponsor is a public channel chat
 MessageSponsorTypePublicChannel :: Maybe Int -> Maybe InternalLinkType -> MessageSponsorType
 
@@ -10643,11 +10884,15 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 
 -- | Number of members in the supergroup or channel; 0 if unknown.
 --   Currently, it is guaranteed to be known only if the supergroup or
---   channel was received through getChatsToSendStories,
---   getCreatedPublicChats, getGroupsInCommon, getInactiveSupergroupChats,
---   getSuitableDiscussionChats, getUserPrivacySettingRules,
---   getVideoChatAvailableParticipants, searchChatsNearby,
---   searchPublicChats, or in chatFolderInviteLinkInfo.missing_chat_ids
+--   channel was received through getChatSimilarChats,
+--   getChatsToSendStories, getCreatedPublicChats, getGroupsInCommon,
+--   getInactiveSupergroupChats, getSuitableDiscussionChats,
+--   getUserPrivacySettingRules, getVideoChatAvailableParticipants,
+--   searchChatsNearby, searchPublicChats, or in
+--   chatFolderInviteLinkInfo.missing_chat_ids, or for public chats in
+--   which where sent messages and posted stories from storyPublicForwards,
+--   or for public chats in which where sent messages from
+--   getMessagePublicForwards response
 [member_count] :: Supergroup -> Maybe Int
 
 -- | True, if the channel has a discussion group, or the supergroup is the
@@ -10681,7 +10926,7 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 --   can send messages and there is no limit on the number of members
 [is_broadcast_group] :: Supergroup -> Maybe Bool
 
--- | True, if the supergroup must be shown as a forum by default
+-- | True, if the supergroup is a forum with topics
 [is_forum] :: Supergroup -> Maybe Bool
 
 -- | True, if the supergroup or channel is verified
@@ -11483,7 +11728,8 @@ StoryViewers :: Maybe Int -> Maybe Int -> Maybe [StoryViewer] -> Maybe Text -> S
 -- | List of story viewers
 [viewers] :: StoryViewers -> Maybe [StoryViewer]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: StoryViewers -> Maybe Text
 instance GHC.Show.Show TD.Data.StoryViewers.StoryViewers
 instance GHC.Classes.Eq TD.Data.StoryViewers.StoryViewers
@@ -13440,7 +13686,8 @@ InlineQueryResults :: Maybe Int -> Maybe InlineQueryResultsButton -> Maybe [Inli
 -- | Results of the query
 [results] :: InlineQueryResults -> Maybe [InlineQueryResult]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: InlineQueryResults -> Maybe Text
 instance GHC.Show.Show TD.Data.InlineQueryResults.InlineQueryResults
 instance GHC.Classes.Eq TD.Data.InlineQueryResults.InlineQueryResults
@@ -13598,7 +13845,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -13646,6 +13893,10 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 -- | True, if the current user needs to explicitly allow to share their
 --   phone number with the user when the method addContact is used
 [need_phone_number_privacy_exception] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user set chat background for both chat users and it
+--   wasn't reverted yet
+[set_chat_background] :: UserFullInfo -> Maybe Bool
 
 -- | A short user bio; may be null for bots
 [bio] :: UserFullInfo -> Maybe FormattedText
@@ -14455,7 +14706,7 @@ MessagePinMessage :: Maybe Int -> MessageContent
 MessageScreenshotTaken :: MessageContent
 
 -- | A new background was set in the chat
-MessageChatSetBackground :: Maybe Int -> Maybe ChatBackground -> MessageContent
+MessageChatSetBackground :: Maybe Int -> Maybe ChatBackground -> Maybe Bool -> MessageContent
 
 -- | Identifier of the message with a previously set same background; 0 if
 --   none. Can be an identifier of a deleted message
@@ -14463,6 +14714,9 @@ MessageChatSetBackground :: Maybe Int -> Maybe ChatBackground -> MessageContent
 
 -- | The new background
 [background] :: MessageContent -> Maybe ChatBackground
+
+-- | True, if the background was set only for self
+[only_for_self] :: MessageContent -> Maybe Bool
 
 -- | A theme in the chat has been changed
 MessageChatSetTheme :: Maybe Text -> MessageContent
@@ -14664,6 +14918,20 @@ MessagePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Int -> Maybe 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
+-- | A Telegram Premium giveaway has been completed for the chat
+MessagePremiumGiveawayCompleted :: Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+
+-- | Identifier of the message with the giveaway, can be an identifier of a
+--   deleted message
+[giveaway_message_id] :: MessageContent -> Maybe Int
+
+-- | Number of users which will receive Telegram Premium subscription gift
+--   codes
+[winner_count] :: MessageContent -> Maybe Int
+
+-- | Number of undistributed prizes
+[unclaimed_prize_count] :: MessageContent -> Maybe Int
+
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
 
@@ -14745,7 +15013,7 @@ module TD.Data.SponsoredMessage
 data SponsoredMessage
 
 -- | Describes a sponsored message
-SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> SponsoredMessage
+SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> SponsoredMessage
 
 -- | Message identifier; unique for the chat to which the sponsored message
 --   belongs among both ordinary and sponsored messages
@@ -14760,6 +15028,9 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe MessageContent -> Maybe Mes
 
 -- | Information about the sponsor of the message
 [sponsor] :: SponsoredMessage -> Maybe MessageSponsor
+
+-- | If non-empty, text for the message action button
+[button_text] :: SponsoredMessage -> Maybe Text
 
 -- | If non-empty, additional information about the sponsored message to be
 --   shown along with the message
@@ -14794,7 +15065,7 @@ module TD.Data.MessageReplyTo
 data MessageReplyTo
 
 -- | Describes a message replied by a given message
-MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe MessageOrigin -> Maybe Int -> Maybe MessageContent -> MessageReplyTo
+MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe MessageOrigin -> Maybe Int -> Maybe MessageContent -> MessageReplyTo
 
 -- | The identifier of the chat to which the message belongs; may be 0 if
 --   the replied message is in unknown chat
@@ -14804,13 +15075,8 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe 
 --   unknown chat
 [message_id] :: MessageReplyTo -> Maybe Int
 
--- | Manually or automatically chosen quote from the replied message; may
---   be null if none. Only Bold, Italic, Underline, Strikethrough, Spoiler,
---   and CustomEmoji entities can be present in the quote
-[quote] :: MessageReplyTo -> Maybe FormattedText
-
--- | True, if the quote was manually chosen by the message sender
-[is_quote_manual] :: MessageReplyTo -> Maybe Bool
+-- | Chosen quote from the replied message; may be null if none
+[quote] :: MessageReplyTo -> Maybe TextQuote
 
 -- | Information about origin of the message if the message was from
 --   another chat or topic; may be null for messages from the same chat
@@ -14997,6 +15263,47 @@ instance GHC.Show.Show TD.Data.Message.Message
 instance GHC.Classes.Eq TD.Data.Message.Message
 instance TD.Lib.Internal.ShortShow TD.Data.Message.Message
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Message.Message
+
+module TD.Data.StoryPublicForward
+
+-- | Describes a public forward or repost of a story
+data StoryPublicForward
+
+-- | Contains a public forward of a story as a message
+StoryPublicForwardMessage :: Maybe Message -> StoryPublicForward
+
+-- | Information about the message with the story
+[message] :: StoryPublicForward -> Maybe Message
+
+-- | Contains a public repost of a story as a story
+StoryPublicForwardStory :: Maybe Story -> StoryPublicForward
+
+-- | Information about the reposted story
+[story] :: StoryPublicForward -> Maybe Story
+instance GHC.Show.Show TD.Data.StoryPublicForward.StoryPublicForward
+instance GHC.Classes.Eq TD.Data.StoryPublicForward.StoryPublicForward
+instance TD.Lib.Internal.ShortShow TD.Data.StoryPublicForward.StoryPublicForward
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryPublicForward.StoryPublicForward
+
+module TD.Data.StoryPublicForwards
+data StoryPublicForwards
+
+-- | Represents a list of public forwards and reposts of a story
+StoryPublicForwards :: Maybe Int -> Maybe [StoryPublicForward] -> Maybe Text -> StoryPublicForwards
+
+-- | Approximate total number of messages and stories found
+[total_count] :: StoryPublicForwards -> Maybe Int
+
+-- | List of found public forwards and reposts
+[forwards] :: StoryPublicForwards -> Maybe [StoryPublicForward]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StoryPublicForwards -> Maybe Text
+instance GHC.Show.Show TD.Data.StoryPublicForwards.StoryPublicForwards
+instance GHC.Classes.Eq TD.Data.StoryPublicForwards.StoryPublicForwards
+instance TD.Lib.Internal.ShortShow TD.Data.StoryPublicForwards.StoryPublicForwards
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryPublicForwards.StoryPublicForwards
 
 module TD.Data.NotificationType
 
@@ -15219,7 +15526,8 @@ FoundMessages :: Maybe Int -> Maybe [Message] -> Maybe Text -> FoundMessages
 -- | List of messages
 [messages] :: FoundMessages -> Maybe [Message]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: FoundMessages -> Maybe Text
 instance GHC.Show.Show TD.Data.FoundMessages.FoundMessages
 instance GHC.Classes.Eq TD.Data.FoundMessages.FoundMessages
@@ -15349,7 +15657,8 @@ FoundFileDownloads :: Maybe DownloadedFileCounts -> Maybe [FileDownload] -> Mayb
 -- | The list of files
 [files] :: FoundFileDownloads -> Maybe [FileDownload]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: FoundFileDownloads -> Maybe Text
 instance GHC.Show.Show TD.Data.FoundFileDownloads.FoundFileDownloads
 instance GHC.Classes.Eq TD.Data.FoundFileDownloads.FoundFileDownloads
@@ -15503,7 +15812,7 @@ ChatEventMessageAutoDeleteTimeChanged :: Maybe Int -> Maybe Int -> ChatEventActi
 -- | New value of message_auto_delete_time
 [new_message_auto_delete_time] :: ChatEventAction -> Maybe Int
 
--- | The chat permissions was changed
+-- | The chat permissions were changed
 ChatEventPermissionsChanged :: Maybe ChatPermissions -> Maybe ChatPermissions -> ChatEventAction
 
 -- | Previous chat permissions
@@ -15766,7 +16075,7 @@ data Chat
 
 -- | A chat. (Can be a private chat, basic group, supergroup, or secret
 --   chat)
-Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
+Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
 
 -- | Chat unique identifier
 [_id] :: Chat -> Maybe Int
@@ -15814,6 +16123,10 @@ Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Mayb
 
 -- | True, if the chat is marked as unread
 [is_marked_as_unread] :: Chat -> Maybe Bool
+
+-- | True, if the chat is a forum supergroup that must be shown in the
+--   "View as topics" mode
+[view_as_topics] :: Chat -> Maybe Bool
 
 -- | True, if the chat has scheduled messages
 [has_scheduled_messages] :: Chat -> Maybe Bool
@@ -16025,7 +16338,8 @@ AddedReactions :: Maybe Int -> Maybe [AddedReaction] -> Maybe Text -> AddedReact
 -- | The list of added reactions
 [reactions] :: AddedReactions -> Maybe [AddedReaction]
 
--- | The offset for the next request. If empty, there are no more results
+-- | The offset for the next request. If empty, then there are no more
+--   results
 [next_offset] :: AddedReactions -> Maybe Text
 instance GHC.Show.Show TD.Data.AddedReactions.AddedReactions
 instance GHC.Classes.Eq TD.Data.AddedReactions.AddedReactions
@@ -16272,7 +16586,7 @@ UpdateChatBackgroundCustomEmoji :: Maybe Int -> Maybe Int -> Update
 --   background; 0 if none
 [background_custom_emoji_id] :: Update -> Maybe Int
 
--- | Chat permissions was changed
+-- | Chat permissions were changed
 UpdateChatPermissions :: Maybe Int -> Maybe ChatPermissions -> Update
 
 -- | The chat identifier of the sent message
@@ -16495,6 +16809,15 @@ UpdateChatIsMarkedAsUnread :: Maybe Int -> Maybe Bool -> Update
 
 -- | New value of is_marked_as_unread
 [is_marked_as_unread] :: Update -> Maybe Bool
+
+-- | A chat default appearance has changed
+UpdateChatViewAsTopics :: Maybe Int -> Maybe Bool -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | New value of view_as_topics
+[view_as_topics] :: Update -> Maybe Bool
 
 -- | A chat was blocked or unblocked
 UpdateChatBlockList :: Maybe Int -> Maybe BlockList -> Update
@@ -17004,9 +17327,9 @@ UpdateSavedAnimations :: Maybe [Int] -> Update
 -- | The new list of file identifiers of saved animations
 [animation_ids] :: Update -> Maybe [Int]
 
--- | The list of saved notifications sounds was updated. This update may
---   not be sent until information about a notification sound was requested
---   for the first time
+-- | The list of saved notification sounds was updated. This update may not
+--   be sent until information about a notification sound was requested for
+--   the first time
 UpdateSavedNotificationSounds :: Maybe [Int] -> Update
 
 -- | The new list of identifiers of saved notification sounds
@@ -17036,6 +17359,17 @@ UpdateAccentColors :: Maybe [AccentColor] -> Maybe [Int] -> Update
 --   colors for the accent colors with identifiers 0-6 must be taken from
 --   the app theme
 [colors] :: Update -> Maybe [AccentColor]
+
+-- | The list of accent color identifiers, which can be set through
+--   setAccentColor and setChatAccentColor. The colors must be shown in the
+--   specififed order
+[available_accent_color_ids] :: Update -> Maybe [Int]
+
+-- | The list of supported accent colors for user profiles has changed
+UpdateProfileAccentColors :: Maybe [ProfileAccentColor] -> Maybe [Int] -> Update
+
+-- | Information about supported colors
+[_colors] :: Update -> Maybe [ProfileAccentColor]
 
 -- | The list of accent color identifiers, which can be set through
 --   setAccentColor and setChatAccentColor. The colors must be shown in the
@@ -17111,6 +17445,24 @@ UpdateDefaultReactionType :: Maybe ReactionType -> Update
 
 -- | The new type of the default reaction
 [reaction_type] :: Update -> Maybe ReactionType
+
+-- | The parameters of speech recognition without Telegram Premium
+--   subscription has changed
+UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
+
+-- | The maximum allowed duration of media for speech recognition without
+--   Telegram Premium subscription
+[max_media_duration] :: Update -> Maybe Int
+
+-- | The total number of allowed speech recognitions per week; 0 if none
+[weekly_count] :: Update -> Maybe Int
+
+-- | Number of left speech recognition attempts this week
+[left_count] :: Update -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the weekly number of tries will
+--   reset; 0 if unknown
+[next_reset_date] :: Update -> Maybe Int
 
 -- | The list of supported dice emojis has changed
 UpdateDiceEmojis :: Maybe [Text] -> Update
@@ -17342,7 +17694,7 @@ UpdateChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatInviteLink 
 -- | Identifier of the user, changing the rights
 [actor_user_id] :: Update -> Maybe Int
 
--- | Point in time (Unix timestamp) when the user rights was changed
+-- | Point in time (Unix timestamp) when the user rights were changed
 [date] :: Update -> Maybe Int
 
 -- | If user has joined the chat using an invite link, the invite link; may
@@ -17555,6 +17907,8 @@ StorageStatistics :: StorageStatistics -> GeneralResult
 StorageStatisticsFast :: StorageStatisticsFast -> GeneralResult
 Stories :: Stories -> GeneralResult
 Story :: Story -> GeneralResult
+StoryPublicForwards :: StoryPublicForwards -> GeneralResult
+StoryStatistics :: StoryStatistics -> GeneralResult
 StoryViewers :: StoryViewers -> GeneralResult
 Supergroup :: Supergroup -> GeneralResult
 SupergroupFullInfo :: SupergroupFullInfo -> GeneralResult
@@ -19414,6 +19768,27 @@ instance GHC.Show.Show TD.Query.DeleteChat.DeleteChat
 instance GHC.Classes.Eq TD.Query.DeleteChat.DeleteChat
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteChat.DeleteChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteChat.DeleteChat
+
+module TD.Query.DeleteChatBackground
+
+-- | Deletes background in a specific chat. Returns <a>Ok</a>
+data DeleteChatBackground
+DeleteChatBackground :: Maybe Int -> Maybe Bool -> DeleteChatBackground
+
+-- | Chat identifier
+[chat_id] :: DeleteChatBackground -> Maybe Int
+
+-- | Pass true to restore previously set background. Can be used only in
+--   private and secret chats with non-deleted users if
+--   userFullInfo.set_chat_background == true. Supposed to be used from
+--   messageChatSetBackground messages with the currently set background
+--   that was set for both sides by the other user
+[restore_previous] :: DeleteChatBackground -> Maybe Bool
+defaultDeleteChatBackground :: DeleteChatBackground
+instance GHC.Show.Show TD.Query.DeleteChatBackground.DeleteChatBackground
+instance GHC.Classes.Eq TD.Query.DeleteChatBackground.DeleteChatBackground
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteChatBackground.DeleteChatBackground
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteChatBackground.DeleteChatBackground
 
 module TD.Query.DeleteChatFolder
 
@@ -21484,6 +21859,39 @@ instance GHC.Show.Show TD.Query.GetChatScheduledMessages.GetChatScheduledMessage
 instance GHC.Classes.Eq TD.Query.GetChatScheduledMessages.GetChatScheduledMessages
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatScheduledMessages.GetChatScheduledMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatScheduledMessages.GetChatScheduledMessages
+
+module TD.Query.GetChatSimilarChatCount
+
+-- | Returns approximate number of chats similar to the given chat. Returns
+--   <a>Count</a>
+data GetChatSimilarChatCount
+GetChatSimilarChatCount :: Maybe Int -> Maybe Bool -> GetChatSimilarChatCount
+
+-- | Identifier of the target chat; must be an identifier of a channel chat
+[chat_id] :: GetChatSimilarChatCount -> Maybe Int
+
+-- | Pass true to get the number of chats without sending network requests,
+--   or -1 if the number of chats is unknown locally
+[return_local] :: GetChatSimilarChatCount -> Maybe Bool
+defaultGetChatSimilarChatCount :: GetChatSimilarChatCount
+instance GHC.Show.Show TD.Query.GetChatSimilarChatCount.GetChatSimilarChatCount
+instance GHC.Classes.Eq TD.Query.GetChatSimilarChatCount.GetChatSimilarChatCount
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatSimilarChatCount.GetChatSimilarChatCount
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatSimilarChatCount.GetChatSimilarChatCount
+
+module TD.Query.GetChatSimilarChats
+
+-- | Returns a list of chats similar to the given chat. Returns
+--   <a>Chats</a>
+data GetChatSimilarChats
+GetChatSimilarChats :: Maybe Int -> GetChatSimilarChats
+
+-- | Identifier of the target chat; must be an identifier of a channel chat
+[chat_id] :: GetChatSimilarChats -> Maybe Int
+instance GHC.Show.Show TD.Query.GetChatSimilarChats.GetChatSimilarChats
+instance GHC.Classes.Eq TD.Query.GetChatSimilarChats.GetChatSimilarChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatSimilarChats.GetChatSimilarChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatSimilarChats.GetChatSimilarChats
 
 module TD.Query.GetChatSparseMessagePositions
 
@@ -23623,6 +24031,58 @@ instance GHC.Classes.Eq TD.Query.GetStoryNotificationSettingsExceptions.GetStory
 instance TD.Lib.Internal.ShortShow TD.Query.GetStoryNotificationSettingsExceptions.GetStoryNotificationSettingsExceptions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStoryNotificationSettingsExceptions.GetStoryNotificationSettingsExceptions
 
+module TD.Query.GetStoryPublicForwards
+
+-- | Returns forwards of a story as a message to public chats and reposts
+--   by public channels. Can be used only if the story is posted on behalf
+--   of the current user or story.can_get_statistics == true. For optimal
+--   performance, the number of returned messages and stories is chosen by
+--   TDLib. Returns <a>StoryPublicForwards</a>
+data GetStoryPublicForwards
+GetStoryPublicForwards :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> GetStoryPublicForwards
+
+-- | The identifier of the sender of the story
+[story_sender_chat_id] :: GetStoryPublicForwards -> Maybe Int
+
+-- | The identifier of the story
+[story_id] :: GetStoryPublicForwards -> Maybe Int
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetStoryPublicForwards -> Maybe Text
+
+-- | The maximum number of messages and stories to be returned; must be
+--   positive and can't be greater than 100. For optimal performance, the
+--   number of returned objects is chosen by TDLib and can be smaller than
+--   the specified limit
+[limit] :: GetStoryPublicForwards -> Maybe Int
+defaultGetStoryPublicForwards :: GetStoryPublicForwards
+instance GHC.Show.Show TD.Query.GetStoryPublicForwards.GetStoryPublicForwards
+instance GHC.Classes.Eq TD.Query.GetStoryPublicForwards.GetStoryPublicForwards
+instance TD.Lib.Internal.ShortShow TD.Query.GetStoryPublicForwards.GetStoryPublicForwards
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStoryPublicForwards.GetStoryPublicForwards
+
+module TD.Query.GetStoryStatistics
+
+-- | Returns detailed statistics about a story. Can be used only if
+--   story.can_get_statistics == true. Returns <a>StoryStatistics</a>
+data GetStoryStatistics
+GetStoryStatistics :: Maybe Int -> Maybe Int -> Maybe Bool -> GetStoryStatistics
+
+-- | Chat identifier
+[chat_id] :: GetStoryStatistics -> Maybe Int
+
+-- | Story identifier
+[story_id] :: GetStoryStatistics -> Maybe Int
+
+-- | Pass true if a dark theme is used by the application
+[is_dark] :: GetStoryStatistics -> Maybe Bool
+defaultGetStoryStatistics :: GetStoryStatistics
+instance GHC.Show.Show TD.Query.GetStoryStatistics.GetStoryStatistics
+instance GHC.Classes.Eq TD.Query.GetStoryStatistics.GetStoryStatistics
+instance TD.Lib.Internal.ShortShow TD.Query.GetStoryStatistics.GetStoryStatistics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStoryStatistics.GetStoryStatistics
+
 module TD.Query.GetStoryViewers
 
 -- | Returns viewers of a story. The method can be called only for stories
@@ -24834,7 +25294,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadFilePart.ReadFilePart
 module TD.Query.RecognizeSpeech
 
 -- | Recognizes speech in a video note or a voice note message. The message
---   must be successfully sent and must not be scheduled. Returns <a>Ok</a>
+--   must be successfully sent, must not be scheduled, and must be from a
+--   non-secret chat. Returns <a>Ok</a>
 data RecognizeSpeech
 RecognizeSpeech :: Maybe Int -> Maybe Int -> RecognizeSpeech
 
@@ -25563,7 +26024,7 @@ module TD.Query.ResendMessages
 --   identifiers passed in message_ids. If a message can't be re-sent, null
 --   will be returned instead of the message. Returns <a>Messages</a>
 data ResendMessages
-ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe FormattedText -> ResendMessages
+ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe InputTextQuote -> ResendMessages
 
 -- | Identifier of the chat to send messages
 [chat_id] :: ResendMessages -> Maybe Int
@@ -25575,7 +26036,7 @@ ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe FormattedText -> ResendMessa
 -- | New manually chosen quote from the message to be replied; pass null if
 --   none. Ignored if more than one message is re-sent, or if
 --   messageSendingStateFailed.need_another_reply_quote == false
-[quote] :: ResendMessages -> Maybe FormattedText
+[quote] :: ResendMessages -> Maybe InputTextQuote
 defaultResendMessages :: ResendMessages
 instance GHC.Show.Show TD.Query.ResendMessages.ResendMessages
 instance GHC.Classes.Eq TD.Query.ResendMessages.ResendMessages
@@ -26217,14 +26678,18 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchStickerSet.SearchStickerS
 
 module TD.Query.SearchStickerSets
 
--- | Searches for ordinary sticker sets by looking for specified query in
---   their title and name. Excludes installed sticker sets from the
---   results. Returns <a>StickerSets</a>
+-- | Searches for sticker sets by looking for specified query in their
+--   title and name. Excludes installed sticker sets from the results.
+--   Returns <a>StickerSets</a>
 data SearchStickerSets
-SearchStickerSets :: Maybe Text -> SearchStickerSets
+SearchStickerSets :: Maybe StickerType -> Maybe Text -> SearchStickerSets
+
+-- | Type of the sticker sets to return
+[sticker_type] :: SearchStickerSets -> Maybe StickerType
 
 -- | Query to search for
 [query] :: SearchStickerSets -> Maybe Text
+defaultSearchStickerSets :: SearchStickerSets
 instance GHC.Show.Show TD.Query.SearchStickerSets.SearchStickerSets
 instance GHC.Classes.Eq TD.Query.SearchStickerSets.SearchStickerSets
 instance TD.Lib.Internal.ShortShow TD.Query.SearchStickerSets.SearchStickerSets
@@ -26698,7 +27163,7 @@ module TD.Query.SendStory
 -- | Sends a new story to a chat; requires can_post_stories rights for
 --   channel chats. Returns a temporary story. Returns <a>Story</a>
 data SendStory
-SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe Bool -> Maybe Bool -> SendStory
+SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> SendStory
 
 -- | Identifier of the chat that will post the story
 [chat_id] :: SendStory -> Maybe Int
@@ -26721,6 +27186,10 @@ SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 --   one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium
 --   users, and 86400 otherwise
 [active_period] :: SendStory -> Maybe Int
+
+-- | Full identifier of the original story, which content was used to
+--   create the story
+[from_story_full_id] :: SendStory -> Maybe StoryFullId
 
 -- | Pass true to keep the story accessible after expiration
 [is_pinned] :: SendStory -> Maybe Bool
@@ -27107,7 +27576,9 @@ SetChatAvailableReactions :: Maybe Int -> Maybe ChatAvailableReactions -> SetCha
 -- | Identifier of the chat
 [chat_id] :: SetChatAvailableReactions -> Maybe Int
 
--- | Reactions available in the chat. All emoji reactions must be active
+-- | Reactions available in the chat. All explicitly specified emoji
+--   reactions must be active. Up to the chat's boost level custom emoji
+--   reactions can be explicitly specified
 [available_reactions] :: SetChatAvailableReactions -> Maybe ChatAvailableReactions
 defaultSetChatAvailableReactions :: SetChatAvailableReactions
 instance GHC.Show.Show TD.Query.SetChatAvailableReactions.SetChatAvailableReactions
@@ -27117,23 +27588,30 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatAvailableReactions.SetCh
 
 module TD.Query.SetChatBackground
 
--- | Changes the background in a specific chat. Supported only in private
---   and secret chats with non-deleted users. Returns <a>Ok</a>
+-- | Sets the background in a specific chat. Supported only in private and
+--   secret chats with non-deleted users. Returns <a>Ok</a>
 data SetChatBackground
-SetChatBackground :: Maybe Int -> Maybe InputBackground -> Maybe BackgroundType -> Maybe Int -> SetChatBackground
+SetChatBackground :: Maybe Int -> Maybe InputBackground -> Maybe BackgroundType -> Maybe Int -> Maybe Bool -> SetChatBackground
 
 -- | Chat identifier
 [chat_id] :: SetChatBackground -> Maybe Int
 
 -- | The input background to use; pass null to create a new filled
---   background or to remove the current background
+--   background
 [background] :: SetChatBackground -> Maybe InputBackground
 
--- | Background type; pass null to remove the current background
+-- | Background type; pass null to use default background type for the
+--   chosen background
 [_type] :: SetChatBackground -> Maybe BackgroundType
 
 -- | Dimming of the background in dark themes, as a percentage; 0-100
 [dark_theme_dimming] :: SetChatBackground -> Maybe Int
+
+-- | Pass true to set background only for self; pass false to set
+--   background for both chat users. Background can be set for both users
+--   only by Telegram Premium users and if set background isn't of the type
+--   inputBackgroundPrevious
+[only_for_self] :: SetChatBackground -> Maybe Bool
 defaultSetChatBackground :: SetChatBackground
 instance GHC.Show.Show TD.Query.SetChatBackground.SetChatBackground
 instance GHC.Classes.Eq TD.Query.SetChatBackground.SetChatBackground
@@ -28090,6 +28568,25 @@ instance GHC.Show.Show TD.Query.SetPollAnswer.SetPollAnswer
 instance GHC.Classes.Eq TD.Query.SetPollAnswer.SetPollAnswer
 instance TD.Lib.Internal.ShortShow TD.Query.SetPollAnswer.SetPollAnswer
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPollAnswer.SetPollAnswer
+
+module TD.Query.SetProfileAccentColor
+
+-- | Changes accent color and background custom emoji for profile of the
+--   current user; for Telegram Premium users only. Returns <a>Ok</a>
+data SetProfileAccentColor
+SetProfileAccentColor :: Maybe Int -> Maybe Int -> SetProfileAccentColor
+
+-- | Identifier of the accent color to use for profile; pass -1 if none
+[profile_accent_color_id] :: SetProfileAccentColor -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown in the on the user's profile
+--   photo background; 0 if none
+[profile_background_custom_emoji_id] :: SetProfileAccentColor -> Maybe Int
+defaultSetProfileAccentColor :: SetProfileAccentColor
+instance GHC.Show.Show TD.Query.SetProfileAccentColor.SetProfileAccentColor
+instance GHC.Classes.Eq TD.Query.SetProfileAccentColor.SetProfileAccentColor
+instance TD.Lib.Internal.ShortShow TD.Query.SetProfileAccentColor.SetProfileAccentColor
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetProfileAccentColor.SetProfileAccentColor
 
 module TD.Query.SetProfilePhoto
 
@@ -29074,6 +29571,23 @@ instance GHC.Show.Show TD.Query.ToggleChatIsTranslatable.ToggleChatIsTranslatabl
 instance GHC.Classes.Eq TD.Query.ToggleChatIsTranslatable.ToggleChatIsTranslatable
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatIsTranslatable.ToggleChatIsTranslatable
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatIsTranslatable.ToggleChatIsTranslatable
+
+module TD.Query.ToggleChatViewAsTopics
+
+-- | Changes the view_as_topics setting of a forum chat. Returns <a>Ok</a>
+data ToggleChatViewAsTopics
+ToggleChatViewAsTopics :: Maybe Int -> Maybe Bool -> ToggleChatViewAsTopics
+
+-- | Chat identifier
+[chat_id] :: ToggleChatViewAsTopics -> Maybe Int
+
+-- | New value of view_as_topics
+[view_as_topics] :: ToggleChatViewAsTopics -> Maybe Bool
+defaultToggleChatViewAsTopics :: ToggleChatViewAsTopics
+instance GHC.Show.Show TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
+instance GHC.Classes.Eq TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 
 module TD.Query.ToggleDownloadIsPaused
 
