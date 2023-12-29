@@ -8,7 +8,7 @@
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
 </span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
 </span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Returns forwarded copies of a channel message to different public channels. Can be used only if message.can_get_statistics == true. For optimal performance, the number of returned messages is chosen by TDLib. Returns 'TD.Data.FoundMessages.FoundMessages'</span></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Returns forwarded copies of a channel message to different public channels and public reposts as a story. Can be used only if message.can_get_statistics == true. For optimal performance, the number of returned messages and stories is chosen by TDLib. Returns 'TD.Data.PublicForwards.PublicForwards'</span></span><span>
 </span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="GetMessagePublicForwards"><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-var">GetMessagePublicForwards</span></a></span></span><span>
 </span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetMessagePublicForwards"><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-var">GetMessagePublicForwards</span></a></span></span><span>
 </span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">GetMessagePublicForwards -&gt; Maybe Int
@@ -18,9 +18,9 @@
 </span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="offset"><span class="annot"><span class="annottext">GetMessagePublicForwards -&gt; Maybe Text
 </span><a href="TD.Query.GetMessagePublicForwards.html#offset"><span class="hs-identifier hs-var hs-var">offset</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results</span></span><span>
 </span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="limit"><span class="annot"><span class="annottext">GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var hs-var">limit</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ The maximum number of messages to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit</span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var hs-var">limit</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ The maximum number of messages and stories to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit</span></span><span>
 </span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679672107"><span id="local-6989586621679672116"><span class="annot"><span class="annottext">GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679681605"><span id="local-6989586621679681614"><span class="annot"><span class="annottext">GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
 (GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool)
 -&gt; (GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool)
 -&gt; Eq GetMessagePublicForwards
@@ -29,7 +29,7 @@ $c== :: GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
 == :: GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
 $c/= :: GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
 /= :: GetMessagePublicForwards -&gt; GetMessagePublicForwards -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679672123"><span id="local-6989586621679672134"><span id="local-6989586621679672138"><span class="annot"><span class="annottext">Int -&gt; GetMessagePublicForwards -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679681621"><span id="local-6989586621679681632"><span id="local-6989586621679681636"><span class="annot"><span class="annottext">Int -&gt; GetMessagePublicForwards -&gt; ShowS
 [GetMessagePublicForwards] -&gt; ShowS
 GetMessagePublicForwards -&gt; String
 (Int -&gt; GetMessagePublicForwards -&gt; ShowS)
@@ -47,21 +47,21 @@ showList :: [GetMessagePublicForwards] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-20"></span><span>
 </span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-22"></span><span>  </span><span id="local-6989586621679672155"><span class="annot"><span class="annottext">shortShow :: GetMessagePublicForwards -&gt; String
-</span><a href="#local-6989586621679672155"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679681653"><span class="annot"><span class="annottext">shortShow :: GetMessagePublicForwards -&gt; String
+</span><a href="#local-6989586621679681653"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
 </span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span><span>
 </span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672157"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672157"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681655"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681655"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672158"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672158"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681656"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681656"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
 </span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetMessagePublicForwards -&gt; Maybe Text
-</span><a href="TD.Query.GetMessagePublicForwards.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672159"><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679672159"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681657"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679681657"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
 </span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672160"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672160"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681658"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681658"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
 </span><span id="line-28"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-29"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;GetMessagePublicForwards&quot;</span></span><span>
@@ -73,40 +73,40 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-string">&quot;chat_id&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672157"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679681655"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672158"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><a href="#local-6989586621679681656"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
 </span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;offset&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679672159"><span class="hs-identifier hs-var">offset_</span></a></span><span>
+</span><a href="#local-6989586621679681657"><span class="hs-identifier hs-var">offset_</span></a></span><span>
 </span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;limit&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672160"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><a href="#local-6989586621679681658"><span class="hs-identifier hs-var">limit_</span></a></span><span>
 </span><span id="line-35"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-36"></span><span>
-</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679672165"><span id="local-6989586621679672169"><span id="local-6989586621679672172"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-38"></span><span>  </span><span id="local-6989586621679672202"><span class="annot"><span class="annottext">toJSON :: GetMessagePublicForwards -&gt; Value
-</span><a href="#local-6989586621679672202"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679681663"><span id="local-6989586621679681667"><span id="local-6989586621679681670"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-38"></span><span>  </span><span id="local-6989586621679681700"><span class="annot"><span class="annottext">toJSON :: GetMessagePublicForwards -&gt; Value
+</span><a href="#local-6989586621679681700"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
 </span><span id="line-39"></span><span>    </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span><span>
 </span><span id="line-40"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672204"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672204"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681702"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681702"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672205"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672205"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681703"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681703"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
 </span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetMessagePublicForwards -&gt; Maybe Text
-</span><a href="TD.Query.GetMessagePublicForwards.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672206"><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679672206"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681704"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679681704"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
 </span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetMessagePublicForwards -&gt; Maybe Int
-</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679672207"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672207"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><a href="TD.Query.GetMessagePublicForwards.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679681705"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679681705"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
 </span><span id="line-44"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-45"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
@@ -122,25 +122,25 @@ forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672204"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679681702"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672205"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><a href="#local-6989586621679681703"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
 </span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;offset&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679672206"><span class="hs-identifier hs-var">offset_</span></a></span><span>
+</span><a href="#local-6989586621679681704"><span class="hs-identifier hs-var">offset_</span></a></span><span>
 </span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;limit&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679672207"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><a href="#local-6989586621679681705"><span class="hs-identifier hs-var">limit_</span></a></span><span>
 </span><span id="line-51"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-52"></span><span>
 </span><span id="line-53"></span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#defaultGetMessagePublicForwards"><span class="hs-identifier hs-type">defaultGetMessagePublicForwards</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetMessagePublicForwards.html#GetMessagePublicForwards"><span class="hs-identifier hs-type">GetMessagePublicForwards</span></a></span><span>

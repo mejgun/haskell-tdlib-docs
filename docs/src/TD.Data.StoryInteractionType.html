@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.StoryInteractionType</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier">StoryInteractionType</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ReactionType.html"><span class="hs-identifier">TD.Data.ReactionType</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ReactionType</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Message.html"><span class="hs-identifier">TD.Data.Message</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Message</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Story.html"><span class="hs-identifier">TD.Data.Story</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Story</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Describes type of interaction with a story</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="StoryInteractionType"><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-var">StoryInteractionType</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="StoryInteractionTypeView"><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeView"><span class="hs-identifier hs-var">StoryInteractionTypeView</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A view of the story</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chosen_reaction_type"><span class="annot"><span class="annottext">StoryInteractionType -&gt; Maybe ReactionType
+</span><a href="TD.Data.StoryInteractionType.html#chosen_reaction_type"><span class="hs-identifier hs-var hs-var">chosen_reaction_type</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ReactionType.html#ReactionType"><span class="hs-identifier hs-type">ReactionType.ReactionType</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Type of the reaction that was chosen by the viewer; may be null if none</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="StoryInteractionTypeForward"><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeForward"><span class="hs-identifier hs-var">StoryInteractionTypeForward</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A forward of the story as a message</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="message"><span class="annot"><span class="annottext">StoryInteractionType -&gt; Maybe Message
+</span><a href="TD.Data.StoryInteractionType.html#message"><span class="hs-identifier hs-var hs-var">message</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Message.html#Message"><span class="hs-identifier hs-type">Message.Message</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The message with story forward</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="StoryInteractionTypeRepost"><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeRepost"><span class="hs-identifier hs-var">StoryInteractionTypeRepost</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A repost of the story as a story</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="story"><span class="annot"><span class="annottext">StoryInteractionType -&gt; Maybe Story
+</span><a href="TD.Data.StoryInteractionType.html#story"><span class="hs-identifier hs-var hs-var">story</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Story.html#Story"><span class="hs-identifier hs-type">Story.Story</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The reposted story</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679634938"><span id="local-6989586621679634947"><span class="annot"><span class="annottext">StoryInteractionType -&gt; StoryInteractionType -&gt; Bool
+(StoryInteractionType -&gt; StoryInteractionType -&gt; Bool)
+-&gt; (StoryInteractionType -&gt; StoryInteractionType -&gt; Bool)
+-&gt; Eq StoryInteractionType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: StoryInteractionType -&gt; StoryInteractionType -&gt; Bool
+== :: StoryInteractionType -&gt; StoryInteractionType -&gt; Bool
+$c/= :: StoryInteractionType -&gt; StoryInteractionType -&gt; Bool
+/= :: StoryInteractionType -&gt; StoryInteractionType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679634955"><span id="local-6989586621679634968"><span id="local-6989586621679634972"><span class="annot"><span class="annottext">Int -&gt; StoryInteractionType -&gt; ShowS
+[StoryInteractionType] -&gt; ShowS
+StoryInteractionType -&gt; String
+(Int -&gt; StoryInteractionType -&gt; ShowS)
+-&gt; (StoryInteractionType -&gt; String)
+-&gt; ([StoryInteractionType] -&gt; ShowS)
+-&gt; Show StoryInteractionType
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; StoryInteractionType -&gt; ShowS
+showsPrec :: Int -&gt; StoryInteractionType -&gt; ShowS
+$cshow :: StoryInteractionType -&gt; String
+show :: StoryInteractionType -&gt; String
+$cshowList :: [StoryInteractionType] -&gt; ShowS
+showList :: [StoryInteractionType] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-type">StoryInteractionType</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>  </span><span id="local-6989586621679634992"><span class="annot"><span class="annottext">shortShow :: StoryInteractionType -&gt; String
+</span><a href="#local-6989586621679634992"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeView"><span class="hs-identifier hs-type">StoryInteractionTypeView</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chosen_reaction_type :: StoryInteractionType -&gt; Maybe ReactionType
+</span><a href="TD.Data.StoryInteractionType.html#chosen_reaction_type"><span class="hs-identifier hs-var">chosen_reaction_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679634994"><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679634994"><span class="hs-identifier hs-var">chosen_reaction_type_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeView&quot;</span></span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chosen_reaction_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe ReactionType -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679634994"><span class="hs-identifier hs-var">chosen_reaction_type_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-32"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeForward"><span class="hs-identifier hs-type">StoryInteractionTypeForward</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">message :: StoryInteractionType -&gt; Maybe Message
+</span><a href="TD.Data.StoryInteractionType.html#message"><span class="hs-identifier hs-var">message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679634997"><span class="annot"><span class="annottext">Maybe Message
+</span><a href="#local-6989586621679634997"><span class="hs-identifier hs-var">message_</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeForward&quot;</span></span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Message -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Message
+</span><a href="#local-6989586621679634997"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-39"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeRepost"><span class="hs-identifier hs-type">StoryInteractionTypeRepost</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">story :: StoryInteractionType -&gt; Maybe Story
+</span><a href="TD.Data.StoryInteractionType.html#story"><span class="hs-identifier hs-var">story</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679634998"><span class="annot"><span class="annottext">Maybe Story
+</span><a href="#local-6989586621679634998"><span class="hs-identifier hs-var">story_</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeRepost&quot;</span></span><span>
+</span><span id="line-43"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;story&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Story -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Story
+</span><a href="#local-6989586621679634998"><span class="hs-identifier hs-var">story_</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679635001"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-type">StoryInteractionType</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-48"></span><span>  </span><span id="local-6989586621679635042"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635042"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679635044"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679635044"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679635046"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635046"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-49"></span><span>    </span><span id="local-6989586621679635047"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679635047"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635046"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679635047"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;storyInteractionTypeView&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635049"><span class="hs-identifier hs-var">parseStoryInteractionTypeView</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679635044"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;storyInteractionTypeForward&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635050"><span class="hs-identifier hs-var">parseStoryInteractionTypeForward</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679635044"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;storyInteractionTypeRepost&quot;</span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635051"><span class="hs-identifier hs-var">parseStoryInteractionTypeRepost</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679635044"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-55"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser StoryInteractionType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-56"></span><span>    </span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-58"></span><span>      </span><span class="annot"><a href="#local-6989586621679635049"><span class="hs-identifier hs-type">parseStoryInteractionTypeView</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-type">StoryInteractionType</span></a></span><span>
+</span><span id="line-59"></span><span>      </span><span id="local-6989586621679635049"><span class="annot"><span class="annottext">parseStoryInteractionTypeView :: Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635049"><span class="hs-identifier hs-var hs-var">parseStoryInteractionTypeView</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeView&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser StoryInteractionType)
+ -&gt; Value -&gt; Parser StoryInteractionType)
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679635053"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635053"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679635054"><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679635054"><span class="hs-identifier hs-var">chosen_reaction_type_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635053"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe ReactionType)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chosen_reaction_type&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">StoryInteractionType -&gt; Parser StoryInteractionType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(StoryInteractionType -&gt; Parser StoryInteractionType)
+-&gt; StoryInteractionType -&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeView"><span class="hs-identifier hs-type">StoryInteractionTypeView</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chosen_reaction_type :: Maybe ReactionType
+</span><a href="TD.Data.StoryInteractionType.html#chosen_reaction_type"><span class="hs-identifier hs-var">chosen_reaction_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ReactionType
+</span><a href="#local-6989586621679635054"><span class="hs-identifier hs-var">chosen_reaction_type_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-64"></span><span>      </span><span class="annot"><a href="#local-6989586621679635050"><span class="hs-identifier hs-type">parseStoryInteractionTypeForward</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-type">StoryInteractionType</span></a></span><span>
+</span><span id="line-65"></span><span>      </span><span id="local-6989586621679635050"><span class="annot"><span class="annottext">parseStoryInteractionTypeForward :: Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635050"><span class="hs-identifier hs-var hs-var">parseStoryInteractionTypeForward</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeForward&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser StoryInteractionType)
+ -&gt; Value -&gt; Parser StoryInteractionType)
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679635056"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635056"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-66"></span><span>        </span><span id="local-6989586621679635057"><span class="annot"><span class="annottext">Maybe Message
+</span><a href="#local-6989586621679635057"><span class="hs-identifier hs-var">message_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635056"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Message)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message&quot;</span></span><span>
+</span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">StoryInteractionType -&gt; Parser StoryInteractionType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(StoryInteractionType -&gt; Parser StoryInteractionType)
+-&gt; StoryInteractionType -&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeForward"><span class="hs-identifier hs-type">StoryInteractionTypeForward</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">message :: Maybe Message
+</span><a href="TD.Data.StoryInteractionType.html#message"><span class="hs-identifier hs-var">message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Message
+</span><a href="#local-6989586621679635057"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-70"></span><span>      </span><span class="annot"><a href="#local-6989586621679635051"><span class="hs-identifier hs-type">parseStoryInteractionTypeRepost</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionType"><span class="hs-identifier hs-type">StoryInteractionType</span></a></span><span>
+</span><span id="line-71"></span><span>      </span><span id="local-6989586621679635051"><span class="annot"><span class="annottext">parseStoryInteractionTypeRepost :: Value -&gt; Parser StoryInteractionType
+</span><a href="#local-6989586621679635051"><span class="hs-identifier hs-var hs-var">parseStoryInteractionTypeRepost</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StoryInteractionTypeRepost&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser StoryInteractionType)
+ -&gt; Value -&gt; Parser StoryInteractionType)
+-&gt; (Object -&gt; Parser StoryInteractionType)
+-&gt; Value
+-&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679635058"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635058"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-72"></span><span>        </span><span id="local-6989586621679635059"><span class="annot"><span class="annottext">Maybe Story
+</span><a href="#local-6989586621679635059"><span class="hs-identifier hs-var">story_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679635058"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Story)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;story&quot;</span></span><span>
+</span><span id="line-73"></span><span>        </span><span class="annot"><span class="annottext">StoryInteractionType -&gt; Parser StoryInteractionType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(StoryInteractionType -&gt; Parser StoryInteractionType)
+-&gt; StoryInteractionType -&gt; Parser StoryInteractionType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.StoryInteractionType.html#StoryInteractionTypeRepost"><span class="hs-identifier hs-type">StoryInteractionTypeRepost</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">story :: Maybe Story
+</span><a href="TD.Data.StoryInteractionType.html#story"><span class="hs-identifier hs-var">story</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Story
+</span><a href="#local-6989586621679635059"><span class="hs-identifier hs-var">story_</span></a></span><span>
+</span><span id="line-75"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-76"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser StoryInteractionType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-77"></span><span>
+</span><span id="line-78"></span></pre></body></html>
