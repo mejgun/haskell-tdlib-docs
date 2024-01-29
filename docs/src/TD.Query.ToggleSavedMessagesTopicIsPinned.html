@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.ToggleSavedMessagesTopicIsPinned</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier">ToggleSavedMessagesTopicIsPinned</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#defaultToggleSavedMessagesTopicIsPinned"><span class="hs-identifier">defaultToggleSavedMessagesTopicIsPinned</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.SavedMessagesTopic.html"><span class="hs-identifier">TD.Data.SavedMessagesTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SavedMessagesTopic</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Changes the pinned state of a Saved Messages topic. There can be up to getOption(&quot;pinned_saved_messages_topic_count_max&quot;) pinned topics. The limit can be increased with Telegram Premium. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="ToggleSavedMessagesTopicIsPinned"><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-var">ToggleSavedMessagesTopicIsPinned</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ToggleSavedMessagesTopicIsPinned"><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-var">ToggleSavedMessagesTopicIsPinned</span></a></span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="saved_messages_topic"><span class="annot"><span class="annottext">ToggleSavedMessagesTopicIsPinned -&gt; Maybe SavedMessagesTopic
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#saved_messages_topic"><span class="hs-identifier hs-var hs-var">saved_messages_topic</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.SavedMessagesTopic.html#SavedMessagesTopic"><span class="hs-identifier hs-type">SavedMessagesTopic.SavedMessagesTopic</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Saved Messages topic to pin or unpin</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_pinned"><span class="annot"><span class="annottext">ToggleSavedMessagesTopicIsPinned -&gt; Maybe Bool
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#is_pinned"><span class="hs-identifier hs-var hs-var">is_pinned</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                  </span><span class="annot"><span class="hs-comment">-- ^ Pass true to pin the topic; pass false to unpin it</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679736889"><span id="local-6989586621679736896"><span class="annot"><span class="annottext">ToggleSavedMessagesTopicIsPinned
+-&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool
+(ToggleSavedMessagesTopicIsPinned
+ -&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool)
+-&gt; (ToggleSavedMessagesTopicIsPinned
+    -&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool)
+-&gt; Eq ToggleSavedMessagesTopicIsPinned
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: ToggleSavedMessagesTopicIsPinned
+-&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool
+== :: ToggleSavedMessagesTopicIsPinned
+-&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool
+$c/= :: ToggleSavedMessagesTopicIsPinned
+-&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool
+/= :: ToggleSavedMessagesTopicIsPinned
+-&gt; ToggleSavedMessagesTopicIsPinned -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679736903"><span id="local-6989586621679736912"><span id="local-6989586621679736916"><span class="annot"><span class="annottext">Int -&gt; ToggleSavedMessagesTopicIsPinned -&gt; ShowS
+[ToggleSavedMessagesTopicIsPinned] -&gt; ShowS
+ToggleSavedMessagesTopicIsPinned -&gt; String
+(Int -&gt; ToggleSavedMessagesTopicIsPinned -&gt; ShowS)
+-&gt; (ToggleSavedMessagesTopicIsPinned -&gt; String)
+-&gt; ([ToggleSavedMessagesTopicIsPinned] -&gt; ShowS)
+-&gt; Show ToggleSavedMessagesTopicIsPinned
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; ToggleSavedMessagesTopicIsPinned -&gt; ShowS
+showsPrec :: Int -&gt; ToggleSavedMessagesTopicIsPinned -&gt; ShowS
+$cshow :: ToggleSavedMessagesTopicIsPinned -&gt; String
+show :: ToggleSavedMessagesTopicIsPinned -&gt; String
+$cshowList :: [ToggleSavedMessagesTopicIsPinned] -&gt; ShowS
+showList :: [ToggleSavedMessagesTopicIsPinned] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679736931"><span class="annot"><span class="annottext">shortShow :: ToggleSavedMessagesTopicIsPinned -&gt; String
+</span><a href="#local-6989586621679736931"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span><span>
+</span><span id="line-22"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: ToggleSavedMessagesTopicIsPinned -&gt; Maybe SavedMessagesTopic
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679736933"><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+</span><a href="#local-6989586621679736933"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_pinned :: ToggleSavedMessagesTopicIsPinned -&gt; Maybe Bool
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#is_pinned"><span class="hs-identifier hs-var">is_pinned</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679736934"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679736934"><span class="hs-identifier hs-var">is_pinned_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ToggleSavedMessagesTopicIsPinned&quot;</span></span><span>
+</span><span id="line-26"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-27"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;saved_messages_topic&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe SavedMessagesTopic -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+</span><a href="#local-6989586621679736933"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_pinned&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679736934"><span class="hs-identifier hs-var">is_pinned_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679736939"><span id="local-6989586621679736943"><span id="local-6989586621679736946"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-32"></span><span>  </span><span id="local-6989586621679736970"><span class="annot"><span class="annottext">toJSON :: ToggleSavedMessagesTopicIsPinned -&gt; Value
+</span><a href="#local-6989586621679736970"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: ToggleSavedMessagesTopicIsPinned -&gt; Maybe SavedMessagesTopic
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679736972"><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+</span><a href="#local-6989586621679736972"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_pinned :: ToggleSavedMessagesTopicIsPinned -&gt; Maybe Bool
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#is_pinned"><span class="hs-identifier hs-var">is_pinned</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679736973"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679736973"><span class="hs-identifier hs-var">is_pinned_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-38"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;toggleSavedMessagesTopicIsPinned&quot;</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;saved_messages_topic&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe SavedMessagesTopic -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+</span><a href="#local-6989586621679736972"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_pinned&quot;</span></span><span>            </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679736973"><span class="hs-identifier hs-var">is_pinned_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#defaultToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">defaultToggleSavedMessagesTopicIsPinned</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span><span>
+</span><span id="line-44"></span><span id="defaultToggleSavedMessagesTopicIsPinned"><span class="annot"><span class="annottext">defaultToggleSavedMessagesTopicIsPinned :: ToggleSavedMessagesTopicIsPinned
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#defaultToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-var hs-var">defaultToggleSavedMessagesTopicIsPinned</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>  </span><span class="annot"><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#ToggleSavedMessagesTopicIsPinned"><span class="hs-identifier hs-type">ToggleSavedMessagesTopicIsPinned</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: Maybe SavedMessagesTopic
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_pinned :: Maybe Bool
+</span><a href="TD.Query.ToggleSavedMessagesTopicIsPinned.html#is_pinned"><span class="hs-identifier hs-var">is_pinned</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span></pre></body></html>

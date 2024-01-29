@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.19.0
+@version 2.0.20.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -147,7 +147,7 @@ module TD.Data.UserStatus
 -- | Describes the last time the user was online
 data UserStatus
 
--- | The user status was never changed
+-- | The user's status has never been changed
 UserStatusEmpty :: UserStatus
 
 -- | The user is online
@@ -164,13 +164,28 @@ UserStatusOffline :: Maybe Int -> UserStatus
 [was_online] :: UserStatus -> Maybe Int
 
 -- | The user was online recently
-UserStatusRecently :: UserStatus
+UserStatusRecently :: Maybe Bool -> UserStatus
+
+-- | Exact user's status is hidden because the current user enabled
+--   userPrivacySettingShowStatus privacy setting for the user and has no
+--   Telegram Premium
+[by_my_privacy_settings] :: UserStatus -> Maybe Bool
 
 -- | The user is offline, but was online last week
-UserStatusLastWeek :: UserStatus
+UserStatusLastWeek :: Maybe Bool -> UserStatus
+
+-- | Exact user's status is hidden because the current user enabled
+--   userPrivacySettingShowStatus privacy setting for the user and has no
+--   Telegram Premium
+[by_my_privacy_settings] :: UserStatus -> Maybe Bool
 
 -- | The user is offline, but was online last month
-UserStatusLastMonth :: UserStatus
+UserStatusLastMonth :: Maybe Bool -> UserStatus
+
+-- | Exact user's status is hidden because the current user enabled
+--   userPrivacySettingShowStatus privacy setting for the user and has no
+--   Telegram Premium
+[by_my_privacy_settings] :: UserStatus -> Maybe Bool
 instance GHC.Show.Show TD.Data.UserStatus.UserStatus
 instance GHC.Classes.Eq TD.Data.UserStatus.UserStatus
 instance TD.Lib.Internal.ShortShow TD.Data.UserStatus.UserStatus
@@ -1522,6 +1537,29 @@ instance TD.Lib.Internal.ShortShow TD.Data.ScopeAutosaveSettings.ScopeAutosaveSe
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ScopeAutosaveSettings.ScopeAutosaveSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ScopeAutosaveSettings.ScopeAutosaveSettings
 
+module TD.Data.SavedMessagesTopic
+
+-- | Contains information about a Saved Messages topic
+data SavedMessagesTopic
+
+-- | Topic containing messages sent by the current user of forwarded from
+--   an unknown chat
+SavedMessagesTopicMyNotes :: SavedMessagesTopic
+
+-- | Topic containing messages forwarded from a user with hidden privacy
+SavedMessagesTopicAuthorHidden :: SavedMessagesTopic
+
+-- | Topic containing messages forwarded from a specific chat
+SavedMessagesTopicSavedFromChat :: Maybe Int -> SavedMessagesTopic
+
+-- | Identifier of the chat
+[chat_id] :: SavedMessagesTopic -> Maybe Int
+instance GHC.Show.Show TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance GHC.Classes.Eq TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SavedMessagesTopic.SavedMessagesTopic
+
 module TD.Data.SavedCredentials
 data SavedCredentials
 
@@ -1670,6 +1708,43 @@ instance GHC.Classes.Eq TD.Data.RecoveryEmailAddress.RecoveryEmailAddress
 instance TD.Lib.Internal.ShortShow TD.Data.RecoveryEmailAddress.RecoveryEmailAddress
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RecoveryEmailAddress.RecoveryEmailAddress
 
+module TD.Data.ReadDatePrivacySettings
+data ReadDatePrivacySettings
+
+-- | Contains privacy settings for message read date in private chats. Read
+--   dates are always shown to the users that can see online status of the
+--   current user regardless of this setting
+ReadDatePrivacySettings :: Maybe Bool -> ReadDatePrivacySettings
+
+-- | True, if message read date is shown to other users in private chats.
+--   If false and the current user isn't a Telegram Premium user, then they
+--   will not be able to see other's message read date.
+[show_read_date] :: ReadDatePrivacySettings -> Maybe Bool
+defaultReadDatePrivacySettings :: ReadDatePrivacySettings
+instance GHC.Show.Show TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
+instance GHC.Classes.Eq TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
+
+module TD.Data.ReactionUnavailabilityReason
+
+-- | Describes why the current user can't add reactions to the message,
+--   despite some other users can
+data ReactionUnavailabilityReason
+
+-- | The user is an anonymous administrator in the supergroup, but isn't a
+--   creator of it, so they can't vote on behalf of the supergroup
+ReactionUnavailabilityReasonAnonymousAdministrator :: ReactionUnavailabilityReason
+
+-- | The user isn't a member of the supergroup and can't send messages and
+--   reactions there without joining
+ReactionUnavailabilityReasonGuest :: ReactionUnavailabilityReason
+instance GHC.Show.Show TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
+instance GHC.Classes.Eq TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
+instance TD.Lib.Internal.ShortShow TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
+
 module TD.Data.ReactionType
 
 -- | Describes type of message reaction
@@ -1691,6 +1766,39 @@ instance GHC.Classes.Eq TD.Data.ReactionType.ReactionType
 instance TD.Lib.Internal.ShortShow TD.Data.ReactionType.ReactionType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReactionType.ReactionType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReactionType.ReactionType
+
+module TD.Data.SavedMessagesTag
+data SavedMessagesTag
+
+-- | Represents a tag used in Saved Messages
+SavedMessagesTag :: Maybe ReactionType -> Maybe Text -> Maybe Int -> SavedMessagesTag
+
+-- | The tag
+[tag] :: SavedMessagesTag -> Maybe ReactionType
+
+-- | Label of the tag; 0-12 characters
+[label] :: SavedMessagesTag -> Maybe Text
+
+-- | Number of times the tag was used; may be 0 if the tag has non-empty
+--   label
+[count] :: SavedMessagesTag -> Maybe Int
+instance GHC.Show.Show TD.Data.SavedMessagesTag.SavedMessagesTag
+instance GHC.Classes.Eq TD.Data.SavedMessagesTag.SavedMessagesTag
+instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTag.SavedMessagesTag
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTag.SavedMessagesTag
+
+module TD.Data.SavedMessagesTags
+data SavedMessagesTags
+
+-- | Contains a list of tags used in Saved Messages
+SavedMessagesTags :: Maybe [SavedMessagesTag] -> SavedMessagesTags
+
+-- | List of tags
+[tags] :: SavedMessagesTags -> Maybe [SavedMessagesTag]
+instance GHC.Show.Show TD.Data.SavedMessagesTags.SavedMessagesTags
+instance GHC.Classes.Eq TD.Data.SavedMessagesTags.SavedMessagesTags
+instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTags.SavedMessagesTags
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTags.SavedMessagesTags
 
 module TD.Data.PushReceiverId
 data PushReceiverId
@@ -1932,6 +2040,9 @@ PremiumLimitTypeChatFolderChosenChatCount :: PremiumLimitType
 
 -- | The maximum number of pinned chats in the archive chat list
 PremiumLimitTypePinnedArchivedChatCount :: PremiumLimitType
+
+-- | The maximum number of pinned Saved Messages topics
+PremiumLimitTypePinnedSavedMessagesTopicCount :: PremiumLimitType
 
 -- | The maximum length of sent media caption
 PremiumLimitTypeCaptionLength :: PremiumLimitType
@@ -2844,6 +2955,23 @@ instance GHC.Classes.Eq TD.Data.NotificationGroupType.NotificationGroupType
 instance TD.Lib.Internal.ShortShow TD.Data.NotificationGroupType.NotificationGroupType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NotificationGroupType.NotificationGroupType
 
+module TD.Data.NewChatPrivacySettings
+data NewChatPrivacySettings
+
+-- | Contains privacy settings for new chats with non-contacts
+NewChatPrivacySettings :: Maybe Bool -> NewChatPrivacySettings
+
+-- | True, if non-contacts users are able to write first to the current
+--   user. Telegram Premium subscribers are able to write first regardless
+--   of this setting
+[allow_new_chats_from_unknown_users] :: NewChatPrivacySettings -> Maybe Bool
+defaultNewChatPrivacySettings :: NewChatPrivacySettings
+instance GHC.Show.Show TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
+instance GHC.Classes.Eq TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
+
 module TD.Data.NetworkType
 
 -- | Represents the type of a network
@@ -3203,6 +3331,35 @@ instance GHC.Classes.Eq TD.Data.MessageReplyInfo.MessageReplyInfo
 instance TD.Lib.Internal.ShortShow TD.Data.MessageReplyInfo.MessageReplyInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReplyInfo.MessageReplyInfo
 
+module TD.Data.MessageReadDate
+
+-- | Describes read date of a recent outgoing message in a private chat
+data MessageReadDate
+
+-- | Contains read date of the message
+MessageReadDateRead :: Maybe Int -> MessageReadDate
+
+-- | Point in time (Unix timestamp) when the message was read by the other
+--   user
+[read_date] :: MessageReadDate -> Maybe Int
+
+-- | The message is unread yet
+MessageReadDateUnread :: MessageReadDate
+
+-- | The message is too old to get read date
+MessageReadDateTooOld :: MessageReadDate
+
+-- | The read date is unknown due to privacy settings of the other user
+MessageReadDateUserPrivacyRestricted :: MessageReadDate
+
+-- | The read date is unknown due to privacy settings of the current user,
+--   but will be known if the user subscribes to Telegram Premium
+MessageReadDateMyPrivacyRestricted :: MessageReadDate
+instance GHC.Show.Show TD.Data.MessageReadDate.MessageReadDate
+instance GHC.Classes.Eq TD.Data.MessageReadDate.MessageReadDate
+instance TD.Lib.Internal.ShortShow TD.Data.MessageReadDate.MessageReadDate
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReadDate.MessageReadDate
+
 module TD.Data.MessageReaction
 data MessageReaction
 
@@ -3229,6 +3386,23 @@ instance GHC.Show.Show TD.Data.MessageReaction.MessageReaction
 instance GHC.Classes.Eq TD.Data.MessageReaction.MessageReaction
 instance TD.Lib.Internal.ShortShow TD.Data.MessageReaction.MessageReaction
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReaction.MessageReaction
+
+module TD.Data.MessageReactions
+data MessageReactions
+
+-- | Contains a list of reactions added to a message
+MessageReactions :: Maybe [MessageReaction] -> Maybe Bool -> MessageReactions
+
+-- | List of added reactions
+[reactions] :: MessageReactions -> Maybe [MessageReaction]
+
+-- | True, if the reactions are tags and Telegram Premium users can filter
+--   messages by them; currently, always false
+[are_tags] :: MessageReactions -> Maybe Bool
+instance GHC.Show.Show TD.Data.MessageReactions.MessageReactions
+instance GHC.Classes.Eq TD.Data.MessageReactions.MessageReactions
+instance TD.Lib.Internal.ShortShow TD.Data.MessageReactions.MessageReactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReactions.MessageReactions
 
 module TD.Data.MessagePosition
 data MessagePosition
@@ -3332,7 +3506,7 @@ module TD.Data.MessageInteractionInfo
 data MessageInteractionInfo
 
 -- | Contains information about interactions with a message
-MessageInteractionInfo :: Maybe Int -> Maybe Int -> Maybe MessageReplyInfo -> Maybe [MessageReaction] -> MessageInteractionInfo
+MessageInteractionInfo :: Maybe Int -> Maybe Int -> Maybe MessageReplyInfo -> Maybe MessageReactions -> MessageInteractionInfo
 
 -- | Number of times the message was viewed
 [view_count] :: MessageInteractionInfo -> Maybe Int
@@ -3346,8 +3520,8 @@ MessageInteractionInfo :: Maybe Int -> Maybe Int -> Maybe MessageReplyInfo -> Ma
 --   replies itself
 [reply_info] :: MessageInteractionInfo -> Maybe MessageReplyInfo
 
--- | The list of reactions added to the message
-[reactions] :: MessageInteractionInfo -> Maybe [MessageReaction]
+-- | The list of reactions or tags added to the message; may be null
+[reactions] :: MessageInteractionInfo -> Maybe MessageReactions
 instance GHC.Show.Show TD.Data.MessageInteractionInfo.MessageInteractionInfo
 instance GHC.Classes.Eq TD.Data.MessageInteractionInfo.MessageInteractionInfo
 instance TD.Lib.Internal.ShortShow TD.Data.MessageInteractionInfo.MessageInteractionInfo
@@ -3368,37 +3542,6 @@ instance GHC.Show.Show TD.Data.MessageImportInfo.MessageImportInfo
 instance GHC.Classes.Eq TD.Data.MessageImportInfo.MessageImportInfo
 instance TD.Lib.Internal.ShortShow TD.Data.MessageImportInfo.MessageImportInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageImportInfo.MessageImportInfo
-
-module TD.Data.MessageForwardInfo
-data MessageForwardInfo
-
--- | Contains information about a forwarded message
-MessageForwardInfo :: Maybe MessageOrigin -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> MessageForwardInfo
-
--- | Origin of the forwarded message
-[origin] :: MessageForwardInfo -> Maybe MessageOrigin
-
--- | Point in time (Unix timestamp) when the message was originally sent
-[date] :: MessageForwardInfo -> Maybe Int
-
--- | The type of a public service announcement for the forwarded message
-[public_service_announcement_type] :: MessageForwardInfo -> Maybe Text
-
--- | For messages forwarded to the chat with the current user (Saved
---   Messages), to the Replies bot chat, or to the channel's discussion
---   group, the identifier of the chat from which the message was forwarded
---   last time; 0 if unknown
-[from_chat_id] :: MessageForwardInfo -> Maybe Int
-
--- | For messages forwarded to the chat with the current user (Saved
---   Messages), to the Replies bot chat, or to the channel's discussion
---   group, the identifier of the original message from which the new
---   message was forwarded last time; 0 if unknown
-[from_message_id] :: MessageForwardInfo -> Maybe Int
-instance GHC.Show.Show TD.Data.MessageForwardInfo.MessageForwardInfo
-instance GHC.Classes.Eq TD.Data.MessageForwardInfo.MessageForwardInfo
-instance TD.Lib.Internal.ShortShow TD.Data.MessageForwardInfo.MessageForwardInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageForwardInfo.MessageForwardInfo
 
 module TD.Data.MessageFileType
 
@@ -5118,6 +5261,64 @@ instance GHC.Classes.Eq TD.Data.FoundPosition.FoundPosition
 instance TD.Lib.Internal.ShortShow TD.Data.FoundPosition.FoundPosition
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundPosition.FoundPosition
 
+module TD.Data.ForwardSource
+data ForwardSource
+
+-- | Contains information about the last message from which a new message
+--   was forwarded last time
+ForwardSource :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Int -> Maybe Bool -> ForwardSource
+
+-- | Identifier of the chat to which the message that was forwarded
+--   belonged; may be 0 if unknown
+[chat_id] :: ForwardSource -> Maybe Int
+
+-- | Identifier of the message; may be 0 if unknown
+[message_id] :: ForwardSource -> Maybe Int
+
+-- | Identifier of the sender of the message; may be null if unknown or the
+--   new message was forwarded not to Saved Messages
+[sender_id] :: ForwardSource -> Maybe MessageSender
+
+-- | Name of the sender of the message if the sender is hidden by their
+--   privacy settings
+[sender_name] :: ForwardSource -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the message is sent; 0 if unknown
+[date] :: ForwardSource -> Maybe Int
+
+-- | True, if the message that was forwarded is outgoing; always false if
+--   sender is unknown
+[is_outgoing] :: ForwardSource -> Maybe Bool
+instance GHC.Show.Show TD.Data.ForwardSource.ForwardSource
+instance GHC.Classes.Eq TD.Data.ForwardSource.ForwardSource
+instance TD.Lib.Internal.ShortShow TD.Data.ForwardSource.ForwardSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ForwardSource.ForwardSource
+
+module TD.Data.MessageForwardInfo
+data MessageForwardInfo
+
+-- | Contains information about a forwarded message
+MessageForwardInfo :: Maybe MessageOrigin -> Maybe Int -> Maybe ForwardSource -> Maybe Text -> MessageForwardInfo
+
+-- | Origin of the forwarded message
+[origin] :: MessageForwardInfo -> Maybe MessageOrigin
+
+-- | Point in time (Unix timestamp) when the message was originally sent
+[date] :: MessageForwardInfo -> Maybe Int
+
+-- | For messages forwarded to the chat with the current user (Saved
+--   Messages), to the Replies bot chat, or to the channel's discussion
+--   group, information about the source message from which the message was
+--   forwarded last time; may be null for other forwards or if unknown
+[source] :: MessageForwardInfo -> Maybe ForwardSource
+
+-- | The type of a public service announcement for the forwarded message
+[public_service_announcement_type] :: MessageForwardInfo -> Maybe Text
+instance GHC.Show.Show TD.Data.MessageForwardInfo.MessageForwardInfo
+instance GHC.Classes.Eq TD.Data.MessageForwardInfo.MessageForwardInfo
+instance TD.Lib.Internal.ShortShow TD.Data.MessageForwardInfo.MessageForwardInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageForwardInfo.MessageForwardInfo
+
 module TD.Data.ForumTopicIcon
 data ForumTopicIcon
 
@@ -6404,7 +6605,7 @@ module TD.Data.User
 data User
 
 -- | Represents a user
-User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
+User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
 
 -- | User identifier
 [_id] :: User -> Maybe Int
@@ -6485,6 +6686,11 @@ User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -
 --   current user
 [has_unread_active_stories] :: User -> Maybe Bool
 
+-- | True, if the user may restrict new chats with non-contacts. Use
+--   canSendMessageToUser to check whether the current user can message the
+--   user or try to create a chat with them
+[restricts_new_chats] :: User -> Maybe Bool
+
 -- | If false, the user is inaccessible, and the only information known
 --   about the user is inside this class. Identifier of the user can't be
 --   passed to any method
@@ -6503,6 +6709,35 @@ instance GHC.Show.Show TD.Data.User.User
 instance GHC.Classes.Eq TD.Data.User.User
 instance TD.Lib.Internal.ShortShow TD.Data.User.User
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.User.User
+
+module TD.Data.EmojiKeyword
+data EmojiKeyword
+
+-- | Represents an emoji with its keyword
+EmojiKeyword :: Maybe Text -> Maybe Text -> EmojiKeyword
+
+-- | The emoji
+[emoji] :: EmojiKeyword -> Maybe Text
+
+-- | The keyword
+[keyword] :: EmojiKeyword -> Maybe Text
+instance GHC.Show.Show TD.Data.EmojiKeyword.EmojiKeyword
+instance GHC.Classes.Eq TD.Data.EmojiKeyword.EmojiKeyword
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiKeyword.EmojiKeyword
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiKeyword.EmojiKeyword
+
+module TD.Data.EmojiKeywords
+data EmojiKeywords
+
+-- | Represents a list of emoji with their keywords
+EmojiKeywords :: Maybe [EmojiKeyword] -> EmojiKeywords
+
+-- | List of emoji with their keywords
+[emoji_keywords] :: EmojiKeywords -> Maybe [EmojiKeyword]
+instance GHC.Show.Show TD.Data.EmojiKeywords.EmojiKeywords
+instance GHC.Classes.Eq TD.Data.EmojiKeywords.EmojiKeywords
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiKeywords.EmojiKeywords
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiKeywords.EmojiKeywords
 
 module TD.Data.EmojiCategoryType
 
@@ -7510,7 +7745,7 @@ InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> M
 [has_spoiler] :: InputMessageContent -> Maybe Bool
 
 -- | A video note message
-InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> InputMessageContent
+InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> InputMessageContent
 
 -- | Video note to be sent
 [video_note] :: InputMessageContent -> Maybe InputFile
@@ -7524,8 +7759,11 @@ InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int ->
 -- | Video width and height; must be positive and not greater than 640
 [_length] :: InputMessageContent -> Maybe Int
 
+-- | Photo self-destruct type; pass null if none; private chats only
+[self_destruct_type] :: InputMessageContent -> Maybe MessageSelfDestructType
+
 -- | A voice note message
-InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> Maybe FormattedText -> InputMessageContent
+InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> Maybe FormattedText -> Maybe MessageSelfDestructType -> InputMessageContent
 
 -- | Voice note to be sent
 [voice_note] :: InputMessageContent -> Maybe InputFile
@@ -7539,6 +7777,9 @@ InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> May
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
+
+-- | Photo self-destruct type; pass null if none; private chats only
+[self_destruct_type] :: InputMessageContent -> Maybe MessageSelfDestructType
 
 -- | A message with a location
 InputMessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> InputMessageContent
@@ -8028,7 +8269,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
 module TD.Data.EmojiReaction
 data EmojiReaction
 
--- | Contains information about a emoji reaction
+-- | Contains information about an emoji reaction
 EmojiReaction :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> EmojiReaction
 
 -- | Text representation of the reaction
@@ -8592,8 +8833,8 @@ ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe
 -- | True, if the user can pin messages
 [can_pin_messages] :: ChatPermissions -> Maybe Bool
 
--- | True, if the user can manage topics
-[can_manage_topics] :: ChatPermissions -> Maybe Bool
+-- | True, if the user can create topics
+[can_create_topics] :: ChatPermissions -> Maybe Bool
 defaultChatPermissions :: ChatPermissions
 instance GHC.Show.Show TD.Data.ChatPermissions.ChatPermissions
 instance GHC.Classes.Eq TD.Data.ChatPermissions.ChatPermissions
@@ -9621,10 +9862,28 @@ module TD.Data.ChatBoostFeatures
 data ChatBoostFeatures
 
 -- | Contains a list of features available on the first chat boost levels
-ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> ChatBoostFeatures
+ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
 
 -- | The list of features
 [features] :: ChatBoostFeatures -> Maybe [ChatBoostLevelFeatures]
+
+-- | The minimum boost level required to set custom emoji for profile
+--   background
+[min_profile_background_custom_emoji_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level required to set custom emoji for reply header
+--   and link preview background
+[min_background_custom_emoji_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level required to set emoji status
+[min_emoji_status_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level required to set a chat theme background as
+--   chat background
+[min_chat_theme_background_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level required to set custom chat background
+[min_custom_background_boost_level] :: ChatBoostFeatures -> Maybe Int
 instance GHC.Show.Show TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance GHC.Classes.Eq TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostFeatures.ChatBoostFeatures
@@ -9732,8 +9991,8 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 --   groups and supergroups only
 [can_pin_messages] :: ChatAdministratorRights -> Maybe Bool
 
--- | True, if the administrator can manage topics; applicable to forum
---   supergroups only
+-- | True, if the administrator can create, rename, close, reopen, hide,
+--   and unhide forum topics; applicable to forum supergroups only
 [can_manage_topics] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can add new administrators with a subset of
@@ -11414,6 +11673,25 @@ instance GHC.Classes.Eq TD.Data.CanSendStoryResult.CanSendStoryResult
 instance TD.Lib.Internal.ShortShow TD.Data.CanSendStoryResult.CanSendStoryResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanSendStoryResult.CanSendStoryResult
 
+module TD.Data.CanSendMessageToUserResult
+
+-- | Describes result of canSendMessageToUser
+data CanSendMessageToUserResult
+
+-- | The user can be messaged
+CanSendMessageToUserResultOk :: CanSendMessageToUserResult
+
+-- | The user can't be messaged, because they are deleted or unknown
+CanSendMessageToUserResultUserIsDeleted :: CanSendMessageToUserResult
+
+-- | The user can't be messaged, because they restrict new chats with
+--   non-contacts
+CanSendMessageToUserResultUserRestrictsNewChats :: CanSendMessageToUserResult
+instance GHC.Show.Show TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
+instance GHC.Classes.Eq TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
+instance TD.Lib.Internal.ShortShow TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
+
 module TD.Data.CallbackQueryPayload
 
 -- | Represents a payload of a callback query
@@ -12164,7 +12442,7 @@ module TD.Data.AvailableReactions
 data AvailableReactions
 
 -- | Represents a list of reactions that can be added to a message
-AvailableReactions :: Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> Maybe Bool -> AvailableReactions
+AvailableReactions :: Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> Maybe Bool -> Maybe Bool -> Maybe ReactionUnavailabilityReason -> AvailableReactions
 
 -- | List of reactions to be shown at the top
 [top_reactions] :: AvailableReactions -> Maybe [AvailableReaction]
@@ -12178,6 +12456,14 @@ AvailableReactions :: Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> 
 -- | True, if any custom emoji reaction can be added by Telegram Premium
 --   subscribers
 [allow_custom_emoji] :: AvailableReactions -> Maybe Bool
+
+-- | True, if the reactions will be tags and the message can be found by
+--   them; currently, always false
+[are_tags] :: AvailableReactions -> Maybe Bool
+
+-- | The reason why the current user can't add reactions to the message,
+--   despite some other users can; may be null if none
+[unavailability_reason] :: AvailableReactions -> Maybe ReactionUnavailabilityReason
 instance GHC.Show.Show TD.Data.AvailableReactions.AvailableReactions
 instance GHC.Classes.Eq TD.Data.AvailableReactions.AvailableReactions
 instance TD.Lib.Internal.ShortShow TD.Data.AvailableReactions.AvailableReactions
@@ -14506,9 +14792,6 @@ MessagePhoto :: Maybe Photo -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -
 --   must be shown only while tapped
 [is_secret] :: MessageContent -> Maybe Bool
 
--- | A self-destructed photo message
-MessageExpiredPhoto :: MessageContent
-
 -- | A sticker message
 MessageSticker :: Maybe Sticker -> Maybe Bool -> MessageContent
 
@@ -14534,9 +14817,6 @@ MessageVideo :: Maybe Video -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -
 --   must be shown only while tapped
 [is_secret] :: MessageContent -> Maybe Bool
 
--- | A self-destructed video message
-MessageExpiredVideo :: MessageContent
-
 -- | A video note message
 MessageVideoNote :: Maybe VideoNote -> Maybe Bool -> Maybe Bool -> MessageContent
 
@@ -14561,6 +14841,18 @@ MessageVoiceNote :: Maybe VoiceNote -> Maybe FormattedText -> Maybe Bool -> Mess
 
 -- | True, if at least one of the recipients has listened to the voice note
 [is_listened] :: MessageContent -> Maybe Bool
+
+-- | A self-destructed photo message
+MessageExpiredPhoto :: MessageContent
+
+-- | A self-destructed video message
+MessageExpiredVideo :: MessageContent
+
+-- | A self-destructed video note message
+MessageExpiredVideoNote :: MessageContent
+
+-- | A self-destructed voice note message
+MessageExpiredVoiceNote :: MessageContent
 
 -- | A message with a location
 MessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
@@ -15275,7 +15567,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe SavedMessagesTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -15333,6 +15625,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   getMessageThread and getMessageThreadHistory
 [can_get_message_thread] :: Message -> Maybe Bool
 
+-- | True, if read date of the message can be received through
+--   getMessageReadDate
+[can_get_read_date] :: Message -> Maybe Bool
+
 -- | True, if chat members already viewed the message can be received
 --   through getMessageViewers
 [can_get_viewers] :: Message -> Maybe Bool
@@ -15387,6 +15683,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | If non-zero, the identifier of the message thread the message belongs
 --   to; unique within the chat to which the message belongs
 [message_thread_id] :: Message -> Maybe Int
+
+-- | Information about topic of the message in the Saved Messages chat; may
+--   be null for messages not from Saved Messages
+[saved_messages_topic] :: Message -> Maybe SavedMessagesTopic
 
 -- | The message's self-destruct type; may be null if none
 [self_destruct_type] :: Message -> Maybe MessageSelfDestructType
@@ -15754,6 +16054,42 @@ instance GHC.Show.Show TD.Data.MessageCalendar.MessageCalendar
 instance GHC.Classes.Eq TD.Data.MessageCalendar.MessageCalendar
 instance TD.Lib.Internal.ShortShow TD.Data.MessageCalendar.MessageCalendar
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageCalendar.MessageCalendar
+
+module TD.Data.FoundSavedMessagesTopic
+data FoundSavedMessagesTopic
+
+-- | Contains information about a found Saved Messages topic
+FoundSavedMessagesTopic :: Maybe SavedMessagesTopic -> Maybe Message -> FoundSavedMessagesTopic
+
+-- | The topic
+[topic] :: FoundSavedMessagesTopic -> Maybe SavedMessagesTopic
+
+-- | Last message in the topic; may be null if none or unknown
+[last_message] :: FoundSavedMessagesTopic -> Maybe Message
+instance GHC.Show.Show TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
+instance GHC.Classes.Eq TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
+instance TD.Lib.Internal.ShortShow TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
+
+module TD.Data.FoundSavedMessagesTopics
+data FoundSavedMessagesTopics
+
+-- | Contains a list of Saved Messages topics
+FoundSavedMessagesTopics :: Maybe Int -> Maybe [FoundSavedMessagesTopic] -> Maybe Text -> FoundSavedMessagesTopics
+
+-- | Total number of Saved Messages topics found
+[total_count] :: FoundSavedMessagesTopics -> Maybe Int
+
+-- | List of Saved Messages topics
+[topics] :: FoundSavedMessagesTopics -> Maybe [FoundSavedMessagesTopic]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: FoundSavedMessagesTopics -> Maybe Text
+instance GHC.Show.Show TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
+instance GHC.Classes.Eq TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
+instance TD.Lib.Internal.ShortShow TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
 
 module TD.Data.FoundMessages
 data FoundMessages
@@ -17154,6 +17490,10 @@ UpdateChatOnlineMemberCount :: Maybe Int -> Maybe Int -> Update
 -- | New number of online members in the chat, or 0 if unknown
 [online_member_count] :: Update -> Maybe Int
 
+-- | The list of pinned Saved Messages topics has changed. The app can call
+--   getPinnedSavedMessagesTopics to get the new list
+UpdatePinnedSavedMessagesTopics :: Update
+
 -- | Basic information about a topic in a forum chat was changed
 UpdateForumTopicInfo :: Maybe Int -> Maybe ForumTopicInfo -> Update
 
@@ -17742,6 +18082,12 @@ UpdateDefaultReactionType :: Maybe ReactionType -> Update
 -- | The new type of the default reaction
 [reaction_type] :: Update -> Maybe ReactionType
 
+-- | Used Saved Messages tags have changed
+UpdateSavedMessagesTags :: Maybe SavedMessagesTags -> Update
+
+-- | The new used tags
+[tags] :: Update -> Maybe SavedMessagesTags
+
 -- | The parameters of speech recognition without Telegram Premium
 --   subscription has changed
 UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
@@ -18109,6 +18455,7 @@ BotCommands :: BotCommands -> GeneralResult
 BotMenuButton :: BotMenuButton -> GeneralResult
 CallId :: CallId -> GeneralResult
 CallbackQueryAnswer :: CallbackQueryAnswer -> GeneralResult
+CanSendMessageToUserResult :: CanSendMessageToUserResult -> GeneralResult
 CanSendStoryResult :: CanSendStoryResult -> GeneralResult
 CanTransferOwnershipResult :: CanTransferOwnershipResult -> GeneralResult
 Chat :: Chat -> GeneralResult
@@ -18151,6 +18498,7 @@ DatabaseStatistics :: DatabaseStatistics -> GeneralResult
 DeepLinkInfo :: DeepLinkInfo -> GeneralResult
 EmailAddressAuthenticationCodeInfo :: EmailAddressAuthenticationCodeInfo -> GeneralResult
 EmojiCategories :: EmojiCategories -> GeneralResult
+EmojiKeywords :: EmojiKeywords -> GeneralResult
 EmojiReaction :: EmojiReaction -> GeneralResult
 EmojiStatuses :: EmojiStatuses -> GeneralResult
 Emojis :: Emojis -> GeneralResult
@@ -18168,6 +18516,7 @@ FoundFileDownloads :: FoundFileDownloads -> GeneralResult
 FoundMessages :: FoundMessages -> GeneralResult
 FoundPosition :: FoundPosition -> GeneralResult
 FoundPositions :: FoundPositions -> GeneralResult
+FoundSavedMessagesTopics :: FoundSavedMessagesTopics -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
@@ -18194,12 +18543,14 @@ MessageFileType :: MessageFileType -> GeneralResult
 MessageLink :: MessageLink -> GeneralResult
 MessageLinkInfo :: MessageLinkInfo -> GeneralResult
 MessagePositions :: MessagePositions -> GeneralResult
+MessageReadDate :: MessageReadDate -> GeneralResult
 MessageSenders :: MessageSenders -> GeneralResult
 MessageStatistics :: MessageStatistics -> GeneralResult
 MessageThreadInfo :: MessageThreadInfo -> GeneralResult
 MessageViewers :: MessageViewers -> GeneralResult
 Messages :: Messages -> GeneralResult
 NetworkStatistics :: NetworkStatistics -> GeneralResult
+NewChatPrivacySettings :: NewChatPrivacySettings -> GeneralResult
 NotificationSound :: NotificationSound -> GeneralResult
 NotificationSounds :: NotificationSounds -> GeneralResult
 Ok :: Ok -> GeneralResult
@@ -18224,10 +18575,12 @@ Proxies :: Proxies -> GeneralResult
 Proxy :: Proxy -> GeneralResult
 PublicForwards :: PublicForwards -> GeneralResult
 PushReceiverId :: PushReceiverId -> GeneralResult
+ReadDatePrivacySettings :: ReadDatePrivacySettings -> GeneralResult
 RecommendedChatFolders :: RecommendedChatFolders -> GeneralResult
 RecoveryEmailAddress :: RecoveryEmailAddress -> GeneralResult
 ResetPasswordResult :: ResetPasswordResult -> GeneralResult
 RtmpUrl :: RtmpUrl -> GeneralResult
+SavedMessagesTags :: SavedMessagesTags -> GeneralResult
 ScopeNotificationSettings :: ScopeNotificationSettings -> GeneralResult
 Seconds :: Seconds -> GeneralResult
 SecretChat :: SecretChat -> GeneralResult
@@ -18552,9 +18905,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddLogMessage.AddLogMessage
 
 module TD.Query.AddMessageReaction
 
--- | Adds a reaction to a message. Use getMessageAvailableReactions to
---   receive the list of available reactions for the message. Returns
---   <a>Ok</a>
+-- | Adds a reaction or a tag to a message. Use
+--   getMessageAvailableReactions to receive the list of available
+--   reactions for the message. Returns <a>Ok</a>
 data AddMessageReaction
 AddMessageReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -> Maybe Bool -> AddMessageReaction
 
@@ -18570,7 +18923,8 @@ AddMessageReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool
 -- | Pass true if the reaction is added with a big animation
 [is_big] :: AddMessageReaction -> Maybe Bool
 
--- | Pass true if the reaction needs to be added to recent reactions
+-- | Pass true if the reaction needs to be added to recent reactions; tags
+--   are never added to the list of recent reactions
 [update_recent_reactions] :: AddMessageReaction -> Maybe Bool
 defaultAddMessageReaction :: AddMessageReaction
 instance GHC.Show.Show TD.Query.AddMessageReaction.AddMessageReaction
@@ -19011,6 +19365,25 @@ instance GHC.Classes.Eq TD.Query.CanPurchasePremium.CanPurchasePremium
 instance TD.Lib.Internal.ShortShow TD.Query.CanPurchasePremium.CanPurchasePremium
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanPurchasePremium.CanPurchasePremium
 
+module TD.Query.CanSendMessageToUser
+
+-- | Check whether the current user can message another user or try to
+--   create a chat with them. Returns <a>CanSendMessageToUserResult</a>
+data CanSendMessageToUser
+CanSendMessageToUser :: Maybe Int -> Maybe Bool -> CanSendMessageToUser
+
+-- | Identifier of the other user
+[user_id] :: CanSendMessageToUser -> Maybe Int
+
+-- | Pass true to get only locally available information without sending
+--   network requests
+[only_local] :: CanSendMessageToUser -> Maybe Bool
+defaultCanSendMessageToUser :: CanSendMessageToUser
+instance GHC.Show.Show TD.Query.CanSendMessageToUser.CanSendMessageToUser
+instance GHC.Classes.Eq TD.Query.CanSendMessageToUser.CanSendMessageToUser
+instance TD.Lib.Internal.ShortShow TD.Query.CanSendMessageToUser.CanSendMessageToUser
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanSendMessageToUser.CanSendMessageToUser
+
 module TD.Query.CanSendStory
 
 -- | Checks whether the current user can send a story on behalf of a chat;
@@ -19081,6 +19454,17 @@ instance GHC.Show.Show TD.Query.CancelPreliminaryUploadFile.CancelPreliminaryUpl
 instance GHC.Classes.Eq TD.Query.CancelPreliminaryUploadFile.CancelPreliminaryUploadFile
 instance TD.Lib.Internal.ShortShow TD.Query.CancelPreliminaryUploadFile.CancelPreliminaryUploadFile
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CancelPreliminaryUploadFile.CancelPreliminaryUploadFile
+
+module TD.Query.CancelRecoveryEmailAddressVerification
+
+-- | Cancels verification of the 2-step verification recovery email
+--   address. Returns <a>PasswordState</a>
+data CancelRecoveryEmailAddressVerification
+CancelRecoveryEmailAddressVerification :: CancelRecoveryEmailAddressVerification
+instance GHC.Show.Show TD.Query.CancelRecoveryEmailAddressVerification.CancelRecoveryEmailAddressVerification
+instance GHC.Classes.Eq TD.Query.CancelRecoveryEmailAddressVerification.CancelRecoveryEmailAddressVerification
+instance TD.Lib.Internal.ShortShow TD.Query.CancelRecoveryEmailAddressVerification.CancelRecoveryEmailAddressVerification
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CancelRecoveryEmailAddressVerification.CancelRecoveryEmailAddressVerification
 
 module TD.Query.ChangeImportedContacts
 
@@ -19767,7 +20151,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateChatInviteLink.CreateChat
 module TD.Query.CreateForumTopic
 
 -- | Creates a topic in a forum supergroup chat; requires can_manage_topics
---   rights in the supergroup. Returns <a>ForumTopicInfo</a>
+--   or can_create_topics rights in the supergroup. Returns
+--   <a>ForumTopicInfo</a>
 data CreateForumTopic
 CreateForumTopic :: Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> CreateForumTopic
 
@@ -20392,6 +20777,41 @@ instance GHC.Classes.Eq TD.Query.DeleteSavedCredentials.DeleteSavedCredentials
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteSavedCredentials.DeleteSavedCredentials
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteSavedCredentials.DeleteSavedCredentials
 
+module TD.Query.DeleteSavedMessagesTopicHistory
+
+-- | Deletes all messages in a Saved Messages topic. Returns <a>Ok</a>
+data DeleteSavedMessagesTopicHistory
+DeleteSavedMessagesTopicHistory :: Maybe SavedMessagesTopic -> DeleteSavedMessagesTopicHistory
+
+-- | Saved Messages topic which messages will be deleted
+[saved_messages_topic] :: DeleteSavedMessagesTopicHistory -> Maybe SavedMessagesTopic
+instance GHC.Show.Show TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
+instance GHC.Classes.Eq TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
+
+module TD.Query.DeleteSavedMessagesTopicMessagesByDate
+
+-- | Deletes all messages between the specified dates in a Saved Messages
+--   topic. Messages sent in the last 30 seconds will not be deleted.
+--   Returns <a>Ok</a>
+data DeleteSavedMessagesTopicMessagesByDate
+DeleteSavedMessagesTopicMessagesByDate :: Maybe SavedMessagesTopic -> Maybe Int -> Maybe Int -> DeleteSavedMessagesTopicMessagesByDate
+
+-- | Saved Messages topic which messages will be deleted
+[saved_messages_topic] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe SavedMessagesTopic
+
+-- | The minimum date of the messages to delete
+[min_date] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe Int
+
+-- | The maximum date of the messages to delete
+[max_date] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe Int
+defaultDeleteSavedMessagesTopicMessagesByDate :: DeleteSavedMessagesTopicMessagesByDate
+instance GHC.Show.Show TD.Query.DeleteSavedMessagesTopicMessagesByDate.DeleteSavedMessagesTopicMessagesByDate
+instance GHC.Classes.Eq TD.Query.DeleteSavedMessagesTopicMessagesByDate.DeleteSavedMessagesTopicMessagesByDate
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteSavedMessagesTopicMessagesByDate.DeleteSavedMessagesTopicMessagesByDate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteSavedMessagesTopicMessagesByDate.DeleteSavedMessagesTopicMessagesByDate
+
 module TD.Query.DeleteSavedOrderInfo
 
 -- | Deletes saved order information. Returns <a>Ok</a>
@@ -20658,8 +21078,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCustomLanguagePackInfo.Edit
 module TD.Query.EditForumTopic
 
 -- | Edits title and icon of a topic in a forum supergroup chat; requires
---   can_manage_topics administrator right in the supergroup unless the
---   user is creator of the topic. Returns <a>Ok</a>
+--   can_manage_topics right in the supergroup unless the user is creator
+--   of the topic. Returns <a>Ok</a>
 data EditForumTopic
 EditForumTopic :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Int -> EditForumTopic
 
@@ -21855,7 +22275,7 @@ GetChatHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool
 --   use 0 to get results from the last message
 [from_message_id] :: GetChatHistory -> Maybe Int
 
--- | Specify 0 to get results from exactly the from_message_id or a
+-- | Specify 0 to get results from exactly the message from_message_id or a
 --   negative offset up to 99 to get additionally some newer messages
 [offset] :: GetChatHistory -> Maybe Int
 
@@ -22063,7 +22483,7 @@ module TD.Query.GetChatMessageCalendar
 --   of this method depends on the value of the option "utc_time_offset".
 --   Returns <a>MessageCalendar</a>
 data GetChatMessageCalendar
-GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> GetChatMessageCalendar
+GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatMessageCalendar
 
 -- | Identifier of the chat in which to return information about messages
 [chat_id] :: GetChatMessageCalendar -> Maybe Int
@@ -22076,6 +22496,11 @@ GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -
 -- | The message identifier from which to return information about
 --   messages; use 0 to get results from the last message
 [from_message_id] :: GetChatMessageCalendar -> Maybe Int
+
+-- | If not null, only messages in the specified Saved Messages topic will
+--   be considered; pass null to consider all messages, or for chats other
+--   than Saved Messages
+[saved_messages_topic] :: GetChatMessageCalendar -> Maybe SavedMessagesTopic
 defaultGetChatMessageCalendar :: GetChatMessageCalendar
 instance GHC.Show.Show TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
 instance GHC.Classes.Eq TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
@@ -22087,7 +22512,7 @@ module TD.Query.GetChatMessageCount
 -- | Returns approximate number of messages of the specified type in the
 --   chat. Returns <a>Count</a>
 data GetChatMessageCount
-GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Bool -> GetChatMessageCount
+GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe SavedMessagesTopic -> Maybe Bool -> GetChatMessageCount
 
 -- | Identifier of the chat in which to count messages
 [chat_id] :: GetChatMessageCount -> Maybe Int
@@ -22095,6 +22520,11 @@ GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Bool -> 
 -- | Filter for message content; searchMessagesFilterEmpty is unsupported
 --   in this function
 [_filter] :: GetChatMessageCount -> Maybe SearchMessagesFilter
+
+-- | If not null, only messages in the specified Saved Messages topic will
+--   be counted; pass null to count all messages, or for chats other than
+--   Saved Messages
+[saved_messages_topic] :: GetChatMessageCount -> Maybe SavedMessagesTopic
 
 -- | Pass true to get the number of messages without sending network
 --   requests, or -1 if the number of messages is unknown locally
@@ -22111,7 +22541,7 @@ module TD.Query.GetChatMessagePosition
 --   which can be found by the specified filter in the chat. Cannot be used
 --   in secret chats. Returns <a>Count</a>
 data GetChatMessagePosition
-GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> GetChatMessagePosition
+GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatMessagePosition
 
 -- | Identifier of the chat in which to find message position
 [chat_id] :: GetChatMessagePosition -> Maybe Int
@@ -22127,6 +22557,11 @@ GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -
 -- | If not 0, only messages in the specified thread will be considered;
 --   supergroups only
 [message_thread_id] :: GetChatMessagePosition -> Maybe Int
+
+-- | If not null, only messages in the specified Saved Messages topic will
+--   be considered; pass null to consider all relevant messages, or for
+--   chats other than Saved Messages
+[saved_messages_topic] :: GetChatMessagePosition -> Maybe SavedMessagesTopic
 defaultGetChatMessagePosition :: GetChatMessagePosition
 instance GHC.Show.Show TD.Query.GetChatMessagePosition.GetChatMessagePosition
 instance GHC.Classes.Eq TD.Query.GetChatMessagePosition.GetChatMessagePosition
@@ -22249,7 +22684,7 @@ module TD.Query.GetChatSparseMessagePositions
 --   searchMessagesFilterFailedToSend filter without an enabled message
 --   database. Returns <a>MessagePositions</a>
 data GetChatSparseMessagePositions
-GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> GetChatSparseMessagePositions
+GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatSparseMessagePositions
 
 -- | Identifier of the chat in which to return information about message
 --   positions
@@ -22268,6 +22703,11 @@ GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Mayb
 --   smaller number of positions can be returned, if there are not enough
 --   appropriate messages
 [limit] :: GetChatSparseMessagePositions -> Maybe Int
+
+-- | If not null, only messages in the specified Saved Messages topic will
+--   be considered; pass null to consider all messages, or for chats other
+--   than Saved Messages
+[saved_messages_topic] :: GetChatSparseMessagePositions -> Maybe SavedMessagesTopic
 defaultGetChatSparseMessagePositions :: GetChatSparseMessagePositions
 instance GHC.Show.Show TD.Query.GetChatSparseMessagePositions.GetChatSparseMessagePositions
 instance GHC.Classes.Eq TD.Query.GetChatSparseMessagePositions.GetChatSparseMessagePositions
@@ -22464,6 +22904,21 @@ instance GHC.Classes.Eq TD.Query.GetCountryCode.GetCountryCode
 instance TD.Lib.Internal.ShortShow TD.Query.GetCountryCode.GetCountryCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCountryCode.GetCountryCode
 
+module TD.Query.GetCountryFlagEmoji
+
+-- | Returns an emoji for the given country. Returns an empty string on
+--   failure. Can be called synchronously. Returns <a>Text</a>
+data GetCountryFlagEmoji
+GetCountryFlagEmoji :: Maybe Text -> GetCountryFlagEmoji
+
+-- | A two-letter ISO 3166-1 alpha-2 country code as received from
+--   getCountries
+[country_code] :: GetCountryFlagEmoji -> Maybe Text
+instance GHC.Show.Show TD.Query.GetCountryFlagEmoji.GetCountryFlagEmoji
+instance GHC.Classes.Eq TD.Query.GetCountryFlagEmoji.GetCountryFlagEmoji
+instance TD.Lib.Internal.ShortShow TD.Query.GetCountryFlagEmoji.GetCountryFlagEmoji
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCountryFlagEmoji.GetCountryFlagEmoji
+
 module TD.Query.GetCreatedPublicChats
 
 -- | Returns a list of public chats of the specified type, owned by the
@@ -22638,8 +23093,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetEmojiCategories.GetEmojiCate
 
 module TD.Query.GetEmojiReaction
 
--- | Returns information about a emoji reaction. Returns a 404 error if the
---   reaction is not found. Returns <a>EmojiReaction</a>
+-- | Returns information about an emoji reaction. Returns a 404 error if
+--   the reaction is not found. Returns <a>EmojiReaction</a>
 data GetEmojiReaction
 GetEmojiReaction :: Maybe Text -> GetEmojiReaction
 
@@ -23137,6 +23592,26 @@ instance GHC.Classes.Eq TD.Query.GetJsonValue.GetJsonValue
 instance TD.Lib.Internal.ShortShow TD.Query.GetJsonValue.GetJsonValue
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetJsonValue.GetJsonValue
 
+module TD.Query.GetKeywordEmojis
+
+-- | Return emojis matching the keyword. Supported only if the file
+--   database is enabled. Order of results is unspecified. Returns
+--   <a>Emojis</a>
+data GetKeywordEmojis
+GetKeywordEmojis :: Maybe Text -> Maybe [Text] -> GetKeywordEmojis
+
+-- | Text to search for
+[text] :: GetKeywordEmojis -> Maybe Text
+
+-- | List of possible IETF language tags of the user's input language; may
+--   be empty if unknown
+[input_language_codes] :: GetKeywordEmojis -> Maybe [Text]
+defaultGetKeywordEmojis :: GetKeywordEmojis
+instance GHC.Show.Show TD.Query.GetKeywordEmojis.GetKeywordEmojis
+instance GHC.Classes.Eq TD.Query.GetKeywordEmojis.GetKeywordEmojis
+instance TD.Lib.Internal.ShortShow TD.Query.GetKeywordEmojis.GetKeywordEmojis
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetKeywordEmojis.GetKeywordEmojis
+
 module TD.Query.GetLanguagePackInfo
 
 -- | Returns information about a language pack. Returned language pack
@@ -23606,6 +24081,25 @@ instance GHC.Classes.Eq TD.Query.GetMessagePublicForwards.GetMessagePublicForwar
 instance TD.Lib.Internal.ShortShow TD.Query.GetMessagePublicForwards.GetMessagePublicForwards
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessagePublicForwards.GetMessagePublicForwards
 
+module TD.Query.GetMessageReadDate
+
+-- | Returns read date of a recent outgoing message in a private chat. The
+--   method can be called if message.can_get_read_date == true and the
+--   message is read. Returns <a>MessageReadDate</a>
+data GetMessageReadDate
+GetMessageReadDate :: Maybe Int -> Maybe Int -> GetMessageReadDate
+
+-- | Chat identifier
+[chat_id] :: GetMessageReadDate -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: GetMessageReadDate -> Maybe Int
+defaultGetMessageReadDate :: GetMessageReadDate
+instance GHC.Show.Show TD.Query.GetMessageReadDate.GetMessageReadDate
+instance GHC.Classes.Eq TD.Query.GetMessageReadDate.GetMessageReadDate
+instance TD.Lib.Internal.ShortShow TD.Query.GetMessageReadDate.GetMessageReadDate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageReadDate.GetMessageReadDate
+
 module TD.Query.GetMessageStatistics
 
 -- | Returns detailed statistics about a message. Can be used only if
@@ -23667,7 +24161,7 @@ GetMessageThreadHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> M
 --   use 0 to get results from the last message
 [from_message_id] :: GetMessageThreadHistory -> Maybe Int
 
--- | Specify 0 to get results from exactly the from_message_id or a
+-- | Specify 0 to get results from exactly the message from_message_id or a
 --   negative offset up to 99 to get additionally some newer messages
 [offset] :: GetMessageThreadHistory -> Maybe Int
 
@@ -23735,6 +24229,17 @@ instance GHC.Show.Show TD.Query.GetNetworkStatistics.GetNetworkStatistics
 instance GHC.Classes.Eq TD.Query.GetNetworkStatistics.GetNetworkStatistics
 instance TD.Lib.Internal.ShortShow TD.Query.GetNetworkStatistics.GetNetworkStatistics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetNetworkStatistics.GetNetworkStatistics
+
+module TD.Query.GetNewChatPrivacySettings
+
+-- | Returns privacy settings for new chat creation. Returns
+--   <a>NewChatPrivacySettings</a>
+data GetNewChatPrivacySettings
+GetNewChatPrivacySettings :: GetNewChatPrivacySettings
+instance GHC.Show.Show TD.Query.GetNewChatPrivacySettings.GetNewChatPrivacySettings
+instance GHC.Classes.Eq TD.Query.GetNewChatPrivacySettings.GetNewChatPrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Query.GetNewChatPrivacySettings.GetNewChatPrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetNewChatPrivacySettings.GetNewChatPrivacySettings
 
 module TD.Query.GetOption
 
@@ -23896,6 +24401,17 @@ instance GHC.Show.Show TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 instance GHC.Classes.Eq TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 instance TD.Lib.Internal.ShortShow TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
+
+module TD.Query.GetPinnedSavedMessagesTopics
+
+-- | Returns list of all pinned Saved Messages topics. Returns
+--   <a>FoundSavedMessagesTopics</a>
+data GetPinnedSavedMessagesTopics
+GetPinnedSavedMessagesTopics :: GetPinnedSavedMessagesTopics
+instance GHC.Show.Show TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
+instance GHC.Classes.Eq TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
+instance TD.Lib.Internal.ShortShow TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
 
 module TD.Query.GetPollVoters
 
@@ -24086,6 +24602,17 @@ instance GHC.Classes.Eq TD.Query.GetPushReceiverId.GetPushReceiverId
 instance TD.Lib.Internal.ShortShow TD.Query.GetPushReceiverId.GetPushReceiverId
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPushReceiverId.GetPushReceiverId
 
+module TD.Query.GetReadDatePrivacySettings
+
+-- | Returns privacy settings for message read date. Returns
+--   <a>ReadDatePrivacySettings</a>
+data GetReadDatePrivacySettings
+GetReadDatePrivacySettings :: GetReadDatePrivacySettings
+instance GHC.Show.Show TD.Query.GetReadDatePrivacySettings.GetReadDatePrivacySettings
+instance GHC.Classes.Eq TD.Query.GetReadDatePrivacySettings.GetReadDatePrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Query.GetReadDatePrivacySettings.GetReadDatePrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetReadDatePrivacySettings.GetReadDatePrivacySettings
+
 module TD.Query.GetRecentEmojiStatuses
 
 -- | Returns recent emoji statuses for self status. Returns
@@ -24233,6 +24760,86 @@ instance GHC.Show.Show TD.Query.GetSavedAnimations.GetSavedAnimations
 instance GHC.Classes.Eq TD.Query.GetSavedAnimations.GetSavedAnimations
 instance TD.Lib.Internal.ShortShow TD.Query.GetSavedAnimations.GetSavedAnimations
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedAnimations.GetSavedAnimations
+
+module TD.Query.GetSavedMessagesTags
+
+-- | Returns tags used in Saved Messages; for Telegram Premium users only.
+--   Returns <a>SavedMessagesTags</a>
+data GetSavedMessagesTags
+GetSavedMessagesTags :: GetSavedMessagesTags
+instance GHC.Show.Show TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
+instance GHC.Classes.Eq TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
+instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
+
+module TD.Query.GetSavedMessagesTopicHistory
+
+-- | Returns messages in a Saved Messages topic. The messages are returned
+--   in a reverse chronological order (i.e., in order of decreasing
+--   message_id). Returns <a>Messages</a>
+data GetSavedMessagesTopicHistory
+GetSavedMessagesTopicHistory :: Maybe SavedMessagesTopic -> Maybe Int -> Maybe Int -> Maybe Int -> GetSavedMessagesTopicHistory
+
+-- | Saved Messages topic which messages will be fetched
+[saved_messages_topic] :: GetSavedMessagesTopicHistory -> Maybe SavedMessagesTopic
+
+-- | Identifier of the message starting from which messages must be
+--   fetched; use 0 to get results from the last message
+[from_message_id] :: GetSavedMessagesTopicHistory -> Maybe Int
+
+-- | Specify 0 to get results from exactly the message from_message_id or a
+--   negative offset up to 99 to get additionally some newer messages
+[offset] :: GetSavedMessagesTopicHistory -> Maybe Int
+
+-- | The maximum number of messages to be returned; must be positive and
+--   can't be greater than 100. If the offset is negative, the limit must
+--   be greater than or equal to -offset. For optimal performance, the
+--   number of returned messages is chosen by TDLib and can be smaller than
+--   the specified limit
+[limit] :: GetSavedMessagesTopicHistory -> Maybe Int
+defaultGetSavedMessagesTopicHistory :: GetSavedMessagesTopicHistory
+instance GHC.Show.Show TD.Query.GetSavedMessagesTopicHistory.GetSavedMessagesTopicHistory
+instance GHC.Classes.Eq TD.Query.GetSavedMessagesTopicHistory.GetSavedMessagesTopicHistory
+instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTopicHistory.GetSavedMessagesTopicHistory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTopicHistory.GetSavedMessagesTopicHistory
+
+module TD.Query.GetSavedMessagesTopicMessageByDate
+
+-- | Returns the last message sent in a Saved Messages topic no later than
+--   the specified date. Returns <a>Message</a>
+data GetSavedMessagesTopicMessageByDate
+GetSavedMessagesTopicMessageByDate :: Maybe SavedMessagesTopic -> Maybe Int -> GetSavedMessagesTopicMessageByDate
+
+-- | Saved Messages topic which message will be returned
+[saved_messages_topic] :: GetSavedMessagesTopicMessageByDate -> Maybe SavedMessagesTopic
+
+-- | Point in time (Unix timestamp) relative to which to search for
+--   messages
+[date] :: GetSavedMessagesTopicMessageByDate -> Maybe Int
+defaultGetSavedMessagesTopicMessageByDate :: GetSavedMessagesTopicMessageByDate
+instance GHC.Show.Show TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
+instance GHC.Classes.Eq TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
+instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
+
+module TD.Query.GetSavedMessagesTopics
+
+-- | Returns list of non-pinned Saved Messages topics from the specified
+--   offset. Returns <a>FoundSavedMessagesTopics</a>
+data GetSavedMessagesTopics
+GetSavedMessagesTopics :: Maybe Text -> Maybe Int -> GetSavedMessagesTopics
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetSavedMessagesTopics -> Maybe Text
+
+-- | The maximum number of Saved Messages topics to be returned; up to 100
+[limit] :: GetSavedMessagesTopics -> Maybe Int
+defaultGetSavedMessagesTopics :: GetSavedMessagesTopics
+instance GHC.Show.Show TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
+instance GHC.Classes.Eq TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
+instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
 
 module TD.Query.GetSavedNotificationSound
 
@@ -26731,7 +27338,7 @@ module TD.Query.SearchChatMessages
 --   for Telegram official application implementation. Returns
 --   <a>FoundChatMessages</a>
 data SearchChatMessages
-SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> SearchChatMessages
+SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> SearchChatMessages
 
 -- | Identifier of the chat in which to search messages
 [chat_id] :: SearchChatMessages -> Maybe Int
@@ -26747,7 +27354,7 @@ SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe In
 --   use 0 to get results from the last message
 [from_message_id] :: SearchChatMessages -> Maybe Int
 
--- | Specify 0 to get results from exactly the from_message_id or a
+-- | Specify 0 to get results from exactly the message from_message_id or a
 --   negative offset to get the specified message and some newer messages
 [offset] :: SearchChatMessages -> Maybe Int
 
@@ -26765,6 +27372,11 @@ SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe In
 -- | If not 0, only messages in the specified thread will be returned;
 --   supergroups only
 [message_thread_id] :: SearchChatMessages -> Maybe Int
+
+-- | If not null, only messages in the specified Saved Messages topic will
+--   be returned; pass null to return all messages, or for chats other than
+--   Saved Messages
+[saved_messages_topic] :: SearchChatMessages -> Maybe SavedMessagesTopic
 defaultSearchChatMessages :: SearchChatMessages
 instance GHC.Show.Show TD.Query.SearchChatMessages.SearchChatMessages
 instance GHC.Classes.Eq TD.Query.SearchChatMessages.SearchChatMessages
@@ -26867,16 +27479,13 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchContacts.SearchContacts
 module TD.Query.SearchEmojis
 
 -- | Searches for emojis by keywords. Supported only if the file database
---   is enabled. Returns <a>Emojis</a>
+--   is enabled. Order of results is unspecified. Returns
+--   <a>EmojiKeywords</a>
 data SearchEmojis
-SearchEmojis :: Maybe Text -> Maybe Bool -> Maybe [Text] -> SearchEmojis
+SearchEmojis :: Maybe Text -> Maybe [Text] -> SearchEmojis
 
 -- | Text to search for
 [text] :: SearchEmojis -> Maybe Text
-
--- | Pass true if only emojis, which exactly match the text, needs to be
---   returned
-[exact_match] :: SearchEmojis -> Maybe Bool
 
 -- | List of possible IETF language tags of the user's input language; may
 --   be empty if unknown
@@ -27089,6 +27698,43 @@ instance GHC.Show.Show TD.Query.SearchRecentlyFoundChats.SearchRecentlyFoundChat
 instance GHC.Classes.Eq TD.Query.SearchRecentlyFoundChats.SearchRecentlyFoundChats
 instance TD.Lib.Internal.ShortShow TD.Query.SearchRecentlyFoundChats.SearchRecentlyFoundChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchRecentlyFoundChats.SearchRecentlyFoundChats
+
+module TD.Query.SearchSavedMessages
+
+-- | Searches for messages tagged by the given reaction and with the given
+--   words in the Saved Messages chat; for Telegram Premium users only.
+--   Returns the results in reverse chronological order, i.e. in order of
+--   decreasing message_id For optimal performance, the number of returned
+--   messages is chosen by TDLib and can be smaller than the specified
+--   limit. Returns <a>FoundChatMessages</a>
+data SearchSavedMessages
+SearchSavedMessages :: Maybe ReactionType -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> SearchSavedMessages
+
+-- | Tag to search for; pass null to return all suitable messages
+[tag] :: SearchSavedMessages -> Maybe ReactionType
+
+-- | Query to search for
+[query] :: SearchSavedMessages -> Maybe Text
+
+-- | Identifier of the message starting from which messages must be
+--   fetched; use 0 to get results from the last message
+[from_message_id] :: SearchSavedMessages -> Maybe Int
+
+-- | Specify 0 to get results from exactly the message from_message_id or a
+--   negative offset to get the specified message and some newer messages
+[offset] :: SearchSavedMessages -> Maybe Int
+
+-- | The maximum number of messages to be returned; must be positive and
+--   can't be greater than 100. If the offset is negative, the limit must
+--   be greater than -offset. For optimal performance, the number of
+--   returned messages is chosen by TDLib and can be smaller than the
+--   specified limit
+[limit] :: SearchSavedMessages -> Maybe Int
+defaultSearchSavedMessages :: SearchSavedMessages
+instance GHC.Show.Show TD.Query.SearchSavedMessages.SearchSavedMessages
+instance GHC.Classes.Eq TD.Query.SearchSavedMessages.SearchSavedMessages
+instance TD.Lib.Internal.ShortShow TD.Query.SearchSavedMessages.SearchSavedMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchSavedMessages.SearchSavedMessages
 
 module TD.Query.SearchSecretMessages
 
@@ -28960,6 +29606,20 @@ instance GHC.Classes.Eq TD.Query.SetNetworkType.SetNetworkType
 instance TD.Lib.Internal.ShortShow TD.Query.SetNetworkType.SetNetworkType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetNetworkType.SetNetworkType
 
+module TD.Query.SetNewChatPrivacySettings
+
+-- | Changes privacy settings for new chat creation; for Telegram Premium
+--   users only. Returns <a>Ok</a>
+data SetNewChatPrivacySettings
+SetNewChatPrivacySettings :: Maybe NewChatPrivacySettings -> SetNewChatPrivacySettings
+
+-- | New settings
+[settings] :: SetNewChatPrivacySettings -> Maybe NewChatPrivacySettings
+instance GHC.Show.Show TD.Query.SetNewChatPrivacySettings.SetNewChatPrivacySettings
+instance GHC.Classes.Eq TD.Query.SetNewChatPrivacySettings.SetNewChatPrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetNewChatPrivacySettings.SetNewChatPrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetNewChatPrivacySettings.SetNewChatPrivacySettings
+
 module TD.Query.SetOption
 
 -- | Sets the value of an option. (Check the list of available options on
@@ -29069,7 +29729,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedChats.SetPinnedChats
 
 module TD.Query.SetPinnedForumTopics
 
--- | Changes the order of pinned forum topics. Returns <a>Ok</a>
+-- | Changes the order of pinned forum topics; requires can_manage_topics
+--   right in the supergroup. Returns <a>Ok</a>
 data SetPinnedForumTopics
 SetPinnedForumTopics :: Maybe Int -> Maybe [Int] -> SetPinnedForumTopics
 
@@ -29083,6 +29744,19 @@ instance GHC.Show.Show TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 instance GHC.Classes.Eq TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 instance TD.Lib.Internal.ShortShow TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
+
+module TD.Query.SetPinnedSavedMessagesTopics
+
+-- | Changes the order of pinned Saved Messages topics. Returns <a>Ok</a>
+data SetPinnedSavedMessagesTopics
+SetPinnedSavedMessagesTopics :: Maybe [SavedMessagesTopic] -> SetPinnedSavedMessagesTopics
+
+-- | The new list of pinned Saved Messages topics
+[saved_messages_topics] :: SetPinnedSavedMessagesTopics -> Maybe [SavedMessagesTopic]
+instance GHC.Show.Show TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
+instance GHC.Classes.Eq TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
+instance TD.Lib.Internal.ShortShow TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
 
 module TD.Query.SetPollAnswer
 
@@ -29144,6 +29818,19 @@ instance GHC.Classes.Eq TD.Query.SetProfilePhoto.SetProfilePhoto
 instance TD.Lib.Internal.ShortShow TD.Query.SetProfilePhoto.SetProfilePhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetProfilePhoto.SetProfilePhoto
 
+module TD.Query.SetReadDatePrivacySettings
+
+-- | Changes privacy settings for message read date. Returns <a>Ok</a>
+data SetReadDatePrivacySettings
+SetReadDatePrivacySettings :: Maybe ReadDatePrivacySettings -> SetReadDatePrivacySettings
+
+-- | New settings
+[settings] :: SetReadDatePrivacySettings -> Maybe ReadDatePrivacySettings
+instance GHC.Show.Show TD.Query.SetReadDatePrivacySettings.SetReadDatePrivacySettings
+instance GHC.Classes.Eq TD.Query.SetReadDatePrivacySettings.SetReadDatePrivacySettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetReadDatePrivacySettings.SetReadDatePrivacySettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetReadDatePrivacySettings.SetReadDatePrivacySettings
+
 module TD.Query.SetRecoveryEmailAddress
 
 -- | Changes the 2-step verification recovery email address of the user. If
@@ -29166,6 +29853,24 @@ instance GHC.Show.Show TD.Query.SetRecoveryEmailAddress.SetRecoveryEmailAddress
 instance GHC.Classes.Eq TD.Query.SetRecoveryEmailAddress.SetRecoveryEmailAddress
 instance TD.Lib.Internal.ShortShow TD.Query.SetRecoveryEmailAddress.SetRecoveryEmailAddress
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetRecoveryEmailAddress.SetRecoveryEmailAddress
+
+module TD.Query.SetSavedMessagesTagLabel
+
+-- | Changes label of a Saved Messages tag; for Telegram Premium users
+--   only. Returns <a>Ok</a>
+data SetSavedMessagesTagLabel
+SetSavedMessagesTagLabel :: Maybe ReactionType -> Maybe Text -> SetSavedMessagesTagLabel
+
+-- | The tag which label will be changed
+[tag] :: SetSavedMessagesTagLabel -> Maybe ReactionType
+
+-- | New label for the tag; 0-12 characters
+[label] :: SetSavedMessagesTagLabel -> Maybe Text
+defaultSetSavedMessagesTagLabel :: SetSavedMessagesTagLabel
+instance GHC.Show.Show TD.Query.SetSavedMessagesTagLabel.SetSavedMessagesTagLabel
+instance GHC.Classes.Eq TD.Query.SetSavedMessagesTagLabel.SetSavedMessagesTagLabel
+instance TD.Lib.Internal.ShortShow TD.Query.SetSavedMessagesTagLabel.SetSavedMessagesTagLabel
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetSavedMessagesTagLabel.SetSavedMessagesTagLabel
 
 module TD.Query.SetScopeNotificationSettings
 
@@ -29392,7 +30097,7 @@ module TD.Query.SetTdlibParameters
 --   current authorization state is authorizationStateWaitTdlibParameters.
 --   Returns <a>Ok</a>
 data SetTdlibParameters
-SetTdlibParameters :: Maybe Bool -> Maybe Text -> Maybe Text -> Maybe ByteString -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Bool -> SetTdlibParameters
+SetTdlibParameters :: Maybe Bool -> Maybe Text -> Maybe Text -> Maybe ByteString -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> SetTdlibParameters
 
 -- | Pass true to use Telegram test environment instead of the production
 --   environment
@@ -29446,14 +30151,6 @@ SetTdlibParameters :: Maybe Bool -> Maybe Text -> Maybe Text -> Maybe ByteString
 
 -- | Application version; must be non-empty
 [application_version] :: SetTdlibParameters -> Maybe Text
-
--- | Pass true to automatically delete old files in background
-[enable_storage_optimizer] :: SetTdlibParameters -> Maybe Bool
-
--- | Pass true to ignore original file names for downloaded files.
---   Otherwise, downloaded files are saved under names as close as possible
---   to the original name
-[ignore_file_names] :: SetTdlibParameters -> Maybe Bool
 defaultSetTdlibParameters :: SetTdlibParameters
 instance GHC.Show.Show TD.Query.SetTdlibParameters.SetTdlibParameters
 instance GHC.Classes.Eq TD.Query.SetTdlibParameters.SetTdlibParameters
@@ -30148,8 +30845,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleDownloadIsPaused.ToggleDo
 module TD.Query.ToggleForumTopicIsClosed
 
 -- | Toggles whether a topic is closed in a forum supergroup chat; requires
---   can_manage_topics administrator right in the supergroup unless the
---   user is creator of the topic. Returns <a>Ok</a>
+--   can_manage_topics right in the supergroup unless the user is creator
+--   of the topic. Returns <a>Ok</a>
 data ToggleForumTopicIsClosed
 ToggleForumTopicIsClosed :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleForumTopicIsClosed
 
@@ -30170,7 +30867,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleForumTopicIsClosed.Toggle
 module TD.Query.ToggleForumTopicIsPinned
 
 -- | Changes the pinned state of a forum topic; requires can_manage_topics
---   administrator right in the supergroup. There can be up to
+--   right in the supergroup. There can be up to
 --   getOption("pinned_forum_topic_count_max") pinned forum topics. Returns
 --   <a>Ok</a>
 data ToggleForumTopicIsPinned
@@ -30193,8 +30890,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleForumTopicIsPinned.Toggle
 module TD.Query.ToggleGeneralForumTopicIsHidden
 
 -- | Toggles whether a General topic is hidden in a forum supergroup chat;
---   requires can_manage_topics administrator right in the supergroup.
---   Returns <a>Ok</a>
+--   requires can_manage_topics right in the supergroup. Returns <a>Ok</a>
 data ToggleGeneralForumTopicIsHidden
 ToggleGeneralForumTopicIsHidden :: Maybe Int -> Maybe Bool -> ToggleGeneralForumTopicIsHidden
 
@@ -30342,6 +31038,25 @@ instance GHC.Show.Show TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroup
 instance GHC.Classes.Eq TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroupCallScreenSharingIsPaused
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroupCallScreenSharingIsPaused
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroupCallScreenSharingIsPaused
+
+module TD.Query.ToggleSavedMessagesTopicIsPinned
+
+-- | Changes the pinned state of a Saved Messages topic. There can be up to
+--   getOption("pinned_saved_messages_topic_count_max") pinned topics. The
+--   limit can be increased with Telegram Premium. Returns <a>Ok</a>
+data ToggleSavedMessagesTopicIsPinned
+ToggleSavedMessagesTopicIsPinned :: Maybe SavedMessagesTopic -> Maybe Bool -> ToggleSavedMessagesTopicIsPinned
+
+-- | Saved Messages topic to pin or unpin
+[saved_messages_topic] :: ToggleSavedMessagesTopicIsPinned -> Maybe SavedMessagesTopic
+
+-- | Pass true to pin the topic; pass false to unpin it
+[is_pinned] :: ToggleSavedMessagesTopicIsPinned -> Maybe Bool
+defaultToggleSavedMessagesTopicIsPinned :: ToggleSavedMessagesTopicIsPinned
+instance GHC.Show.Show TD.Query.ToggleSavedMessagesTopicIsPinned.ToggleSavedMessagesTopicIsPinned
+instance GHC.Classes.Eq TD.Query.ToggleSavedMessagesTopicIsPinned.ToggleSavedMessagesTopicIsPinned
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleSavedMessagesTopicIsPinned.ToggleSavedMessagesTopicIsPinned
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSavedMessagesTopicIsPinned.ToggleSavedMessagesTopicIsPinned
 
 module TD.Query.ToggleSessionCanAcceptCalls
 

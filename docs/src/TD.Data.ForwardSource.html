@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.ForwardSource</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier">ForwardSource</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html"><span class="hs-identifier">TD.Data.MessageSender</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSender</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="ForwardSource"><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-var">ForwardSource</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ForwardSource"><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-var">ForwardSource</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about the last message from which a new message was forwarded last time</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat to which the message that was forwarded belonged; may be 0 if unknown</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_id"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#message_id"><span class="hs-identifier hs-var hs-var">message_id</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the message; may be 0 if unknown</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="sender_id"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe MessageSender
+</span><a href="TD.Data.ForwardSource.html#sender_id"><span class="hs-identifier hs-var hs-var">sender_id</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html#MessageSender"><span class="hs-identifier hs-type">MessageSender.MessageSender</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the sender of the message; may be null if unknown or the new message was forwarded not to Saved Messages</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="sender_name"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe Text
+</span><a href="TD.Data.ForwardSource.html#sender_name"><span class="hs-identifier hs-var hs-var">sender_name</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                      </span><span class="annot"><span class="hs-comment">-- ^ Name of the sender of the message if the sender is hidden by their privacy settings</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="date"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#date"><span class="hs-identifier hs-var hs-var">date</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the message is sent; 0 if unknown</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_outgoing"><span class="annot"><span class="annottext">ForwardSource -&gt; Maybe Bool
+</span><a href="TD.Data.ForwardSource.html#is_outgoing"><span class="hs-identifier hs-var hs-var">is_outgoing</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                        </span><span class="annot"><span class="hs-comment">-- ^ True, if the message that was forwarded is outgoing; always false if sender is unknown</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679592414"><span id="local-6989586621679592427"><span class="annot"><span class="annottext">ForwardSource -&gt; ForwardSource -&gt; Bool
+(ForwardSource -&gt; ForwardSource -&gt; Bool)
+-&gt; (ForwardSource -&gt; ForwardSource -&gt; Bool) -&gt; Eq ForwardSource
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: ForwardSource -&gt; ForwardSource -&gt; Bool
+== :: ForwardSource -&gt; ForwardSource -&gt; Bool
+$c/= :: ForwardSource -&gt; ForwardSource -&gt; Bool
+/= :: ForwardSource -&gt; ForwardSource -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679592436"><span id="local-6989586621679592451"><span id="local-6989586621679592455"><span class="annot"><span class="annottext">Int -&gt; ForwardSource -&gt; ShowS
+[ForwardSource] -&gt; ShowS
+ForwardSource -&gt; String
+(Int -&gt; ForwardSource -&gt; ShowS)
+-&gt; (ForwardSource -&gt; String)
+-&gt; ([ForwardSource] -&gt; ShowS)
+-&gt; Show ForwardSource
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; ForwardSource -&gt; ShowS
+showsPrec :: Int -&gt; ForwardSource -&gt; ShowS
+$cshow :: ForwardSource -&gt; String
+show :: ForwardSource -&gt; String
+$cshowList :: [ForwardSource] -&gt; ShowS
+showList :: [ForwardSource] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-type">ForwardSource</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679592478"><span class="annot"><span class="annottext">shortShow :: ForwardSource -&gt; String
+</span><a href="#local-6989586621679592478"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-type">ForwardSource</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592480"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592480"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592481"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592481"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_id :: ForwardSource -&gt; Maybe MessageSender
+</span><a href="TD.Data.ForwardSource.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592482"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679592482"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_name :: ForwardSource -&gt; Maybe Text
+</span><a href="TD.Data.ForwardSource.html#sender_name"><span class="hs-identifier hs-var">sender_name</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592483"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679592483"><span class="hs-identifier hs-var">sender_name_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: ForwardSource -&gt; Maybe Int
+</span><a href="TD.Data.ForwardSource.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592484"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592484"><span class="hs-identifier hs-var">date_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_outgoing :: ForwardSource -&gt; Maybe Bool
+</span><a href="TD.Data.ForwardSource.html#is_outgoing"><span class="hs-identifier hs-var">is_outgoing</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679592485"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679592485"><span class="hs-identifier hs-var">is_outgoing_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ForwardSource&quot;</span></span><span>
+</span><span id="line-31"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592480"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592481"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSender -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679592482"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-35"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sender_name&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679592483"><span class="hs-identifier hs-var">sender_name_</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;date&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592484"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_outgoing&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679592485"><span class="hs-identifier hs-var">is_outgoing_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679592490"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-type">ForwardSource</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>  </span><span id="local-6989586621679592535"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser ForwardSource
+</span><a href="#local-6989586621679592535"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679592537"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679592537"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679592539"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592539"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-42"></span><span>    </span><span id="local-6989586621679592540"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679592540"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592539"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679592540"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-45"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;forwardSource&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser ForwardSource
+</span><a href="#local-6989586621679592542"><span class="hs-identifier hs-var">parseForwardSource</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679592537"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-46"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser ForwardSource
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-47"></span><span>    </span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-49"></span><span>      </span><span class="annot"><a href="#local-6989586621679592542"><span class="hs-identifier hs-type">parseForwardSource</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-type">ForwardSource</span></a></span><span>
+</span><span id="line-50"></span><span>      </span><span id="local-6989586621679592542"><span class="annot"><span class="annottext">parseForwardSource :: Value -&gt; Parser ForwardSource
+</span><a href="#local-6989586621679592542"><span class="hs-identifier hs-var hs-var">parseForwardSource</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser ForwardSource)
+-&gt; Value
+-&gt; Parser ForwardSource
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ForwardSource&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser ForwardSource) -&gt; Value -&gt; Parser ForwardSource)
+-&gt; (Object -&gt; Parser ForwardSource)
+-&gt; Value
+-&gt; Parser ForwardSource
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679592544"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679592545"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592545"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span id="local-6989586621679592547"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592547"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message_id&quot;</span></span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679592548"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679592548"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe MessageSender)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679592549"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679592549"><span class="hs-identifier hs-var">sender_name_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sender_name&quot;</span></span><span>
+</span><span id="line-55"></span><span>        </span><span id="local-6989586621679592550"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592550"><span class="hs-identifier hs-var">date_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;date&quot;</span></span><span>
+</span><span id="line-56"></span><span>        </span><span id="local-6989586621679592551"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679592551"><span class="hs-identifier hs-var">is_outgoing_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679592544"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_outgoing&quot;</span></span><span>
+</span><span id="line-57"></span><span>        </span><span class="annot"><span class="annottext">ForwardSource -&gt; Parser ForwardSource
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(ForwardSource -&gt; Parser ForwardSource)
+-&gt; ForwardSource -&gt; Parser ForwardSource
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.ForwardSource.html#ForwardSource"><span class="hs-identifier hs-type">ForwardSource</span></a></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Data.ForwardSource.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592545"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-59"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: Maybe Int
+</span><a href="TD.Data.ForwardSource.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592547"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><span id="line-60"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_id :: Maybe MessageSender
+</span><a href="TD.Data.ForwardSource.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679592548"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-61"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_name :: Maybe Text
+</span><a href="TD.Data.ForwardSource.html#sender_name"><span class="hs-identifier hs-var">sender_name</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679592549"><span class="hs-identifier hs-var">sender_name_</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: Maybe Int
+</span><a href="TD.Data.ForwardSource.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679592550"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_outgoing :: Maybe Bool
+</span><a href="TD.Data.ForwardSource.html#is_outgoing"><span class="hs-identifier hs-var">is_outgoing</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679592551"><span class="hs-identifier hs-var">is_outgoing_</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-65"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser ForwardSource
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span></pre></body></html>
