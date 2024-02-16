@@ -6,21 +6,20 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.SavedMessagesTopic.html"><span class="hs-identifier">TD.Data.SavedMessagesTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SavedMessagesTopic</span></span><span>
-</span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Returns messages in a Saved Messages topic. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). Returns 'TD.Data.Messages.Messages'</span></span><span>
-</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="GetSavedMessagesTopicHistory"><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-var">GetSavedMessagesTopicHistory</span></a></span></span><span>
-</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetSavedMessagesTopicHistory"><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-var">GetSavedMessagesTopicHistory</span></a></span></span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="saved_messages_topic"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe SavedMessagesTopic
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic"><span class="hs-identifier hs-var hs-var">saved_messages_topic</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.SavedMessagesTopic.html#SavedMessagesTopic"><span class="hs-identifier hs-type">SavedMessagesTopic.SavedMessagesTopic</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Saved Messages topic which messages will be fetched</span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="from_message_id"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var hs-var">from_message_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="offset"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var hs-var">offset</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="limit"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var hs-var">limit</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit</span></span><span>
-</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679699309"><span id="local-6989586621679699318"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Returns messages in a Saved Messages topic. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). Returns 'TD.Data.Messages.Messages'</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="GetSavedMessagesTopicHistory"><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-var">GetSavedMessagesTopicHistory</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetSavedMessagesTopicHistory"><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-var">GetSavedMessagesTopicHistory</span></a></span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="saved_messages_topic_id"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic_id"><span class="hs-identifier hs-var hs-var">saved_messages_topic_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of Saved Messages topic which messages will be fetched</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="from_message_id"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var hs-var">from_message_id</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="offset"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var hs-var">offset</span></a></span></span><span>                  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="limit"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var hs-var">limit</span></a></span></span><span>                   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679700941"><span id="local-6989586621679700949"><span class="annot"><span class="annottext">GetSavedMessagesTopicHistory
 -&gt; GetSavedMessagesTopicHistory -&gt; Bool
 (GetSavedMessagesTopicHistory
  -&gt; GetSavedMessagesTopicHistory -&gt; Bool)
@@ -36,7 +35,7 @@ $c/= :: GetSavedMessagesTopicHistory
 -&gt; GetSavedMessagesTopicHistory -&gt; Bool
 /= :: GetSavedMessagesTopicHistory
 -&gt; GetSavedMessagesTopicHistory -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679699325"><span id="local-6989586621679699336"><span id="local-6989586621679699340"><span class="annot"><span class="annottext">Int -&gt; GetSavedMessagesTopicHistory -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679700955"><span id="local-6989586621679700965"><span id="local-6989586621679700969"><span class="annot"><span class="annottext">Int -&gt; GetSavedMessagesTopicHistory -&gt; ShowS
 [GetSavedMessagesTopicHistory] -&gt; ShowS
 GetSavedMessagesTopicHistory -&gt; String
 (Int -&gt; GetSavedMessagesTopicHistory -&gt; ShowS)
@@ -52,124 +51,124 @@ show :: GetSavedMessagesTopicHistory -&gt; String
 $cshowList :: [GetSavedMessagesTopicHistory] -&gt; ShowS
 showList :: [GetSavedMessagesTopicHistory] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-20"></span><span>
-</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-22"></span><span>  </span><span id="local-6989586621679699357"><span class="annot"><span class="annottext">shortShow :: GetSavedMessagesTopicHistory -&gt; String
-</span><a href="#local-6989586621679699357"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
-</span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: GetSavedMessagesTopicHistory -&gt; Maybe SavedMessagesTopic
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699359"><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
-</span><a href="#local-6989586621679699359"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span></span><span>
-</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699360"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699360"><span class="hs-identifier hs-var">from_message_id_</span></a></span></span><span>
-</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699361"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699361"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
-</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699362"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699362"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
-</span><span id="line-28"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-29"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679700984"><span class="annot"><span class="annottext">shortShow :: GetSavedMessagesTopicHistory -&gt; String
+</span><a href="#local-6989586621679700984"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679700986"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700986"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679700987"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700987"><span class="hs-identifier hs-var">from_message_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679700988"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700988"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679700989"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700989"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;GetSavedMessagesTopicHistory&quot;</span></span><span>
-</span><span id="line-30"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span id="line-29"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
-</span><span id="line-31"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;saved_messages_topic&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe SavedMessagesTopic -&gt; String
+</span><span id="line-30"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;saved_messages_topic_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
-</span><a href="#local-6989586621679699359"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span><span>
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700986"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span><span>
+</span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;from_message_id&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679700987"><span class="hs-identifier hs-var">from_message_id_</span></a></span><span>
 </span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;from_message_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span class="hs-string">&quot;offset&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699360"><span class="hs-identifier hs-var">from_message_id_</span></a></span><span>
+</span><a href="#local-6989586621679700988"><span class="hs-identifier hs-var">offset_</span></a></span><span>
 </span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;offset&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span class="hs-string">&quot;limit&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699361"><span class="hs-identifier hs-var">offset_</span></a></span><span>
-</span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;limit&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699362"><span class="hs-identifier hs-var">limit_</span></a></span><span>
-</span><span id="line-35"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-36"></span><span>
-</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679699367"><span id="local-6989586621679699371"><span id="local-6989586621679699374"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-38"></span><span>  </span><span id="local-6989586621679699404"><span class="annot"><span class="annottext">toJSON :: GetSavedMessagesTopicHistory -&gt; Value
-</span><a href="#local-6989586621679699404"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-39"></span><span>    </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
-</span><span id="line-40"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: GetSavedMessagesTopicHistory -&gt; Maybe SavedMessagesTopic
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699406"><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
-</span><a href="#local-6989586621679699406"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span></span><span>
-</span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699407"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699407"><span class="hs-identifier hs-var">from_message_id_</span></a></span></span><span>
-</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699408"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699408"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
-</span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetSavedMessagesTopicHistory -&gt; Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679699409"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699409"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
-</span><span id="line-44"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-45"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679700989"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><span id="line-34"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679700994"><span id="local-6989586621679700998"><span id="local-6989586621679701001"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679701029"><span class="annot"><span class="annottext">toJSON :: GetSavedMessagesTopicHistory -&gt; Value
+</span><a href="#local-6989586621679701029"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-38"></span><span>    </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679701031"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701031"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679701032"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701032"><span class="hs-identifier hs-var">from_message_id_</span></a></span></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679701033"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701033"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetSavedMessagesTopicHistory -&gt; Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679701034"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701034"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-46"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;@type&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+</span><span id="line-45"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;getSavedMessagesTopicHistory&quot;</span></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;saved_messages_topic_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701031"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span><span>
 </span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;saved_messages_topic&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe SavedMessagesTopic -&gt; Pair
+</span><span class="hs-string">&quot;from_message_id&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
-</span><a href="#local-6989586621679699406"><span class="hs-identifier hs-var">saved_messages_topic_</span></a></span><span>
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679701032"><span class="hs-identifier hs-var">from_message_id_</span></a></span><span>
 </span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;from_message_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span class="hs-string">&quot;offset&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699407"><span class="hs-identifier hs-var">from_message_id_</span></a></span><span>
+</span><a href="#local-6989586621679701033"><span class="hs-identifier hs-var">offset_</span></a></span><span>
 </span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;offset&quot;</span></span><span>               </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span class="hs-string">&quot;limit&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699408"><span class="hs-identifier hs-var">offset_</span></a></span><span>
-</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;limit&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679699409"><span class="hs-identifier hs-var">limit_</span></a></span><span>
-</span><span id="line-51"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-52"></span><span>
-</span><span id="line-53"></span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#defaultGetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">defaultGetSavedMessagesTopicHistory</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
-</span><span id="line-54"></span><span id="defaultGetSavedMessagesTopicHistory"><span class="annot"><span class="annottext">defaultGetSavedMessagesTopicHistory :: GetSavedMessagesTopicHistory
+</span><a href="#local-6989586621679701034"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#defaultGetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">defaultGetSavedMessagesTopicHistory</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
+</span><span id="line-53"></span><span id="defaultGetSavedMessagesTopicHistory"><span class="annot"><span class="annottext">defaultGetSavedMessagesTopicHistory :: GetSavedMessagesTopicHistory
 </span><a href="TD.Query.GetSavedMessagesTopicHistory.html#defaultGetSavedMessagesTopicHistory"><span class="hs-identifier hs-var hs-var">defaultGetSavedMessagesTopicHistory</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-55"></span><span>  </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
-</span><span id="line-56"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic :: Maybe SavedMessagesTopic
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic"><span class="hs-identifier hs-var">saved_messages_topic</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe SavedMessagesTopic
+</span><span id="line-54"></span><span>  </span><span class="annot"><a href="TD.Query.GetSavedMessagesTopicHistory.html#GetSavedMessagesTopicHistory"><span class="hs-identifier hs-type">GetSavedMessagesTopicHistory</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_message_id :: Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#from_message_id"><span class="hs-identifier hs-var">from_message_id</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: Maybe Int
-</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: Maybe Int
+</span><a href="TD.Query.GetSavedMessagesTopicHistory.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-60"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-61"></span><span>
-</span><span id="line-62"></span></pre></body></html>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span></pre></body></html>

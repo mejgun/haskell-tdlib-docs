@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.20.0
+@version 2.0.21.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -301,7 +301,7 @@ UserPrivacySettingAllowPeerToPeerCalls :: UserPrivacySetting
 UserPrivacySettingAllowFindingByPhoneNumber :: UserPrivacySetting
 
 -- | A privacy setting for managing whether the user can receive voice and
---   video messages in private chats
+--   video messages in private chats; for Telegram Premium users only
 UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages :: UserPrivacySetting
 instance GHC.Show.Show TD.Data.UserPrivacySetting.UserPrivacySetting
 instance GHC.Classes.Eq TD.Data.UserPrivacySetting.UserPrivacySetting
@@ -1537,28 +1537,27 @@ instance TD.Lib.Internal.ShortShow TD.Data.ScopeAutosaveSettings.ScopeAutosaveSe
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ScopeAutosaveSettings.ScopeAutosaveSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ScopeAutosaveSettings.ScopeAutosaveSettings
 
-module TD.Data.SavedMessagesTopic
+module TD.Data.SavedMessagesTopicType
 
--- | Contains information about a Saved Messages topic
-data SavedMessagesTopic
+-- | Describes type of a Saved Messages topic
+data SavedMessagesTopicType
 
 -- | Topic containing messages sent by the current user of forwarded from
 --   an unknown chat
-SavedMessagesTopicMyNotes :: SavedMessagesTopic
+SavedMessagesTopicTypeMyNotes :: SavedMessagesTopicType
 
 -- | Topic containing messages forwarded from a user with hidden privacy
-SavedMessagesTopicAuthorHidden :: SavedMessagesTopic
+SavedMessagesTopicTypeAuthorHidden :: SavedMessagesTopicType
 
 -- | Topic containing messages forwarded from a specific chat
-SavedMessagesTopicSavedFromChat :: Maybe Int -> SavedMessagesTopic
+SavedMessagesTopicTypeSavedFromChat :: Maybe Int -> SavedMessagesTopicType
 
 -- | Identifier of the chat
-[chat_id] :: SavedMessagesTopic -> Maybe Int
-instance GHC.Show.Show TD.Data.SavedMessagesTopic.SavedMessagesTopic
-instance GHC.Classes.Eq TD.Data.SavedMessagesTopic.SavedMessagesTopic
-instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTopic.SavedMessagesTopic
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTopic.SavedMessagesTopic
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SavedMessagesTopic.SavedMessagesTopic
+[chat_id] :: SavedMessagesTopicType -> Maybe Int
+instance GHC.Show.Show TD.Data.SavedMessagesTopicType.SavedMessagesTopicType
+instance GHC.Classes.Eq TD.Data.SavedMessagesTopicType.SavedMessagesTopicType
+instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTopicType.SavedMessagesTopicType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTopicType.SavedMessagesTopicType
 
 module TD.Data.SavedCredentials
 data SavedCredentials
@@ -1770,13 +1769,14 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReactionType.ReactionType
 module TD.Data.SavedMessagesTag
 data SavedMessagesTag
 
--- | Represents a tag used in Saved Messages
+-- | Represents a tag used in Saved Messages or a Saved Messages topic
 SavedMessagesTag :: Maybe ReactionType -> Maybe Text -> Maybe Int -> SavedMessagesTag
 
 -- | The tag
 [tag] :: SavedMessagesTag -> Maybe ReactionType
 
--- | Label of the tag; 0-12 characters
+-- | Label of the tag; 0-12 characters. Always empty if the tag is returned
+--   for a Saved Messages topic
 [label] :: SavedMessagesTag -> Maybe Text
 
 -- | Number of times the tag was used; may be 0 if the tag has non-empty
@@ -1939,7 +1939,7 @@ data ProfileAccentColor
 
 -- | Contains information about supported accent color for user profile
 --   photo background
-ProfileAccentColor :: Maybe Int -> Maybe ProfileAccentColors -> Maybe ProfileAccentColors -> Maybe Int -> ProfileAccentColor
+ProfileAccentColor :: Maybe Int -> Maybe ProfileAccentColors -> Maybe ProfileAccentColors -> Maybe Int -> Maybe Int -> ProfileAccentColor
 
 -- | Profile accent color identifier
 [_id] :: ProfileAccentColor -> Maybe Int
@@ -1950,8 +1950,13 @@ ProfileAccentColor :: Maybe Int -> Maybe ProfileAccentColors -> Maybe ProfileAcc
 -- | Accent colors expected to be used in dark themes
 [dark_theme_colors] :: ProfileAccentColor -> Maybe ProfileAccentColors
 
--- | The minimum chat boost level required to use the color
-[min_chat_boost_level] :: ProfileAccentColor -> Maybe Int
+-- | The minimum chat boost level required to use the color in a supergroup
+--   chat
+[min_supergroup_chat_boost_level] :: ProfileAccentColor -> Maybe Int
+
+-- | The minimum chat boost level required to use the color in a channel
+--   chat
+[min_channel_chat_boost_level] :: ProfileAccentColor -> Maybe Int
 instance GHC.Show.Show TD.Data.ProfileAccentColor.ProfileAccentColor
 instance GHC.Classes.Eq TD.Data.ProfileAccentColor.ProfileAccentColor
 instance TD.Lib.Internal.ShortShow TD.Data.ProfileAccentColor.ProfileAccentColor
@@ -1986,8 +1991,8 @@ module TD.Data.PremiumStoryFeature
 -- | Describes a story feature available to Premium users
 data PremiumStoryFeature
 
--- | User stories are displayed before stories of non-premium contacts and
---   channels
+-- | Stories of the current user are displayed before stories of
+--   non-Premium contacts, supergroups, and channels
 PremiumStoryFeaturePriorityOrder :: PremiumStoryFeature
 
 -- | The ability to hide the fact that the user viewed other's stories
@@ -2005,6 +2010,9 @@ PremiumStoryFeatureSaveStories :: PremiumStoryFeature
 
 -- | The ability to use links and formatting in story caption
 PremiumStoryFeatureLinksAndFormatting :: PremiumStoryFeature
+
+-- | The ability to choose better quality for viewed stories
+PremiumStoryFeatureVideoQuality :: PremiumStoryFeature
 instance GHC.Show.Show TD.Data.PremiumStoryFeature.PremiumStoryFeature
 instance GHC.Classes.Eq TD.Data.PremiumStoryFeature.PremiumStoryFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumStoryFeature.PremiumStoryFeature
@@ -2141,13 +2149,16 @@ data PremiumGiveawayParameters
 -- | Describes parameters of a Telegram Premium giveaway
 PremiumGiveawayParameters :: Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Text -> PremiumGiveawayParameters
 
--- | Identifier of the channel chat, which will be automatically boosted by
---   the winners of the giveaway for duration of the Premium subscription
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the winners of the giveaway for duration of
+--   the Premium subscription. If the chat is a channel, then
+--   can_post_messages right is required in the channel, otherwise, the
+--   user must be an administrator in the supergroup
 [boosted_chat_id] :: PremiumGiveawayParameters -> Maybe Int
 
--- | Identifiers of other channel chats that must be subscribed by the
---   users to be eligible for the giveaway. There can be up to
---   getOption("giveaway_additional_chat_count_max") additional chats
+-- | Identifiers of other supergroup or channel chats that must be
+--   subscribed by the users to be eligible for the giveaway. There can be
+--   up to getOption("giveaway_additional_chat_count_max") additional chats
 [additional_chat_ids] :: PremiumGiveawayParameters -> Maybe [Int]
 
 -- | Point in time (Unix timestamp) when the giveaway is expected to be
@@ -2189,9 +2200,9 @@ data TelegramPaymentPurpose
 -- | The user creating Telegram Premium gift codes for other users
 TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> TelegramPaymentPurpose
 
--- | Identifier of the channel chat, which will be automatically boosted by
---   the users for duration of the Premium subscription and which is
---   administered by the user; 0 if none
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the users for duration of the Premium
+--   subscription and which is administered by the user; 0 if none
 [boosted_chat_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -2207,8 +2218,7 @@ TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -
 --   the users
 [month_count] :: TelegramPaymentPurpose -> Maybe Int
 
--- | The user creating a Telegram Premium giveaway for subscribers of
---   channel chats; requires can_post_messages rights in the channels
+-- | The user creating a Telegram Premium giveaway
 TelegramPaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
 
 -- | Giveaway parameters
@@ -2263,9 +2273,9 @@ StorePaymentPurposeGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> Stor
 -- | The user creating Telegram Premium gift codes for other users
 StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> StorePaymentPurpose
 
--- | Identifier of the channel chat, which will be automatically boosted by
---   the users for duration of the Premium subscription and which is
---   administered by the user; 0 if none
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the users for duration of the Premium
+--   subscription and which is administered by the user; 0 if none
 [boosted_chat_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -2277,8 +2287,7 @@ StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> M
 -- | Identifiers of the users which can activate the gift codes
 [user_ids] :: StorePaymentPurpose -> Maybe [Int]
 
--- | The user creating a Telegram Premium giveaway for subscribers of
---   channel chats; requires can_post_messages rights in the channels
+-- | The user creating a Telegram Premium giveaway
 StorePaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Text -> Maybe Int -> StorePaymentPurpose
 
 -- | Giveaway parameters
@@ -2445,6 +2454,20 @@ PremiumFeatureAccentColor :: PremiumFeature
 
 -- | The ability to set private chat background for both users
 PremiumFeatureBackgroundForBoth :: PremiumFeature
+
+-- | The ability to use tags in Saved Messages
+PremiumFeatureSavedMessagesTags :: PremiumFeature
+
+-- | The ability to disallow incoming voice and video note messages in
+--   private chats using setUserPrivacySettingRules with
+--   userPrivacySettingAllowPrivateVoiceAndVideoNoteMessages and to
+--   restrict incoming messages from non-contacts using
+--   setNewChatPrivacySettings
+PremiumFeatureMessagePrivacy :: PremiumFeature
+
+-- | The ability to view last seen and read times of other users even they
+--   can't view last seen or read time for the current user
+PremiumFeatureLastSeenTimes :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
@@ -3397,7 +3420,7 @@ MessageReactions :: Maybe [MessageReaction] -> Maybe Bool -> MessageReactions
 [reactions] :: MessageReactions -> Maybe [MessageReaction]
 
 -- | True, if the reactions are tags and Telegram Premium users can filter
---   messages by them; currently, always false
+--   messages by them
 [are_tags] :: MessageReactions -> Maybe Bool
 instance GHC.Show.Show TD.Data.MessageReactions.MessageReactions
 instance GHC.Classes.Eq TD.Data.MessageReactions.MessageReactions
@@ -5605,7 +5628,7 @@ InputMessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQuote -> 
 InputMessageReplyToStory :: Maybe Int -> Maybe Int -> InputMessageReplyTo
 
 -- | The identifier of the sender of the story. Currently, stories can be
---   replied only in the sender's chat
+--   replied only in the sender's chat and channel stories can't be replied
 [story_sender_chat_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | The identifier of the story
@@ -6168,13 +6191,17 @@ module TD.Data.Story
 data Story
 
 -- | Represents a story
-Story :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Story
+Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Story
 
 -- | Unique story identifier among stories of the given sender
 [_id] :: Story -> Maybe Int
 
 -- | Identifier of the chat that posted the story
 [sender_chat_id] :: Story -> Maybe Int
+
+-- | Identifier of the sender of the story; may be null if the story is
+--   posted on behalf of the sender_chat_id
+[sender_id] :: Story -> Maybe MessageSender
 
 -- | Point in time (Unix timestamp) when the story was published
 [date] :: Story -> Maybe Int
@@ -7584,8 +7611,8 @@ InputMessageText :: Maybe FormattedText -> Maybe LinkPreviewOptions -> Maybe Boo
 --   entities are allowed to be specified manually
 [text] :: InputMessageContent -> Maybe FormattedText
 
--- | Options to be used for generation of a link preview; pass null to use
---   default link preview options
+-- | Options to be used for generation of a link preview; may be null if
+--   none; pass null to use default link preview options
 [link_preview_options] :: InputMessageContent -> Maybe LinkPreviewOptions
 
 -- | True, if a chat message draft must be deleted
@@ -7946,7 +7973,8 @@ DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe InputMessageCont
 -- | Point in time (Unix timestamp) when the draft was created
 [date] :: DraftMessage -> Maybe Int
 
--- | Content of the message draft; must be of the type inputMessageText
+-- | Content of the message draft; must be of the type inputMessageText,
+--   inputMessageVideoNote, or inputMessageVoiceNote
 [input_message_text] :: DraftMessage -> Maybe InputMessageContent
 defaultDraftMessage :: DraftMessage
 instance GHC.Show.Show TD.Data.DraftMessage.DraftMessage
@@ -9816,7 +9844,7 @@ module TD.Data.ChatBoostLevelFeatures
 data ChatBoostLevelFeatures
 
 -- | Contains a list of features available on a specific chat boost level
-ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> ChatBoostLevelFeatures
+ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatBoostLevelFeatures
 
 -- | Target chat boost level
 [level] :: ChatBoostLevelFeatures -> Maybe Int
@@ -9853,6 +9881,13 @@ ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Ma
 
 -- | True, if custom background can be set in the chat for all users
 [can_set_custom_background] :: ChatBoostLevelFeatures -> Maybe Bool
+
+-- | True, if custom emoji sticker set can be set for the chat
+[can_set_custom_emoji_sticker_set] :: ChatBoostLevelFeatures -> Maybe Bool
+
+-- | True, if speech recognition can be used for video note and voice note
+--   messages by all users
+[can_recognize_speech] :: ChatBoostLevelFeatures -> Maybe Bool
 instance GHC.Show.Show TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
 instance GHC.Classes.Eq TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
@@ -9862,7 +9897,7 @@ module TD.Data.ChatBoostFeatures
 data ChatBoostFeatures
 
 -- | Contains a list of features available on the first chat boost levels
-ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
+ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
 
 -- | The list of features
 [features] :: ChatBoostFeatures -> Maybe [ChatBoostLevelFeatures]
@@ -9872,7 +9907,7 @@ ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int ->
 [min_profile_background_custom_emoji_boost_level] :: ChatBoostFeatures -> Maybe Int
 
 -- | The minimum boost level required to set custom emoji for reply header
---   and link preview background
+--   and link preview background; for channel chats only
 [min_background_custom_emoji_boost_level] :: ChatBoostFeatures -> Maybe Int
 
 -- | The minimum boost level required to set emoji status
@@ -9884,6 +9919,14 @@ ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int ->
 
 -- | The minimum boost level required to set custom chat background
 [min_custom_background_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level required to set custom emoji sticker set for
+--   the chat; for supergroup chats only
+[min_custom_emoji_sticker_set_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level allowing to recognize speech in video note and
+--   voice note messages for non-Premium users; for supergroup chats only
+[min_speech_recognition_boost_level] :: ChatBoostFeatures -> Maybe Int
 instance GHC.Show.Show TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance GHC.Classes.Eq TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostFeatures.ChatBoostFeatures
@@ -9959,10 +10002,10 @@ data ChatAdministratorRights
 -- | Describes rights of the administrator
 ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatAdministratorRights
 
--- | True, if the administrator can get chat event log, get chat boosts in
---   channels, get channel members, report supergroup spam messages, see
---   anonymous administrators in supergroups and ignore slow mode. Implied
---   by any other privilege; applicable to supergroups and channels only
+-- | True, if the administrator can access the chat event log, get boost
+--   list, see hidden supergroup and channel members, report supergroup
+--   spam messages and ignore slow mode. Implied by any other privilege;
+--   applicable to supergroups and channels only
 [can_manage_chat] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can change the chat title, photo, and other
@@ -10003,16 +10046,17 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 -- | True, if the administrator can manage video chats
 [can_manage_video_chats] :: ChatAdministratorRights -> Maybe Bool
 
--- | True, if the administrator can create new channel stories, or edit and
---   delete posted stories; applicable to channels only
+-- | True, if the administrator can create new chat stories, or edit and
+--   delete posted stories; applicable to supergroups and channels only
 [can_post_stories] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can edit stories posted by other users, pin
---   stories and access story archive; applicable to channels only
+--   stories and access story archive; applicable to supergroups and
+--   channels only
 [can_edit_stories] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can delete stories posted by other users;
---   applicable to channels only
+--   applicable to supergroups and channels only
 [can_delete_stories] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator isn't shown in the chat member list and
@@ -11341,12 +11385,12 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 --   account
 [is_fake] :: Supergroup -> Maybe Bool
 
--- | True, if the channel has non-expired stories available to the current
---   user
+-- | True, if the supergroup or channel has non-expired stories available
+--   to the current user
 [has_active_stories] :: Supergroup -> Maybe Bool
 
--- | True, if the channel has unread non-expired stories available to the
---   current user
+-- | True, if the supergroup or channel has unread non-expired stories
+--   available to the current user
 [has_unread_active_stories] :: Supergroup -> Maybe Bool
 instance GHC.Show.Show TD.Data.Supergroup.Supergroup
 instance GHC.Classes.Eq TD.Data.Supergroup.Supergroup
@@ -11645,9 +11689,9 @@ CanSendStoryResultOk :: CanSendStoryResult
 -- | The user must subscribe to Telegram Premium to be able to post stories
 CanSendStoryResultPremiumNeeded :: CanSendStoryResult
 
--- | The channel chat must be boosted first by Telegram Premium subscribers
---   to post more stories. Call getChatBoostStatus to get current boost
---   status of the chat
+-- | The chat must be boosted first by Telegram Premium subscribers to post
+--   more stories. Call getChatBoostStatus to get current boost status of
+--   the chat
 CanSendStoryResultBoostNeeded :: CanSendStoryResult
 
 -- | The limit for the number of active stories exceeded. The user can buy
@@ -12458,7 +12502,7 @@ AvailableReactions :: Maybe [AvailableReaction] -> Maybe [AvailableReaction] -> 
 [allow_custom_emoji] :: AvailableReactions -> Maybe Bool
 
 -- | True, if the reactions will be tags and the message can be found by
---   them; currently, always false
+--   them
 [are_tags] :: AvailableReactions -> Maybe Bool
 
 -- | The reason why the current user can't add reactions to the message,
@@ -14308,7 +14352,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -14377,11 +14421,23 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   The value of this field is only available to chat administrators
 [has_aggressive_anti_spam_enabled] :: SupergroupFullInfo -> Maybe Bool
 
--- | True, if the channel has pinned stories
+-- | True, if the supergroup or channel has pinned stories
 [has_pinned_stories] :: SupergroupFullInfo -> Maybe Bool
 
--- | Identifier of the supergroup sticker set; 0 if none
+-- | Number of times the current user boosted the supergroup or channel
+[my_boost_count] :: SupergroupFullInfo -> Maybe Int
+
+-- | Number of times the supergroup must be boosted by a user to ignore
+--   slow mode and chat permission restrictions; 0 if unspecified
+[unrestrict_boost_count] :: SupergroupFullInfo -> Maybe Int
+
+-- | Identifier of the supergroup sticker set that must be shown before
+--   user sticker sets; 0 if none
 [sticker_set_id] :: SupergroupFullInfo -> Maybe Int
+
+-- | Identifier of the custom emoji sticker set that can be used in the
+--   supergroup without Telegram Premium subscription; 0 if none
+[custom_emoji_sticker_set_id] :: SupergroupFullInfo -> Maybe Int
 
 -- | Location to which the supergroup is connected; may be null if none
 [location] :: SupergroupFullInfo -> Maybe ChatLocation
@@ -15130,6 +15186,12 @@ MessageChatSetMessageAutoDeleteTime :: Maybe Int -> Maybe Int -> MessageContent
 --   applied
 [from_user_id] :: MessageContent -> Maybe Int
 
+-- | The chat was boosted by the sender of the message
+MessageChatBoost :: Maybe Int -> MessageContent
+
+-- | Number of times the chat was boosted
+[boost_count] :: MessageContent -> Maybe Int
+
 -- | A forum topic has been created
 MessageForumTopicCreated :: Maybe Text -> Maybe ForumTopicIcon -> MessageContent
 
@@ -15567,7 +15629,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe SavedMessagesTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -15684,9 +15746,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   to; unique within the chat to which the message belongs
 [message_thread_id] :: Message -> Maybe Int
 
--- | Information about topic of the message in the Saved Messages chat; may
---   be null for messages not from Saved Messages
-[saved_messages_topic] :: Message -> Maybe SavedMessagesTopic
+-- | Identifier of the Saved Messages topic for the message; 0 for messages
+--   not from Saved Messages
+[saved_messages_topic_id] :: Message -> Maybe Int
 
 -- | The message's self-destruct type; may be null if none
 [self_destruct_type] :: Message -> Maybe MessageSelfDestructType
@@ -15702,6 +15764,12 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | If non-zero, the user identifier of the bot through which this message
 --   was sent
 [via_bot_user_id] :: Message -> Maybe Int
+
+-- | Number of times the sender of the message boosted the supergroup at
+--   the time the message was sent; 0 if none or unknown. For messages sent
+--   by the current user, supergroupFullInfo.my_boost_count must be used
+--   instead
+[sender_boost_count] :: Message -> Maybe Int
 
 -- | For channel posts and anonymous group messages, optional author
 --   signature
@@ -15803,6 +15871,35 @@ instance GHC.Show.Show TD.Data.StoryInteractions.StoryInteractions
 instance GHC.Classes.Eq TD.Data.StoryInteractions.StoryInteractions
 instance TD.Lib.Internal.ShortShow TD.Data.StoryInteractions.StoryInteractions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryInteractions.StoryInteractions
+
+module TD.Data.SavedMessagesTopic
+data SavedMessagesTopic
+
+-- | Contains information about a Saved Messages topic
+SavedMessagesTopic :: Maybe Int -> Maybe SavedMessagesTopicType -> Maybe Bool -> Maybe Int -> Maybe Message -> Maybe DraftMessage -> SavedMessagesTopic
+
+-- | Unique topic identifier
+[_id] :: SavedMessagesTopic -> Maybe Int
+
+-- | Type of the topic
+[_type] :: SavedMessagesTopic -> Maybe SavedMessagesTopicType
+
+-- | True, if the topic is pinned
+[is_pinned] :: SavedMessagesTopic -> Maybe Bool
+
+-- | A parameter used to determine order of the topic in the topic list.
+--   Topics must be sorted by the order in descending order
+[order] :: SavedMessagesTopic -> Maybe Int
+
+-- | Last message in the topic; may be null if none or unknown
+[last_message] :: SavedMessagesTopic -> Maybe Message
+
+-- | A draft of a message in the topic; may be null if none
+[draft_message] :: SavedMessagesTopic -> Maybe DraftMessage
+instance GHC.Show.Show TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance GHC.Classes.Eq TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTopic.SavedMessagesTopic
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTopic.SavedMessagesTopic
 
 module TD.Data.PublicForward
 
@@ -16054,42 +16151,6 @@ instance GHC.Show.Show TD.Data.MessageCalendar.MessageCalendar
 instance GHC.Classes.Eq TD.Data.MessageCalendar.MessageCalendar
 instance TD.Lib.Internal.ShortShow TD.Data.MessageCalendar.MessageCalendar
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageCalendar.MessageCalendar
-
-module TD.Data.FoundSavedMessagesTopic
-data FoundSavedMessagesTopic
-
--- | Contains information about a found Saved Messages topic
-FoundSavedMessagesTopic :: Maybe SavedMessagesTopic -> Maybe Message -> FoundSavedMessagesTopic
-
--- | The topic
-[topic] :: FoundSavedMessagesTopic -> Maybe SavedMessagesTopic
-
--- | Last message in the topic; may be null if none or unknown
-[last_message] :: FoundSavedMessagesTopic -> Maybe Message
-instance GHC.Show.Show TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
-instance GHC.Classes.Eq TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
-instance TD.Lib.Internal.ShortShow TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundSavedMessagesTopic.FoundSavedMessagesTopic
-
-module TD.Data.FoundSavedMessagesTopics
-data FoundSavedMessagesTopics
-
--- | Contains a list of Saved Messages topics
-FoundSavedMessagesTopics :: Maybe Int -> Maybe [FoundSavedMessagesTopic] -> Maybe Text -> FoundSavedMessagesTopics
-
--- | Total number of Saved Messages topics found
-[total_count] :: FoundSavedMessagesTopics -> Maybe Int
-
--- | List of Saved Messages topics
-[topics] :: FoundSavedMessagesTopics -> Maybe [FoundSavedMessagesTopic]
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: FoundSavedMessagesTopics -> Maybe Text
-instance GHC.Show.Show TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
-instance GHC.Classes.Eq TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
-instance TD.Lib.Internal.ShortShow TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundSavedMessagesTopics.FoundSavedMessagesTopics
 
 module TD.Data.FoundMessages
 data FoundMessages
@@ -16443,6 +16504,15 @@ ChatEventStickerSetChanged :: Maybe Int -> Maybe Int -> ChatEventAction
 -- | New identifier of the chat sticker set; 0 if none
 [new_sticker_set_id] :: ChatEventAction -> Maybe Int
 
+-- | The supergroup sticker set with allowed custom emoji was changed
+ChatEventCustomEmojiStickerSetChanged :: Maybe Int -> Maybe Int -> ChatEventAction
+
+-- | Previous identifier of the chat sticker set; 0 if none
+[old_sticker_set_id] :: ChatEventAction -> Maybe Int
+
+-- | New identifier of the chat sticker set; 0 if none
+[new_sticker_set_id] :: ChatEventAction -> Maybe Int
+
 -- | The chat title was changed
 ChatEventTitleChanged :: Maybe Text -> Maybe Text -> ChatEventAction
 
@@ -16741,7 +16811,8 @@ Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Mayb
 [is_marked_as_unread] :: Chat -> Maybe Bool
 
 -- | True, if the chat is a forum supergroup that must be shown in the
---   "View as topics" mode
+--   "View as topics" mode, or Saved Messages chat that must be shown in
+--   the "View as chats"
 [view_as_topics] :: Chat -> Maybe Bool
 
 -- | True, if the chat has scheduled messages
@@ -17004,8 +17075,9 @@ AccentColor :: Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe [Int] -> Maybe Int
 --   expected to be shown in dark themes
 [dark_theme_colors] :: AccentColor -> Maybe [Int]
 
--- | The minimum chat boost level required to use the color
-[min_chat_boost_level] :: AccentColor -> Maybe Int
+-- | The minimum chat boost level required to use the color in a channel
+--   chat
+[min_channel_chat_boost_level] :: AccentColor -> Maybe Int
 instance GHC.Show.Show TD.Data.AccentColor.AccentColor
 instance GHC.Classes.Eq TD.Data.AccentColor.AccentColor
 instance TD.Lib.Internal.ShortShow TD.Data.AccentColor.AccentColor
@@ -17292,7 +17364,7 @@ UpdateChatDraftMessage :: Maybe Int -> Maybe DraftMessage -> Maybe [ChatPosition
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | The new draft message; may be null
+-- | The new draft message; may be null if none
 [draft_message] :: Update -> Maybe DraftMessage
 
 -- | The new chat positions in the chat lists
@@ -17490,9 +17562,19 @@ UpdateChatOnlineMemberCount :: Maybe Int -> Maybe Int -> Update
 -- | New number of online members in the chat, or 0 if unknown
 [online_member_count] :: Update -> Maybe Int
 
--- | The list of pinned Saved Messages topics has changed. The app can call
---   getPinnedSavedMessagesTopics to get the new list
-UpdatePinnedSavedMessagesTopics :: Update
+-- | Basic information about a Saved Messages topic has changed. This
+--   update is guaranteed to come before the topic identifier is returned
+--   to the application
+UpdateSavedMessagesTopic :: Maybe SavedMessagesTopic -> Update
+
+-- | New data about the topic
+[topic] :: Update -> Maybe SavedMessagesTopic
+
+-- | Number of Saved Messages topics has changed
+UpdateSavedMessagesTopicCount :: Maybe Int -> Update
+
+-- | Approximate total number of Saved Messages topics
+[topic_count] :: Update -> Maybe Int
 
 -- | Basic information about a topic in a forum chat was changed
 UpdateForumTopicInfo :: Maybe Int -> Maybe ForumTopicInfo -> Update
@@ -17597,7 +17679,7 @@ UpdateChatAction :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe ChatA
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | If not 0, a message thread identifier in which the action was
+-- | If not 0, the message thread identifier in which the action was
 --   performed
 [message_thread_id] :: Update -> Maybe Int
 
@@ -18082,10 +18164,14 @@ UpdateDefaultReactionType :: Maybe ReactionType -> Update
 -- | The new type of the default reaction
 [reaction_type] :: Update -> Maybe ReactionType
 
--- | Used Saved Messages tags have changed
-UpdateSavedMessagesTags :: Maybe SavedMessagesTags -> Update
+-- | Tags used in Saved Messages or a Saved Messages topic have changed
+UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 
--- | The new used tags
+-- | Identifier of Saved Messages topic which tags were changed; 0 if tags
+--   for the whole chat has changed
+[saved_messages_topic_id] :: Update -> Maybe Int
+
+-- | The new tags
 [tags] :: Update -> Maybe SavedMessagesTags
 
 -- | The parameters of speech recognition without Telegram Premium
@@ -18516,7 +18602,6 @@ FoundFileDownloads :: FoundFileDownloads -> GeneralResult
 FoundMessages :: FoundMessages -> GeneralResult
 FoundPosition :: FoundPosition -> GeneralResult
 FoundPositions :: FoundPositions -> GeneralResult
-FoundSavedMessagesTopics :: FoundSavedMessagesTopics -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
@@ -18707,8 +18792,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatFolderByInviteLink.AddCh
 
 module TD.Query.AddChatMember
 
--- | Adds a new member to a chat. Members can't be added to private or
---   secret chats. Returns <a>Ok</a>
+-- | Adds a new member to a chat; requires can_invite_users member right.
+--   Members can't be added to private or secret chats. Returns <a>Ok</a>
 data AddChatMember
 AddChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> AddChatMember
 
@@ -18730,10 +18815,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatMember.AddChatMember
 
 module TD.Query.AddChatMembers
 
--- | Adds multiple new members to a chat. Currently, this method is only
---   available for supergroups and channels. This method can't be used to
---   join a chat. Members can't be added to a channel if it has more than
---   200 members. Returns <a>Ok</a>
+-- | Adds multiple new members to a chat; requires can_invite_users member
+--   right. Currently, this method is only available for supergroups and
+--   channels. This method can't be used to join a chat. Members can't be
+--   added to a channel if it has more than 200 members. Returns <a>Ok</a>
 data AddChatMembers
 AddChatMembers :: Maybe Int -> Maybe [Int] -> AddChatMembers
 
@@ -19265,10 +19350,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AssignGooglePlayTransaction.Ass
 
 module TD.Query.BanChatMember
 
--- | Bans a member in a chat. Members can't be banned in private or secret
---   chats. In supergroups and channels, the user will not be able to
---   return to the group on their own using invite links, etc., unless
---   unbanned first. Returns <a>Ok</a>
+-- | Bans a member in a chat; requires can_restrict_members administrator
+--   right. Members can't be banned in private or secret chats. In
+--   supergroups and channels, the user will not be able to return to the
+--   group on their own using invite links, etc., unless unbanned first.
+--   Returns <a>Ok</a>
 data BanChatMember
 BanChatMember :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> BanChatMember
 
@@ -19387,8 +19473,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanSendMessageToUser.CanSendMes
 module TD.Query.CanSendStory
 
 -- | Checks whether the current user can send a story on behalf of a chat;
---   requires can_post_stories rights for channel chats. Returns
---   <a>CanSendStoryResult</a>
+--   requires can_post_stories right for supergroup and channel chats.
+--   Returns <a>CanSendStoryResult</a>
 data CanSendStory
 CanSendStory :: Maybe Int -> CanSendStory
 
@@ -20151,8 +20237,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateChatInviteLink.CreateChat
 module TD.Query.CreateForumTopic
 
 -- | Creates a topic in a forum supergroup chat; requires can_manage_topics
---   or can_create_topics rights in the supergroup. Returns
---   <a>ForumTopicInfo</a>
+--   administrator or can_create_topics member right in the supergroup.
+--   Returns <a>ForumTopicInfo</a>
 data CreateForumTopic
 CreateForumTopic :: Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> CreateForumTopic
 
@@ -20380,7 +20466,7 @@ module TD.Query.CreateVideoChat
 
 -- | Creates a video chat (a group call bound to a chat). Available only
 --   for basic groups, supergroups and channels; requires
---   can_manage_video_chats rights. Returns <a>GroupCallId</a>
+--   can_manage_video_chats administrator right. Returns <a>GroupCallId</a>
 data CreateVideoChat
 CreateVideoChat :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> CreateVideoChat
 
@@ -20396,7 +20482,7 @@ CreateVideoChat :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> CreateV
 [start_date] :: CreateVideoChat -> Maybe Int
 
 -- | Pass true to create an RTMP stream instead of an ordinary video chat;
---   requires creator privileges
+--   requires owner privileges
 [is_rtmp_stream] :: CreateVideoChat -> Maybe Bool
 defaultCreateVideoChat :: CreateVideoChat
 instance GHC.Show.Show TD.Query.CreateVideoChat.CreateVideoChat
@@ -20781,10 +20867,10 @@ module TD.Query.DeleteSavedMessagesTopicHistory
 
 -- | Deletes all messages in a Saved Messages topic. Returns <a>Ok</a>
 data DeleteSavedMessagesTopicHistory
-DeleteSavedMessagesTopicHistory :: Maybe SavedMessagesTopic -> DeleteSavedMessagesTopicHistory
+DeleteSavedMessagesTopicHistory :: Maybe Int -> DeleteSavedMessagesTopicHistory
 
--- | Saved Messages topic which messages will be deleted
-[saved_messages_topic] :: DeleteSavedMessagesTopicHistory -> Maybe SavedMessagesTopic
+-- | Identifier of Saved Messages topic which messages will be deleted
+[saved_messages_topic_id] :: DeleteSavedMessagesTopicHistory -> Maybe Int
 instance GHC.Show.Show TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
 instance GHC.Classes.Eq TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteSavedMessagesTopicHistory.DeleteSavedMessagesTopicHistory
@@ -20796,10 +20882,10 @@ module TD.Query.DeleteSavedMessagesTopicMessagesByDate
 --   topic. Messages sent in the last 30 seconds will not be deleted.
 --   Returns <a>Ok</a>
 data DeleteSavedMessagesTopicMessagesByDate
-DeleteSavedMessagesTopicMessagesByDate :: Maybe SavedMessagesTopic -> Maybe Int -> Maybe Int -> DeleteSavedMessagesTopicMessagesByDate
+DeleteSavedMessagesTopicMessagesByDate :: Maybe Int -> Maybe Int -> Maybe Int -> DeleteSavedMessagesTopicMessagesByDate
 
--- | Saved Messages topic which messages will be deleted
-[saved_messages_topic] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe SavedMessagesTopic
+-- | Identifier of Saved Messages topic which messages will be deleted
+[saved_messages_topic_id] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe Int
 
 -- | The minimum date of the messages to delete
 [min_date] :: DeleteSavedMessagesTopicMessagesByDate -> Maybe Int
@@ -21526,7 +21612,7 @@ ForwardMessages :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe M
 -- | Identifier of the chat to which to forward messages
 [chat_id] :: ForwardMessages -> Maybe Int
 
--- | If not 0, a message thread identifier in which the message will be
+-- | If not 0, the message thread identifier in which the message will be
 --   sent; for forum threads only
 [message_thread_id] :: ForwardMessages -> Maybe Int
 
@@ -22000,8 +22086,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAdministrators.GetChatAd
 module TD.Query.GetChatArchivedStories
 
 -- | Returns the list of all stories posted by the given chat; requires
---   can_edit_stories rights for channel chats. The stories are returned in
---   a reverse chronological order (i.e., in order of decreasing story_id).
+--   can_edit_stories right in the chat. The stories are returned in a
+--   reverse chronological order (i.e., in order of decreasing story_id).
 --   For optimal performance, the number of returned stories is chosen by
 --   TDLib. Returns <a>Stories</a>
 data GetChatArchivedStories
@@ -22043,7 +22129,11 @@ module TD.Query.GetChatBoostFeatures
 -- | Returns list of features available on the first 10 chat boost levels;
 --   this is an offline request. Returns <a>ChatBoostFeatures</a>
 data GetChatBoostFeatures
-GetChatBoostFeatures :: GetChatBoostFeatures
+GetChatBoostFeatures :: Maybe Bool -> GetChatBoostFeatures
+
+-- | Pass true to get the list of features for channels; pass false to get
+--   the list of features for supergroups
+[is_channel] :: GetChatBoostFeatures -> Maybe Bool
 instance GHC.Show.Show TD.Query.GetChatBoostFeatures.GetChatBoostFeatures
 instance GHC.Classes.Eq TD.Query.GetChatBoostFeatures.GetChatBoostFeatures
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatBoostFeatures.GetChatBoostFeatures
@@ -22054,10 +22144,15 @@ module TD.Query.GetChatBoostLevelFeatures
 -- | Returns list of features available on the specific chat boost level;
 --   this is an offline request. Returns <a>ChatBoostLevelFeatures</a>
 data GetChatBoostLevelFeatures
-GetChatBoostLevelFeatures :: Maybe Int -> GetChatBoostLevelFeatures
+GetChatBoostLevelFeatures :: Maybe Bool -> Maybe Int -> GetChatBoostLevelFeatures
+
+-- | Pass true to get the list of features for channels; pass false to get
+--   the list of features for supergroups
+[is_channel] :: GetChatBoostLevelFeatures -> Maybe Bool
 
 -- | Chat boost level
 [level] :: GetChatBoostLevelFeatures -> Maybe Int
+defaultGetChatBoostLevelFeatures :: GetChatBoostLevelFeatures
 instance GHC.Show.Show TD.Query.GetChatBoostLevelFeatures.GetChatBoostLevelFeatures
 instance GHC.Classes.Eq TD.Query.GetChatBoostLevelFeatures.GetChatBoostLevelFeatures
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatBoostLevelFeatures.GetChatBoostLevelFeatures
@@ -22065,8 +22160,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoostLevelFeatures.GetCh
 
 module TD.Query.GetChatBoostLink
 
--- | Returns an HTTPS link to boost the specified channel chat. Returns
---   <a>ChatBoostLink</a>
+-- | Returns an HTTPS link to boost the specified supergroup or channel
+--   chat. Returns <a>ChatBoostLink</a>
 data GetChatBoostLink
 GetChatBoostLink :: Maybe Int -> GetChatBoostLink
 
@@ -22094,12 +22189,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoostLinkInfo.GetChatBoo
 
 module TD.Query.GetChatBoostStatus
 
--- | Returns the current boost status for a channel chat. Returns
---   <a>ChatBoostStatus</a>
+-- | Returns the current boost status for a supergroup or a channel chat.
+--   Returns <a>ChatBoostStatus</a>
 data GetChatBoostStatus
 GetChatBoostStatus :: Maybe Int -> GetChatBoostStatus
 
--- | Identifier of the channel chat
+-- | Identifier of the chat
 [chat_id] :: GetChatBoostStatus -> Maybe Int
 instance GHC.Show.Show TD.Query.GetChatBoostStatus.GetChatBoostStatus
 instance GHC.Classes.Eq TD.Query.GetChatBoostStatus.GetChatBoostStatus
@@ -22109,7 +22204,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoostStatus.GetChatBoost
 module TD.Query.GetChatBoosts
 
 -- | Returns list of boosts applied to a chat; requires administrator
---   rights in the channel chat. Returns <a>FoundChatBoosts</a>
+--   rights in the chat. Returns <a>FoundChatBoosts</a>
 data GetChatBoosts
 GetChatBoosts :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Int -> GetChatBoosts
 
@@ -22483,7 +22578,7 @@ module TD.Query.GetChatMessageCalendar
 --   of this method depends on the value of the option "utc_time_offset".
 --   Returns <a>MessageCalendar</a>
 data GetChatMessageCalendar
-GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatMessageCalendar
+GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> GetChatMessageCalendar
 
 -- | Identifier of the chat in which to return information about messages
 [chat_id] :: GetChatMessageCalendar -> Maybe Int
@@ -22497,10 +22592,10 @@ GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -
 --   messages; use 0 to get results from the last message
 [from_message_id] :: GetChatMessageCalendar -> Maybe Int
 
--- | If not null, only messages in the specified Saved Messages topic will
---   be considered; pass null to consider all messages, or for chats other
---   than Saved Messages
-[saved_messages_topic] :: GetChatMessageCalendar -> Maybe SavedMessagesTopic
+-- | If not0, only messages in the specified Saved Messages topic will be
+--   considered; pass 0 to consider all messages, or for chats other than
+--   Saved Messages
+[saved_messages_topic_id] :: GetChatMessageCalendar -> Maybe Int
 defaultGetChatMessageCalendar :: GetChatMessageCalendar
 instance GHC.Show.Show TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
 instance GHC.Classes.Eq TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
@@ -22512,7 +22607,7 @@ module TD.Query.GetChatMessageCount
 -- | Returns approximate number of messages of the specified type in the
 --   chat. Returns <a>Count</a>
 data GetChatMessageCount
-GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe SavedMessagesTopic -> Maybe Bool -> GetChatMessageCount
+GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Bool -> GetChatMessageCount
 
 -- | Identifier of the chat in which to count messages
 [chat_id] :: GetChatMessageCount -> Maybe Int
@@ -22521,10 +22616,10 @@ GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe SavedMes
 --   in this function
 [_filter] :: GetChatMessageCount -> Maybe SearchMessagesFilter
 
--- | If not null, only messages in the specified Saved Messages topic will
---   be counted; pass null to count all messages, or for chats other than
---   Saved Messages
-[saved_messages_topic] :: GetChatMessageCount -> Maybe SavedMessagesTopic
+-- | If not 0, only messages in the specified Saved Messages topic will be
+--   counted; pass 0 to count all messages, or for chats other than Saved
+--   Messages
+[saved_messages_topic_id] :: GetChatMessageCount -> Maybe Int
 
 -- | Pass true to get the number of messages without sending network
 --   requests, or -1 if the number of messages is unknown locally
@@ -22541,7 +22636,7 @@ module TD.Query.GetChatMessagePosition
 --   which can be found by the specified filter in the chat. Cannot be used
 --   in secret chats. Returns <a>Count</a>
 data GetChatMessagePosition
-GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatMessagePosition
+GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> GetChatMessagePosition
 
 -- | Identifier of the chat in which to find message position
 [chat_id] :: GetChatMessagePosition -> Maybe Int
@@ -22558,10 +22653,10 @@ GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -
 --   supergroups only
 [message_thread_id] :: GetChatMessagePosition -> Maybe Int
 
--- | If not null, only messages in the specified Saved Messages topic will
---   be considered; pass null to consider all relevant messages, or for
---   chats other than Saved Messages
-[saved_messages_topic] :: GetChatMessagePosition -> Maybe SavedMessagesTopic
+-- | If not 0, only messages in the specified Saved Messages topic will be
+--   considered; pass 0 to consider all relevant messages, or for chats
+--   other than Saved Messages
+[saved_messages_topic_id] :: GetChatMessagePosition -> Maybe Int
 defaultGetChatMessagePosition :: GetChatMessagePosition
 instance GHC.Show.Show TD.Query.GetChatMessagePosition.GetChatMessagePosition
 instance GHC.Classes.Eq TD.Query.GetChatMessagePosition.GetChatMessagePosition
@@ -22684,7 +22779,7 @@ module TD.Query.GetChatSparseMessagePositions
 --   searchMessagesFilterFailedToSend filter without an enabled message
 --   database. Returns <a>MessagePositions</a>
 data GetChatSparseMessagePositions
-GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> Maybe SavedMessagesTopic -> GetChatSparseMessagePositions
+GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> Maybe Int -> GetChatSparseMessagePositions
 
 -- | Identifier of the chat in which to return information about message
 --   positions
@@ -22704,10 +22799,10 @@ GetChatSparseMessagePositions :: Maybe Int -> Maybe SearchMessagesFilter -> Mayb
 --   appropriate messages
 [limit] :: GetChatSparseMessagePositions -> Maybe Int
 
--- | If not null, only messages in the specified Saved Messages topic will
---   be considered; pass null to consider all messages, or for chats other
---   than Saved Messages
-[saved_messages_topic] :: GetChatSparseMessagePositions -> Maybe SavedMessagesTopic
+-- | If not 0, only messages in the specified Saved Messages topic will be
+--   considered; pass 0 to consider all messages, or for chats other than
+--   Saved Messages
+[saved_messages_topic_id] :: GetChatSparseMessagePositions -> Maybe Int
 defaultGetChatSparseMessagePositions :: GetChatSparseMessagePositions
 instance GHC.Show.Show TD.Query.GetChatSparseMessagePositions.GetChatSparseMessagePositions
 instance GHC.Classes.Eq TD.Query.GetChatSparseMessagePositions.GetChatSparseMessagePositions
@@ -22821,9 +22916,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatsForChatFolderInviteLink
 
 module TD.Query.GetChatsToSendStories
 
--- | Returns channel chats in which the current user has the right to post
---   stories. The chats must be rechecked with canSendStory before actually
---   trying to post a story there. Returns <a>Chats</a>
+-- | Returns supergroup and channel chats in which the current user has the
+--   right to post stories. The chats must be rechecked with canSendStory
+--   before actually trying to post a story there. Returns <a>Chats</a>
 data GetChatsToSendStories
 GetChatsToSendStories :: GetChatsToSendStories
 instance GHC.Show.Show TD.Query.GetChatsToSendStories.GetChatsToSendStories
@@ -23976,8 +24071,7 @@ GetMessageImportConfirmationText :: Maybe Int -> GetMessageImportConfirmationTex
 
 -- | Identifier of a chat to which the messages will be imported. It must
 --   be an identifier of a private chat with a mutual contact or an
---   identifier of a supergroup chat with can_change_info administrator
---   right
+--   identifier of a supergroup chat with can_change_info member right
 [chat_id] :: GetMessageImportConfirmationText -> Maybe Int
 instance GHC.Show.Show TD.Query.GetMessageImportConfirmationText.GetMessageImportConfirmationText
 instance GHC.Classes.Eq TD.Query.GetMessageImportConfirmationText.GetMessageImportConfirmationText
@@ -24402,17 +24496,6 @@ instance GHC.Classes.Eq TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 instance TD.Lib.Internal.ShortShow TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPhoneNumberInfoSync.GetPhoneNumberInfoSync
 
-module TD.Query.GetPinnedSavedMessagesTopics
-
--- | Returns list of all pinned Saved Messages topics. Returns
---   <a>FoundSavedMessagesTopics</a>
-data GetPinnedSavedMessagesTopics
-GetPinnedSavedMessagesTopics :: GetPinnedSavedMessagesTopics
-instance GHC.Show.Show TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
-instance GHC.Classes.Eq TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
-instance TD.Lib.Internal.ShortShow TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPinnedSavedMessagesTopics.GetPinnedSavedMessagesTopics
-
 module TD.Query.GetPollVoters
 
 -- | Returns message senders voted for the specified option in a
@@ -24482,9 +24565,9 @@ module TD.Query.GetPremiumGiftCodePaymentOptions
 data GetPremiumGiftCodePaymentOptions
 GetPremiumGiftCodePaymentOptions :: Maybe Int -> GetPremiumGiftCodePaymentOptions
 
--- | Identifier of the channel chat, which will be automatically boosted by
---   receivers of the gift codes and which is administered by the user; 0
---   if none
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by receivers of the gift codes and which is
+--   administered by the user; 0 if none
 [boosted_chat_id] :: GetPremiumGiftCodePaymentOptions -> Maybe Int
 instance GHC.Show.Show TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
 instance GHC.Classes.Eq TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
@@ -24763,10 +24846,14 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedAnimations.GetSavedAnim
 
 module TD.Query.GetSavedMessagesTags
 
--- | Returns tags used in Saved Messages; for Telegram Premium users only.
---   Returns <a>SavedMessagesTags</a>
+-- | Returns tags used in Saved Messages or a Saved Messages topic. Returns
+--   <a>SavedMessagesTags</a>
 data GetSavedMessagesTags
-GetSavedMessagesTags :: GetSavedMessagesTags
+GetSavedMessagesTags :: Maybe Int -> GetSavedMessagesTags
+
+-- | Identifier of Saved Messages topic which tags will be returned; pass 0
+--   to get all Saved Messages tags
+[saved_messages_topic_id] :: GetSavedMessagesTags -> Maybe Int
 instance GHC.Show.Show TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
 instance GHC.Classes.Eq TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
 instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTags.GetSavedMessagesTags
@@ -24778,10 +24865,10 @@ module TD.Query.GetSavedMessagesTopicHistory
 --   in a reverse chronological order (i.e., in order of decreasing
 --   message_id). Returns <a>Messages</a>
 data GetSavedMessagesTopicHistory
-GetSavedMessagesTopicHistory :: Maybe SavedMessagesTopic -> Maybe Int -> Maybe Int -> Maybe Int -> GetSavedMessagesTopicHistory
+GetSavedMessagesTopicHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetSavedMessagesTopicHistory
 
--- | Saved Messages topic which messages will be fetched
-[saved_messages_topic] :: GetSavedMessagesTopicHistory -> Maybe SavedMessagesTopic
+-- | Identifier of Saved Messages topic which messages will be fetched
+[saved_messages_topic_id] :: GetSavedMessagesTopicHistory -> Maybe Int
 
 -- | Identifier of the message starting from which messages must be
 --   fetched; use 0 to get results from the last message
@@ -24808,10 +24895,10 @@ module TD.Query.GetSavedMessagesTopicMessageByDate
 -- | Returns the last message sent in a Saved Messages topic no later than
 --   the specified date. Returns <a>Message</a>
 data GetSavedMessagesTopicMessageByDate
-GetSavedMessagesTopicMessageByDate :: Maybe SavedMessagesTopic -> Maybe Int -> GetSavedMessagesTopicMessageByDate
+GetSavedMessagesTopicMessageByDate :: Maybe Int -> Maybe Int -> GetSavedMessagesTopicMessageByDate
 
--- | Saved Messages topic which message will be returned
-[saved_messages_topic] :: GetSavedMessagesTopicMessageByDate -> Maybe SavedMessagesTopic
+-- | Identifier of Saved Messages topic which message will be returned
+[saved_messages_topic_id] :: GetSavedMessagesTopicMessageByDate -> Maybe Int
 
 -- | Point in time (Unix timestamp) relative to which to search for
 --   messages
@@ -24821,25 +24908,6 @@ instance GHC.Show.Show TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessa
 instance GHC.Classes.Eq TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
 instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTopicMessageByDate.GetSavedMessagesTopicMessageByDate
-
-module TD.Query.GetSavedMessagesTopics
-
--- | Returns list of non-pinned Saved Messages topics from the specified
---   offset. Returns <a>FoundSavedMessagesTopics</a>
-data GetSavedMessagesTopics
-GetSavedMessagesTopics :: Maybe Text -> Maybe Int -> GetSavedMessagesTopics
-
--- | Offset of the first entry to return as received from the previous
---   request; use empty string to get the first chunk of results
-[offset] :: GetSavedMessagesTopics -> Maybe Text
-
--- | The maximum number of Saved Messages topics to be returned; up to 100
-[limit] :: GetSavedMessagesTopics -> Maybe Int
-defaultGetSavedMessagesTopics :: GetSavedMessagesTopics
-instance GHC.Show.Show TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
-instance GHC.Classes.Eq TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
-instance TD.Lib.Internal.ShortShow TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTopics.GetSavedMessagesTopics
 
 module TD.Query.GetSavedNotificationSound
 
@@ -25401,7 +25469,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUser.GetUser
 module TD.Query.GetUserChatBoosts
 
 -- | Returns list of boosts applied to a chat by a given user; requires
---   administrator rights in the channel chat; for bots only. Returns
+--   administrator rights in the chat; for bots only. Returns
 --   <a>FoundChatBoosts</a>
 data GetUserChatBoosts
 GetUserChatBoosts :: Maybe Int -> Maybe Int -> GetUserChatBoosts
@@ -25507,8 +25575,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatAvailableParticipan
 
 module TD.Query.GetVideoChatRtmpUrl
 
--- | Returns RTMP URL for streaming to the chat; requires creator
---   privileges. Returns <a>RtmpUrl</a>
+-- | Returns RTMP URL for streaming to the chat; requires owner privileges.
+--   Returns <a>RtmpUrl</a>
 data GetVideoChatRtmpUrl
 GetVideoChatRtmpUrl :: Maybe Int -> GetVideoChatRtmpUrl
 
@@ -25658,8 +25726,7 @@ ImportMessages :: Maybe Int -> Maybe InputFile -> Maybe [InputFile] -> ImportMes
 
 -- | Identifier of a chat to which the messages will be imported. It must
 --   be an identifier of a private chat with a mutual contact or an
---   identifier of a supergroup chat with can_change_info administrator
---   right
+--   identifier of a supergroup chat with can_change_info member right
 [chat_id] :: ImportMessages -> Maybe Int
 
 -- | File with messages to import. Only inputFileLocal and
@@ -25764,9 +25831,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinGroupCall.JoinGroupCall
 
 module TD.Query.LaunchPrepaidPremiumGiveaway
 
--- | Launches a prepaid Telegram Premium giveaway for subscribers of
---   channel chats; requires can_post_messages rights in the channels.
---   Returns <a>Ok</a>
+-- | Launches a prepaid Telegram Premium giveaway. Returns <a>Ok</a>
 data LaunchPrepaidPremiumGiveaway
 LaunchPrepaidPremiumGiveaway :: Maybe Int -> Maybe PremiumGiveawayParameters -> LaunchPrepaidPremiumGiveaway
 
@@ -25868,6 +25933,24 @@ instance GHC.Show.Show TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipa
 instance GHC.Classes.Eq TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
 instance TD.Lib.Internal.ShortShow TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
+
+module TD.Query.LoadSavedMessagesTopics
+
+-- | Loads more Saved Messages topics. The loaded topics will be sent
+--   through updateSavedMessagesTopic. Topics are sorted by their
+--   topic.order in descending order. Returns a 404 error if all topics
+--   have been loaded. Returns <a>Ok</a>
+data LoadSavedMessagesTopics
+LoadSavedMessagesTopics :: Maybe Int -> LoadSavedMessagesTopics
+
+-- | The maximum number of topics to be loaded. For optimal performance,
+--   the number of loaded topics is chosen by TDLib and can be smaller than
+--   the specified limit, even if the end of the list is not reached
+[limit] :: LoadSavedMessagesTopics -> Maybe Int
+instance GHC.Show.Show TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
+instance GHC.Classes.Eq TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
+instance TD.Lib.Internal.ShortShow TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
 
 module TD.Query.LogOut
 
@@ -25985,7 +26068,7 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> M
 --   underscores
 [application_name] :: OpenWebApp -> Maybe Text
 
--- | If not 0, a message thread identifier in which the message will be
+-- | If not 0, the message thread identifier in which the message will be
 --   sent
 [message_thread_id] :: OpenWebApp -> Maybe Int
 
@@ -26089,8 +26172,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ParseTextEntities.ParseTextEnti
 
 module TD.Query.PinChatMessage
 
--- | Pins a message in a chat; requires can_pin_messages rights or
---   can_edit_messages rights in the channel. Returns <a>Ok</a>
+-- | Pins a message in a chat; requires can_pin_messages member right if
+--   the chat is a basic group or supergroup, or can_edit_messages
+--   administrator right if the chat is a channel. Returns <a>Ok</a>
 data PinChatMessage
 PinChatMessage :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> PinChatMessage
 
@@ -26449,13 +26533,17 @@ module TD.Query.RegisterUser
 -- | Finishes user registration. Works only when the current authorization
 --   state is authorizationStateWaitRegistration. Returns <a>Ok</a>
 data RegisterUser
-RegisterUser :: Maybe Text -> Maybe Text -> RegisterUser
+RegisterUser :: Maybe Text -> Maybe Text -> Maybe Bool -> RegisterUser
 
 -- | The first name of the user; 1-64 characters
 [first_name] :: RegisterUser -> Maybe Text
 
 -- | The last name of the user; 0-64 characters
 [last_name] :: RegisterUser -> Maybe Text
+
+-- | Pass true to disable notification about the current user joining
+--   Telegram for other users that added them to contact list
+[disable_notification] :: RegisterUser -> Maybe Bool
 defaultRegisterUser :: RegisterUser
 instance GHC.Show.Show TD.Query.RegisterUser.RegisterUser
 instance GHC.Classes.Eq TD.Query.RegisterUser.RegisterUser
@@ -26841,7 +26929,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplacePrimaryChatInviteLink.Re
 module TD.Query.ReplaceVideoChatRtmpUrl
 
 -- | Replaces the current RTMP URL for streaming to the chat; requires
---   creator privileges. Returns <a>RtmpUrl</a>
+--   owner privileges. Returns <a>RtmpUrl</a>
 data ReplaceVideoChatRtmpUrl
 ReplaceVideoChatRtmpUrl :: Maybe Int -> ReplaceVideoChatRtmpUrl
 
@@ -27303,7 +27391,7 @@ module TD.Query.SearchChatMembers
 
 -- | Searches for a specified query in the first name, last name and
 --   usernames of the members of a specified chat. Requires administrator
---   rights in channels. Returns <a>ChatMembers</a>
+--   rights if the chat is a channel. Returns <a>ChatMembers</a>
 data SearchChatMembers
 SearchChatMembers :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe ChatMembersFilter -> SearchChatMembers
 
@@ -27338,7 +27426,7 @@ module TD.Query.SearchChatMessages
 --   for Telegram official application implementation. Returns
 --   <a>FoundChatMessages</a>
 data SearchChatMessages
-SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe SavedMessagesTopic -> SearchChatMessages
+SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> SearchChatMessages
 
 -- | Identifier of the chat in which to search messages
 [chat_id] :: SearchChatMessages -> Maybe Int
@@ -27373,10 +27461,10 @@ SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe In
 --   supergroups only
 [message_thread_id] :: SearchChatMessages -> Maybe Int
 
--- | If not null, only messages in the specified Saved Messages topic will
---   be returned; pass null to return all messages, or for chats other than
---   Saved Messages
-[saved_messages_topic] :: SearchChatMessages -> Maybe SavedMessagesTopic
+-- | If not 0, only messages in the specified Saved Messages topic will be
+--   returned; pass 0 to return all messages, or for chats other than Saved
+--   Messages
+[saved_messages_topic_id] :: SearchChatMessages -> Maybe Int
 defaultSearchChatMessages :: SearchChatMessages
 instance GHC.Show.Show TD.Query.SearchChatMessages.SearchChatMessages
 instance GHC.Classes.Eq TD.Query.SearchChatMessages.SearchChatMessages
@@ -27708,7 +27796,11 @@ module TD.Query.SearchSavedMessages
 --   messages is chosen by TDLib and can be smaller than the specified
 --   limit. Returns <a>FoundChatMessages</a>
 data SearchSavedMessages
-SearchSavedMessages :: Maybe ReactionType -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> SearchSavedMessages
+SearchSavedMessages :: Maybe Int -> Maybe ReactionType -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> SearchSavedMessages
+
+-- | If not 0, only messages in the specified Saved Messages topic will be
+--   considered; pass 0 to consider all messages
+[saved_messages_topic_id] :: SearchSavedMessages -> Maybe Int
 
 -- | Tag to search for; pass null to return all suitable messages
 [tag] :: SearchSavedMessages -> Maybe ReactionType
@@ -27913,10 +28005,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendAuthenticationFirebaseSms.S
 module TD.Query.SendBotStartMessage
 
 -- | Invites a bot to a chat (if it is not yet a member) and sends it the
---   /start command. Bots can't be invited to a private chat other than the
---   chat with the bot. Bots can't be invited to channels (although they
---   can be added as admins) and secret chats. Returns the sent message.
---   Returns <a>Message</a>
+--   /start command; requires can_invite_users member right. Bots can't be
+--   invited to a private chat other than the chat with the bot. Bots can't
+--   be invited to channels (although they can be added as admins) and
+--   secret chats. Returns the sent message. Returns <a>Message</a>
 data SendBotStartMessage
 SendBotStartMessage :: Maybe Int -> Maybe Int -> Maybe Text -> SendBotStartMessage
 
@@ -28021,7 +28113,7 @@ SendChatAction :: Maybe Int -> Maybe Int -> Maybe ChatAction -> SendChatAction
 -- | Chat identifier
 [chat_id] :: SendChatAction -> Maybe Int
 
--- | If not 0, a message thread identifier in which the action was
+-- | If not 0, the message thread identifier in which the action was
 --   performed
 [message_thread_id] :: SendChatAction -> Maybe Int
 
@@ -28076,7 +28168,7 @@ SendInlineQueryResultMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageRepl
 -- | Target chat
 [chat_id] :: SendInlineQueryResultMessage -> Maybe Int
 
--- | If not 0, a message thread identifier in which the message will be
+-- | If not 0, the message thread identifier in which the message will be
 --   sent
 [message_thread_id] :: SendInlineQueryResultMessage -> Maybe Int
 
@@ -28114,7 +28206,7 @@ SendMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe Mess
 -- | Target chat
 [chat_id] :: SendMessage -> Maybe Int
 
--- | If not 0, a message thread identifier in which the message will be
+-- | If not 0, the message thread identifier in which the message will be
 --   sent
 [message_thread_id] :: SendMessage -> Maybe Int
 
@@ -28150,7 +28242,7 @@ SendMessageAlbum :: Maybe Int -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe
 -- | Target chat
 [chat_id] :: SendMessageAlbum -> Maybe Int
 
--- | If not 0, a message thread identifier in which the messages will be
+-- | If not 0, the message thread identifier in which the messages will be
 --   sent
 [message_thread_id] :: SendMessageAlbum -> Maybe Int
 
@@ -28266,8 +28358,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberVerificationCode
 
 module TD.Query.SendStory
 
--- | Sends a new story to a chat; requires can_post_stories rights for
---   channel chats. Returns a temporary story. Returns <a>Story</a>
+-- | Sends a new story to a chat; requires can_post_stories right for
+--   supergroup and channel chats. Returns a temporary story. Returns
+--   <a>Story</a>
 data SendStory
 SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> SendStory
 
@@ -28285,7 +28378,8 @@ SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 --   0-getOption("story_caption_length_max") characters
 [caption] :: SendStory -> Maybe FormattedText
 
--- | The privacy settings for the story
+-- | The privacy settings for the story; ignored for stories sent to
+--   supergroup and channel chats
 [privacy_settings] :: SendStory -> Maybe StoryPrivacySettings
 
 -- | Period after which the story is moved to archive, in seconds; must be
@@ -28608,8 +28702,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBotUpdatesStatus.SetBotUpdat
 
 module TD.Query.SetChatAccentColor
 
--- | Changes accent color and background custom emoji of a chat. Requires
---   can_change_info administrator right. Returns <a>Ok</a>
+-- | Changes accent color and background custom emoji of a channel chat.
+--   Requires can_change_info administrator right. Returns <a>Ok</a>
 data SetChatAccentColor
 SetChatAccentColor :: Maybe Int -> Maybe Int -> Maybe Int -> SetChatAccentColor
 
@@ -28617,8 +28711,8 @@ SetChatAccentColor :: Maybe Int -> Maybe Int -> Maybe Int -> SetChatAccentColor
 [chat_id] :: SetChatAccentColor -> Maybe Int
 
 -- | Identifier of the accent color to use. The chat must have at least
---   accentColor.min_chat_boost_level boost level to pass the corresponding
---   color
+--   accentColor.min_channel_chat_boost_level boost level to pass the
+--   corresponding color
 [accent_color_id] :: SetChatAccentColor -> Maybe Int
 
 -- | Identifier of a custom emoji to be shown on the reply header and link
@@ -28653,8 +28747,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatActiveStoriesList.SetCha
 module TD.Query.SetChatAvailableReactions
 
 -- | Changes reactions, available in a chat. Available for basic groups,
---   supergroups, and channels. Requires can_change_info administrator
---   right. Returns <a>Ok</a>
+--   supergroups, and channels. Requires can_change_info member right.
+--   Returns <a>Ok</a>
 data SetChatAvailableReactions
 SetChatAvailableReactions :: Maybe Int -> Maybe ChatAvailableReactions -> SetChatAvailableReactions
 
@@ -28662,8 +28756,8 @@ SetChatAvailableReactions :: Maybe Int -> Maybe ChatAvailableReactions -> SetCha
 [chat_id] :: SetChatAvailableReactions -> Maybe Int
 
 -- | Reactions available in the chat. All explicitly specified emoji
---   reactions must be active. Up to the chat's boost level custom emoji
---   reactions can be explicitly specified
+--   reactions must be active. In channel chats up to the chat's boost
+--   level custom emoji reactions can be explicitly specified
 [available_reactions] :: SetChatAvailableReactions -> Maybe ChatAvailableReactions
 defaultSetChatAvailableReactions :: SetChatAvailableReactions
 instance GHC.Show.Show TD.Query.SetChatAvailableReactions.SetChatAvailableReactions
@@ -28731,8 +28825,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatClientData.SetChatClient
 module TD.Query.SetChatDescription
 
 -- | Changes information about a chat. Available for basic groups,
---   supergroups, and channels. Requires can_change_info administrator
---   right. Returns <a>Ok</a>
+--   supergroups, and channels. Requires can_change_info member right.
+--   Returns <a>Ok</a>
 data SetChatDescription
 SetChatDescription :: Maybe Int -> Maybe Text -> SetChatDescription
 
@@ -28755,7 +28849,7 @@ SetChatDiscussionGroup :: Maybe Int -> Maybe Int -> SetChatDiscussionGroup
 
 -- | Identifier of the channel chat. Pass 0 to remove a link from the
 --   supergroup passed in the second argument to a linked channel chat
---   (requires can_pin_messages rights in the supergroup)
+--   (requires can_pin_messages member right in the supergroup)
 [chat_id] :: SetChatDiscussionGroup -> Maybe Int
 
 -- | Identifier of a new channel's discussion group. Use 0 to remove the
@@ -28780,10 +28874,12 @@ SetChatDraftMessage :: Maybe Int -> Maybe Int -> Maybe DraftMessage -> SetChatDr
 -- | Chat identifier
 [chat_id] :: SetChatDraftMessage -> Maybe Int
 
--- | If not 0, a message thread identifier in which the draft was changed
+-- | If not 0, the message thread identifier in which the draft was changed
 [message_thread_id] :: SetChatDraftMessage -> Maybe Int
 
--- | New draft message; pass null to remove the draft
+-- | New draft message; pass null to remove the draft. All files in draft
+--   message content must be of the type inputFileLocal. Media thumbnails
+--   and captions are ignored
 [draft_message] :: SetChatDraftMessage -> Maybe DraftMessage
 defaultSetChatDraftMessage :: SetChatDraftMessage
 instance GHC.Show.Show TD.Query.SetChatDraftMessage.SetChatDraftMessage
@@ -28832,11 +28928,13 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatLocation.SetChatLocation
 
 module TD.Query.SetChatMemberStatus
 
--- | Changes the status of a chat member, needs appropriate privileges.
---   This function is currently not suitable for transferring chat
---   ownership; use transferChatOwnership instead. Use addChatMember or
---   banChatMember if some additional parameters needs to be passed.
---   Returns <a>Ok</a>
+-- | Changes the status of a chat member; requires can_invite_users member
+--   right to add a chat member, can_promote_members administrator right to
+--   change administrator rights of the member, and can_restrict_members
+--   administrator right to change restrictions of a user. This function is
+--   currently not suitable for transferring chat ownership; use
+--   transferChatOwnership instead. Use addChatMember or banChatMember if
+--   some additional parameters needs to be passed. Returns <a>Ok</a>
 data SetChatMemberStatus
 SetChatMemberStatus :: Maybe Int -> Maybe MessageSender -> Maybe ChatMemberStatus -> SetChatMemberStatus
 
@@ -28937,8 +29035,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatPermissions.SetChatPermi
 module TD.Query.SetChatPhoto
 
 -- | Changes the photo of a chat. Supported only for basic groups,
---   supergroups and channels. Requires can_change_info administrator
---   right. Returns <a>Ok</a>
+--   supergroups and channels. Requires can_change_info member right.
+--   Returns <a>Ok</a>
 data SetChatPhoto
 SetChatPhoto :: Maybe Int -> Maybe InputChatPhoto -> SetChatPhoto
 
@@ -28956,7 +29054,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatPhoto.SetChatPhoto
 module TD.Query.SetChatProfileAccentColor
 
 -- | Changes accent color and background custom emoji for profile of a
---   chat. Requires can_change_info administrator right. Returns <a>Ok</a>
+--   supergroup or channel chat. Requires can_change_info administrator
+--   right. Returns <a>Ok</a>
 data SetChatProfileAccentColor
 SetChatProfileAccentColor :: Maybe Int -> Maybe Int -> Maybe Int -> SetChatProfileAccentColor
 
@@ -28964,8 +29063,10 @@ SetChatProfileAccentColor :: Maybe Int -> Maybe Int -> Maybe Int -> SetChatProfi
 [chat_id] :: SetChatProfileAccentColor -> Maybe Int
 
 -- | Identifier of the accent color to use for profile; pass -1 if none.
---   The chat must have at least profileAccentColor.min_chat_boost_level
---   boost level to pass the corresponding color
+--   The chat must have at least
+--   profileAccentColor.min_supergroup_chat_boost_level for supergroups or
+--   profileAccentColor.min_channel_chat_boost_level for channels boost
+--   level to pass the corresponding color
 [profile_accent_color_id] :: SetChatProfileAccentColor -> Maybe Int
 
 -- | Identifier of a custom emoji to be shown on the chat's profile photo
@@ -28982,7 +29083,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatProfileAccentColor.SetCh
 module TD.Query.SetChatSlowModeDelay
 
 -- | Changes the slow mode delay of a chat. Available only for supergroups;
---   requires can_restrict_members rights. Returns <a>Ok</a>
+--   requires can_restrict_members right. Returns <a>Ok</a>
 data SetChatSlowModeDelay
 SetChatSlowModeDelay :: Maybe Int -> Maybe Int -> SetChatSlowModeDelay
 
@@ -29020,8 +29121,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatTheme.SetChatTheme
 module TD.Query.SetChatTitle
 
 -- | Changes the chat title. Supported only for basic groups, supergroups
---   and channels. Requires can_change_info administrator right. Returns
---   <a>Ok</a>
+--   and channels. Requires can_change_info member right. Returns <a>Ok</a>
 data SetChatTitle
 SetChatTitle :: Maybe Int -> Maybe Text -> SetChatTitle
 
@@ -29749,10 +29849,10 @@ module TD.Query.SetPinnedSavedMessagesTopics
 
 -- | Changes the order of pinned Saved Messages topics. Returns <a>Ok</a>
 data SetPinnedSavedMessagesTopics
-SetPinnedSavedMessagesTopics :: Maybe [SavedMessagesTopic] -> SetPinnedSavedMessagesTopics
+SetPinnedSavedMessagesTopics :: Maybe [Int] -> SetPinnedSavedMessagesTopics
 
--- | The new list of pinned Saved Messages topics
-[saved_messages_topics] :: SetPinnedSavedMessagesTopics -> Maybe [SavedMessagesTopic]
+-- | Identifiers of the new pinned Saved Messages topics
+[saved_messages_topic_ids] :: SetPinnedSavedMessagesTopics -> Maybe [Int]
 instance GHC.Show.Show TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
 instance GHC.Classes.Eq TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
 instance TD.Lib.Internal.ShortShow TD.Query.SetPinnedSavedMessagesTopics.SetPinnedSavedMessagesTopics
@@ -30008,13 +30108,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerSetTitle.SetStickerSe
 
 module TD.Query.SetStoryPrivacySettings
 
--- | Changes privacy settings of a story. Can be called only if
+-- | Changes privacy settings of a story. The method can be called only for
+--   stories posted on behalf of the current user and if
 --   story.can_be_edited == true. Returns <a>Ok</a>
 data SetStoryPrivacySettings
-SetStoryPrivacySettings :: Maybe Int -> Maybe Int -> Maybe StoryPrivacySettings -> SetStoryPrivacySettings
-
--- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: SetStoryPrivacySettings -> Maybe Int
+SetStoryPrivacySettings :: Maybe Int -> Maybe StoryPrivacySettings -> SetStoryPrivacySettings
 
 -- | Identifier of the story
 [story_id] :: SetStoryPrivacySettings -> Maybe Int
@@ -30029,7 +30127,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStoryPrivacySettings.SetStor
 
 module TD.Query.SetStoryReaction
 
--- | Changes chosen reaction on a story. Returns <a>Ok</a>
+-- | Changes chosen reaction on a story that has already been sent. Returns
+--   <a>Ok</a>
 data SetStoryReaction
 SetStoryReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -> SetStoryReaction
 
@@ -30052,6 +30151,28 @@ instance GHC.Classes.Eq TD.Query.SetStoryReaction.SetStoryReaction
 instance TD.Lib.Internal.ShortShow TD.Query.SetStoryReaction.SetStoryReaction
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStoryReaction.SetStoryReaction
 
+module TD.Query.SetSupergroupCustomEmojiStickerSet
+
+-- | Changes the custom emoji sticker set of a supergroup; requires
+--   can_change_info administrator right. The chat must have at least
+--   chatBoostFeatures.min_custom_emoji_sticker_set_boost_level boost level
+--   to pass the corresponding color. Returns <a>Ok</a>
+data SetSupergroupCustomEmojiStickerSet
+SetSupergroupCustomEmojiStickerSet :: Maybe Int -> Maybe Int -> SetSupergroupCustomEmojiStickerSet
+
+-- | Identifier of the supergroup
+[supergroup_id] :: SetSupergroupCustomEmojiStickerSet -> Maybe Int
+
+-- | New value of the custom emoji sticker set identifier for the
+--   supergroup. Use 0 to remove the custom emoji sticker set in the
+--   supergroup
+[custom_emoji_sticker_set_id] :: SetSupergroupCustomEmojiStickerSet -> Maybe Int
+defaultSetSupergroupCustomEmojiStickerSet :: SetSupergroupCustomEmojiStickerSet
+instance GHC.Show.Show TD.Query.SetSupergroupCustomEmojiStickerSet.SetSupergroupCustomEmojiStickerSet
+instance GHC.Classes.Eq TD.Query.SetSupergroupCustomEmojiStickerSet.SetSupergroupCustomEmojiStickerSet
+instance TD.Lib.Internal.ShortShow TD.Query.SetSupergroupCustomEmojiStickerSet.SetSupergroupCustomEmojiStickerSet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetSupergroupCustomEmojiStickerSet.SetSupergroupCustomEmojiStickerSet
+
 module TD.Query.SetSupergroupStickerSet
 
 -- | Changes the sticker set of a supergroup; requires can_change_info
@@ -30070,6 +30191,26 @@ instance GHC.Show.Show TD.Query.SetSupergroupStickerSet.SetSupergroupStickerSet
 instance GHC.Classes.Eq TD.Query.SetSupergroupStickerSet.SetSupergroupStickerSet
 instance TD.Lib.Internal.ShortShow TD.Query.SetSupergroupStickerSet.SetSupergroupStickerSet
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetSupergroupStickerSet.SetSupergroupStickerSet
+
+module TD.Query.SetSupergroupUnrestrictBoostCount
+
+-- | Changes the number of times the supergroup must be boosted by a user
+--   to ignore slow mode and chat permission restrictions; requires
+--   can_restrict_members administrator right. Returns <a>Ok</a>
+data SetSupergroupUnrestrictBoostCount
+SetSupergroupUnrestrictBoostCount :: Maybe Int -> Maybe Int -> SetSupergroupUnrestrictBoostCount
+
+-- | Identifier of the supergroup
+[supergroup_id] :: SetSupergroupUnrestrictBoostCount -> Maybe Int
+
+-- | New value of the unrestrict_boost_count supergroup setting; 0-8. Use 0
+--   to remove the setting
+[unrestrict_boost_count] :: SetSupergroupUnrestrictBoostCount -> Maybe Int
+defaultSetSupergroupUnrestrictBoostCount :: SetSupergroupUnrestrictBoostCount
+instance GHC.Show.Show TD.Query.SetSupergroupUnrestrictBoostCount.SetSupergroupUnrestrictBoostCount
+instance GHC.Classes.Eq TD.Query.SetSupergroupUnrestrictBoostCount.SetSupergroupUnrestrictBoostCount
+instance TD.Lib.Internal.ShortShow TD.Query.SetSupergroupUnrestrictBoostCount.SetSupergroupUnrestrictBoostCount
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetSupergroupUnrestrictBoostCount.SetSupergroupUnrestrictBoostCount
 
 module TD.Query.SetSupergroupUsername
 
@@ -30809,7 +30950,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatIsTranslatable.Toggle
 
 module TD.Query.ToggleChatViewAsTopics
 
--- | Changes the view_as_topics setting of a forum chat. Returns <a>Ok</a>
+-- | Changes the view_as_topics setting of a forum chat or Saved Messages.
+--   Returns <a>Ok</a>
 data ToggleChatViewAsTopics
 ToggleChatViewAsTopics :: Maybe Int -> Maybe Bool -> ToggleChatViewAsTopics
 
@@ -31045,10 +31187,10 @@ module TD.Query.ToggleSavedMessagesTopicIsPinned
 --   getOption("pinned_saved_messages_topic_count_max") pinned topics. The
 --   limit can be increased with Telegram Premium. Returns <a>Ok</a>
 data ToggleSavedMessagesTopicIsPinned
-ToggleSavedMessagesTopicIsPinned :: Maybe SavedMessagesTopic -> Maybe Bool -> ToggleSavedMessagesTopicIsPinned
+ToggleSavedMessagesTopicIsPinned :: Maybe Int -> Maybe Bool -> ToggleSavedMessagesTopicIsPinned
 
--- | Saved Messages topic to pin or unpin
-[saved_messages_topic] :: ToggleSavedMessagesTopicIsPinned -> Maybe SavedMessagesTopic
+-- | Identifier of Saved Messages topic to pin or unpin
+[saved_messages_topic_id] :: ToggleSavedMessagesTopicIsPinned -> Maybe Int
 
 -- | Pass true to pin the topic; pass false to unpin it
 [is_pinned] :: ToggleSavedMessagesTopicIsPinned -> Maybe Bool
@@ -31159,8 +31301,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupHasHiddenMember
 module TD.Query.ToggleSupergroupIsAllHistoryAvailable
 
 -- | Toggles whether the message history of a supergroup is available to
---   new members; requires can_change_info administrator right. Returns
---   <a>Ok</a>
+--   new members; requires can_change_info member right. Returns <a>Ok</a>
 data ToggleSupergroupIsAllHistoryAvailable
 ToggleSupergroupIsAllHistoryAvailable :: Maybe Int -> Maybe Bool -> ToggleSupergroupIsAllHistoryAvailable
 
@@ -31249,8 +31390,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupJoinToSendMessa
 module TD.Query.ToggleSupergroupSignMessages
 
 -- | Toggles whether sender signature is added to sent messages in a
---   channel; requires can_change_info administrator right. Returns
---   <a>Ok</a>
+--   channel; requires can_change_info member right. Returns <a>Ok</a>
 data ToggleSupergroupSignMessages
 ToggleSupergroupSignMessages :: Maybe Int -> Maybe Bool -> ToggleSupergroupSignMessages
 
@@ -31311,10 +31451,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleUsernameIsActive.ToggleUs
 
 module TD.Query.TransferChatOwnership
 
--- | Changes the owner of a chat. The current user must be a current owner
---   of the chat. Use the method canTransferOwnership to check whether the
---   ownership can be transferred from the current session. Available only
---   for supergroups and channel chats. Returns <a>Ok</a>
+-- | Changes the owner of a chat; requires owner privileges in the chat.
+--   Use the method canTransferOwnership to check whether the ownership can
+--   be transferred from the current session. Available only for
+--   supergroups and channel chats. Returns <a>Ok</a>
 data TransferChatOwnership
 TransferChatOwnership :: Maybe Int -> Maybe Int -> Maybe Text -> TransferChatOwnership
 
@@ -31399,7 +31539,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TranslateText.TranslateText
 module TD.Query.UnpinAllChatMessages
 
 -- | Removes all pinned messages from a chat; requires can_pin_messages
---   rights in the group or can_edit_messages rights in the channel.
+--   member right if the chat is a basic group or supergroup, or
+--   can_edit_messages administrator right if the chat is a channel.
 --   Returns <a>Ok</a>
 data UnpinAllChatMessages
 UnpinAllChatMessages :: Maybe Int -> UnpinAllChatMessages
@@ -31414,7 +31555,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.UnpinAllChatMessages.UnpinAllCh
 module TD.Query.UnpinAllMessageThreadMessages
 
 -- | Removes all pinned messages from a forum topic; requires
---   can_pin_messages rights in the supergroup. Returns <a>Ok</a>
+--   can_pin_messages member right in the supergroup. Returns <a>Ok</a>
 data UnpinAllMessageThreadMessages
 UnpinAllMessageThreadMessages :: Maybe Int -> Maybe Int -> UnpinAllMessageThreadMessages
 
@@ -31431,9 +31572,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.UnpinAllMessageThreadMessages.U
 
 module TD.Query.UnpinChatMessage
 
--- | Removes a pinned message from a chat; requires can_pin_messages rights
---   in the group or can_edit_messages rights in the channel. Returns
---   <a>Ok</a>
+-- | Removes a pinned message from a chat; requires can_pin_messages member
+--   right if the chat is a basic group or supergroup, or can_edit_messages
+--   administrator right if the chat is a channel. Returns <a>Ok</a>
 data UnpinChatMessage
 UnpinChatMessage :: Maybe Int -> Maybe Int -> UnpinChatMessage
 
@@ -31452,7 +31593,7 @@ module TD.Query.UpgradeBasicGroupChatToSupergroupChat
 
 -- | Creates a new supergroup from an existing basic group and sends a
 --   corresponding messageChatUpgradeTo and messageChatUpgradeFrom;
---   requires creator privileges. Deactivates the original basic group.
+--   requires owner privileges. Deactivates the original basic group.
 --   Returns <a>Chat</a>
 data UpgradeBasicGroupChatToSupergroupChat
 UpgradeBasicGroupChatToSupergroupChat :: Maybe Int -> UpgradeBasicGroupChatToSupergroupChat
