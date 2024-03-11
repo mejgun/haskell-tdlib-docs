@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.21.0
+@version 2.0.22.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -383,6 +383,38 @@ instance GHC.Classes.Eq TD.Data.TopChatCategory.TopChatCategory
 instance TD.Lib.Internal.ShortShow TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TopChatCategory.TopChatCategory
+
+module TD.Data.TimeZone
+data TimeZone
+
+-- | Describes a time zone
+TimeZone :: Maybe Text -> Maybe Text -> Maybe Int -> TimeZone
+
+-- | Unique time zone identifier
+[_id] :: TimeZone -> Maybe Text
+
+-- | Time zone name
+[name] :: TimeZone -> Maybe Text
+
+-- | Current UTC time offset for the time zone
+[utc_time_offset] :: TimeZone -> Maybe Int
+instance GHC.Show.Show TD.Data.TimeZone.TimeZone
+instance GHC.Classes.Eq TD.Data.TimeZone.TimeZone
+instance TD.Lib.Internal.ShortShow TD.Data.TimeZone.TimeZone
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TimeZone.TimeZone
+
+module TD.Data.TimeZones
+data TimeZones
+
+-- | Contains a list of time zones
+TimeZones :: Maybe [TimeZone] -> TimeZones
+
+-- | A list of time zones
+[time_zones] :: TimeZones -> Maybe [TimeZone]
+instance GHC.Show.Show TD.Data.TimeZones.TimeZones
+instance GHC.Classes.Eq TD.Data.TimeZones.TimeZones
+instance TD.Lib.Internal.ShortShow TD.Data.TimeZones.TimeZones
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TimeZones.TimeZones
 
 module TD.Data.ThumbnailFormat
 
@@ -9492,7 +9524,7 @@ module TD.Data.ChatFolderInfo
 data ChatFolderInfo
 
 -- | Contains basic information about a chat folder
-ChatFolderInfo :: Maybe Int -> Maybe Text -> Maybe ChatFolderIcon -> Maybe Bool -> Maybe Bool -> ChatFolderInfo
+ChatFolderInfo :: Maybe Int -> Maybe Text -> Maybe ChatFolderIcon -> Maybe Int -> Maybe Bool -> Maybe Bool -> ChatFolderInfo
 
 -- | Unique chat folder identifier
 [_id] :: ChatFolderInfo -> Maybe Int
@@ -9502,6 +9534,10 @@ ChatFolderInfo :: Maybe Int -> Maybe Text -> Maybe ChatFolderIcon -> Maybe Bool 
 
 -- | The chosen or default icon for the chat folder
 [icon] :: ChatFolderInfo -> Maybe ChatFolderIcon
+
+-- | The identifier of the chosen color for the chat folder icon; from -1
+--   to 6. If -1, then color is didabled
+[color_id] :: ChatFolderInfo -> Maybe Int
 
 -- | True, if at least one link has been created for the folder
 [is_shareable] :: ChatFolderInfo -> Maybe Bool
@@ -9539,7 +9575,7 @@ module TD.Data.ChatFolder
 data ChatFolder
 
 -- | Represents a folder for user chats
-ChatFolder :: Maybe Text -> Maybe ChatFolderIcon -> Maybe Bool -> Maybe [Int] -> Maybe [Int] -> Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatFolder
+ChatFolder :: Maybe Text -> Maybe ChatFolderIcon -> Maybe Int -> Maybe Bool -> Maybe [Int] -> Maybe [Int] -> Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatFolder
 
 -- | The title of the folder; 1-12 characters without line feeds
 [title] :: ChatFolder -> Maybe Text
@@ -9547,6 +9583,10 @@ ChatFolder :: Maybe Text -> Maybe ChatFolderIcon -> Maybe Bool -> Maybe [Int] ->
 -- | The chosen icon for the chat folder; may be null. If null, use
 --   getChatFolderDefaultIconName to get default icon name for the folder
 [icon] :: ChatFolder -> Maybe ChatFolderIcon
+
+-- | The identifier of the chosen color for the chat folder icon; from -1
+--   to 6. If -1, then color is didabled
+[color_id] :: ChatFolder -> Maybe Int
 
 -- | True, if at least one link has been created for the folder
 [is_shareable] :: ChatFolder -> Maybe Bool
@@ -12041,6 +12081,218 @@ instance GHC.Classes.Eq TD.Data.Call.Call
 instance TD.Lib.Internal.ShortShow TD.Data.Call.Call
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Call.Call
 
+module TD.Data.BusinessRecipients
+data BusinessRecipients
+
+-- | Describes private chats chosen for automatic interaction with a
+--   business
+BusinessRecipients :: Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> BusinessRecipients
+
+-- | Identifiers of selected private chats
+[chat_ids] :: BusinessRecipients -> Maybe [Int]
+
+-- | True, if all existing private chats are selected
+[select_existing_chats] :: BusinessRecipients -> Maybe Bool
+
+-- | True, if all new private chats are selected
+[select_new_chats] :: BusinessRecipients -> Maybe Bool
+
+-- | True, if all private chats with contacts are selected
+[select_contacts] :: BusinessRecipients -> Maybe Bool
+
+-- | True, if all private chats with non-contacts are selected
+[select_non_contacts] :: BusinessRecipients -> Maybe Bool
+
+-- | If true, then all private chats except the selected are chosen.
+--   Otherwise, only the selected chats are chosen
+[exclude_selected] :: BusinessRecipients -> Maybe Bool
+defaultBusinessRecipients :: BusinessRecipients
+instance GHC.Show.Show TD.Data.BusinessRecipients.BusinessRecipients
+instance GHC.Classes.Eq TD.Data.BusinessRecipients.BusinessRecipients
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessRecipients.BusinessRecipients
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessRecipients.BusinessRecipients
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessRecipients.BusinessRecipients
+
+module TD.Data.BusinessOpeningHoursInterval
+data BusinessOpeningHoursInterval
+
+-- | Describes an interval of time when the business is open
+BusinessOpeningHoursInterval :: Maybe Int -> Maybe Int -> BusinessOpeningHoursInterval
+
+-- | The first minute of the interval since start of the week; 0-7*24*60
+[start_minute] :: BusinessOpeningHoursInterval -> Maybe Int
+
+-- | The first minute after the end of the interval since start of the
+--   week; 1-8*24*60
+[end_minute] :: BusinessOpeningHoursInterval -> Maybe Int
+defaultBusinessOpeningHoursInterval :: BusinessOpeningHoursInterval
+instance GHC.Show.Show TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
+instance GHC.Classes.Eq TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
+
+module TD.Data.BusinessOpeningHours
+data BusinessOpeningHours
+
+-- | Describes opening hours of a business
+BusinessOpeningHours :: Maybe Text -> Maybe [BusinessOpeningHoursInterval] -> BusinessOpeningHours
+
+-- | Unique time zone identifier
+[time_zone_id] :: BusinessOpeningHours -> Maybe Text
+
+-- | Intervals of the time when the business is open
+[opening_hours] :: BusinessOpeningHours -> Maybe [BusinessOpeningHoursInterval]
+defaultBusinessOpeningHours :: BusinessOpeningHours
+instance GHC.Show.Show TD.Data.BusinessOpeningHours.BusinessOpeningHours
+instance GHC.Classes.Eq TD.Data.BusinessOpeningHours.BusinessOpeningHours
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessOpeningHours.BusinessOpeningHours
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessOpeningHours.BusinessOpeningHours
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessOpeningHours.BusinessOpeningHours
+
+module TD.Data.BusinessLocation
+data BusinessLocation
+
+-- | Represents a location of a business
+BusinessLocation :: Maybe Location -> Maybe Text -> BusinessLocation
+
+-- | The location; may be null if not specified
+[location] :: BusinessLocation -> Maybe Location
+
+-- | Location address; 1-96 characters
+[address] :: BusinessLocation -> Maybe Text
+defaultBusinessLocation :: BusinessLocation
+instance GHC.Show.Show TD.Data.BusinessLocation.BusinessLocation
+instance GHC.Classes.Eq TD.Data.BusinessLocation.BusinessLocation
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessLocation.BusinessLocation
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessLocation.BusinessLocation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessLocation.BusinessLocation
+
+module TD.Data.BusinessGreetingMessageSettings
+data BusinessGreetingMessageSettings
+
+-- | Describes settings for greeting messages that are automatically sent
+--   by a Telegram Business account as response to incoming messages in an
+--   inactive private chat
+BusinessGreetingMessageSettings :: Maybe Int -> Maybe BusinessRecipients -> Maybe Int -> BusinessGreetingMessageSettings
+
+-- | Unique quick reply shortcut identifier for the greeting messages
+[shortcut_id] :: BusinessGreetingMessageSettings -> Maybe Int
+
+-- | Chosen recipients of the greeting messages
+[recipients] :: BusinessGreetingMessageSettings -> Maybe BusinessRecipients
+
+-- | The number of days after which a chat will be considered as inactive;
+--   currently, must be on of 7, 14, 21, or 28
+[inactivity_days] :: BusinessGreetingMessageSettings -> Maybe Int
+defaultBusinessGreetingMessageSettings :: BusinessGreetingMessageSettings
+instance GHC.Show.Show TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+instance GHC.Classes.Eq TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+
+module TD.Data.BusinessConnectedBot
+data BusinessConnectedBot
+
+-- | Describes a bot connected to a business account
+BusinessConnectedBot :: Maybe Int -> Maybe BusinessRecipients -> Maybe Bool -> BusinessConnectedBot
+
+-- | User identifier of the bot
+[bot_user_id] :: BusinessConnectedBot -> Maybe Int
+
+-- | Private chats that will be accessible to the bot
+[recipients] :: BusinessConnectedBot -> Maybe BusinessRecipients
+
+-- | True, if the bot can send messages to the private chats; false
+--   otherwise
+[can_reply] :: BusinessConnectedBot -> Maybe Bool
+defaultBusinessConnectedBot :: BusinessConnectedBot
+instance GHC.Show.Show TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance GHC.Classes.Eq TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
+
+module TD.Data.BusinessAwayMessageSchedule
+
+-- | Describes conditions for sending of away messages by a Telegram
+--   Business account
+data BusinessAwayMessageSchedule
+
+-- | Send away messages always
+BusinessAwayMessageScheduleAlways :: BusinessAwayMessageSchedule
+
+-- | Send away messages outside of the business opening hours
+BusinessAwayMessageScheduleOutsideOfOpeningHours :: BusinessAwayMessageSchedule
+
+-- | Send away messages only in the specified time span
+BusinessAwayMessageScheduleCustom :: Maybe Int -> Maybe Int -> BusinessAwayMessageSchedule
+
+-- | Point in time (Unix timestamp) when the away messages will start to be
+--   sent
+[start_date] :: BusinessAwayMessageSchedule -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the away messages will stop to be
+--   sent
+[end_date] :: BusinessAwayMessageSchedule -> Maybe Int
+instance GHC.Show.Show TD.Data.BusinessAwayMessageSchedule.BusinessAwayMessageSchedule
+instance GHC.Classes.Eq TD.Data.BusinessAwayMessageSchedule.BusinessAwayMessageSchedule
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessAwayMessageSchedule.BusinessAwayMessageSchedule
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessAwayMessageSchedule.BusinessAwayMessageSchedule
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessAwayMessageSchedule.BusinessAwayMessageSchedule
+
+module TD.Data.BusinessAwayMessageSettings
+data BusinessAwayMessageSettings
+
+-- | Describes settings for messages that are automatically sent by a
+--   Telegram Business account when it is away
+BusinessAwayMessageSettings :: Maybe Int -> Maybe BusinessRecipients -> Maybe BusinessAwayMessageSchedule -> Maybe Bool -> BusinessAwayMessageSettings
+
+-- | Unique quick reply shortcut identifier for the away messages
+[shortcut_id] :: BusinessAwayMessageSettings -> Maybe Int
+
+-- | Chosen recipients of the away messages
+[recipients] :: BusinessAwayMessageSettings -> Maybe BusinessRecipients
+
+-- | Settings used to check whether the current user is away
+[schedule] :: BusinessAwayMessageSettings -> Maybe BusinessAwayMessageSchedule
+
+-- | True, if the messages must not be sent if the account was online in
+--   the last 10 minutes
+[offline_only] :: BusinessAwayMessageSettings -> Maybe Bool
+defaultBusinessAwayMessageSettings :: BusinessAwayMessageSettings
+instance GHC.Show.Show TD.Data.BusinessAwayMessageSettings.BusinessAwayMessageSettings
+instance GHC.Classes.Eq TD.Data.BusinessAwayMessageSettings.BusinessAwayMessageSettings
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessAwayMessageSettings.BusinessAwayMessageSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessAwayMessageSettings.BusinessAwayMessageSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessAwayMessageSettings.BusinessAwayMessageSettings
+
+module TD.Data.BusinessInfo
+data BusinessInfo
+
+-- | Contains information about a Telegram Business account
+BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> BusinessInfo
+
+-- | Location of the business; may be null if none
+[location] :: BusinessInfo -> Maybe BusinessLocation
+
+-- | Opening hours of the business; may be null if none. The hours are
+--   guaranteed to be valid and has already been split by week days
+[opening_hours] :: BusinessInfo -> Maybe BusinessOpeningHours
+
+-- | The greeting message; may be null if none or the Business account is
+--   not of the current user
+[greeting_message_settings] :: BusinessInfo -> Maybe BusinessGreetingMessageSettings
+
+-- | The away message; may be null if none or the Business account is not
+--   of the current user
+[away_message_settings] :: BusinessInfo -> Maybe BusinessAwayMessageSettings
+instance GHC.Show.Show TD.Data.BusinessInfo.BusinessInfo
+instance GHC.Classes.Eq TD.Data.BusinessInfo.BusinessInfo
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessInfo.BusinessInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessInfo.BusinessInfo
+
 module TD.Data.BotMenuButton
 data BotMenuButton
 
@@ -14277,7 +14529,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -14339,6 +14591,10 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 -- | Number of group chats where both the other user and the current user
 --   are a member; 0 for the current user
 [group_in_common_count] :: UserFullInfo -> Maybe Int
+
+-- | Information about business settings for Telegram Business accounts;
+--   may be null if none
+[business_info] :: UserFullInfo -> Maybe BusinessInfo
 
 -- | For bots, information about the bot; may be null if the user isn't a
 --   bot
@@ -15572,6 +15828,66 @@ instance GHC.Classes.Eq TD.Data.SponsoredMessages.SponsoredMessages
 instance TD.Lib.Internal.ShortShow TD.Data.SponsoredMessages.SponsoredMessages
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SponsoredMessages.SponsoredMessages
 
+module TD.Data.QuickReplyMessage
+data QuickReplyMessage
+
+-- | Describes a message that can be used for quick reply
+QuickReplyMessage :: Maybe Int -> Maybe MessageSendingState -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageContent -> Maybe ReplyMarkup -> QuickReplyMessage
+
+-- | Unique message identifier among all quick replies
+[_id] :: QuickReplyMessage -> Maybe Int
+
+-- | The sending state of the message; may be null if the message isn't
+--   being sent and didn't fail to be sent
+[sending_state] :: QuickReplyMessage -> Maybe MessageSendingState
+
+-- | True, if the message can be edited
+[can_be_edited] :: QuickReplyMessage -> Maybe Bool
+
+-- | Information about the identifier of the quick reply message to which
+--   the message replies
+[reply_to_message_id] :: QuickReplyMessage -> Maybe Int
+
+-- | If non-zero, the user identifier of the bot through which this message
+--   was sent
+[via_bot_user_id] :: QuickReplyMessage -> Maybe Int
+
+-- | Unique identifier of an album this message belongs to. Only audios,
+--   documents, photos and videos can be grouped together in albums
+[media_album_id] :: QuickReplyMessage -> Maybe Int
+
+-- | Content of the message
+[content] :: QuickReplyMessage -> Maybe MessageContent
+
+-- | Inline keyboard reply markup for the message; may be null if none
+[reply_markup] :: QuickReplyMessage -> Maybe ReplyMarkup
+instance GHC.Show.Show TD.Data.QuickReplyMessage.QuickReplyMessage
+instance GHC.Classes.Eq TD.Data.QuickReplyMessage.QuickReplyMessage
+instance TD.Lib.Internal.ShortShow TD.Data.QuickReplyMessage.QuickReplyMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.QuickReplyMessage.QuickReplyMessage
+
+module TD.Data.QuickReplyShortcut
+data QuickReplyShortcut
+
+-- | Describes a shortcut that can be used for a quick reply
+QuickReplyShortcut :: Maybe Int -> Maybe Text -> Maybe QuickReplyMessage -> Maybe Int -> QuickReplyShortcut
+
+-- | Unique shortcut identifier
+[_id] :: QuickReplyShortcut -> Maybe Int
+
+-- | The name of the shortcut that can be used to use the shortcut
+[name] :: QuickReplyShortcut -> Maybe Text
+
+-- | The first shortcut message
+[first_message] :: QuickReplyShortcut -> Maybe QuickReplyMessage
+
+-- | The total number of messages in the shortcut
+[message_count] :: QuickReplyShortcut -> Maybe Int
+instance GHC.Show.Show TD.Data.QuickReplyShortcut.QuickReplyShortcut
+instance GHC.Classes.Eq TD.Data.QuickReplyShortcut.QuickReplyShortcut
+instance TD.Lib.Internal.ShortShow TD.Data.QuickReplyShortcut.QuickReplyShortcut
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.QuickReplyShortcut.QuickReplyShortcut
+
 module TD.Data.MessageReplyTo
 
 -- | Contains information about the message or the story a message is
@@ -16753,7 +17069,7 @@ data Chat
 
 -- | A chat. (Can be a private chat, basic group, supergroup, or secret
 --   chat)
-Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
+Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
 
 -- | Chat unique identifier
 [_id] :: Chat -> Maybe Int
@@ -16792,6 +17108,11 @@ Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Mayb
 
 -- | Positions of the chat in chat lists
 [positions] :: Chat -> Maybe [ChatPosition]
+
+-- | Chat lists to which the chat belongs. A chat can have a non-zero
+--   position in a chat list even it doesn't belong to the chat list and
+--   have no position in a chat list even it belongs to the chat list
+[chat_lists] :: Chat -> Maybe [ChatList]
 
 -- | Identifier of a user or chat that is selected to send messages in the
 --   chat; may be null if the user can't change message sender
@@ -17316,6 +17637,24 @@ UpdateChatPosition :: Maybe Int -> Maybe ChatPosition -> Update
 --   removed from the list
 [position] :: Update -> Maybe ChatPosition
 
+-- | A chat was added to a chat list
+UpdateChatAddedToList :: Maybe Int -> Maybe ChatList -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | The chat list to which the chat was added
+[chat_list] :: Update -> Maybe ChatList
+
+-- | A chat was removed from a chat list
+UpdateChatRemovedFromList :: Maybe Int -> Maybe ChatList -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | The chat list to which the chat was added
+[chat_list] :: Update -> Maybe ChatList
+
 -- | Incoming messages were read or the number of unread messages has been
 --   changed
 UpdateChatReadInbox :: Maybe Int -> Maybe Int -> Maybe Int -> Update
@@ -17542,13 +17881,16 @@ UpdateChatHasScheduledMessages :: Maybe Int -> Maybe Bool -> Update
 [has_scheduled_messages] :: Update -> Maybe Bool
 
 -- | The list of chat folders or a chat folder has changed
-UpdateChatFolders :: Maybe [ChatFolderInfo] -> Maybe Int -> Update
+UpdateChatFolders :: Maybe [ChatFolderInfo] -> Maybe Int -> Maybe Bool -> Update
 
 -- | The new list of chat folders
 [chat_folders] :: Update -> Maybe [ChatFolderInfo]
 
 -- | Position of the main chat list among chat folders, 0-based
 [main_chat_list_position] :: Update -> Maybe Int
+
+-- | True, if folder tags are enabled
+[are_tags_enabled] :: Update -> Maybe Bool
 
 -- | The number of online group members has changed. This update with
 --   non-zero number of online group members is sent only for currently
@@ -17575,6 +17917,36 @@ UpdateSavedMessagesTopicCount :: Maybe Int -> Update
 
 -- | Approximate total number of Saved Messages topics
 [topic_count] :: Update -> Maybe Int
+
+-- | Basic information about a quick reply shortcut has changed. This
+--   update is guaranteed to come before the quick shortcut name is
+--   returned to the application
+UpdateQuickReplyShortcut :: Maybe QuickReplyShortcut -> Update
+
+-- | New data about the shortcut
+[shortcut] :: Update -> Maybe QuickReplyShortcut
+
+-- | A quick reply shortcut and all its messages were deleted
+UpdateQuickReplyShortcutDeleted :: Maybe Int -> Update
+
+-- | The identifier of the deleted shortcut
+[shortcut_id] :: Update -> Maybe Int
+
+-- | The list of quick reply shortcuts has changed
+UpdateQuickReplyShortcuts :: Maybe [Int] -> Update
+
+-- | The new list of identifiers of quick reply shortcuts
+[shortcut_ids] :: Update -> Maybe [Int]
+
+-- | The list of quick reply shortcut messages has changed
+UpdateQuickReplyShortcutMessages :: Maybe Int -> Maybe [QuickReplyMessage] -> Update
+
+-- | The identifier of the deleted shortcut
+[shortcut_id] :: Update -> Maybe Int
+
+-- | The new list of quick reply messages for the shortcut in order from
+--   the first to the last sent
+[messages] :: Update -> Maybe [QuickReplyMessage]
 
 -- | Basic information about a topic in a forum chat was changed
 UpdateForumTopicInfo :: Maybe Int -> Maybe ForumTopicInfo -> Update
@@ -17893,7 +18265,7 @@ UpdateUserPrivacySettingRules :: Maybe UserPrivacySetting -> Maybe UserPrivacySe
 --   sent only if the message database is used
 UpdateUnreadMessageCount :: Maybe ChatList -> Maybe Int -> Maybe Int -> Update
 
--- | The chat list with changed number of unread messages
+-- | The chat list to which the chat was added
 [chat_list] :: Update -> Maybe ChatList
 
 -- | The number of unread messages left in the chat
@@ -17906,7 +18278,7 @@ UpdateUnreadMessageCount :: Maybe ChatList -> Maybe Int -> Maybe Int -> Update
 --   has changed. This update is sent only if the message database is used
 UpdateUnreadChatCount :: Maybe ChatList -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
 
--- | The chat list with changed number of unread messages
+-- | The chat list to which the chat was added
 [chat_list] :: Update -> Maybe ChatList
 
 -- | Total number of unread notifications in the group, can be bigger than
@@ -18539,6 +18911,7 @@ BasicGroup :: BasicGroup -> GeneralResult
 BasicGroupFullInfo :: BasicGroupFullInfo -> GeneralResult
 BotCommands :: BotCommands -> GeneralResult
 BotMenuButton :: BotMenuButton -> GeneralResult
+BusinessConnectedBot :: BusinessConnectedBot -> GeneralResult
 CallId :: CallId -> GeneralResult
 CallbackQueryAnswer :: CallbackQueryAnswer -> GeneralResult
 CanSendMessageToUserResult :: CanSendMessageToUserResult -> GeneralResult
@@ -18697,6 +19070,7 @@ TestVectorString :: TestVectorString -> GeneralResult
 TestVectorStringObject :: TestVectorStringObject -> GeneralResult
 Text :: Text -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
+TimeZones :: TimeZones -> GeneralResult
 TrendingStickerSets :: TrendingStickerSets -> GeneralResult
 Update :: Update -> GeneralResult
 Updates :: Updates -> GeneralResult
@@ -18896,8 +19270,8 @@ module TD.Query.AddFavoriteSticker
 -- | Adds a new sticker to the list of favorite stickers. The new sticker
 --   is added to the top of the list. If the sticker was already in the
 --   list, it is removed from the list first. Only stickers belonging to a
---   sticker set can be added to this list. Emoji stickers can't be added
---   to favorite stickers. Returns <a>Ok</a>
+--   sticker set or in WEBP format can be added to this list. Emoji
+--   stickers can't be added to favorite stickers. Returns <a>Ok</a>
 data AddFavoriteSticker
 AddFavoriteSticker :: Maybe InputFile -> AddFavoriteSticker
 
@@ -19060,8 +19434,9 @@ module TD.Query.AddRecentSticker
 -- | Manually adds a new sticker to the list of recently used stickers. The
 --   new sticker is added to the top of the list. If the sticker was
 --   already in the list, it is removed from the list first. Only stickers
---   belonging to a sticker set can be added to this list. Emoji stickers
---   can't be added to recent stickers. Returns <a>Stickers</a>
+--   belonging to a sticker set or in WEBP format can be added to this
+--   list. Emoji stickers can't be added to recent stickers. Returns
+--   <a>Stickers</a>
 data AddRecentSticker
 AddRecentSticker :: Maybe Bool -> Maybe InputFile -> AddRecentSticker
 
@@ -19849,6 +20224,20 @@ instance GHC.Classes.Eq TD.Query.CheckPremiumGiftCode.CheckPremiumGiftCode
 instance TD.Lib.Internal.ShortShow TD.Query.CheckPremiumGiftCode.CheckPremiumGiftCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckPremiumGiftCode.CheckPremiumGiftCode
 
+module TD.Query.CheckQuickReplyShortcutName
+
+-- | Checks validness of a name for a quick reply shortcut. Can be called
+--   synchronously. Returns <a>Ok</a>
+data CheckQuickReplyShortcutName
+CheckQuickReplyShortcutName :: Maybe Text -> CheckQuickReplyShortcutName
+
+-- | The name of the shortcut; 1-32 characters
+[name] :: CheckQuickReplyShortcutName -> Maybe Text
+instance GHC.Show.Show TD.Query.CheckQuickReplyShortcutName.CheckQuickReplyShortcutName
+instance GHC.Classes.Eq TD.Query.CheckQuickReplyShortcutName.CheckQuickReplyShortcutName
+instance TD.Lib.Internal.ShortShow TD.Query.CheckQuickReplyShortcutName.CheckQuickReplyShortcutName
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckQuickReplyShortcutName.CheckQuickReplyShortcutName
+
 module TD.Query.CheckRecoveryEmailAddressCode
 
 -- | Checks the 2-step verification recovery email address verification
@@ -20546,6 +20935,20 @@ instance GHC.Classes.Eq TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevoke
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 
+module TD.Query.DeleteBusinessConnectedBot
+
+-- | Deletes the business bot that is connected to the current user
+--   account. Returns <a>Ok</a>
+data DeleteBusinessConnectedBot
+DeleteBusinessConnectedBot :: Maybe Int -> DeleteBusinessConnectedBot
+
+-- | Unique user identifier for the bot
+[bot_user_id] :: DeleteBusinessConnectedBot -> Maybe Int
+instance GHC.Show.Show TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
+instance GHC.Classes.Eq TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
+
 module TD.Query.DeleteChat
 
 -- | Deletes a chat along with all messages in the corresponding chat for
@@ -20832,6 +21235,37 @@ instance GHC.Show.Show TD.Query.DeleteProfilePhoto.DeleteProfilePhoto
 instance GHC.Classes.Eq TD.Query.DeleteProfilePhoto.DeleteProfilePhoto
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteProfilePhoto.DeleteProfilePhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteProfilePhoto.DeleteProfilePhoto
+
+module TD.Query.DeleteQuickReplyShortcut
+
+-- | Deletes a quick reply shortcut. Returns <a>Ok</a>
+data DeleteQuickReplyShortcut
+DeleteQuickReplyShortcut :: Maybe Int -> DeleteQuickReplyShortcut
+
+-- | Unique identifier of the quick reply shortcut
+[shortcut_id] :: DeleteQuickReplyShortcut -> Maybe Int
+instance GHC.Show.Show TD.Query.DeleteQuickReplyShortcut.DeleteQuickReplyShortcut
+instance GHC.Classes.Eq TD.Query.DeleteQuickReplyShortcut.DeleteQuickReplyShortcut
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteQuickReplyShortcut.DeleteQuickReplyShortcut
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteQuickReplyShortcut.DeleteQuickReplyShortcut
+
+module TD.Query.DeleteQuickReplyShortcutMessages
+
+-- | Deletes specified quick reply messages. Returns <a>Ok</a>
+data DeleteQuickReplyShortcutMessages
+DeleteQuickReplyShortcutMessages :: Maybe Int -> Maybe [Int] -> DeleteQuickReplyShortcutMessages
+
+-- | Unique identifier of the quick reply shortcut to which the messages
+--   belong
+[shortcut_id] :: DeleteQuickReplyShortcutMessages -> Maybe Int
+
+-- | Unique identifiers of the messages
+[message_ids] :: DeleteQuickReplyShortcutMessages -> Maybe [Int]
+defaultDeleteQuickReplyShortcutMessages :: DeleteQuickReplyShortcutMessages
+instance GHC.Show.Show TD.Query.DeleteQuickReplyShortcutMessages.DeleteQuickReplyShortcutMessages
+instance GHC.Classes.Eq TD.Query.DeleteQuickReplyShortcutMessages.DeleteQuickReplyShortcutMessages
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteQuickReplyShortcutMessages.DeleteQuickReplyShortcutMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteQuickReplyShortcutMessages.DeleteQuickReplyShortcutMessages
 
 module TD.Query.DeleteRevokedChatInviteLink
 
@@ -21997,6 +22431,18 @@ instance GHC.Show.Show TD.Query.GetBotName.GetBotName
 instance GHC.Classes.Eq TD.Query.GetBotName.GetBotName
 instance TD.Lib.Internal.ShortShow TD.Query.GetBotName.GetBotName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotName.GetBotName
+
+module TD.Query.GetBusinessConnectedBot
+
+-- | Returns the business bot that is connected to the current user
+--   account. Returns a 404 error if there is no connected bot. Returns
+--   <a>BusinessConnectedBot</a>
+data GetBusinessConnectedBot
+GetBusinessConnectedBot :: GetBusinessConnectedBot
+instance GHC.Show.Show TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
+instance GHC.Classes.Eq TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
 
 module TD.Query.GetCallbackQueryAnswer
 
@@ -25410,6 +25856,16 @@ instance GHC.Classes.Eq TD.Query.GetThemedEmojiStatuses.GetThemedEmojiStatuses
 instance TD.Lib.Internal.ShortShow TD.Query.GetThemedEmojiStatuses.GetThemedEmojiStatuses
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetThemedEmojiStatuses.GetThemedEmojiStatuses
 
+module TD.Query.GetTimeZones
+
+-- | Returns the list of supported time zones. Returns <a>TimeZones</a>
+data GetTimeZones
+GetTimeZones :: GetTimeZones
+instance GHC.Show.Show TD.Query.GetTimeZones.GetTimeZones
+instance GHC.Classes.Eq TD.Query.GetTimeZones.GetTimeZones
+instance TD.Lib.Internal.ShortShow TD.Query.GetTimeZones.GetTimeZones
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTimeZones.GetTimeZones
+
 module TD.Query.GetTopChats
 
 -- | Returns a list of frequently used chats. Returns <a>Chats</a>
@@ -25933,6 +26389,33 @@ instance GHC.Show.Show TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipa
 instance GHC.Classes.Eq TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
 instance TD.Lib.Internal.ShortShow TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadGroupCallParticipants.LoadGroupCallParticipants
+
+module TD.Query.LoadQuickReplyShortcutMessages
+
+-- | Loads quick reply messages that can be sent by a given quick reply
+--   shortcut. The loaded messages will be sent through
+--   updateQuickReplyShortcutMessages. Returns <a>Ok</a>
+data LoadQuickReplyShortcutMessages
+LoadQuickReplyShortcutMessages :: Maybe Int -> LoadQuickReplyShortcutMessages
+
+-- | Unique identifier of the quick reply shortcut
+[shortcut_id] :: LoadQuickReplyShortcutMessages -> Maybe Int
+instance GHC.Show.Show TD.Query.LoadQuickReplyShortcutMessages.LoadQuickReplyShortcutMessages
+instance GHC.Classes.Eq TD.Query.LoadQuickReplyShortcutMessages.LoadQuickReplyShortcutMessages
+instance TD.Lib.Internal.ShortShow TD.Query.LoadQuickReplyShortcutMessages.LoadQuickReplyShortcutMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadQuickReplyShortcutMessages.LoadQuickReplyShortcutMessages
+
+module TD.Query.LoadQuickReplyShortcuts
+
+-- | Loads quick reply shortcuts created by the current user. The loaded
+--   topics will be sent through updateQuickReplyShortcuts. Returns
+--   <a>Ok</a>
+data LoadQuickReplyShortcuts
+LoadQuickReplyShortcuts :: LoadQuickReplyShortcuts
+instance GHC.Show.Show TD.Query.LoadQuickReplyShortcuts.LoadQuickReplyShortcuts
+instance GHC.Classes.Eq TD.Query.LoadQuickReplyShortcuts.LoadQuickReplyShortcuts
+instance TD.Lib.Internal.ShortShow TD.Query.LoadQuickReplyShortcuts.LoadQuickReplyShortcuts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadQuickReplyShortcuts.LoadQuickReplyShortcuts
 
 module TD.Query.LoadSavedMessagesTopics
 
@@ -26890,6 +27373,19 @@ instance GHC.Show.Show TD.Query.ReorderInstalledStickerSets.ReorderInstalledStic
 instance GHC.Classes.Eq TD.Query.ReorderInstalledStickerSets.ReorderInstalledStickerSets
 instance TD.Lib.Internal.ShortShow TD.Query.ReorderInstalledStickerSets.ReorderInstalledStickerSets
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReorderInstalledStickerSets.ReorderInstalledStickerSets
+
+module TD.Query.ReorderQuickReplyShortcuts
+
+-- | Changes the order of quick reply shortcuts. Returns <a>Ok</a>
+data ReorderQuickReplyShortcuts
+ReorderQuickReplyShortcuts :: Maybe [Int] -> ReorderQuickReplyShortcuts
+
+-- | The new order of quick reply shortcuts
+[shortcut_ids] :: ReorderQuickReplyShortcuts -> Maybe [Int]
+instance GHC.Show.Show TD.Query.ReorderQuickReplyShortcuts.ReorderQuickReplyShortcuts
+instance GHC.Classes.Eq TD.Query.ReorderQuickReplyShortcuts.ReorderQuickReplyShortcuts
+instance TD.Lib.Internal.ShortShow TD.Query.ReorderQuickReplyShortcuts.ReorderQuickReplyShortcuts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReorderQuickReplyShortcuts.ReorderQuickReplyShortcuts
 
 module TD.Query.ReorderSupergroupActiveUsernames
 
@@ -28356,6 +28852,30 @@ instance GHC.Classes.Eq TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumber
 instance TD.Lib.Internal.ShortShow TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
 
+module TD.Query.SendQuickReplyShortcutMessages
+
+-- | Sends messages from a quick reply shortcut. Requires Telegram Business
+--   subscription. Returns <a>Messages</a>
+data SendQuickReplyShortcutMessages
+SendQuickReplyShortcutMessages :: Maybe Int -> Maybe Int -> Maybe Int -> SendQuickReplyShortcutMessages
+
+-- | Identifier of the chat to which to send messages. The chat must be a
+--   private chat with a regular user
+[chat_id] :: SendQuickReplyShortcutMessages -> Maybe Int
+
+-- | Unique identifier of the quick reply shortcut
+[shortcut_id] :: SendQuickReplyShortcutMessages -> Maybe Int
+
+-- | Non-persistent identifier, which will be returned back in
+--   messageSendingStatePending object and can be used to match sent
+--   messages and corresponding updateNewMessage updates
+[sending_id] :: SendQuickReplyShortcutMessages -> Maybe Int
+defaultSendQuickReplyShortcutMessages :: SendQuickReplyShortcutMessages
+instance GHC.Show.Show TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
+instance GHC.Classes.Eq TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
+instance TD.Lib.Internal.ShortShow TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
+
 module TD.Query.SendStory
 
 -- | Sends a new story to a chat; requires can_post_stories right for
@@ -28699,6 +29219,79 @@ instance GHC.Show.Show TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance GHC.Classes.Eq TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance TD.Lib.Internal.ShortShow TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
+
+module TD.Query.SetBusinessAwayMessageSettings
+
+-- | Changes the business away message settings of the current user.
+--   Requires Telegram Business subscription. Returns <a>Ok</a>
+data SetBusinessAwayMessageSettings
+SetBusinessAwayMessageSettings :: Maybe BusinessAwayMessageSettings -> SetBusinessAwayMessageSettings
+
+-- | The new settings for the away message of the business; pass null to
+--   disable the away message
+[away_message_settings] :: SetBusinessAwayMessageSettings -> Maybe BusinessAwayMessageSettings
+instance GHC.Show.Show TD.Query.SetBusinessAwayMessageSettings.SetBusinessAwayMessageSettings
+instance GHC.Classes.Eq TD.Query.SetBusinessAwayMessageSettings.SetBusinessAwayMessageSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAwayMessageSettings.SetBusinessAwayMessageSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAwayMessageSettings.SetBusinessAwayMessageSettings
+
+module TD.Query.SetBusinessConnectedBot
+
+-- | Adds or changes business bot that is connected to the current user
+--   account. Returns <a>Ok</a>
+data SetBusinessConnectedBot
+SetBusinessConnectedBot :: Maybe BusinessConnectedBot -> SetBusinessConnectedBot
+
+-- | Connection settings for the bot
+[bot] :: SetBusinessConnectedBot -> Maybe BusinessConnectedBot
+instance GHC.Show.Show TD.Query.SetBusinessConnectedBot.SetBusinessConnectedBot
+instance GHC.Classes.Eq TD.Query.SetBusinessConnectedBot.SetBusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessConnectedBot.SetBusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessConnectedBot.SetBusinessConnectedBot
+
+module TD.Query.SetBusinessGreetingMessageSettings
+
+-- | Changes the business greeting message settings of the current user.
+--   Requires Telegram Business subscription. Returns <a>Ok</a>
+data SetBusinessGreetingMessageSettings
+SetBusinessGreetingMessageSettings :: Maybe BusinessGreetingMessageSettings -> SetBusinessGreetingMessageSettings
+
+-- | The new settings for the greeting message of the business; pass null
+--   to disable the greeting message
+[greeting_message_settings] :: SetBusinessGreetingMessageSettings -> Maybe BusinessGreetingMessageSettings
+instance GHC.Show.Show TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
+instance GHC.Classes.Eq TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
+
+module TD.Query.SetBusinessLocation
+
+-- | Changes the business location of the current user. Requires Telegram
+--   Business subscription. Returns <a>Ok</a>
+data SetBusinessLocation
+SetBusinessLocation :: Maybe BusinessLocation -> SetBusinessLocation
+
+-- | The new location of the business; pass null to remove the location
+[location] :: SetBusinessLocation -> Maybe BusinessLocation
+instance GHC.Show.Show TD.Query.SetBusinessLocation.SetBusinessLocation
+instance GHC.Classes.Eq TD.Query.SetBusinessLocation.SetBusinessLocation
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessLocation.SetBusinessLocation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessLocation.SetBusinessLocation
+
+module TD.Query.SetBusinessOpeningHours
+
+-- | Changes the business opening hours of the current user. Requires
+--   Telegram Business subscription. Returns <a>Ok</a>
+data SetBusinessOpeningHours
+SetBusinessOpeningHours :: Maybe BusinessOpeningHours -> SetBusinessOpeningHours
+
+-- | The new opening hours of the business; pass null to remove the opening
+--   hours
+[opening_hours] :: SetBusinessOpeningHours -> Maybe BusinessOpeningHours
+instance GHC.Show.Show TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
+instance GHC.Classes.Eq TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
 
 module TD.Query.SetChatAccentColor
 
@@ -29527,7 +30120,8 @@ module TD.Query.SetLocation
 
 -- | Changes the location of the current user. Needs to be called if
 --   getOption("is_location_visible") is true and location changes for more
---   than 1 kilometer. Returns <a>Ok</a>
+--   than 1 kilometer. Must not be called if the user has a business
+--   location. Returns <a>Ok</a>
 data SetLocation
 SetLocation :: Maybe Location -> SetLocation
 
@@ -29917,6 +30511,24 @@ instance GHC.Show.Show TD.Query.SetProfilePhoto.SetProfilePhoto
 instance GHC.Classes.Eq TD.Query.SetProfilePhoto.SetProfilePhoto
 instance TD.Lib.Internal.ShortShow TD.Query.SetProfilePhoto.SetProfilePhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetProfilePhoto.SetProfilePhoto
+
+module TD.Query.SetQuickReplyShortcutName
+
+-- | Changes name of a quick reply shortcut. Returns <a>Ok</a>
+data SetQuickReplyShortcutName
+SetQuickReplyShortcutName :: Maybe Int -> Maybe Text -> SetQuickReplyShortcutName
+
+-- | Unique identifier of the quick reply shortcut
+[shortcut_id] :: SetQuickReplyShortcutName -> Maybe Int
+
+-- | New name for the shortcut. Use checkQuickReplyShortcutName to check
+--   its validness
+[name] :: SetQuickReplyShortcutName -> Maybe Text
+defaultSetQuickReplyShortcutName :: SetQuickReplyShortcutName
+instance GHC.Show.Show TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
+instance GHC.Classes.Eq TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
+instance TD.Lib.Internal.ShortShow TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
 
 module TD.Query.SetReadDatePrivacySettings
 
@@ -30870,6 +31482,19 @@ instance GHC.Show.Show TD.Query.ToggleChatDefaultDisableNotification.ToggleChatD
 instance GHC.Classes.Eq TD.Query.ToggleChatDefaultDisableNotification.ToggleChatDefaultDisableNotification
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatDefaultDisableNotification.ToggleChatDefaultDisableNotification
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatDefaultDisableNotification.ToggleChatDefaultDisableNotification
+
+module TD.Query.ToggleChatFolderTags
+
+-- | Toggles whether chat folder tags are enabled. Returns <a>Ok</a>
+data ToggleChatFolderTags
+ToggleChatFolderTags :: Maybe Bool -> ToggleChatFolderTags
+
+-- | Pass true to enable folder tags; pass false to disable them
+[are_tags_enabled] :: ToggleChatFolderTags -> Maybe Bool
+instance GHC.Show.Show TD.Query.ToggleChatFolderTags.ToggleChatFolderTags
+instance GHC.Classes.Eq TD.Query.ToggleChatFolderTags.ToggleChatFolderTags
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatFolderTags.ToggleChatFolderTags
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatFolderTags.ToggleChatFolderTags
 
 module TD.Query.ToggleChatHasProtectedContent
 
