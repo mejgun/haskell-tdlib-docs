@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.BusinessFeature</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeature"><span class="hs-identifier">BusinessFeature</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><span class="hs-comment">-- | Describes a feature available to Business user accounts</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="BusinessFeature"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeature"><span class="hs-identifier hs-var">BusinessFeature</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="BusinessFeatureLocation"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureLocation"><span class="hs-identifier hs-var">BusinessFeatureLocation</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to set location</span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureOpeningHours"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureOpeningHours"><span class="hs-identifier hs-var">BusinessFeatureOpeningHours</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to set opening hours</span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureQuickReplies"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureQuickReplies"><span class="hs-identifier hs-var">BusinessFeatureQuickReplies</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to use quick replies</span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureGreetingMessage"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureGreetingMessage"><span class="hs-identifier hs-var">BusinessFeatureGreetingMessage</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to set up a greeting message</span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureAwayMessage"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureAwayMessage"><span class="hs-identifier hs-var">BusinessFeatureAwayMessage</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to set up an away message</span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureAccountLinks"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureAccountLinks"><span class="hs-identifier hs-var">BusinessFeatureAccountLinks</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to create links to the business account with predefined message text</span></span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureIntro"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureIntro"><span class="hs-identifier hs-var">BusinessFeatureIntro</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to customize intro</span></span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureBots"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureBots"><span class="hs-identifier hs-var">BusinessFeatureBots</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to connect a bot to the account</span></span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureEmojiStatus"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureEmojiStatus"><span class="hs-identifier hs-var">BusinessFeatureEmojiStatus</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to show an emoji status along with the business name</span></span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureChatFolderTags"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureChatFolderTags"><span class="hs-identifier hs-var">BusinessFeatureChatFolderTags</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The ability to display folder names for each chat in the chat list</span></span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="BusinessFeatureUpgradedStories"><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeatureUpgradedStories"><span class="hs-identifier hs-var">BusinessFeatureUpgradedStories</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Allowed to use many additional features for stories</span></span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679655878"><span id="local-6989586621679655880"><span class="annot"><span class="annottext">BusinessFeature -&gt; BusinessFeature -&gt; Bool
+(BusinessFeature -&gt; BusinessFeature -&gt; Bool)
+-&gt; (BusinessFeature -&gt; BusinessFeature -&gt; Bool)
+-&gt; Eq BusinessFeature
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: BusinessFeature -&gt; BusinessFeature -&gt; Bool
+== :: BusinessFeature -&gt; BusinessFeature -&gt; Bool
+$c/= :: BusinessFeature -&gt; BusinessFeature -&gt; Bool
+/= :: BusinessFeature -&gt; BusinessFeature -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679655885"><span id="local-6989586621679655887"><span id="local-6989586621679655891"><span class="annot"><span class="annottext">Int -&gt; BusinessFeature -&gt; ShowS
+[BusinessFeature] -&gt; ShowS
+BusinessFeature -&gt; String
+(Int -&gt; BusinessFeature -&gt; ShowS)
+-&gt; (BusinessFeature -&gt; String)
+-&gt; ([BusinessFeature] -&gt; ShowS)
+-&gt; Show BusinessFeature
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; BusinessFeature -&gt; ShowS
+showsPrec :: Int -&gt; BusinessFeature -&gt; ShowS
+$cshow :: BusinessFeature -&gt; String
+show :: BusinessFeature -&gt; String
+$cshowList :: [BusinessFeature] -&gt; ShowS
+showList :: [BusinessFeature] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeature"><span class="hs-identifier hs-type">BusinessFeature</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679655897"><span class="annot"><span class="annottext">shortShow :: BusinessFeature -&gt; String
+</span><a href="#local-6989586621679655897"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureLocation"><span class="hs-identifier hs-var">BusinessFeatureLocation</span></a></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureLocation&quot;</span></span><span>
+</span><span id="line-26"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureOpeningHours"><span class="hs-identifier hs-var">BusinessFeatureOpeningHours</span></a></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureOpeningHours&quot;</span></span><span>
+</span><span id="line-28"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureQuickReplies"><span class="hs-identifier hs-var">BusinessFeatureQuickReplies</span></a></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureQuickReplies&quot;</span></span><span>
+</span><span id="line-30"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureGreetingMessage"><span class="hs-identifier hs-var">BusinessFeatureGreetingMessage</span></a></span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureGreetingMessage&quot;</span></span><span>
+</span><span id="line-32"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAwayMessage"><span class="hs-identifier hs-var">BusinessFeatureAwayMessage</span></a></span><span>
+</span><span id="line-33"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureAwayMessage&quot;</span></span><span>
+</span><span id="line-34"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAccountLinks"><span class="hs-identifier hs-var">BusinessFeatureAccountLinks</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureAccountLinks&quot;</span></span><span>
+</span><span id="line-36"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureIntro"><span class="hs-identifier hs-var">BusinessFeatureIntro</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureIntro&quot;</span></span><span>
+</span><span id="line-38"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureBots"><span class="hs-identifier hs-var">BusinessFeatureBots</span></a></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureBots&quot;</span></span><span>
+</span><span id="line-40"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureEmojiStatus"><span class="hs-identifier hs-var">BusinessFeatureEmojiStatus</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureEmojiStatus&quot;</span></span><span>
+</span><span id="line-42"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureChatFolderTags"><span class="hs-identifier hs-var">BusinessFeatureChatFolderTags</span></a></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureChatFolderTags&quot;</span></span><span>
+</span><span id="line-44"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureUpgradedStories"><span class="hs-identifier hs-var">BusinessFeatureUpgradedStories</span></a></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;BusinessFeatureUpgradedStories&quot;</span></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679655901"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeature"><span class="hs-identifier hs-type">BusinessFeature</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-48"></span><span>  </span><span id="local-6989586621679655955"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser BusinessFeature
+</span><a href="#local-6989586621679655955"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679655958"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679655958"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-49"></span><span>    </span><span id="local-6989586621679655959"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679655959"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679655958"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679655959"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureLocation&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureLocation"><span class="hs-identifier hs-var">BusinessFeatureLocation</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureOpeningHours&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureOpeningHours"><span class="hs-identifier hs-var">BusinessFeatureOpeningHours</span></a></span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureQuickReplies&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureQuickReplies"><span class="hs-identifier hs-var">BusinessFeatureQuickReplies</span></a></span><span>
+</span><span id="line-55"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureGreetingMessage&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureGreetingMessage"><span class="hs-identifier hs-var">BusinessFeatureGreetingMessage</span></a></span><span>
+</span><span id="line-56"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureAwayMessage&quot;</span></span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAwayMessage"><span class="hs-identifier hs-var">BusinessFeatureAwayMessage</span></a></span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureAccountLinks&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAccountLinks"><span class="hs-identifier hs-var">BusinessFeatureAccountLinks</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureIntro&quot;</span></span><span>           </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureIntro"><span class="hs-identifier hs-var">BusinessFeatureIntro</span></a></span><span>
+</span><span id="line-59"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureBots&quot;</span></span><span>            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureBots"><span class="hs-identifier hs-var">BusinessFeatureBots</span></a></span><span>
+</span><span id="line-60"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureEmojiStatus&quot;</span></span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureEmojiStatus"><span class="hs-identifier hs-var">BusinessFeatureEmojiStatus</span></a></span><span>
+</span><span id="line-61"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureChatFolderTags&quot;</span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureChatFolderTags"><span class="hs-identifier hs-var">BusinessFeatureChatFolderTags</span></a></span><span>
+</span><span id="line-62"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;businessFeatureUpgradedStories&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BusinessFeature -&gt; Parser BusinessFeature
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureUpgradedStories"><span class="hs-identifier hs-var">BusinessFeatureUpgradedStories</span></a></span><span>
+</span><span id="line-63"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser BusinessFeature
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-64"></span><span>    </span><span>
+</span><span id="line-65"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser BusinessFeature
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679655963"><span id="local-6989586621679655967"><span id="local-6989586621679655970"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.BusinessFeature.html#BusinessFeature"><span class="hs-identifier hs-type">BusinessFeature</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-68"></span><span>  </span><span id="local-6989586621679656022"><span class="annot"><span class="annottext">toJSON :: BusinessFeature -&gt; Value
+</span><a href="#local-6989586621679656022"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureLocation"><span class="hs-identifier hs-var">BusinessFeatureLocation</span></a></span><span>
+</span><span id="line-69"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-70"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureLocation&quot;</span></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-72"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureOpeningHours"><span class="hs-identifier hs-var">BusinessFeatureOpeningHours</span></a></span><span>
+</span><span id="line-73"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-74"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureOpeningHours&quot;</span></span><span>
+</span><span id="line-75"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-76"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureQuickReplies"><span class="hs-identifier hs-var">BusinessFeatureQuickReplies</span></a></span><span>
+</span><span id="line-77"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-78"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureQuickReplies&quot;</span></span><span>
+</span><span id="line-79"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureGreetingMessage"><span class="hs-identifier hs-var">BusinessFeatureGreetingMessage</span></a></span><span>
+</span><span id="line-81"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-82"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureGreetingMessage&quot;</span></span><span>
+</span><span id="line-83"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-84"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAwayMessage"><span class="hs-identifier hs-var">BusinessFeatureAwayMessage</span></a></span><span>
+</span><span id="line-85"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-86"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureAwayMessage&quot;</span></span><span>
+</span><span id="line-87"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-88"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureAccountLinks"><span class="hs-identifier hs-var">BusinessFeatureAccountLinks</span></a></span><span>
+</span><span id="line-89"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-90"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureAccountLinks&quot;</span></span><span>
+</span><span id="line-91"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-92"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureIntro"><span class="hs-identifier hs-var">BusinessFeatureIntro</span></a></span><span>
+</span><span id="line-93"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-94"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureIntro&quot;</span></span><span>
+</span><span id="line-95"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-96"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureBots"><span class="hs-identifier hs-var">BusinessFeatureBots</span></a></span><span>
+</span><span id="line-97"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-98"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureBots&quot;</span></span><span>
+</span><span id="line-99"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-100"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureEmojiStatus"><span class="hs-identifier hs-var">BusinessFeatureEmojiStatus</span></a></span><span>
+</span><span id="line-101"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-102"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureEmojiStatus&quot;</span></span><span>
+</span><span id="line-103"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-104"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureChatFolderTags"><span class="hs-identifier hs-var">BusinessFeatureChatFolderTags</span></a></span><span>
+</span><span id="line-105"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-106"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureChatFolderTags&quot;</span></span><span>
+</span><span id="line-107"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-108"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><span class="annottext">BusinessFeature
+</span><a href="TD.Data.BusinessFeature.html#BusinessFeatureUpgradedStories"><span class="hs-identifier hs-var">BusinessFeatureUpgradedStories</span></a></span><span>
+</span><span id="line-109"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-110"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;businessFeatureUpgradedStories&quot;</span></span><span>
+</span><span id="line-111"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-112"></span><span>
+</span><span id="line-113"></span></pre></body></html>

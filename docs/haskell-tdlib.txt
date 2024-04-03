@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.22.0
+@version 2.0.24.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -80,7 +80,8 @@ Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Usernames
 [disabled_usernames] :: Usernames -> Maybe [Text]
 
 -- | The active username, which can be changed with setUsername or
---   setSupergroupUsername
+--   setSupergroupUsername. Information about other active usernames can be
+--   received using getCollectibleItemInfo
 [editable_username] :: Usernames -> Maybe Text
 instance GHC.Show.Show TD.Data.Usernames.Usernames
 instance GHC.Classes.Eq TD.Data.Usernames.Usernames
@@ -102,7 +103,7 @@ UserTypeRegular :: UserType
 UserTypeDeleted :: UserType
 
 -- | A bot (see <a>https://core.telegram.org/bots)</a>
-UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> UserType
+UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> UserType
 
 -- | True, if the bot is owned by the current user and can be edited using
 --   the methods toggleBotUsernameIsActive, reorderBotActiveUsernames,
@@ -128,6 +129,9 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Tex
 -- | True, if the location of the user is expected to be sent with every
 --   inline query to this bot
 [need_location] :: UserType -> Maybe Bool
+
+-- | True, if the bot supports connection to Telegram Business accounts
+[can_connect_to_business] :: UserType -> Maybe Bool
 
 -- | True, if the bot can be added to attachment or side menu
 [can_be_added_to_attachment_menu] :: UserType -> Maybe Bool
@@ -201,6 +205,10 @@ UserPrivacySettingRuleAllowAll :: UserPrivacySettingRule
 
 -- | A rule to allow all contacts of the user to do something
 UserPrivacySettingRuleAllowContacts :: UserPrivacySettingRule
+
+-- | A rule to allow all Premium Users to do something; currently, allowed
+--   only for userPrivacySettingAllowChatInvites
+UserPrivacySettingRuleAllowPremiumUsers :: UserPrivacySettingRule
 
 -- | A rule to allow certain specified users to do something
 UserPrivacySettingRuleAllowUsers :: Maybe [Int] -> UserPrivacySettingRule
@@ -283,6 +291,9 @@ UserPrivacySettingShowPhoneNumber :: UserPrivacySetting
 
 -- | A privacy setting for managing whether the user's bio is visible
 UserPrivacySettingShowBio :: UserPrivacySetting
+
+-- | A privacy setting for managing whether the user's birthdate is visible
+UserPrivacySettingShowBirthdate :: UserPrivacySetting
 
 -- | A privacy setting for managing whether the user can be invited to
 --   chats
@@ -436,16 +447,14 @@ ThumbnailFormatMpeg4 :: ThumbnailFormat
 --   patterns
 ThumbnailFormatPng :: ThumbnailFormat
 
--- | The thumbnail is in TGS format. It will be used only for TGS sticker
---   sets
+-- | The thumbnail is in TGS format. It will be used only for sticker sets
 ThumbnailFormatTgs :: ThumbnailFormat
 
--- | The thumbnail is in WEBM format. It will be used only for WEBM sticker
---   sets
+-- | The thumbnail is in WEBM format. It will be used only for sticker sets
 ThumbnailFormatWebm :: ThumbnailFormat
 
 -- | The thumbnail is in WEBP format. It will be used only for some
---   stickers
+--   stickers and sticker sets
 ThumbnailFormatWebp :: ThumbnailFormat
 instance GHC.Show.Show TD.Data.ThumbnailFormat.ThumbnailFormat
 instance GHC.Classes.Eq TD.Data.ThumbnailFormat.ThumbnailFormat
@@ -886,6 +895,9 @@ SuggestedActionSubscribeToAnnualPremium :: SuggestedAction
 
 -- | Suggests the user to gift Telegram Premium to friends for Christmas
 SuggestedActionGiftPremiumForChristmas :: SuggestedAction
+
+-- | Suggests the user to set birthdate
+SuggestedActionSetBirthdate :: SuggestedAction
 instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
 instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
 instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
@@ -1688,6 +1700,54 @@ instance TD.Lib.Internal.ShortShow TD.Data.ReportReason.ReportReason
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportReason.ReportReason
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReportReason.ReportReason
 
+module TD.Data.ReportChatSponsoredMessageOption
+data ReportChatSponsoredMessageOption
+
+-- | Describes an option to report a sponsored message
+ReportChatSponsoredMessageOption :: Maybe ByteString -> Maybe Text -> ReportChatSponsoredMessageOption
+
+-- | Unique identifier of the option
+[_id] :: ReportChatSponsoredMessageOption -> Maybe ByteString
+
+-- | Text of the option
+[text] :: ReportChatSponsoredMessageOption -> Maybe Text
+instance GHC.Show.Show TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
+instance GHC.Classes.Eq TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
+instance TD.Lib.Internal.ShortShow TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
+
+module TD.Data.ReportChatSponsoredMessageResult
+
+-- | Describes result of sponsored message report
+data ReportChatSponsoredMessageResult
+
+-- | The message was reported successfully
+ReportChatSponsoredMessageResultOk :: ReportChatSponsoredMessageResult
+
+-- | The sponsored message is too old or not found
+ReportChatSponsoredMessageResultFailed :: ReportChatSponsoredMessageResult
+
+-- | The user must choose an option to report the message and repeat
+--   request with the chosen option
+ReportChatSponsoredMessageResultOptionRequired :: Maybe Text -> Maybe [ReportChatSponsoredMessageOption] -> ReportChatSponsoredMessageResult
+
+-- | Title for the option choice
+[title] :: ReportChatSponsoredMessageResult -> Maybe Text
+
+-- | List of available options
+[options] :: ReportChatSponsoredMessageResult -> Maybe [ReportChatSponsoredMessageOption]
+
+-- | Sponsored messages were hidden for the user in all chats
+ReportChatSponsoredMessageResultAdsHidden :: ReportChatSponsoredMessageResult
+
+-- | The user asked to hide sponsored messages, but Telegram Premium is
+--   required for this
+ReportChatSponsoredMessageResultPremiumRequired :: ReportChatSponsoredMessageResult
+instance GHC.Show.Show TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+instance GHC.Classes.Eq TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+instance TD.Lib.Internal.ShortShow TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+
 module TD.Data.RemoteFile
 data RemoteFile
 
@@ -2210,9 +2270,9 @@ PremiumGiveawayParameters :: Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Bool
 --   from which will be eligible for the giveaway. If empty, then all users
 --   can participate in the giveaway. There can be up to
 --   getOption("giveaway_country_count_max") chosen countries. Users with
---   phone number that was bought on Fragment can participate in any
---   giveaway and the country code <a>FT</a> must not be specified in the
---   list
+--   phone number that was bought at <a>https://fragment.com</a> can
+--   participate in any giveaway and the country code <a>FT</a> must not be
+--   specified in the list
 [country_codes] :: PremiumGiveawayParameters -> Maybe [Text]
 
 -- | Additional description of the giveaway prize; 0-128 characters
@@ -2460,7 +2520,7 @@ PremiumFeatureAdvancedChatManagement :: PremiumFeature
 -- | A badge in the user's profile
 PremiumFeatureProfileBadge :: PremiumFeature
 
--- | An emoji status shown along with the user's name
+-- | The ability to show an emoji status along with the user's name
 PremiumFeatureEmojiStatus :: PremiumFeature
 
 -- | Profile photo animation on message and chat screens
@@ -2500,49 +2560,14 @@ PremiumFeatureMessagePrivacy :: PremiumFeature
 -- | The ability to view last seen and read times of other users even they
 --   can't view last seen or read time for the current user
 PremiumFeatureLastSeenTimes :: PremiumFeature
+
+-- | The ability to use Business features
+PremiumFeatureBusiness :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumFeature.PremiumFeature
-
-module TD.Data.PremiumSource
-
--- | Describes a source from which the Premium features screen is opened
-data PremiumSource
-
--- | A limit was exceeded
-PremiumSourceLimitExceeded :: Maybe PremiumLimitType -> PremiumSource
-
--- | Type of the exceeded limit
-[limit_type] :: PremiumSource -> Maybe PremiumLimitType
-
--- | A user tried to use a Premium feature
-PremiumSourceFeature :: Maybe PremiumFeature -> PremiumSource
-
--- | The used feature
-[feature] :: PremiumSource -> Maybe PremiumFeature
-
--- | A user tried to use a Premium story feature
-PremiumSourceStoryFeature :: Maybe PremiumStoryFeature -> PremiumSource
-
--- | The used feature
-[_feature] :: PremiumSource -> Maybe PremiumStoryFeature
-
--- | A user opened an internal link of the type
---   internalLinkTypePremiumFeatures
-PremiumSourceLink :: Maybe Text -> PremiumSource
-
--- | The referrer from the link
-[referrer] :: PremiumSource -> Maybe Text
-
--- | A user opened the Premium features screen from settings
-PremiumSourceSettings :: PremiumSource
-instance GHC.Show.Show TD.Data.PremiumSource.PremiumSource
-instance GHC.Classes.Eq TD.Data.PremiumSource.PremiumSource
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumSource.PremiumSource
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumSource.PremiumSource
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumSource.PremiumSource
 
 module TD.Data.PollOption
 data PollOption
@@ -4688,7 +4713,7 @@ module TD.Data.InputSticker
 data InputSticker
 
 -- | A sticker to be added to a sticker set
-InputSticker :: Maybe InputFile -> Maybe Text -> Maybe MaskPosition -> Maybe [Text] -> InputSticker
+InputSticker :: Maybe InputFile -> Maybe StickerFormat -> Maybe Text -> Maybe MaskPosition -> Maybe [Text] -> InputSticker
 
 -- | File with the sticker; must fit in a 512x512 square. For WEBP stickers
 --   the file must be in WEBP or PNG format, which will be converted to
@@ -4696,6 +4721,9 @@ InputSticker :: Maybe InputFile -> Maybe Text -> Maybe MaskPosition -> Maybe [Te
 --   <a>https://core.telegram.org/animated_stickers#technical-requirements</a>
 --   for technical requirements
 [sticker] :: InputSticker -> Maybe InputFile
+
+-- | Format of the sticker
+[format] :: InputSticker -> Maybe StickerFormat
 
 -- | String with 1-20 emoji corresponding to the sticker
 [emojis] :: InputSticker -> Maybe Text
@@ -4773,6 +4801,30 @@ instance GHC.Classes.Eq TD.Data.InputCredentials.InputCredentials
 instance TD.Lib.Internal.ShortShow TD.Data.InputCredentials.InputCredentials
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputCredentials.InputCredentials
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputCredentials.InputCredentials
+
+module TD.Data.InputBusinessIntro
+data InputBusinessIntro
+
+-- | Describes settings for a business account intro to set
+InputBusinessIntro :: Maybe Text -> Maybe Text -> Maybe InputFile -> InputBusinessIntro
+
+-- | Title text of the intro;
+--   0-getOption("business_intro_title_length_max") characters
+[title] :: InputBusinessIntro -> Maybe Text
+
+-- | Message text of the intro;
+--   0-getOption("business_intro_message_length_max") characters
+[message] :: InputBusinessIntro -> Maybe Text
+
+-- | Greeting sticker of the intro; pass null if none. The sticker must
+--   belong to a sticker set and must not be a custom emoji
+[sticker] :: InputBusinessIntro -> Maybe InputFile
+defaultInputBusinessIntro :: InputBusinessIntro
+instance GHC.Show.Show TD.Data.InputBusinessIntro.InputBusinessIntro
+instance GHC.Classes.Eq TD.Data.InputBusinessIntro.InputBusinessIntro
+instance TD.Lib.Internal.ShortShow TD.Data.InputBusinessIntro.InputBusinessIntro
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBusinessIntro.InputBusinessIntro
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBusinessIntro.InputBusinessIntro
 
 module TD.Data.InputBackground
 
@@ -6326,6 +6378,53 @@ instance GHC.Classes.Eq TD.Data.Stories.Stories
 instance TD.Lib.Internal.ShortShow TD.Data.Stories.Stories
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Stories.Stories
 
+module TD.Data.SharedUser
+data SharedUser
+
+-- | Contains information about a user shared with a bot
+SharedUser :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Photo -> SharedUser
+
+-- | User identifier
+[user_id] :: SharedUser -> Maybe Int
+
+-- | First name of the user; for bots only
+[first_name] :: SharedUser -> Maybe Text
+
+-- | Last name of the user; for bots only
+[last_name] :: SharedUser -> Maybe Text
+
+-- | Username of the user; for bots only
+[username] :: SharedUser -> Maybe Text
+
+-- | Profile photo of the user; for bots only; may be null
+[photo] :: SharedUser -> Maybe Photo
+instance GHC.Show.Show TD.Data.SharedUser.SharedUser
+instance GHC.Classes.Eq TD.Data.SharedUser.SharedUser
+instance TD.Lib.Internal.ShortShow TD.Data.SharedUser.SharedUser
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SharedUser.SharedUser
+
+module TD.Data.SharedChat
+data SharedChat
+
+-- | Contains information about a chat shared with a bot
+SharedChat :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Photo -> SharedChat
+
+-- | Chat identifier
+[chat_id] :: SharedChat -> Maybe Int
+
+-- | Title of the chat; for bots only
+[title] :: SharedChat -> Maybe Text
+
+-- | Username of the chat; for bots only
+[username] :: SharedChat -> Maybe Text
+
+-- | Photo of the chat; for bots only; may be null
+[photo] :: SharedChat -> Maybe Photo
+instance GHC.Show.Show TD.Data.SharedChat.SharedChat
+instance GHC.Classes.Eq TD.Data.SharedChat.SharedChat
+instance TD.Lib.Internal.ShortShow TD.Data.SharedChat.SharedChat
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SharedChat.SharedChat
+
 module TD.Data.PageBlockRelatedArticle
 data PageBlockRelatedArticle
 
@@ -6367,7 +6466,7 @@ MessageExtendedMediaPreview :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Mini
 -- | Media height; 0 if unknown
 [height] :: MessageExtendedMedia -> Maybe Int
 
--- | Media duration; 0 if unknown
+-- | Media duration, in seconds; 0 if unknown
 [duration] :: MessageExtendedMedia -> Maybe Int
 
 -- | Media minithumbnail; may be null
@@ -7567,8 +7666,9 @@ PhoneNumberInfo :: Maybe CountryInfo -> Maybe Text -> Maybe Text -> Maybe Bool -
 --   digits might be entered by the user
 [formatted_phone_number] :: PhoneNumberInfo -> Maybe Text
 
--- | True, if the phone number was bought on Fragment and isn't tied to a
---   SIM card
+-- | True, if the phone number was bought at <a>https://fragment.com</a>
+--   and isn't tied to a SIM card. Information about the phone number can
+--   be received using getCollectibleItemInfo
 [is_anonymous] :: PhoneNumberInfo -> Maybe Bool
 instance GHC.Show.Show TD.Data.PhoneNumberInfo.PhoneNumberInfo
 instance GHC.Classes.Eq TD.Data.PhoneNumberInfo.PhoneNumberInfo
@@ -8095,6 +8195,57 @@ instance GHC.Classes.Eq TD.Data.ConnectedWebsites.ConnectedWebsites
 instance TD.Lib.Internal.ShortShow TD.Data.ConnectedWebsites.ConnectedWebsites
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ConnectedWebsites.ConnectedWebsites
 
+module TD.Data.CollectibleItemType
+
+-- | Describes a collectible item that can be purchased at
+--   <a>https://fragment.com</a>
+data CollectibleItemType
+
+-- | A username
+CollectibleItemTypeUsername :: Maybe Text -> CollectibleItemType
+
+-- | The username
+[username] :: CollectibleItemType -> Maybe Text
+
+-- | A phone number
+CollectibleItemTypePhoneNumber :: Maybe Text -> CollectibleItemType
+
+-- | The phone number
+[phone_number] :: CollectibleItemType -> Maybe Text
+instance GHC.Show.Show TD.Data.CollectibleItemType.CollectibleItemType
+instance GHC.Classes.Eq TD.Data.CollectibleItemType.CollectibleItemType
+instance TD.Lib.Internal.ShortShow TD.Data.CollectibleItemType.CollectibleItemType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CollectibleItemType.CollectibleItemType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.CollectibleItemType.CollectibleItemType
+
+module TD.Data.CollectibleItemInfo
+data CollectibleItemInfo
+
+-- | Contains information about a collectible item and its last purchase
+CollectibleItemInfo :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> CollectibleItemInfo
+
+-- | Point in time (Unix timestamp) when the item was purchased
+[purchase_date] :: CollectibleItemInfo -> Maybe Int
+
+-- | Currency for the paid amount
+[currency] :: CollectibleItemInfo -> Maybe Text
+
+-- | The paid amount, in the smallest units of the currency
+[amount] :: CollectibleItemInfo -> Maybe Int
+
+-- | Cryptocurrency used to pay for the item
+[cryptocurrency] :: CollectibleItemInfo -> Maybe Text
+
+-- | The paid amount, in the smallest units of the cryptocurrency
+[cryptocurrency_amount] :: CollectibleItemInfo -> Maybe Int
+
+-- | Individual URL for the item on <a>https://fragment.com</a>
+[url] :: CollectibleItemInfo -> Maybe Text
+instance GHC.Show.Show TD.Data.CollectibleItemInfo.CollectibleItemInfo
+instance GHC.Classes.Eq TD.Data.CollectibleItemInfo.CollectibleItemInfo
+instance TD.Lib.Internal.ShortShow TD.Data.CollectibleItemInfo.CollectibleItemInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CollectibleItemInfo.CollectibleItemInfo
+
 module TD.Data.ClosedVectorPath
 data ClosedVectorPath
 
@@ -8167,7 +8318,7 @@ module TD.Data.StickerSetInfo
 data StickerSetInfo
 
 -- | Represents short information about a sticker set
-StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerFormat -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [Sticker] -> StickerSetInfo
+StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [Sticker] -> StickerSetInfo
 
 -- | Identifier of the sticker set
 [_id] :: StickerSetInfo -> Maybe Int
@@ -8188,6 +8339,9 @@ StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Ma
 --   corner
 [thumbnail_outline] :: StickerSetInfo -> Maybe [ClosedVectorPath]
 
+-- | True, if the sticker set is owned by the current user
+[is_owned] :: StickerSetInfo -> Maybe Bool
+
 -- | True, if the sticker set has been installed by the current user
 [is_installed] :: StickerSetInfo -> Maybe Bool
 
@@ -8197,9 +8351,6 @@ StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Ma
 
 -- | True, if the sticker set is official
 [is_official] :: StickerSetInfo -> Maybe Bool
-
--- | Format of the stickers in the set
-[sticker_format] :: StickerSetInfo -> Maybe StickerFormat
 
 -- | Type of the stickers in the set
 [sticker_type] :: StickerSetInfo -> Maybe StickerType
@@ -8266,7 +8417,7 @@ module TD.Data.StickerSet
 data StickerSet
 
 -- | Represents a sticker set
-StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerFormat -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Sticker] -> Maybe [Emojis] -> StickerSet
+StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Sticker] -> Maybe [Emojis] -> StickerSet
 
 -- | Identifier of the sticker set
 [_id] :: StickerSet -> Maybe Int
@@ -8287,6 +8438,9 @@ StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe 
 --   corner
 [thumbnail_outline] :: StickerSet -> Maybe [ClosedVectorPath]
 
+-- | True, if the sticker set is owned by the current user
+[is_owned] :: StickerSet -> Maybe Bool
+
 -- | True, if the sticker set has been installed by the current user
 [is_installed] :: StickerSet -> Maybe Bool
 
@@ -8296,9 +8450,6 @@ StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe 
 
 -- | True, if the sticker set is official
 [is_official] :: StickerSet -> Maybe Bool
-
--- | Format of the stickers in the set
-[sticker_format] :: StickerSet -> Maybe StickerFormat
 
 -- | Type of the stickers in the set
 [sticker_type] :: StickerSet -> Maybe StickerType
@@ -8469,7 +8620,9 @@ CheckChatUsernameResultUsernameInvalid :: CheckChatUsernameResult
 -- | The username is occupied
 CheckChatUsernameResultUsernameOccupied :: CheckChatUsernameResult
 
--- | The username can be purchased at fragment.com
+-- | The username can be purchased at <a>https://fragment.com</a>.
+--   Information about the username can be received using
+--   getCollectibleItemInfo
 CheckChatUsernameResultUsernamePurchasable :: CheckChatUsernameResult
 
 -- | The user has too many chats with username, one of them must be made
@@ -9585,7 +9738,9 @@ ChatFolder :: Maybe Text -> Maybe ChatFolderIcon -> Maybe Int -> Maybe Bool -> M
 [icon] :: ChatFolder -> Maybe ChatFolderIcon
 
 -- | The identifier of the chosen color for the chat folder icon; from -1
---   to 6. If -1, then color is didabled
+--   to 6. If -1, then color is didabled. Can't be changed if folder tags
+--   are disabled or the current user doesn't have Telegram Premium
+--   subscription
 [color_id] :: ChatFolder -> Maybe Int
 
 -- | True, if at least one link has been created for the folder
@@ -10139,7 +10294,7 @@ KeyboardButtonTypeRequestPoll :: Maybe Bool -> Maybe Bool -> KeyboardButtonType
 -- | A button that requests users to be shared by the current user;
 --   available only in private chats. Use the method shareUsersWithBot to
 --   complete the request
-KeyboardButtonTypeRequestUsers :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> KeyboardButtonType
+KeyboardButtonTypeRequestUsers :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> KeyboardButtonType
 
 -- | Unique button identifier
 [_id] :: KeyboardButtonType -> Maybe Int
@@ -10162,10 +10317,19 @@ KeyboardButtonTypeRequestUsers :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe
 -- | The maximum number of users to share
 [max_quantity] :: KeyboardButtonType -> Maybe Int
 
+-- | Pass true to request name of the users; bots only
+[request_name] :: KeyboardButtonType -> Maybe Bool
+
+-- | Pass true to request username of the users; bots only
+[request_username] :: KeyboardButtonType -> Maybe Bool
+
+-- | Pass true to request photo of the users; bots only
+[request_photo] :: KeyboardButtonType -> Maybe Bool
+
 -- | A button that requests a chat to be shared by the current user;
 --   available only in private chats. Use the method shareChatWithBot to
 --   complete the request
-KeyboardButtonTypeRequestChat :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> KeyboardButtonType
+KeyboardButtonTypeRequestChat :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> KeyboardButtonType
 
 -- | Unique button identifier
 [_id] :: KeyboardButtonType -> Maybe Int
@@ -10202,6 +10366,15 @@ KeyboardButtonTypeRequestChat :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe 
 -- | True, if the bot must be a member of the chat; for basic group and
 --   supergroup chats only
 [bot_is_member] :: KeyboardButtonType -> Maybe Bool
+
+-- | Pass true to request title of the chat; bots only
+[request_title] :: KeyboardButtonType -> Maybe Bool
+
+-- | Pass true to request username of the users; bots only
+[request_username] :: KeyboardButtonType -> Maybe Bool
+
+-- | Pass true to request photo of the users; bots only
+[request_photo] :: KeyboardButtonType -> Maybe Bool
 
 -- | A button that opens a Web App by calling getWebAppUrl
 KeyboardButtonTypeWebApp :: Maybe Text -> KeyboardButtonType
@@ -10890,7 +11063,8 @@ InternalLinkTypeMessageDraft :: Maybe FormattedText -> Maybe Bool -> InternalLin
 --   otherwise, ignore it
 InternalLinkTypePassportDataRequest :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> InternalLinkType
 
--- | User identifier of the service's bot
+-- | User identifier of the service's bot; the corresponding user may be
+--   unknown yet
 [bot_user_id] :: InternalLinkType -> Maybe Int
 
 -- | Telegram Passport element types requested by the service
@@ -12086,10 +12260,14 @@ data BusinessRecipients
 
 -- | Describes private chats chosen for automatic interaction with a
 --   business
-BusinessRecipients :: Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> BusinessRecipients
+BusinessRecipients :: Maybe [Int] -> Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> BusinessRecipients
 
 -- | Identifiers of selected private chats
 [chat_ids] :: BusinessRecipients -> Maybe [Int]
+
+-- | Identifiers of private chats that are always excluded; for
+--   businessConnectedBot only
+[excluded_chat_ids] :: BusinessRecipients -> Maybe [Int]
 
 -- | True, if all existing private chats are selected
 [select_existing_chats] :: BusinessRecipients -> Maybe Bool
@@ -12168,6 +12346,25 @@ instance TD.Lib.Internal.ShortShow TD.Data.BusinessLocation.BusinessLocation
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessLocation.BusinessLocation
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessLocation.BusinessLocation
 
+module TD.Data.BusinessIntro
+data BusinessIntro
+
+-- | Describes settings for a business account intro
+BusinessIntro :: Maybe Text -> Maybe Text -> Maybe Sticker -> BusinessIntro
+
+-- | Title text of the intro
+[title] :: BusinessIntro -> Maybe Text
+
+-- | Message text of the intro
+[message] :: BusinessIntro -> Maybe Text
+
+-- | Greeting sticker of the intro; may be null if none
+[sticker] :: BusinessIntro -> Maybe Sticker
+instance GHC.Show.Show TD.Data.BusinessIntro.BusinessIntro
+instance GHC.Classes.Eq TD.Data.BusinessIntro.BusinessIntro
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessIntro.BusinessIntro
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessIntro.BusinessIntro
+
 module TD.Data.BusinessGreetingMessageSettings
 data BusinessGreetingMessageSettings
 
@@ -12191,6 +12388,137 @@ instance GHC.Classes.Eq TD.Data.BusinessGreetingMessageSettings.BusinessGreeting
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
+
+module TD.Data.BusinessFeature
+
+-- | Describes a feature available to Business user accounts
+data BusinessFeature
+
+-- | The ability to set location
+BusinessFeatureLocation :: BusinessFeature
+
+-- | The ability to set opening hours
+BusinessFeatureOpeningHours :: BusinessFeature
+
+-- | The ability to use quick replies
+BusinessFeatureQuickReplies :: BusinessFeature
+
+-- | The ability to set up a greeting message
+BusinessFeatureGreetingMessage :: BusinessFeature
+
+-- | The ability to set up an away message
+BusinessFeatureAwayMessage :: BusinessFeature
+
+-- | The ability to create links to the business account with predefined
+--   message text
+BusinessFeatureAccountLinks :: BusinessFeature
+
+-- | The ability to customize intro
+BusinessFeatureIntro :: BusinessFeature
+
+-- | The ability to connect a bot to the account
+BusinessFeatureBots :: BusinessFeature
+
+-- | The ability to show an emoji status along with the business name
+BusinessFeatureEmojiStatus :: BusinessFeature
+
+-- | The ability to display folder names for each chat in the chat list
+BusinessFeatureChatFolderTags :: BusinessFeature
+
+-- | Allowed to use many additional features for stories
+BusinessFeatureUpgradedStories :: BusinessFeature
+instance GHC.Show.Show TD.Data.BusinessFeature.BusinessFeature
+instance GHC.Classes.Eq TD.Data.BusinessFeature.BusinessFeature
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessFeature.BusinessFeature
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessFeature.BusinessFeature
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessFeature.BusinessFeature
+
+module TD.Data.PremiumSource
+
+-- | Describes a source from which the Premium features screen is opened
+data PremiumSource
+
+-- | A limit was exceeded
+PremiumSourceLimitExceeded :: Maybe PremiumLimitType -> PremiumSource
+
+-- | Type of the exceeded limit
+[limit_type] :: PremiumSource -> Maybe PremiumLimitType
+
+-- | A user tried to use a Premium feature
+PremiumSourceFeature :: Maybe PremiumFeature -> PremiumSource
+
+-- | The used feature
+[feature] :: PremiumSource -> Maybe PremiumFeature
+
+-- | A user tried to use a Business feature
+PremiumSourceBusinessFeature :: Maybe BusinessFeature -> PremiumSource
+
+-- | The used feature; pass null if none specific feature was used
+[_feature] :: PremiumSource -> Maybe BusinessFeature
+
+-- | A user tried to use a Premium story feature
+PremiumSourceStoryFeature :: Maybe PremiumStoryFeature -> PremiumSource
+
+-- | The used feature
+[__feature] :: PremiumSource -> Maybe PremiumStoryFeature
+
+-- | A user opened an internal link of the type
+--   internalLinkTypePremiumFeatures
+PremiumSourceLink :: Maybe Text -> PremiumSource
+
+-- | The referrer from the link
+[referrer] :: PremiumSource -> Maybe Text
+
+-- | A user opened the Premium features screen from settings
+PremiumSourceSettings :: PremiumSource
+instance GHC.Show.Show TD.Data.PremiumSource.PremiumSource
+instance GHC.Classes.Eq TD.Data.PremiumSource.PremiumSource
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumSource.PremiumSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumSource.PremiumSource
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumSource.PremiumSource
+
+module TD.Data.BusinessFeatures
+data BusinessFeatures
+
+-- | Contains information about features, available to Business user
+--   accounts
+BusinessFeatures :: Maybe [BusinessFeature] -> BusinessFeatures
+
+-- | The list of available business features
+[features] :: BusinessFeatures -> Maybe [BusinessFeature]
+instance GHC.Show.Show TD.Data.BusinessFeatures.BusinessFeatures
+instance GHC.Classes.Eq TD.Data.BusinessFeatures.BusinessFeatures
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessFeatures.BusinessFeatures
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessFeatures.BusinessFeatures
+
+module TD.Data.BusinessConnection
+data BusinessConnection
+
+-- | Describes a connection of the bot with a business account
+BusinessConnection :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> BusinessConnection
+
+-- | Unique identifier of the connection
+[_id] :: BusinessConnection -> Maybe Text
+
+-- | Identifier of the business user that created the connection
+[user_id] :: BusinessConnection -> Maybe Int
+
+-- | Chat identifier of the private chat with the user
+[user_chat_id] :: BusinessConnection -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the connection was established
+[date] :: BusinessConnection -> Maybe Int
+
+-- | True, if the bot can send messages to the connected user; false
+--   otherwise
+[can_reply] :: BusinessConnection -> Maybe Bool
+
+-- | True, if the connection is enabled; false otherwise
+[is_enabled] :: BusinessConnection -> Maybe Bool
+instance GHC.Show.Show TD.Data.BusinessConnection.BusinessConnection
+instance GHC.Classes.Eq TD.Data.BusinessConnection.BusinessConnection
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnection.BusinessConnection
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnection.BusinessConnection
 
 module TD.Data.BusinessConnectedBot
 data BusinessConnectedBot
@@ -12272,7 +12600,7 @@ module TD.Data.BusinessInfo
 data BusinessInfo
 
 -- | Contains information about a Telegram Business account
-BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> BusinessInfo
+BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> Maybe BusinessIntro -> BusinessInfo
 
 -- | Location of the business; may be null if none
 [location] :: BusinessInfo -> Maybe BusinessLocation
@@ -12288,6 +12616,9 @@ BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe Bu
 -- | The away message; may be null if none or the Business account is not
 --   of the current user
 [away_message_settings] :: BusinessInfo -> Maybe BusinessAwayMessageSettings
+
+-- | Information about intro of the business; may be null if none
+[intro] :: BusinessInfo -> Maybe BusinessIntro
 instance GHC.Show.Show TD.Data.BusinessInfo.BusinessInfo
 instance GHC.Classes.Eq TD.Data.BusinessInfo.BusinessInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessInfo.BusinessInfo
@@ -12403,6 +12734,43 @@ instance GHC.Classes.Eq TD.Data.BlockList.BlockList
 instance TD.Lib.Internal.ShortShow TD.Data.BlockList.BlockList
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BlockList.BlockList
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BlockList.BlockList
+
+module TD.Data.Birthdate
+data Birthdate
+
+-- | Represents a birthdate of a user
+Birthdate :: Maybe Int -> Maybe Int -> Maybe Int -> Birthdate
+
+-- | Day of the month; 1-31
+[day] :: Birthdate -> Maybe Int
+
+-- | Month of the year; 1-12
+[month] :: Birthdate -> Maybe Int
+
+-- | Birth year; 0 if unknown
+[year] :: Birthdate -> Maybe Int
+defaultBirthdate :: Birthdate
+instance GHC.Show.Show TD.Data.Birthdate.Birthdate
+instance GHC.Classes.Eq TD.Data.Birthdate.Birthdate
+instance TD.Lib.Internal.ShortShow TD.Data.Birthdate.Birthdate
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Birthdate.Birthdate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Birthdate.Birthdate
+
+module TD.Data.CloseBirthdayUser
+data CloseBirthdayUser
+
+-- | Describes a user that had or will have a birthday soon
+CloseBirthdayUser :: Maybe Int -> Maybe Birthdate -> CloseBirthdayUser
+
+-- | User identifier
+[user_id] :: CloseBirthdayUser -> Maybe Int
+
+-- | Birthdate of the user
+[birthdate] :: CloseBirthdayUser -> Maybe Birthdate
+instance GHC.Show.Show TD.Data.CloseBirthdayUser.CloseBirthdayUser
+instance GHC.Classes.Eq TD.Data.CloseBirthdayUser.CloseBirthdayUser
+instance TD.Lib.Internal.ShortShow TD.Data.CloseBirthdayUser.CloseBirthdayUser
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CloseBirthdayUser.CloseBirthdayUser
 
 module TD.Data.BasicGroup
 data BasicGroup
@@ -13813,27 +14181,6 @@ instance GHC.Classes.Eq TD.Data.PremiumFeaturePromotionAnimation.PremiumFeatureP
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeaturePromotionAnimation.PremiumFeaturePromotionAnimation
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeaturePromotionAnimation.PremiumFeaturePromotionAnimation
 
-module TD.Data.PremiumState
-data PremiumState
-
--- | Contains state of Telegram Premium subscription and promotion videos
---   for Premium features
-PremiumState :: Maybe FormattedText -> Maybe [PremiumStatePaymentOption] -> Maybe [PremiumFeaturePromotionAnimation] -> PremiumState
-
--- | Text description of the state of the current Premium subscription; may
---   be empty if the current user has no Telegram Premium subscription
-[state] :: PremiumState -> Maybe FormattedText
-
--- | The list of available options for buying Telegram Premium
-[payment_options] :: PremiumState -> Maybe [PremiumStatePaymentOption]
-
--- | The list of available promotion animations for Premium features
-[animations] :: PremiumState -> Maybe [PremiumFeaturePromotionAnimation]
-instance GHC.Show.Show TD.Data.PremiumState.PremiumState
-instance GHC.Classes.Eq TD.Data.PremiumState.PremiumState
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumState.PremiumState
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumState.PremiumState
-
 module TD.Data.PageBlock
 
 -- | Describes a block of an instant view web page
@@ -14378,6 +14725,46 @@ instance GHC.Classes.Eq TD.Data.InlineQueryResults.InlineQueryResults
 instance TD.Lib.Internal.ShortShow TD.Data.InlineQueryResults.InlineQueryResults
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InlineQueryResults.InlineQueryResults
 
+module TD.Data.BusinessFeaturePromotionAnimation
+data BusinessFeaturePromotionAnimation
+
+-- | Describes a promotion animation for a Business feature
+BusinessFeaturePromotionAnimation :: Maybe BusinessFeature -> Maybe Animation -> BusinessFeaturePromotionAnimation
+
+-- | Business feature
+[feature] :: BusinessFeaturePromotionAnimation -> Maybe BusinessFeature
+
+-- | Promotion animation for the feature
+[animation] :: BusinessFeaturePromotionAnimation -> Maybe Animation
+instance GHC.Show.Show TD.Data.BusinessFeaturePromotionAnimation.BusinessFeaturePromotionAnimation
+instance GHC.Classes.Eq TD.Data.BusinessFeaturePromotionAnimation.BusinessFeaturePromotionAnimation
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessFeaturePromotionAnimation.BusinessFeaturePromotionAnimation
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessFeaturePromotionAnimation.BusinessFeaturePromotionAnimation
+
+module TD.Data.PremiumState
+data PremiumState
+
+-- | Contains state of Telegram Premium subscription and promotion videos
+--   for Premium features
+PremiumState :: Maybe FormattedText -> Maybe [PremiumStatePaymentOption] -> Maybe [PremiumFeaturePromotionAnimation] -> Maybe [BusinessFeaturePromotionAnimation] -> PremiumState
+
+-- | Text description of the state of the current Premium subscription; may
+--   be empty if the current user has no Telegram Premium subscription
+[state] :: PremiumState -> Maybe FormattedText
+
+-- | The list of available options for buying Telegram Premium
+[payment_options] :: PremiumState -> Maybe [PremiumStatePaymentOption]
+
+-- | The list of available promotion animations for Premium features
+[animations] :: PremiumState -> Maybe [PremiumFeaturePromotionAnimation]
+
+-- | The list of available promotion animations for Business features
+[business_animations] :: PremiumState -> Maybe [BusinessFeaturePromotionAnimation]
+instance GHC.Show.Show TD.Data.PremiumState.PremiumState
+instance GHC.Classes.Eq TD.Data.PremiumState.PremiumState
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumState.PremiumState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumState.PremiumState
+
 module TD.Data.BotInfo
 data BotInfo
 
@@ -14449,8 +14836,7 @@ data AnimatedEmoji
 AnimatedEmoji :: Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe File -> AnimatedEmoji
 
 -- | Sticker for the emoji; may be null if yet unknown for a custom emoji.
---   If the sticker is a custom emoji, it can have arbitrary format
---   different from stickerFormatTgs
+--   If the sticker is a custom emoji, then it can have arbitrary format
 [sticker] :: AnimatedEmoji -> Maybe Sticker
 
 -- | Expected width of the sticker, which can be used if the sticker is
@@ -14529,7 +14915,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -14584,6 +14970,12 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 
 -- | A short user bio; may be null for bots
 [bio] :: UserFullInfo -> Maybe FormattedText
+
+-- | Birthdate of the user; may be null if unknown
+[birthdate] :: UserFullInfo -> Maybe Birthdate
+
+-- | Identifier of the personal chat of the user; 0 if none
+[personal_chat_id] :: UserFullInfo -> Maybe Int
 
 -- | The list of available options for gifting Telegram Premium to the user
 [premium_gift_options] :: UserFullInfo -> Maybe [PremiumPaymentOption]
@@ -15706,19 +16098,19 @@ MessagePremiumGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe In
 MessageContactRegistered :: MessageContent
 
 -- | The current user shared users, which were requested by the bot
-MessageUsersShared :: Maybe [Int] -> Maybe Int -> MessageContent
+MessageUsersShared :: Maybe [SharedUser] -> Maybe Int -> MessageContent
 
--- | Invited user identifiers
-[user_ids] :: MessageContent -> Maybe [Int]
+-- | The shared users
+[users] :: MessageContent -> Maybe [SharedUser]
 
 -- | Identifier of the keyboard button with the request
 [button_id] :: MessageContent -> Maybe Int
 
 -- | The current user shared a chat, which was requested by the bot
-MessageChatShared :: Maybe Int -> Maybe Int -> MessageContent
+MessageChatShared :: Maybe SharedChat -> Maybe Int -> MessageContent
 
--- | Identifier of the shared chat
-[chat_id] :: MessageContent -> Maybe Int
+-- | The shared chat
+[chat] :: MessageContent -> Maybe SharedChat
 
 -- | Identifier of the keyboard button with the request
 [button_id] :: MessageContent -> Maybe Int
@@ -15783,7 +16175,7 @@ module TD.Data.SponsoredMessage
 data SponsoredMessage
 
 -- | Describes a sponsored message
-SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> SponsoredMessage
+SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> SponsoredMessage
 
 -- | Message identifier; unique for the chat to which the sponsored message
 --   belongs among both ordinary and sponsored messages
@@ -15792,6 +16184,10 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe MessageContent -> Maybe Mes
 -- | True, if the message needs to be labeled as "recommended" instead of
 --   "sponsored"
 [is_recommended] :: SponsoredMessage -> Maybe Bool
+
+-- | True, if the message can be reported to Telegram moderators through
+--   reportChatSponsoredMessage
+[can_be_reported] :: SponsoredMessage -> Maybe Bool
 
 -- | Content of the message. Currently, can be only of the type messageText
 [content] :: SponsoredMessage -> Maybe MessageContent
@@ -15945,7 +16341,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -15969,6 +16365,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 
 -- | True, if the message is pinned
 [is_pinned] :: Message -> Maybe Bool
+
+-- | True, if the message was sent because of a scheduled action by the
+--   message sender, for example, as away, or greeting service message
+[is_from_offline] :: Message -> Maybe Bool
 
 -- | True, if the message can be edited. For live location and poll
 --   messages this fields shows whether editMessageLiveLocation or stopPoll
@@ -16077,9 +16477,13 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   message_auto_delete_time setting of the chat, in seconds; 0 if never
 [auto_delete_in] :: Message -> Maybe Double
 
--- | If non-zero, the user identifier of the bot through which this message
---   was sent
+-- | If non-zero, the user identifier of the inline bot through which this
+--   message was sent
 [via_bot_user_id] :: Message -> Maybe Int
+
+-- | If non-zero, the user identifier of the business bot that sent this
+--   message
+[sender_business_bot_user_id] :: Message -> Maybe Int
 
 -- | Number of times the sender of the message boosted the supergroup at
 --   the time the message was sent; 0 if none or unknown. For messages sent
@@ -17215,6 +17619,37 @@ instance GHC.Show.Show TD.Data.Chat.Chat
 instance GHC.Classes.Eq TD.Data.Chat.Chat
 instance TD.Lib.Internal.ShortShow TD.Data.Chat.Chat
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Chat.Chat
+
+module TD.Data.BusinessMessage
+data BusinessMessage
+
+-- | Describes a message from a business account as received by a bot
+BusinessMessage :: Maybe Message -> Maybe Message -> BusinessMessage
+
+-- | The message
+[message] :: BusinessMessage -> Maybe Message
+
+-- | Message that is replied by the message in the same chat; may be null
+--   if none
+[reply_to_message] :: BusinessMessage -> Maybe Message
+instance GHC.Show.Show TD.Data.BusinessMessage.BusinessMessage
+instance GHC.Classes.Eq TD.Data.BusinessMessage.BusinessMessage
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessMessage.BusinessMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessMessage.BusinessMessage
+
+module TD.Data.BusinessMessages
+data BusinessMessages
+
+-- | Contains a list of messages from a business account as received by a
+--   bot
+BusinessMessages :: Maybe [BusinessMessage] -> BusinessMessages
+
+-- | List of business messages
+[messages] :: BusinessMessages -> Maybe [BusinessMessage]
+instance GHC.Show.Show TD.Data.BusinessMessages.BusinessMessages
+instance GHC.Classes.Eq TD.Data.BusinessMessages.BusinessMessages
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessMessages.BusinessMessages
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessMessages.BusinessMessages
 
 module TD.Data.InputPassportElement
 
@@ -18551,7 +18986,7 @@ UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
 
 -- | The maximum allowed duration of media for speech recognition without
---   Telegram Premium subscription
+--   Telegram Premium subscription, in seconds
 [max_media_duration] :: Update -> Maybe Int
 
 -- | The total number of allowed speech recognitions per week; 0 if none
@@ -18604,6 +19039,13 @@ UpdateSuggestedActions :: Maybe [SuggestedAction] -> Maybe [SuggestedAction] -> 
 -- | Removed suggested actions
 [removed_actions] :: Update -> Maybe [SuggestedAction]
 
+-- | The list of contacts that had birthdays recently or will have birthday
+--   soon has changed
+UpdateContactCloseBirthdays :: Maybe [CloseBirthdayUser] -> Update
+
+-- | List of contact users with close birthday
+[close_birthday_users] :: Update -> Maybe [CloseBirthdayUser]
+
 -- | Adding users to a chat has failed because of their privacy settings.
 --   An invite link can be shared with the users if appropriate
 UpdateAddChatMembersPrivacyForbidden :: Maybe Int -> Maybe [Int] -> Update
@@ -18624,6 +19066,42 @@ UpdateAutosaveSettings :: Maybe AutosaveSettingsScope -> Maybe ScopeAutosaveSett
 -- | The new autosave settings; may be null if the settings are reset to
 --   default
 [settings] :: Update -> Maybe ScopeAutosaveSettings
+
+-- | A business connection has changed; for bots only
+UpdateBusinessConnection :: Maybe BusinessConnection -> Update
+
+-- | New data about the connection
+[connection] :: Update -> Maybe BusinessConnection
+
+-- | A new message was added to a business account; for bots only
+UpdateNewBusinessMessage :: Maybe Text -> Maybe BusinessMessage -> Update
+
+-- | Unique identifier of the business connection
+[connection_id] :: Update -> Maybe Text
+
+-- | The new message
+[_message] :: Update -> Maybe BusinessMessage
+
+-- | A message in a business account was edited; for bots only
+UpdateBusinessMessageEdited :: Maybe Text -> Maybe BusinessMessage -> Update
+
+-- | Unique identifier of the business connection
+[connection_id] :: Update -> Maybe Text
+
+-- | The new message
+[_message] :: Update -> Maybe BusinessMessage
+
+-- | Messages in a business account were deleted; for bots only
+UpdateBusinessMessagesDeleted :: Maybe Text -> Maybe Int -> Maybe [Int] -> Update
+
+-- | Unique identifier of the business connection
+[connection_id] :: Update -> Maybe Text
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | Identifiers of the deleted messages
+[message_ids] :: Update -> Maybe [Int]
 
 -- | A new incoming inline query; for bots only
 UpdateNewInlineQuery :: Maybe Int -> Maybe Int -> Maybe Location -> Maybe ChatType -> Maybe Text -> Maybe Text -> Update
@@ -18912,6 +19390,10 @@ BasicGroupFullInfo :: BasicGroupFullInfo -> GeneralResult
 BotCommands :: BotCommands -> GeneralResult
 BotMenuButton :: BotMenuButton -> GeneralResult
 BusinessConnectedBot :: BusinessConnectedBot -> GeneralResult
+BusinessConnection :: BusinessConnection -> GeneralResult
+BusinessFeatures :: BusinessFeatures -> GeneralResult
+BusinessMessage :: BusinessMessage -> GeneralResult
+BusinessMessages :: BusinessMessages -> GeneralResult
 CallId :: CallId -> GeneralResult
 CallbackQueryAnswer :: CallbackQueryAnswer -> GeneralResult
 CanSendMessageToUserResult :: CanSendMessageToUserResult -> GeneralResult
@@ -18949,6 +19431,7 @@ Chats :: Chats -> GeneralResult
 ChatsNearby :: ChatsNearby -> GeneralResult
 CheckChatUsernameResult :: CheckChatUsernameResult -> GeneralResult
 CheckStickerSetNameResult :: CheckStickerSetNameResult -> GeneralResult
+CollectibleItemInfo :: CollectibleItemInfo -> GeneralResult
 ConnectedWebsites :: ConnectedWebsites -> GeneralResult
 Count :: Count -> GeneralResult
 Countries :: Countries -> GeneralResult
@@ -19036,6 +19519,7 @@ PushReceiverId :: PushReceiverId -> GeneralResult
 ReadDatePrivacySettings :: ReadDatePrivacySettings -> GeneralResult
 RecommendedChatFolders :: RecommendedChatFolders -> GeneralResult
 RecoveryEmailAddress :: RecoveryEmailAddress -> GeneralResult
+ReportChatSponsoredMessageResult :: ReportChatSponsoredMessageResult -> GeneralResult
 ResetPasswordResult :: ResetPasswordResult -> GeneralResult
 RtmpUrl :: RtmpUrl -> GeneralResult
 SavedMessagesTags :: SavedMessagesTags -> GeneralResult
@@ -19270,7 +19754,7 @@ module TD.Query.AddFavoriteSticker
 -- | Adds a new sticker to the list of favorite stickers. The new sticker
 --   is added to the top of the list. If the sticker was already in the
 --   list, it is removed from the list first. Only stickers belonging to a
---   sticker set or in WEBP format can be added to this list. Emoji
+--   sticker set or in WEBP or WEBM format can be added to this list. Emoji
 --   stickers can't be added to favorite stickers. Returns <a>Ok</a>
 data AddFavoriteSticker
 AddFavoriteSticker :: Maybe InputFile -> AddFavoriteSticker
@@ -19434,8 +19918,8 @@ module TD.Query.AddRecentSticker
 -- | Manually adds a new sticker to the list of recently used stickers. The
 --   new sticker is added to the top of the list. If the sticker was
 --   already in the list, it is removed from the list first. Only stickers
---   belonging to a sticker set or in WEBP format can be added to this
---   list. Emoji stickers can't be added to recent stickers. Returns
+--   belonging to a sticker set or in WEBP or WEBM format can be added to
+--   this list. Emoji stickers can't be added to recent stickers. Returns
 --   <a>Stickers</a>
 data AddRecentSticker
 AddRecentSticker :: Maybe Bool -> Maybe InputFile -> AddRecentSticker
@@ -19504,14 +19988,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddSavedNotificationSound.AddSa
 
 module TD.Query.AddStickerToSet
 
--- | Adds a new sticker to a set; for bots only. Returns <a>Ok</a>
+-- | Adds a new sticker to a set. Returns <a>Ok</a>
 data AddStickerToSet
 AddStickerToSet :: Maybe Int -> Maybe Text -> Maybe InputSticker -> AddStickerToSet
 
--- | Sticker set owner
+-- | Sticker set owner; ignored for regular users
 [user_id] :: AddStickerToSet -> Maybe Int
 
--- | Sticker set name
+-- | Sticker set name. The sticker set must be owned by the current user,
+--   and contain less than 200 stickers for custom emoji sticker sets and
+--   less than 120 otherwise
 [name] :: AddStickerToSet -> Maybe Text
 
 -- | Sticker to add to the set
@@ -20706,7 +21192,7 @@ module TD.Query.CreateNewStickerSet
 -- | Creates a new sticker set. Returns the newly created sticker set.
 --   Returns <a>StickerSet</a>
 data CreateNewStickerSet
-CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerFormat -> Maybe StickerType -> Maybe Bool -> Maybe [InputSticker] -> Maybe Text -> CreateNewStickerSet
+CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerType -> Maybe Bool -> Maybe [InputSticker] -> Maybe Text -> CreateNewStickerSet
 
 -- | Sticker set owner; ignored for regular users
 [user_id] :: CreateNewStickerSet -> Maybe Int
@@ -20716,11 +21202,10 @@ CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerFor
 
 -- | Sticker set name. Can contain only English letters, digits and
 --   underscores. Must end with *"_by_<a>username</a>"*
---   (*<a>bot_username</a>* is case insensitive) for bots; 1-64 characters
+--   (*<a>bot_username</a>* is case insensitive) for bots; 0-64 characters.
+--   If empty, then the name returned by getSuggestedStickerSetName will be
+--   used automatically
 [name] :: CreateNewStickerSet -> Maybe Text
-
--- | Format of the stickers in the set
-[sticker_format] :: CreateNewStickerSet -> Maybe StickerFormat
 
 -- | Type of the stickers in the set
 [sticker_type] :: CreateNewStickerSet -> Maybe StickerType
@@ -20729,8 +21214,8 @@ CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerFor
 --   emoji sticker sets only
 [needs_repainting] :: CreateNewStickerSet -> Maybe Bool
 
--- | List of stickers to be added to the set; must be non-empty. All
---   stickers must have the same format. For TGS stickers,
+-- | List of stickers to be added to the set; 1-200 stickers for custom
+--   emoji sticker sets, and 1-120 stickers otherwise. For TGS stickers,
 --   uploadStickerFile must be used before the sticker is shown
 [stickers] :: CreateNewStickerSet -> Maybe [InputSticker]
 
@@ -21344,11 +21829,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteSavedOrderInfo.DeleteSave
 
 module TD.Query.DeleteStickerSet
 
--- | Deleted a sticker set; for bots only. Returns <a>Ok</a>
+-- | Completely deletes a sticker set. Returns <a>Ok</a>
 data DeleteStickerSet
 DeleteStickerSet :: Maybe Text -> DeleteStickerSet
 
--- | Sticker set name
+-- | Sticker set name. The sticker set must be owned by the current user
 [name] :: DeleteStickerSet -> Maybe Text
 instance GHC.Show.Show TD.Query.DeleteStickerSet.DeleteStickerSet
 instance GHC.Classes.Eq TD.Query.DeleteStickerSet.DeleteStickerSet
@@ -22209,7 +22694,8 @@ GetArchivedStickerSets :: Maybe StickerType -> Maybe Int -> Maybe Int -> GetArch
 -- | Type of the sticker sets to return
 [sticker_type] :: GetArchivedStickerSets -> Maybe StickerType
 
--- | Identifier of the sticker set from which to return the result
+-- | Identifier of the sticker set from which to return the result; use 0
+--   to get results from the beginning
 [offset_sticker_set_id] :: GetArchivedStickerSets -> Maybe Int
 
 -- | The maximum number of sticker sets to return; up to 100
@@ -22443,6 +22929,35 @@ instance GHC.Show.Show TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
 instance GHC.Classes.Eq TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
 instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
+
+module TD.Query.GetBusinessConnection
+
+-- | Returns information about a business connection by its identifier; for
+--   bots only. Returns <a>BusinessConnection</a>
+data GetBusinessConnection
+GetBusinessConnection :: Maybe Text -> GetBusinessConnection
+
+-- | Identifier of the business connection to return
+[connection_id] :: GetBusinessConnection -> Maybe Text
+instance GHC.Show.Show TD.Query.GetBusinessConnection.GetBusinessConnection
+instance GHC.Classes.Eq TD.Query.GetBusinessConnection.GetBusinessConnection
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessConnection.GetBusinessConnection
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessConnection.GetBusinessConnection
+
+module TD.Query.GetBusinessFeatures
+
+-- | Returns information about features, available to Business users.
+--   Returns <a>BusinessFeatures</a>
+data GetBusinessFeatures
+GetBusinessFeatures :: Maybe BusinessFeature -> GetBusinessFeatures
+
+-- | Source of the request; pass null if the method is called from settings
+--   or some non-standard source
+[source] :: GetBusinessFeatures -> Maybe BusinessFeature
+instance GHC.Show.Show TD.Query.GetBusinessFeatures.GetBusinessFeatures
+instance GHC.Classes.Eq TD.Query.GetBusinessFeatures.GetBusinessFeatures
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessFeatures.GetBusinessFeatures
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessFeatures.GetBusinessFeatures
 
 module TD.Query.GetCallbackQueryAnswer
 
@@ -23381,6 +23896,21 @@ instance GHC.Show.Show TD.Query.GetCloseFriends.GetCloseFriends
 instance GHC.Classes.Eq TD.Query.GetCloseFriends.GetCloseFriends
 instance TD.Lib.Internal.ShortShow TD.Query.GetCloseFriends.GetCloseFriends
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCloseFriends.GetCloseFriends
+
+module TD.Query.GetCollectibleItemInfo
+
+-- | Returns information about a given collectible item that was purchased
+--   at <a>https://fragment.com</a>. Returns <a>CollectibleItemInfo</a>
+data GetCollectibleItemInfo
+GetCollectibleItemInfo :: Maybe CollectibleItemType -> GetCollectibleItemInfo
+
+-- | Type of the collectible item. The item must be used by a user and must
+--   be visible to the current user
+[_type] :: GetCollectibleItemInfo -> Maybe CollectibleItemType
+instance GHC.Show.Show TD.Query.GetCollectibleItemInfo.GetCollectibleItemInfo
+instance GHC.Classes.Eq TD.Query.GetCollectibleItemInfo.GetCollectibleItemInfo
+instance TD.Lib.Internal.ShortShow TD.Query.GetCollectibleItemInfo.GetCollectibleItemInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCollectibleItemInfo.GetCollectibleItemInfo
 
 module TD.Query.GetCommands
 
@@ -24797,6 +25327,28 @@ instance GHC.Classes.Eq TD.Query.GetOption.GetOption
 instance TD.Lib.Internal.ShortShow TD.Query.GetOption.GetOption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOption.GetOption
 
+module TD.Query.GetOwnedStickerSets
+
+-- | Returns sticker sets owned by the current user. Returns
+--   <a>StickerSets</a>
+data GetOwnedStickerSets
+GetOwnedStickerSets :: Maybe Int -> Maybe Int -> GetOwnedStickerSets
+
+-- | Identifier of the sticker set from which to return owned sticker sets;
+--   use 0 to get results from the beginning
+[offset_sticker_set_id] :: GetOwnedStickerSets -> Maybe Int
+
+-- | The maximum number of sticker sets to be returned; must be positive
+--   and can't be greater than 100. For optimal performance, the number of
+--   returned objects is chosen by TDLib and can be smaller than the
+--   specified limit
+[limit] :: GetOwnedStickerSets -> Maybe Int
+defaultGetOwnedStickerSets :: GetOwnedStickerSets
+instance GHC.Show.Show TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
+instance GHC.Classes.Eq TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
+instance TD.Lib.Internal.ShortShow TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
+
 module TD.Query.GetPassportAuthorizationForm
 
 -- | Returns a Telegram Passport authorization form for sharing data with a
@@ -25713,6 +26265,17 @@ instance GHC.Show.Show TD.Query.GetSuitableDiscussionChats.GetSuitableDiscussion
 instance GHC.Classes.Eq TD.Query.GetSuitableDiscussionChats.GetSuitableDiscussionChats
 instance TD.Lib.Internal.ShortShow TD.Query.GetSuitableDiscussionChats.GetSuitableDiscussionChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSuitableDiscussionChats.GetSuitableDiscussionChats
+
+module TD.Query.GetSuitablePersonalChats
+
+-- | Returns a list of channel chats, which can be used as a personal chat.
+--   Returns <a>Chats</a>
+data GetSuitablePersonalChats
+GetSuitablePersonalChats :: GetSuitablePersonalChats
+instance GHC.Show.Show TD.Query.GetSuitablePersonalChats.GetSuitablePersonalChats
+instance GHC.Classes.Eq TD.Query.GetSuitablePersonalChats.GetSuitablePersonalChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetSuitablePersonalChats.GetSuitablePersonalChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSuitablePersonalChats.GetSuitablePersonalChats
 
 module TD.Query.GetSupergroup
 
@@ -27275,12 +27838,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveSavedNotificationSound.Re
 
 module TD.Query.RemoveStickerFromSet
 
--- | Removes a sticker from the set to which it belongs; for bots only. The
---   sticker set must have been created by the bot. Returns <a>Ok</a>
+-- | Removes a sticker from the set to which it belongs. The sticker set
+--   must be owned by the current user. Returns <a>Ok</a>
 data RemoveStickerFromSet
 RemoveStickerFromSet :: Maybe InputFile -> RemoveStickerFromSet
 
--- | Sticker
+-- | Sticker to remove from the set
 [sticker] :: RemoveStickerFromSet -> Maybe InputFile
 instance GHC.Show.Show TD.Query.RemoveStickerFromSet.RemoveStickerFromSet
 instance GHC.Classes.Eq TD.Query.RemoveStickerFromSet.RemoveStickerFromSet
@@ -27422,6 +27985,31 @@ instance GHC.Classes.Eq TD.Query.ReplacePrimaryChatInviteLink.ReplacePrimaryChat
 instance TD.Lib.Internal.ShortShow TD.Query.ReplacePrimaryChatInviteLink.ReplacePrimaryChatInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplacePrimaryChatInviteLink.ReplacePrimaryChatInviteLink
 
+module TD.Query.ReplaceStickerInSet
+
+-- | Replaces existing sticker in a set. The function is equivalent to
+--   removeStickerFromSet, then addStickerToSet, then
+--   setStickerPositionInSet. Returns <a>Ok</a>
+data ReplaceStickerInSet
+ReplaceStickerInSet :: Maybe Int -> Maybe Text -> Maybe InputFile -> Maybe InputSticker -> ReplaceStickerInSet
+
+-- | Sticker set owner; ignored for regular users
+[user_id] :: ReplaceStickerInSet -> Maybe Int
+
+-- | Sticker set name. The sticker set must be owned by the current user
+[name] :: ReplaceStickerInSet -> Maybe Text
+
+-- | Sticker to remove from the set
+[old_sticker] :: ReplaceStickerInSet -> Maybe InputFile
+
+-- | Sticker to add to the set
+[new_sticker] :: ReplaceStickerInSet -> Maybe InputSticker
+defaultReplaceStickerInSet :: ReplaceStickerInSet
+instance GHC.Show.Show TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
+instance GHC.Classes.Eq TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
+instance TD.Lib.Internal.ShortShow TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
+
 module TD.Query.ReplaceVideoChatRtmpUrl
 
 -- | Replaces the current RTMP URL for streaming to the chat; requires
@@ -27486,6 +28074,28 @@ instance GHC.Show.Show TD.Query.ReportChatPhoto.ReportChatPhoto
 instance GHC.Classes.Eq TD.Query.ReportChatPhoto.ReportChatPhoto
 instance TD.Lib.Internal.ShortShow TD.Query.ReportChatPhoto.ReportChatPhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportChatPhoto.ReportChatPhoto
+
+module TD.Query.ReportChatSponsoredMessage
+
+-- | Reports a sponsored message to Telegram moderators. Returns
+--   <a>ReportChatSponsoredMessageResult</a>
+data ReportChatSponsoredMessage
+ReportChatSponsoredMessage :: Maybe Int -> Maybe Int -> Maybe ByteString -> ReportChatSponsoredMessage
+
+-- | Chat identifier of the sponsored message
+[chat_id] :: ReportChatSponsoredMessage -> Maybe Int
+
+-- | Identifier of the sponsored message
+[message_id] :: ReportChatSponsoredMessage -> Maybe Int
+
+-- | Option identifier chosen by the user; leave empty for the initial
+--   request
+[option_id] :: ReportChatSponsoredMessage -> Maybe ByteString
+defaultReportChatSponsoredMessage :: ReportChatSponsoredMessage
+instance GHC.Show.Show TD.Query.ReportChatSponsoredMessage.ReportChatSponsoredMessage
+instance GHC.Classes.Eq TD.Query.ReportChatSponsoredMessage.ReportChatSponsoredMessage
+instance TD.Lib.Internal.ShortShow TD.Query.ReportChatSponsoredMessage.ReportChatSponsoredMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportChatSponsoredMessage.ReportChatSponsoredMessage
 
 module TD.Query.ReportMessageReactions
 
@@ -28523,6 +29133,77 @@ instance GHC.Classes.Eq TD.Query.SendBotStartMessage.SendBotStartMessage
 instance TD.Lib.Internal.ShortShow TD.Query.SendBotStartMessage.SendBotStartMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendBotStartMessage.SendBotStartMessage
 
+module TD.Query.SendBusinessMessage
+
+-- | Sends a message on behalf of a business account; for bots only.
+--   Returns the message after it was sent. Returns <a>BusinessMessage</a>
+data SendBusinessMessage
+SendBusinessMessage :: Maybe Text -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe Bool -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> SendBusinessMessage
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request
+[business_connection_id] :: SendBusinessMessage -> Maybe Text
+
+-- | Target chat
+[chat_id] :: SendBusinessMessage -> Maybe Int
+
+-- | Information about the message to be replied; pass null if none
+[reply_to] :: SendBusinessMessage -> Maybe InputMessageReplyTo
+
+-- | Pass true to disable notification for the message
+[disable_notification] :: SendBusinessMessage -> Maybe Bool
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving
+[protect_content] :: SendBusinessMessage -> Maybe Bool
+
+-- | Markup for replying to the message; pass null if none
+[reply_markup] :: SendBusinessMessage -> Maybe ReplyMarkup
+
+-- | The content of the message to be sent
+[input_message_content] :: SendBusinessMessage -> Maybe InputMessageContent
+defaultSendBusinessMessage :: SendBusinessMessage
+instance GHC.Show.Show TD.Query.SendBusinessMessage.SendBusinessMessage
+instance GHC.Classes.Eq TD.Query.SendBusinessMessage.SendBusinessMessage
+instance TD.Lib.Internal.ShortShow TD.Query.SendBusinessMessage.SendBusinessMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendBusinessMessage.SendBusinessMessage
+
+module TD.Query.SendBusinessMessageAlbum
+
+-- | Sends 2-10 messages grouped together into an album on behalf of a
+--   business account; for bots only. Currently, only audio, document,
+--   photo and video messages can be grouped into an album. Documents and
+--   audio files can be only grouped in an album with messages of the same
+--   type. Returns sent messages. Returns <a>BusinessMessages</a>
+data SendBusinessMessageAlbum
+SendBusinessMessageAlbum :: Maybe Text -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe Bool -> Maybe Bool -> Maybe [InputMessageContent] -> SendBusinessMessageAlbum
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request
+[business_connection_id] :: SendBusinessMessageAlbum -> Maybe Text
+
+-- | Target chat
+[chat_id] :: SendBusinessMessageAlbum -> Maybe Int
+
+-- | Information about the message to be replied; pass null if none
+[reply_to] :: SendBusinessMessageAlbum -> Maybe InputMessageReplyTo
+
+-- | Pass true to disable notification for the message
+[disable_notification] :: SendBusinessMessageAlbum -> Maybe Bool
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving
+[protect_content] :: SendBusinessMessageAlbum -> Maybe Bool
+
+-- | Contents of messages to be sent. At most 10 messages can be added to
+--   an album
+[input_message_contents] :: SendBusinessMessageAlbum -> Maybe [InputMessageContent]
+defaultSendBusinessMessageAlbum :: SendBusinessMessageAlbum
+instance GHC.Show.Show TD.Query.SendBusinessMessageAlbum.SendBusinessMessageAlbum
+instance GHC.Classes.Eq TD.Query.SendBusinessMessageAlbum.SendBusinessMessageAlbum
+instance TD.Lib.Internal.ShortShow TD.Query.SendBusinessMessageAlbum.SendBusinessMessageAlbum
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendBusinessMessageAlbum.SendBusinessMessageAlbum
+
 module TD.Query.SendCallDebugInformation
 
 -- | Sends debug information for a call to Telegram servers. Returns
@@ -28604,7 +29285,7 @@ module TD.Query.SendChatAction
 
 -- | Sends a notification about user activity in a chat. Returns <a>Ok</a>
 data SendChatAction
-SendChatAction :: Maybe Int -> Maybe Int -> Maybe ChatAction -> SendChatAction
+SendChatAction :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ChatAction -> SendChatAction
 
 -- | Chat identifier
 [chat_id] :: SendChatAction -> Maybe Int
@@ -28612,6 +29293,10 @@ SendChatAction :: Maybe Int -> Maybe Int -> Maybe ChatAction -> SendChatAction
 -- | If not 0, the message thread identifier in which the action was
 --   performed
 [message_thread_id] :: SendChatAction -> Maybe Int
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request; for bots only
+[business_connection_id] :: SendChatAction -> Maybe Text
 
 -- | The action description; pass null to cancel the currently active
 --   action
@@ -28895,7 +29580,8 @@ SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 [areas] :: SendStory -> Maybe InputStoryAreas
 
 -- | Story caption; pass null to use an empty caption;
---   0-getOption("story_caption_length_max") characters
+--   0-getOption("story_caption_length_max") characters; can have entities
+--   only if getOption("can_use_text_entities_in_story_caption")
 [caption] :: SendStory -> Maybe FormattedText
 
 -- | The privacy settings for the story; ignored for stories sent to
@@ -29116,6 +29802,20 @@ instance GHC.Classes.Eq TD.Query.SetBio.SetBio
 instance TD.Lib.Internal.ShortShow TD.Query.SetBio.SetBio
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBio.SetBio
 
+module TD.Query.SetBirthdate
+
+-- | Changes the birthdate of the current user. Returns <a>Ok</a>
+data SetBirthdate
+SetBirthdate :: Maybe Birthdate -> SetBirthdate
+
+-- | The new value of the current user's birthdate; pass null to remove the
+--   birthdate
+[birthdate] :: SetBirthdate -> Maybe Birthdate
+instance GHC.Show.Show TD.Query.SetBirthdate.SetBirthdate
+instance GHC.Classes.Eq TD.Query.SetBirthdate.SetBirthdate
+instance TD.Lib.Internal.ShortShow TD.Query.SetBirthdate.SetBirthdate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBirthdate.SetBirthdate
+
 module TD.Query.SetBotInfoDescription
 
 -- | Sets the text shown in the chat with a bot if the chat is empty. Can
@@ -29264,6 +29964,20 @@ instance GHC.Classes.Eq TD.Query.SetBusinessGreetingMessageSettings.SetBusinessG
 instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
 
+module TD.Query.SetBusinessIntro
+
+-- | Changes the business intro of the current user. Requires Telegram
+--   Business subscription. Returns <a>Ok</a>
+data SetBusinessIntro
+SetBusinessIntro :: Maybe InputBusinessIntro -> SetBusinessIntro
+
+-- | The new intro of the business; pass null to remove the intro
+[intro] :: SetBusinessIntro -> Maybe InputBusinessIntro
+instance GHC.Show.Show TD.Query.SetBusinessIntro.SetBusinessIntro
+instance GHC.Classes.Eq TD.Query.SetBusinessIntro.SetBusinessIntro
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessIntro.SetBusinessIntro
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessIntro.SetBusinessIntro
+
 module TD.Query.SetBusinessLocation
 
 -- | Changes the business location of the current user. Requires Telegram
@@ -29286,7 +30000,7 @@ data SetBusinessOpeningHours
 SetBusinessOpeningHours :: Maybe BusinessOpeningHours -> SetBusinessOpeningHours
 
 -- | The new opening hours of the business; pass null to remove the opening
---   hours
+--   hours; up to 28 time intervals can be specified
 [opening_hours] :: SetBusinessOpeningHours -> Maybe BusinessOpeningHours
 instance GHC.Show.Show TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
 instance GHC.Classes.Eq TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
@@ -29770,12 +30484,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommands.SetCommands
 
 module TD.Query.SetCustomEmojiStickerSetThumbnail
 
--- | Sets a custom emoji sticker set thumbnail; for bots only. Returns
---   <a>Ok</a>
+-- | Sets a custom emoji sticker set thumbnail. Returns <a>Ok</a>
 data SetCustomEmojiStickerSetThumbnail
 SetCustomEmojiStickerSetThumbnail :: Maybe Text -> Maybe Int -> SetCustomEmojiStickerSetThumbnail
 
--- | Sticker set name
+-- | Sticker set name. The sticker set must be owned by the current user
 [name] :: SetCustomEmojiStickerSetThumbnail -> Maybe Text
 
 -- | Identifier of the custom emoji from the sticker set, which will be set
@@ -30302,8 +31015,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetNetworkType.SetNetworkType
 
 module TD.Query.SetNewChatPrivacySettings
 
--- | Changes privacy settings for new chat creation; for Telegram Premium
---   users only. Returns <a>Ok</a>
+-- | Changes privacy settings for new chat creation; can be used only if
+--   getOption("can_set_new_chat_privacy_settings"). Returns <a>Ok</a>
 data SetNewChatPrivacySettings
 SetNewChatPrivacySettings :: Maybe NewChatPrivacySettings -> SetNewChatPrivacySettings
 
@@ -30403,6 +31116,20 @@ instance GHC.Show.Show TD.Query.SetPassword.SetPassword
 instance GHC.Classes.Eq TD.Query.SetPassword.SetPassword
 instance TD.Lib.Internal.ShortShow TD.Query.SetPassword.SetPassword
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPassword.SetPassword
+
+module TD.Query.SetPersonalChat
+
+-- | Changes the personal chat of the current user. Returns <a>Ok</a>
+data SetPersonalChat
+SetPersonalChat :: Maybe Int -> SetPersonalChat
+
+-- | Identifier of the new personal chat; pass 0 to remove the chat. Use
+--   getSuitablePersonalChats to get suitable chats
+[chat_id] :: SetPersonalChat -> Maybe Int
+instance GHC.Show.Show TD.Query.SetPersonalChat.SetPersonalChat
+instance GHC.Classes.Eq TD.Query.SetPersonalChat.SetPersonalChat
+instance TD.Lib.Internal.ShortShow TD.Query.SetPersonalChat.SetPersonalChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPersonalChat.SetPersonalChat
 
 module TD.Query.SetPinnedChats
 
@@ -30604,9 +31331,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetScopeNotificationSettings.Se
 
 module TD.Query.SetStickerEmojis
 
--- | Changes the list of emoji corresponding to a sticker; for bots only.
---   The sticker must belong to a regular or custom emoji sticker set
---   created by the bot. Returns <a>Ok</a>
+-- | Changes the list of emoji corresponding to a sticker. The sticker must
+--   belong to a regular or custom emoji sticker set that is owned by the
+--   current user. Returns <a>Ok</a>
 data SetStickerEmojis
 SetStickerEmojis :: Maybe InputFile -> Maybe Text -> SetStickerEmojis
 
@@ -30623,9 +31350,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerEmojis.SetStickerEmoj
 
 module TD.Query.SetStickerKeywords
 
--- | Changes the list of keywords of a sticker; for bots only. The sticker
---   must belong to a regular or custom emoji sticker set created by the
---   bot. Returns <a>Ok</a>
+-- | Changes the list of keywords of a sticker. The sticker must belong to
+--   a regular or custom emoji sticker set that is owned by the current
+--   user. Returns <a>Ok</a>
 data SetStickerKeywords
 SetStickerKeywords :: Maybe InputFile -> Maybe [Text] -> SetStickerKeywords
 
@@ -30643,8 +31370,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerKeywords.SetStickerKe
 
 module TD.Query.SetStickerMaskPosition
 
--- | Changes the mask position of a mask sticker; for bots only. The
---   sticker must belong to a mask sticker set created by the bot. Returns
+-- | Changes the mask position of a mask sticker. The sticker must belong
+--   to a mask sticker set that is owned by the current user. Returns
 --   <a>Ok</a>
 data SetStickerMaskPosition
 SetStickerMaskPosition :: Maybe InputFile -> Maybe MaskPosition -> SetStickerMaskPosition
@@ -30662,9 +31389,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerMaskPosition.SetStick
 
 module TD.Query.SetStickerPositionInSet
 
--- | Changes the position of a sticker in the set to which it belongs; for
---   bots only. The sticker set must have been created by the bot. Returns
---   <a>Ok</a>
+-- | Changes the position of a sticker in the set to which it belongs. The
+--   sticker set must be owned by the current user. Returns <a>Ok</a>
 data SetStickerPositionInSet
 SetStickerPositionInSet :: Maybe InputFile -> Maybe Int -> SetStickerPositionInSet
 
@@ -30681,20 +31407,21 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerPositionInSet.SetStic
 
 module TD.Query.SetStickerSetThumbnail
 
--- | Sets a sticker set thumbnail; for bots only. Returns <a>Ok</a>
+-- | Sets a sticker set thumbnail. Returns <a>Ok</a>
 data SetStickerSetThumbnail
-SetStickerSetThumbnail :: Maybe Int -> Maybe Text -> Maybe InputFile -> SetStickerSetThumbnail
+SetStickerSetThumbnail :: Maybe Int -> Maybe Text -> Maybe InputFile -> Maybe StickerFormat -> SetStickerSetThumbnail
 
--- | Sticker set owner
+-- | Sticker set owner; ignored for regular users
 [user_id] :: SetStickerSetThumbnail -> Maybe Int
 
--- | Sticker set name
+-- | Sticker set name. The sticker set must be owned by the current user
 [name] :: SetStickerSetThumbnail -> Maybe Text
 
--- | Thumbnail to set in PNG, TGS, or WEBM format; pass null to remove the
---   sticker set thumbnail. Thumbnail format must match the format of
---   stickers in the set
+-- | Thumbnail to set; pass null to remove the sticker set thumbnail
 [thumbnail] :: SetStickerSetThumbnail -> Maybe InputFile
+
+-- | Format of the thumbnail; pass null if thumbnail is removed
+[format] :: SetStickerSetThumbnail -> Maybe StickerFormat
 defaultSetStickerSetThumbnail :: SetStickerSetThumbnail
 instance GHC.Show.Show TD.Query.SetStickerSetThumbnail.SetStickerSetThumbnail
 instance GHC.Classes.Eq TD.Query.SetStickerSetThumbnail.SetStickerSetThumbnail
@@ -30703,11 +31430,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStickerSetThumbnail.SetStick
 
 module TD.Query.SetStickerSetTitle
 
--- | Sets a sticker set title; for bots only. Returns <a>Ok</a>
+-- | Sets a sticker set title. Returns <a>Ok</a>
 data SetStickerSetTitle
 SetStickerSetTitle :: Maybe Text -> Maybe Text -> SetStickerSetTitle
 
--- | Sticker set name
+-- | Sticker set name. The sticker set must be owned by the current user
 [name] :: SetStickerSetTitle -> Maybe Text
 
 -- | New sticker set title
