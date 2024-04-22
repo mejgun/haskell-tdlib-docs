@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.24.0
+@version 2.0.29.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -21,6 +21,7 @@ readInt64 :: String -> Int
 writeInt64 :: Int -> Value
 readBytes :: String -> ByteString
 writeBytes :: ByteString -> Value
+instance GHC.Generics.Generic TD.Lib.Internal.Extra
 instance GHC.Classes.Eq TD.Lib.Internal.Extra
 instance TD.Lib.Internal.ShortShow GHC.Types.Int
 instance TD.Lib.Internal.ShortShow GHC.Types.Double
@@ -28,6 +29,7 @@ instance TD.Lib.Internal.ShortShow GHC.Types.Bool
 instance TD.Lib.Internal.ShortShow Data.Text.Internal.Text
 instance TD.Lib.Internal.ShortShow Data.ByteString.Internal.Type.ByteString
 instance TD.Lib.Internal.ShortShow a => TD.Lib.Internal.ShortShow [a]
+instance Data.Hashable.Class.Hashable TD.Lib.Internal.Extra
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Lib.Internal.Extra
 
 module TD.Data.WebAppInfo
@@ -90,8 +92,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Usernames.Usernames
 
 module TD.Data.UserType
 
--- | Represents the type of a user. The following types are possible:
---   regular users, deleted users and bots
+-- | Represents the type of user. The following types are possible: regular
+--   users, deleted users and bots
 data UserType
 
 -- | A regular user
@@ -1111,7 +1113,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StorageStatisticsFast.Storag
 
 module TD.Data.StickerType
 
--- | Describes type of a sticker
+-- | Describes type of sticker
 data StickerType
 
 -- | The sticker is a regular sticker
@@ -1215,7 +1217,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryStatistics.StoryStatist
 
 module TD.Data.SessionType
 
--- | Represents the type of a session
+-- | Represents the type of session
 data SessionType
 
 -- | The session is running on an Android device
@@ -1583,7 +1585,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ScopeAutosaveSettings.ScopeAutos
 
 module TD.Data.SavedMessagesTopicType
 
--- | Describes type of a Saved Messages topic
+-- | Describes type of Saved Messages topic
 data SavedMessagesTopicType
 
 -- | Topic containing messages sent by the current user of forwarded from
@@ -1924,7 +1926,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PublicChatType.PublicChatType
 
 module TD.Data.ProxyType
 
--- | Describes the type of a proxy server
+-- | Describes the type of proxy server
 data ProxyType
 
 -- | A SOCKS5 proxy server
@@ -2113,7 +2115,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumStoryFeature.PremiumStory
 
 module TD.Data.PremiumLimitType
 
--- | Describes type of a limit, increased for Premium users
+-- | Describes type of limit, increased for Premium users
 data PremiumLimitType
 
 -- | The maximum number of joined supergroups and channels
@@ -2638,6 +2640,33 @@ instance GHC.Classes.Eq TD.Data.VectorPathCommand.VectorPathCommand
 instance TD.Lib.Internal.ShortShow TD.Data.VectorPathCommand.VectorPathCommand
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VectorPathCommand.VectorPathCommand
 
+module TD.Data.PhoneNumberCodeType
+
+-- | Describes type of the request for which a code is sent to a phone
+--   number
+data PhoneNumberCodeType
+
+-- | Checks ownership of a new phone number to change the user's
+--   authentication phone number; for official Android and iOS applications
+--   only.
+PhoneNumberCodeTypeChange :: PhoneNumberCodeType
+
+-- | Verifies ownership of a phone number to be added to the user's
+--   Telegram Passport
+PhoneNumberCodeTypeVerify :: PhoneNumberCodeType
+
+-- | Confirms ownership of a phone number to prevent account deletion while
+--   handling links of the type internalLinkTypePhoneNumberConfirmation
+PhoneNumberCodeTypeConfirmOwnership :: Maybe Text -> PhoneNumberCodeType
+
+-- | Hash value from the link
+[hash] :: PhoneNumberCodeType -> Maybe Text
+instance GHC.Show.Show TD.Data.PhoneNumberCodeType.PhoneNumberCodeType
+instance GHC.Classes.Eq TD.Data.PhoneNumberCodeType.PhoneNumberCodeType
+instance TD.Lib.Internal.ShortShow TD.Data.PhoneNumberCodeType.PhoneNumberCodeType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PhoneNumberCodeType.PhoneNumberCodeType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PhoneNumberCodeType.PhoneNumberCodeType
+
 module TD.Data.PaymentResult
 data PaymentResult
 
@@ -2713,7 +2742,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PaymentOption.PaymentOption
 
 module TD.Data.PassportElementType
 
--- | Contains the type of a Telegram Passport element
+-- | Contains the type of Telegram Passport element
 data PassportElementType
 
 -- | A Telegram Passport element containing the user's personal details
@@ -3054,7 +3083,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.NewChatPrivacySettings.NewChatPr
 
 module TD.Data.NetworkType
 
--- | Represents the type of a network
+-- | Represents the type of network
 data NetworkType
 
 -- | The network is not available
@@ -3861,7 +3890,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Venue.Venue
 
 module TD.Data.StoryAreaType
 
--- | Describes type of a clickable rectangle area on a story media
+-- | Describes type of clickable rectangle area on a story media
 data StoryAreaType
 
 -- | An area pointing to a location
@@ -4319,7 +4348,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Invoice.Invoice
 
 module TD.Data.InviteLinkChatType
 
--- | Describes the type of a chat to which points an invite link
+-- | Describes the type of chat to which points an invite link
 data InviteLinkChatType
 
 -- | The link is an invite link for a basic group
@@ -4372,7 +4401,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TargetChat.TargetChat
 
 module TD.Data.InputStoryAreaType
 
--- | Describes type of a clickable rectangle area on a story media to be
+-- | Describes type of clickable rectangle area on a story media to be
 --   added
 data InputStoryAreaType
 
@@ -4802,29 +4831,29 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputCredentials.InputCredentials
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputCredentials.InputCredentials
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputCredentials.InputCredentials
 
-module TD.Data.InputBusinessIntro
-data InputBusinessIntro
+module TD.Data.InputBusinessStartPage
+data InputBusinessStartPage
 
--- | Describes settings for a business account intro to set
-InputBusinessIntro :: Maybe Text -> Maybe Text -> Maybe InputFile -> InputBusinessIntro
+-- | Describes settings for a business account start page to set
+InputBusinessStartPage :: Maybe Text -> Maybe Text -> Maybe InputFile -> InputBusinessStartPage
 
--- | Title text of the intro;
---   0-getOption("business_intro_title_length_max") characters
-[title] :: InputBusinessIntro -> Maybe Text
+-- | Title text of the start page;
+--   0-getOption("business_start_page_title_length_max") characters
+[title] :: InputBusinessStartPage -> Maybe Text
 
--- | Message text of the intro;
---   0-getOption("business_intro_message_length_max") characters
-[message] :: InputBusinessIntro -> Maybe Text
+-- | Message text of the start page;
+--   0-getOption("business_start_page_message_length_max") characters
+[message] :: InputBusinessStartPage -> Maybe Text
 
--- | Greeting sticker of the intro; pass null if none. The sticker must
---   belong to a sticker set and must not be a custom emoji
-[sticker] :: InputBusinessIntro -> Maybe InputFile
-defaultInputBusinessIntro :: InputBusinessIntro
-instance GHC.Show.Show TD.Data.InputBusinessIntro.InputBusinessIntro
-instance GHC.Classes.Eq TD.Data.InputBusinessIntro.InputBusinessIntro
-instance TD.Lib.Internal.ShortShow TD.Data.InputBusinessIntro.InputBusinessIntro
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBusinessIntro.InputBusinessIntro
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBusinessIntro.InputBusinessIntro
+-- | Greeting sticker of the start page; pass null if none. The sticker
+--   must belong to a sticker set and must not be a custom emoji
+[sticker] :: InputBusinessStartPage -> Maybe InputFile
+defaultInputBusinessStartPage :: InputBusinessStartPage
+instance GHC.Show.Show TD.Data.InputBusinessStartPage.InputBusinessStartPage
+instance GHC.Classes.Eq TD.Data.InputBusinessStartPage.InputBusinessStartPage
+instance TD.Lib.Internal.ShortShow TD.Data.InputBusinessStartPage.InputBusinessStartPage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBusinessStartPage.InputBusinessStartPage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBusinessStartPage.InputBusinessStartPage
 
 module TD.Data.InputBackground
 
@@ -4858,7 +4887,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBackground.InputBackground
 
 module TD.Data.InlineQueryResultsButtonType
 
--- | Represents a type of a button in results of inline query
+-- | Represents a type of button in results of inline query
 data InlineQueryResultsButtonType
 
 -- | Describes the button that opens a private chat with the bot and sends
@@ -4899,7 +4928,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InlineQueryResultsButton.InlineQ
 
 module TD.Data.InlineKeyboardButtonType
 
--- | Describes the type of an inline keyboard button
+-- | Describes the type of inline keyboard button
 data InlineKeyboardButtonType
 
 -- | A button that opens a specified URL
@@ -5419,7 +5448,7 @@ MessageForwardInfo :: Maybe MessageOrigin -> Maybe Int -> Maybe ForwardSource ->
 --   forwarded last time; may be null for other forwards or if unknown
 [source] :: MessageForwardInfo -> Maybe ForwardSource
 
--- | The type of a public service announcement for the forwarded message
+-- | The type of public service announcement for the forwarded message
 [public_service_announcement_type] :: MessageForwardInfo -> Maybe Text
 instance GHC.Show.Show TD.Data.MessageForwardInfo.MessageForwardInfo
 instance GHC.Classes.Eq TD.Data.MessageForwardInfo.MessageForwardInfo
@@ -5569,7 +5598,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TermsOfService.TermsOfServic
 
 module TD.Data.PollType
 
--- | Describes the type of a poll
+-- | Describes the type of poll
 data PollType
 
 -- | A regular poll
@@ -5723,6 +5752,24 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputMessageReplyTo.InputMessageReply
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputMessageReplyTo.InputMessageReplyTo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputMessageReplyTo.InputMessageReplyTo
 
+module TD.Data.InputBusinessChatLink
+data InputBusinessChatLink
+
+-- | Describes a business chat link to create or edit
+InputBusinessChatLink :: Maybe FormattedText -> Maybe Text -> InputBusinessChatLink
+
+-- | Message draft text that will be added to the input field
+[text] :: InputBusinessChatLink -> Maybe FormattedText
+
+-- | Link title
+[title] :: InputBusinessChatLink -> Maybe Text
+defaultInputBusinessChatLink :: InputBusinessChatLink
+instance GHC.Show.Show TD.Data.InputBusinessChatLink.InputBusinessChatLink
+instance GHC.Classes.Eq TD.Data.InputBusinessChatLink.InputBusinessChatLink
+instance TD.Lib.Internal.ShortShow TD.Data.InputBusinessChatLink.InputBusinessChatLink
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBusinessChatLink.InputBusinessChatLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBusinessChatLink.InputBusinessChatLink
+
 module TD.Data.FirebaseAuthenticationSettings
 
 -- | Contains settings for Firebase Authentication in the official
@@ -5788,7 +5835,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PhoneNumberAuthenticationSetting
 
 module TD.Data.FileType
 
--- | Represents the type of a file
+-- | Represents the type of file
 data FileType
 
 -- | The data is not a file
@@ -6544,6 +6591,41 @@ instance GHC.Classes.Eq TD.Data.NotificationSounds.NotificationSounds
 instance TD.Lib.Internal.ShortShow TD.Data.NotificationSounds.NotificationSounds
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NotificationSounds.NotificationSounds
 
+module TD.Data.FailedToAddMember
+data FailedToAddMember
+
+-- | Contains information about a user that has failed to be added to a
+--   chat
+FailedToAddMember :: Maybe Int -> Maybe Bool -> Maybe Bool -> FailedToAddMember
+
+-- | User identifier
+[user_id] :: FailedToAddMember -> Maybe Int
+
+-- | True, if subscription to Telegram Premium would have allowed to add
+--   the user to the chat
+[premium_would_allow_invite] :: FailedToAddMember -> Maybe Bool
+
+-- | True, if subscription to Telegram Premium is required to send the user
+--   chat invite link
+[premium_required_to_send_messages] :: FailedToAddMember -> Maybe Bool
+instance GHC.Show.Show TD.Data.FailedToAddMember.FailedToAddMember
+instance GHC.Classes.Eq TD.Data.FailedToAddMember.FailedToAddMember
+instance TD.Lib.Internal.ShortShow TD.Data.FailedToAddMember.FailedToAddMember
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FailedToAddMember.FailedToAddMember
+
+module TD.Data.FailedToAddMembers
+data FailedToAddMembers
+
+-- | Represents a list of users that has failed to be added to a chat
+FailedToAddMembers :: Maybe [FailedToAddMember] -> FailedToAddMembers
+
+-- | Information about users that weren't added to the chat
+[failed_to_add_members] :: FailedToAddMembers -> Maybe [FailedToAddMember]
+instance GHC.Show.Show TD.Data.FailedToAddMembers.FailedToAddMembers
+instance GHC.Classes.Eq TD.Data.FailedToAddMembers.FailedToAddMembers
+instance TD.Lib.Internal.ShortShow TD.Data.FailedToAddMembers.FailedToAddMembers
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FailedToAddMembers.FailedToAddMembers
+
 module TD.Data.Error
 data Error
 
@@ -6899,7 +6981,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiKeywords.EmojiKeywords
 
 module TD.Data.EmojiCategoryType
 
--- | Describes type of an emoji category
+-- | Describes type of emoji category
 data EmojiCategoryType
 
 -- | The category must be used by default
@@ -7622,6 +7704,22 @@ instance GHC.Show.Show TD.Data.CustomRequestResult.CustomRequestResult
 instance GHC.Classes.Eq TD.Data.CustomRequestResult.CustomRequestResult
 instance TD.Lib.Internal.ShortShow TD.Data.CustomRequestResult.CustomRequestResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CustomRequestResult.CustomRequestResult
+
+module TD.Data.CreatedBasicGroupChat
+data CreatedBasicGroupChat
+
+-- | Contains information about a newly created basic group chat
+CreatedBasicGroupChat :: Maybe Int -> Maybe FailedToAddMembers -> CreatedBasicGroupChat
+
+-- | Chat identifier
+[chat_id] :: CreatedBasicGroupChat -> Maybe Int
+
+-- | Information about failed to add members
+[failed_to_add_members] :: CreatedBasicGroupChat -> Maybe FailedToAddMembers
+instance GHC.Show.Show TD.Data.CreatedBasicGroupChat.CreatedBasicGroupChat
+instance GHC.Classes.Eq TD.Data.CreatedBasicGroupChat.CreatedBasicGroupChat
+instance TD.Lib.Internal.ShortShow TD.Data.CreatedBasicGroupChat.CreatedBasicGroupChat
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CreatedBasicGroupChat.CreatedBasicGroupChat
 
 module TD.Data.CountryInfo
 data CountryInfo
@@ -8654,7 +8752,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Chats.Chats
 
 module TD.Data.ChatType
 
--- | Describes the type of a chat
+-- | Describes the type of chat
 data ChatType
 
 -- | An ordinary chat with a user
@@ -8693,7 +8791,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatType.ChatType
 
 module TD.Data.ChatStatisticsObjectType
 
--- | Describes type of an object, for which statistics are provided
+-- | Describes type of object, for which statistics are provided
 data ChatStatisticsObjectType
 
 -- | Describes a message sent in the chat
@@ -8946,9 +9044,144 @@ instance GHC.Classes.Eq TD.Data.ChatSource.ChatSource
 instance TD.Lib.Internal.ShortShow TD.Data.ChatSource.ChatSource
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatSource.ChatSource
 
+module TD.Data.ChatRevenueWithdrawalState
+
+-- | Describes state of a chat revenue withdrawal
+data ChatRevenueWithdrawalState
+
+-- | Withdrawal is pending
+ChatRevenueWithdrawalStatePending :: ChatRevenueWithdrawalState
+
+-- | Withdrawal was completed
+ChatRevenueWithdrawalStateCompleted :: Maybe Int -> Maybe Text -> ChatRevenueWithdrawalState
+
+-- | Point in time (Unix timestamp) when the withdrawal was completed
+[date] :: ChatRevenueWithdrawalState -> Maybe Int
+
+-- | The URL where the withdrawal transaction can be viewed
+[url] :: ChatRevenueWithdrawalState -> Maybe Text
+
+-- | Withdrawal has_failed
+ChatRevenueWithdrawalStateFailed :: ChatRevenueWithdrawalState
+instance GHC.Show.Show TD.Data.ChatRevenueWithdrawalState.ChatRevenueWithdrawalState
+instance GHC.Classes.Eq TD.Data.ChatRevenueWithdrawalState.ChatRevenueWithdrawalState
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueWithdrawalState.ChatRevenueWithdrawalState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueWithdrawalState.ChatRevenueWithdrawalState
+
+module TD.Data.ChatRevenueTransactionType
+
+-- | Describes type of transaction for revenue earned from sponsored
+--   messages in a chat
+data ChatRevenueTransactionType
+
+-- | Describes earnings from sponsored messages in a chat in some time
+--   frame
+ChatRevenueTransactionTypeEarnings :: Maybe Int -> Maybe Int -> ChatRevenueTransactionType
+
+-- | Point in time (Unix timestamp) when the earnings started
+[start_date] :: ChatRevenueTransactionType -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the earnings ended
+[end_date] :: ChatRevenueTransactionType -> Maybe Int
+
+-- | Describes a withdrawal of earnings
+ChatRevenueTransactionTypeWithdrawal :: Maybe Int -> Maybe Text -> Maybe ChatRevenueWithdrawalState -> ChatRevenueTransactionType
+
+-- | Point in time (Unix timestamp) when the earnings withdrawal started
+[withdrawal_date] :: ChatRevenueTransactionType -> Maybe Int
+
+-- | Name of the payment provider
+[provider] :: ChatRevenueTransactionType -> Maybe Text
+
+-- | State of the withdrawal
+[state] :: ChatRevenueTransactionType -> Maybe ChatRevenueWithdrawalState
+
+-- | Describes a refund for failed withdrawal of earnings
+ChatRevenueTransactionTypeRefund :: Maybe Int -> Maybe Text -> ChatRevenueTransactionType
+
+-- | Point in time (Unix timestamp) when the transaction was refunded
+[refund_date] :: ChatRevenueTransactionType -> Maybe Int
+
+-- | Name of the payment provider
+[provider] :: ChatRevenueTransactionType -> Maybe Text
+instance GHC.Show.Show TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
+instance GHC.Classes.Eq TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
+
+module TD.Data.ChatRevenueTransaction
+data ChatRevenueTransaction
+
+-- | Contains a chat revenue transactions
+ChatRevenueTransaction :: Maybe Text -> Maybe Int -> Maybe ChatRevenueTransactionType -> ChatRevenueTransaction
+
+-- | Cryptocurrency in which revenue is calculated
+[cryptocurrency] :: ChatRevenueTransaction -> Maybe Text
+
+-- | The withdrawn amount, in the smallest units of the cryptocurrency
+[cryptocurrency_amount] :: ChatRevenueTransaction -> Maybe Int
+
+-- | Type of the transaction
+[_type] :: ChatRevenueTransaction -> Maybe ChatRevenueTransactionType
+instance GHC.Show.Show TD.Data.ChatRevenueTransaction.ChatRevenueTransaction
+instance GHC.Classes.Eq TD.Data.ChatRevenueTransaction.ChatRevenueTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransaction.ChatRevenueTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueTransaction.ChatRevenueTransaction
+
+module TD.Data.ChatRevenueTransactions
+data ChatRevenueTransactions
+
+-- | Contains a list of chat revenue transactions
+ChatRevenueTransactions :: Maybe Int -> Maybe [ChatRevenueTransaction] -> ChatRevenueTransactions
+
+-- | Total number of transactions
+[total_count] :: ChatRevenueTransactions -> Maybe Int
+
+-- | List of transactions
+[transactions] :: ChatRevenueTransactions -> Maybe [ChatRevenueTransaction]
+instance GHC.Show.Show TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
+instance GHC.Classes.Eq TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
+
+module TD.Data.ChatRevenueStatistics
+data ChatRevenueStatistics
+
+-- | A detailed statistics about revenue earned from sponsored messages in
+--   a chat
+ChatRevenueStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> ChatRevenueStatistics
+
+-- | A graph containing amount of revenue in a given hour
+[revenue_by_hour_graph] :: ChatRevenueStatistics -> Maybe StatisticalGraph
+
+-- | A graph containing amount of revenue
+[revenue_graph] :: ChatRevenueStatistics -> Maybe StatisticalGraph
+
+-- | Cryptocurrency in which revenue is calculated
+[cryptocurrency] :: ChatRevenueStatistics -> Maybe Text
+
+-- | Total amount of the cryptocurrency earned, in the smallest units of
+--   the cryptocurrency
+[cryptocurrency_total_amount] :: ChatRevenueStatistics -> Maybe Int
+
+-- | Amount of the cryptocurrency that isn't withdrawn yet, in the smallest
+--   units of the cryptocurrency
+[cryptocurrency_balance_amount] :: ChatRevenueStatistics -> Maybe Int
+
+-- | Amount of the cryptocurrency available for withdrawal, in the smallest
+--   units of the cryptocurrency
+[cryptocurrency_available_amount] :: ChatRevenueStatistics -> Maybe Int
+
+-- | Current conversion rate of the cryptocurrency to USD
+[usd_rate] :: ChatRevenueStatistics -> Maybe Double
+instance GHC.Show.Show TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
+instance GHC.Classes.Eq TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
+
 module TD.Data.ChatPhotoStickerType
 
--- | Describes type of a sticker, which was used to create a chat photo
+-- | Describes type of sticker, which was used to create a chat photo
 data ChatPhotoStickerType
 
 -- | Information about the sticker, which was used to create the chat photo
@@ -9457,7 +9690,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatInviteLinkInfo.ChatInvit
 
 module TD.Data.TMeUrlType
 
--- | Describes the type of a URL linking to an internal Telegram entity
+-- | Describes the type of URL linking to an internal Telegram entity
 data TMeUrlType
 
 -- | A URL linking to a user
@@ -9689,7 +9922,7 @@ ChatFolderInfo :: Maybe Int -> Maybe Text -> Maybe ChatFolderIcon -> Maybe Int -
 [icon] :: ChatFolderInfo -> Maybe ChatFolderIcon
 
 -- | The identifier of the chosen color for the chat folder icon; from -1
---   to 6. If -1, then color is didabled
+--   to 6. If -1, then color is disabled
 [color_id] :: ChatFolderInfo -> Maybe Int
 
 -- | True, if at least one link has been created for the folder
@@ -9738,7 +9971,7 @@ ChatFolder :: Maybe Text -> Maybe ChatFolderIcon -> Maybe Int -> Maybe Bool -> M
 [icon] :: ChatFolder -> Maybe ChatFolderIcon
 
 -- | The identifier of the chosen color for the chat folder icon; from -1
---   to 6. If -1, then color is didabled. Can't be changed if folder tags
+--   to 6. If -1, then color is disabled. Can't be changed if folder tags
 --   are disabled or the current user doesn't have Telegram Premium
 --   subscription
 [color_id] :: ChatFolder -> Maybe Int
@@ -10039,7 +10272,7 @@ module TD.Data.ChatBoostLevelFeatures
 data ChatBoostLevelFeatures
 
 -- | Contains a list of features available on a specific chat boost level
-ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatBoostLevelFeatures
+ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatBoostLevelFeatures
 
 -- | Target chat boost level
 [level] :: ChatBoostLevelFeatures -> Maybe Int
@@ -10083,6 +10316,9 @@ ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Ma
 -- | True, if speech recognition can be used for video note and voice note
 --   messages by all users
 [can_recognize_speech] :: ChatBoostLevelFeatures -> Maybe Bool
+
+-- | True, if sponsored messages can be disabled in the chat
+[can_disable_sponsored_messages] :: ChatBoostLevelFeatures -> Maybe Bool
 instance GHC.Show.Show TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
 instance GHC.Classes.Eq TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostLevelFeatures.ChatBoostLevelFeatures
@@ -10092,7 +10328,7 @@ module TD.Data.ChatBoostFeatures
 data ChatBoostFeatures
 
 -- | Contains a list of features available on the first chat boost levels
-ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
+ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
 
 -- | The list of features
 [features] :: ChatBoostFeatures -> Maybe [ChatBoostLevelFeatures]
@@ -10122,6 +10358,10 @@ ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int ->
 -- | The minimum boost level allowing to recognize speech in video note and
 --   voice note messages for non-Premium users; for supergroup chats only
 [min_speech_recognition_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level allowing to disable sponsored messages in the
+--   chat; for channel chats only
+[min_sponsored_message_disable_boost_level] :: ChatBoostFeatures -> Maybe Int
 instance GHC.Show.Show TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance GHC.Classes.Eq TD.Data.ChatBoostFeatures.ChatBoostFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostFeatures.ChatBoostFeatures
@@ -10953,6 +11193,15 @@ InternalLinkTypeBotStartInGroup :: Maybe Text -> Maybe Text -> Maybe ChatAdminis
 -- | Expected administrator rights for the bot
 [administrator_rights] :: InternalLinkType -> Maybe ChatAdministratorRights
 
+-- | The link is a link to a business chat. Use getBusinessChatLinkInfo
+--   with the provided link name to get information about the link, then
+--   open received private chat and replace chat draft with the provided
+--   text
+InternalLinkTypeBusinessChat :: Maybe Text -> InternalLinkType
+
+-- | Name of the link
+[link_name] :: InternalLinkType -> Maybe Text
+
 -- | The link is a link to the change phone number section of the app
 InternalLinkTypeChangePhoneNumber :: InternalLinkType
 
@@ -11085,10 +11334,10 @@ InternalLinkTypePassportDataRequest :: Maybe Int -> Maybe Text -> Maybe Text -> 
 [callback_url] :: InternalLinkType -> Maybe Text
 
 -- | The link can be used to confirm ownership of a phone number to prevent
---   account deletion. Call sendPhoneNumberConfirmationCode with the given
---   hash and phone number to process the link. If succeeded, call
---   checkPhoneNumberConfirmationCode to check entered by the user code, or
---   resendPhoneNumberConfirmationCode to resend it
+--   account deletion. Call sendPhoneNumberCode with the given phone number
+--   and with phoneNumberCodeTypeConfirmOwnership with the given hash to
+--   process the link. If succeeded, call checkPhoneNumberCode to check
+--   entered by the user code, or resendPhoneNumberCode to resend it
 InternalLinkTypePhoneNumberConfirmation :: Maybe Text -> Maybe Text -> InternalLinkType
 
 -- | Hash value from the link
@@ -11141,11 +11390,16 @@ InternalLinkTypeProxy :: Maybe Text -> Maybe Int -> Maybe ProxyType -> InternalL
 
 -- | The link is a link to a chat by its username. Call searchPublicChat
 --   with the given chat username to process the link If the chat is found,
---   open its profile information screen or the chat itself
-InternalLinkTypePublicChat :: Maybe Text -> InternalLinkType
+--   open its profile information screen or the chat itself. If draft text
+--   isn't empty and the chat is a private chat, then put the draft text in
+--   the input field
+InternalLinkTypePublicChat :: Maybe Text -> Maybe Text -> InternalLinkType
 
 -- | Username of the chat
 [chat_username] :: InternalLinkType -> Maybe Text
+
+-- | Draft text for message to send in the chat
+[draft_text] :: InternalLinkType -> Maybe Text
 
 -- | The link can be used to login the current user on another device, but
 --   it must be scanned from QR-code using in-app camera. An alert similar
@@ -11226,11 +11480,15 @@ InternalLinkTypeUnsupportedProxy :: InternalLinkType
 -- | The link is a link to a user by its phone number. Call
 --   searchUserByPhoneNumber with the given phone number to process the
 --   link. If the user is found, then call createPrivateChat and open the
---   chat
-InternalLinkTypeUserPhoneNumber :: Maybe Text -> InternalLinkType
+--   chat. If draft text isn't empty, then put the draft text in the input
+--   field
+InternalLinkTypeUserPhoneNumber :: Maybe Text -> Maybe Text -> InternalLinkType
 
 -- | Phone number value from the link
 [phone_number] :: InternalLinkType -> Maybe Text
+
+-- | Draft text for message to send in the chat
+[draft_text] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to a user by a temporary token. Call
 --   searchUserByToken with the given token to process the link. If the
@@ -11359,7 +11617,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeatures.PremiumFeatu
 
 module TD.Data.MessageSponsorType
 
--- | Describes type of a message sponsor
+-- | Describes type of message sponsor
 data MessageSponsorType
 
 -- | The sponsor is a bot
@@ -12003,7 +12261,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CallbackQueryAnswer.Callback
 
 module TD.Data.CallServerType
 
--- | Describes the type of a call server
+-- | Describes the type of call server
 data CallServerType
 
 -- | A Telegram call reflector
@@ -12088,7 +12346,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.CallProtocol.CallProtocol
 
 module TD.Data.CallProblem
 
--- | Describes the exact type of a problem with a call
+-- | Describes the exact type of problem with a call
 data CallProblem
 
 -- | The user heard their own voice
@@ -12181,7 +12439,7 @@ CallStatePending :: Maybe Bool -> Maybe Bool -> CallState
 CallStateExchangingKeys :: CallState
 
 -- | The call is ready to use
-CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Maybe ByteString -> Maybe [Text] -> Maybe Bool -> CallState
+CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Maybe ByteString -> Maybe [Text] -> Maybe Bool -> Maybe Text -> CallState
 
 -- | Call protocols supported by the other call participant
 [protocol] :: CallState -> Maybe CallProtocol
@@ -12200,6 +12458,9 @@ CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Mayb
 
 -- | True, if peer-to-peer connection is allowed by users privacy settings
 [allow_p2p] :: CallState -> Maybe Bool
+
+-- | Custom JSON-encoded call parameters to be passed to tgcalls
+[custom_parameters] :: CallState -> Maybe Text
 
 -- | The call is hanging up after discardCall has been called
 CallStateHangingUp :: CallState
@@ -12254,6 +12515,25 @@ instance GHC.Show.Show TD.Data.Call.Call
 instance GHC.Classes.Eq TD.Data.Call.Call
 instance TD.Lib.Internal.ShortShow TD.Data.Call.Call
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Call.Call
+
+module TD.Data.BusinessStartPage
+data BusinessStartPage
+
+-- | Describes settings for a business account start page
+BusinessStartPage :: Maybe Text -> Maybe Text -> Maybe Sticker -> BusinessStartPage
+
+-- | Title text of the start page
+[title] :: BusinessStartPage -> Maybe Text
+
+-- | Message text of the start page
+[message] :: BusinessStartPage -> Maybe Text
+
+-- | Greeting sticker of the start page; may be null if none
+[sticker] :: BusinessStartPage -> Maybe Sticker
+instance GHC.Show.Show TD.Data.BusinessStartPage.BusinessStartPage
+instance GHC.Classes.Eq TD.Data.BusinessStartPage.BusinessStartPage
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessStartPage.BusinessStartPage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessStartPage.BusinessStartPage
 
 module TD.Data.BusinessRecipients
 data BusinessRecipients
@@ -12346,25 +12626,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.BusinessLocation.BusinessLocation
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessLocation.BusinessLocation
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessLocation.BusinessLocation
 
-module TD.Data.BusinessIntro
-data BusinessIntro
-
--- | Describes settings for a business account intro
-BusinessIntro :: Maybe Text -> Maybe Text -> Maybe Sticker -> BusinessIntro
-
--- | Title text of the intro
-[title] :: BusinessIntro -> Maybe Text
-
--- | Message text of the intro
-[message] :: BusinessIntro -> Maybe Text
-
--- | Greeting sticker of the intro; may be null if none
-[sticker] :: BusinessIntro -> Maybe Sticker
-instance GHC.Show.Show TD.Data.BusinessIntro.BusinessIntro
-instance GHC.Classes.Eq TD.Data.BusinessIntro.BusinessIntro
-instance TD.Lib.Internal.ShortShow TD.Data.BusinessIntro.BusinessIntro
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessIntro.BusinessIntro
-
 module TD.Data.BusinessGreetingMessageSettings
 data BusinessGreetingMessageSettings
 
@@ -12413,8 +12674,8 @@ BusinessFeatureAwayMessage :: BusinessFeature
 --   message text
 BusinessFeatureAccountLinks :: BusinessFeature
 
--- | The ability to customize intro
-BusinessFeatureIntro :: BusinessFeature
+-- | The ability to customize start page
+BusinessFeatureStartPage :: BusinessFeature
 
 -- | The ability to connect a bot to the account
 BusinessFeatureBots :: BusinessFeature
@@ -12542,6 +12803,80 @@ instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBot.BusinessConnecte
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
 
+module TD.Data.BusinessChatLinkInfo
+data BusinessChatLinkInfo
+
+-- | Contains information about a business chat link
+BusinessChatLinkInfo :: Maybe Int -> Maybe FormattedText -> BusinessChatLinkInfo
+
+-- | Identifier of the private chat that created the link
+[chat_id] :: BusinessChatLinkInfo -> Maybe Int
+
+-- | Message draft text that must be added to the input field
+[text] :: BusinessChatLinkInfo -> Maybe FormattedText
+instance GHC.Show.Show TD.Data.BusinessChatLinkInfo.BusinessChatLinkInfo
+instance GHC.Classes.Eq TD.Data.BusinessChatLinkInfo.BusinessChatLinkInfo
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessChatLinkInfo.BusinessChatLinkInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessChatLinkInfo.BusinessChatLinkInfo
+
+module TD.Data.BusinessChatLink
+data BusinessChatLink
+
+-- | Contains information about a business chat link
+BusinessChatLink :: Maybe Text -> Maybe FormattedText -> Maybe Text -> Maybe Int -> BusinessChatLink
+
+-- | The HTTPS link
+[link] :: BusinessChatLink -> Maybe Text
+
+-- | Message draft text that will be added to the input field
+[text] :: BusinessChatLink -> Maybe FormattedText
+
+-- | Link title
+[title] :: BusinessChatLink -> Maybe Text
+
+-- | Number of times the link was used
+[view_count] :: BusinessChatLink -> Maybe Int
+instance GHC.Show.Show TD.Data.BusinessChatLink.BusinessChatLink
+instance GHC.Classes.Eq TD.Data.BusinessChatLink.BusinessChatLink
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessChatLink.BusinessChatLink
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessChatLink.BusinessChatLink
+
+module TD.Data.BusinessChatLinks
+data BusinessChatLinks
+
+-- | Contains a list of business chat links created by the user
+BusinessChatLinks :: Maybe [BusinessChatLink] -> BusinessChatLinks
+
+-- | List of links
+[links] :: BusinessChatLinks -> Maybe [BusinessChatLink]
+instance GHC.Show.Show TD.Data.BusinessChatLinks.BusinessChatLinks
+instance GHC.Classes.Eq TD.Data.BusinessChatLinks.BusinessChatLinks
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessChatLinks.BusinessChatLinks
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessChatLinks.BusinessChatLinks
+
+module TD.Data.BusinessBotManageBar
+data BusinessBotManageBar
+
+-- | Contains information about a business bot that manages the chat
+BusinessBotManageBar :: Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> BusinessBotManageBar
+
+-- | User identifier of the bot
+[bot_user_id] :: BusinessBotManageBar -> Maybe Int
+
+-- | URL to be opened to manage the bot
+[manage_url] :: BusinessBotManageBar -> Maybe Text
+
+-- | True, if the bot is paused. Use toggleBusinessConnectedBotChatIsPaused
+--   to change the value of the field
+[is_bot_paused] :: BusinessBotManageBar -> Maybe Bool
+
+-- | True, if the bot can reply
+[can_bot_reply] :: BusinessBotManageBar -> Maybe Bool
+instance GHC.Show.Show TD.Data.BusinessBotManageBar.BusinessBotManageBar
+instance GHC.Classes.Eq TD.Data.BusinessBotManageBar.BusinessBotManageBar
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessBotManageBar.BusinessBotManageBar
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessBotManageBar.BusinessBotManageBar
+
 module TD.Data.BusinessAwayMessageSchedule
 
 -- | Describes conditions for sending of away messages by a Telegram
@@ -12600,7 +12935,7 @@ module TD.Data.BusinessInfo
 data BusinessInfo
 
 -- | Contains information about a Telegram Business account
-BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> Maybe BusinessIntro -> BusinessInfo
+BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> Maybe BusinessStartPage -> BusinessInfo
 
 -- | Location of the business; may be null if none
 [location] :: BusinessInfo -> Maybe BusinessLocation
@@ -12617,8 +12952,8 @@ BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe Bu
 --   of the current user
 [away_message_settings] :: BusinessInfo -> Maybe BusinessAwayMessageSettings
 
--- | Information about intro of the business; may be null if none
-[intro] :: BusinessInfo -> Maybe BusinessIntro
+-- | Information about start page of the account; may be null if none
+[start_page] :: BusinessInfo -> Maybe BusinessStartPage
 instance GHC.Show.Show TD.Data.BusinessInfo.BusinessInfo
 instance GHC.Classes.Eq TD.Data.BusinessInfo.BusinessInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessInfo.BusinessInfo
@@ -12719,7 +13054,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotCommands.BotCommands
 
 module TD.Data.BlockList
 
--- | Describes a type of a block list
+-- | Describes a type of block list
 data BlockList
 
 -- | The main block list that disallows writing messages to the current
@@ -12929,7 +13264,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputChatPhoto.InputChatPhoto
 
 module TD.Data.BackgroundType
 
--- | Describes the type of a background
+-- | Describes the type of background
 data BackgroundType
 
 -- | A wallpaper in JPEG format
@@ -15000,7 +15335,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -15054,6 +15389,9 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 -- | True, if the supergroup or channel statistics are available
 [can_get_statistics] :: SupergroupFullInfo -> Maybe Bool
 
+-- | True, if the supergroup or channel revenue statistics are available
+[can_get_revenue_statistics] :: SupergroupFullInfo -> Maybe Bool
+
 -- | True, if aggressive anti-spam checks can be enabled or disabled in the
 --   supergroup
 [can_toggle_aggressive_anti_spam] :: SupergroupFullInfo -> Maybe Bool
@@ -15064,6 +15402,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   without a linked chat. The value of this field is only available to
 --   chat administrators
 [is_all_history_available] :: SupergroupFullInfo -> Maybe Bool
+
+-- | True, if the chat can have sponsored messages. The value of this field
+--   is only available to the owner of the chat
+[can_have_sponsored_messages] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if aggressive anti-spam checks are enabled in the supergroup.
 --   The value of this field is only available to chat administrators
@@ -15719,7 +16061,7 @@ MessageVideoChatEnded :: Maybe Int -> MessageContent
 -- | Call duration, in seconds
 [duration] :: MessageContent -> Maybe Int
 
--- | A message with information about an invite to a video chat
+-- | A message with information about an invitation to a video chat
 MessageInviteVideoChatParticipants :: Maybe Int -> Maybe [Int] -> MessageContent
 
 -- | Identifier of the video chat. The video chat can be received through
@@ -16240,16 +16582,16 @@ QuickReplyMessage :: Maybe Int -> Maybe MessageSendingState -> Maybe Bool -> May
 -- | True, if the message can be edited
 [can_be_edited] :: QuickReplyMessage -> Maybe Bool
 
--- | Information about the identifier of the quick reply message to which
---   the message replies
+-- | The identifier of the quick reply message to which the message
+--   replies; 0 if none
 [reply_to_message_id] :: QuickReplyMessage -> Maybe Int
 
 -- | If non-zero, the user identifier of the bot through which this message
 --   was sent
 [via_bot_user_id] :: QuickReplyMessage -> Maybe Int
 
--- | Unique identifier of an album this message belongs to. Only audios,
---   documents, photos and videos can be grouped together in albums
+-- | Unique identifier of an album this message belongs to; 0 if none. Only
+--   audios, documents, photos and videos can be grouped together in albums
 [media_album_id] :: QuickReplyMessage -> Maybe Int
 
 -- | Content of the message
@@ -16283,6 +16625,19 @@ instance GHC.Show.Show TD.Data.QuickReplyShortcut.QuickReplyShortcut
 instance GHC.Classes.Eq TD.Data.QuickReplyShortcut.QuickReplyShortcut
 instance TD.Lib.Internal.ShortShow TD.Data.QuickReplyShortcut.QuickReplyShortcut
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.QuickReplyShortcut.QuickReplyShortcut
+
+module TD.Data.QuickReplyMessages
+data QuickReplyMessages
+
+-- | Contains a list of quick reply messages
+QuickReplyMessages :: Maybe [QuickReplyMessage] -> QuickReplyMessages
+
+-- | List of quick reply messages; messages may be null
+[messages] :: QuickReplyMessages -> Maybe [QuickReplyMessage]
+instance GHC.Show.Show TD.Data.QuickReplyMessages.QuickReplyMessages
+instance GHC.Classes.Eq TD.Data.QuickReplyMessages.QuickReplyMessages
+instance TD.Lib.Internal.ShortShow TD.Data.QuickReplyMessages.QuickReplyMessages
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.QuickReplyMessages.QuickReplyMessages
 
 module TD.Data.MessageReplyTo
 
@@ -16495,8 +16850,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   signature
 [author_signature] :: Message -> Maybe Text
 
--- | Unique identifier of an album this message belongs to. Only audios,
---   documents, photos and videos can be grouped together in albums
+-- | Unique identifier of an album this message belongs to; 0 if none. Only
+--   audios, documents, photos and videos can be grouped together in albums
 [media_album_id] :: Message -> Maybe Int
 
 -- | If non-empty, contains a human-readable description of the reason why
@@ -17473,7 +17828,7 @@ data Chat
 
 -- | A chat. (Can be a private chat, basic group, supergroup, or secret
 --   chat)
-Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
+Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe BusinessBotManageBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
 
 -- | Chat unique identifier
 [_id] :: Chat -> Maybe Int
@@ -17597,6 +17952,10 @@ Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Mayb
 -- | Information about actions which must be possible to do through the
 --   chat action bar; may be null if none
 [action_bar] :: Chat -> Maybe ChatActionBar
+
+-- | Information about bar for managing a business bot in the chat; may be
+--   null if none
+[business_bot_manage_bar] :: Chat -> Maybe BusinessBotManageBar
 
 -- | Information about video chat of the chat
 [video_chat] :: Chat -> Maybe VideoChat
@@ -18120,6 +18479,15 @@ UpdateChatActionBar :: Maybe Int -> Maybe ChatActionBar -> Update
 
 -- | The new value of the action bar; may be null
 [action_bar] :: Update -> Maybe ChatActionBar
+
+-- | The bar for managing business bot was changed in a chat
+UpdateChatBusinessBotManageBar :: Maybe Int -> Maybe BusinessBotManageBar -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | The new value of the business bot manage bar; may be null
+[business_bot_manage_bar] :: Update -> Maybe BusinessBotManageBar
 
 -- | The chat available reactions were changed
 UpdateChatAvailableReactions :: Maybe Int -> Maybe ChatAvailableReactions -> Update
@@ -19039,23 +19407,24 @@ UpdateSuggestedActions :: Maybe [SuggestedAction] -> Maybe [SuggestedAction] -> 
 -- | Removed suggested actions
 [removed_actions] :: Update -> Maybe [SuggestedAction]
 
+-- | Download or upload file speed for the user was limited, but it can be
+--   restored by subscription to Telegram Premium. The notification can be
+--   postponed until a being downloaded or uploaded file is visible to the
+--   user Use getOption("premium_download_speedup") or
+--   getOption("premium_upload_speedup") to get expected speedup after
+--   subscription to Telegram Premium
+UpdateSpeedLimitNotification :: Maybe Bool -> Update
+
+-- | True, if upload speed was limited; false, if download speed was
+--   limited
+[is_upload] :: Update -> Maybe Bool
+
 -- | The list of contacts that had birthdays recently or will have birthday
 --   soon has changed
 UpdateContactCloseBirthdays :: Maybe [CloseBirthdayUser] -> Update
 
 -- | List of contact users with close birthday
 [close_birthday_users] :: Update -> Maybe [CloseBirthdayUser]
-
--- | Adding users to a chat has failed because of their privacy settings.
---   An invite link can be shared with the users if appropriate
-UpdateAddChatMembersPrivacyForbidden :: Maybe Int -> Maybe [Int] -> Update
-
--- | The chat identifier of the sent message
-[chat_id] :: Update -> Maybe Int
-
--- | Identifiers of users, which weren't added because of their privacy
---   settings
-[user_ids] :: Update -> Maybe [Int]
 
 -- | Autosave settings for some type of chats were updated
 UpdateAutosaveSettings :: Maybe AutosaveSettingsScope -> Maybe ScopeAutosaveSettings -> Update
@@ -19389,6 +19758,9 @@ BasicGroup :: BasicGroup -> GeneralResult
 BasicGroupFullInfo :: BasicGroupFullInfo -> GeneralResult
 BotCommands :: BotCommands -> GeneralResult
 BotMenuButton :: BotMenuButton -> GeneralResult
+BusinessChatLink :: BusinessChatLink -> GeneralResult
+BusinessChatLinkInfo :: BusinessChatLinkInfo -> GeneralResult
+BusinessChatLinks :: BusinessChatLinks -> GeneralResult
 BusinessConnectedBot :: BusinessConnectedBot -> GeneralResult
 BusinessConnection :: BusinessConnection -> GeneralResult
 BusinessFeatures :: BusinessFeatures -> GeneralResult
@@ -19426,6 +19798,8 @@ ChatMember :: ChatMember -> GeneralResult
 ChatMembers :: ChatMembers -> GeneralResult
 ChatMessageSenders :: ChatMessageSenders -> GeneralResult
 ChatPhotos :: ChatPhotos -> GeneralResult
+ChatRevenueStatistics :: ChatRevenueStatistics -> GeneralResult
+ChatRevenueTransactions :: ChatRevenueTransactions -> GeneralResult
 ChatStatistics :: ChatStatistics -> GeneralResult
 Chats :: Chats -> GeneralResult
 ChatsNearby :: ChatsNearby -> GeneralResult
@@ -19435,6 +19809,7 @@ CollectibleItemInfo :: CollectibleItemInfo -> GeneralResult
 ConnectedWebsites :: ConnectedWebsites -> GeneralResult
 Count :: Count -> GeneralResult
 Countries :: Countries -> GeneralResult
+CreatedBasicGroupChat :: CreatedBasicGroupChat -> GeneralResult
 CustomRequestResult :: CustomRequestResult -> GeneralResult
 DatabaseStatistics :: DatabaseStatistics -> GeneralResult
 DeepLinkInfo :: DeepLinkInfo -> GeneralResult
@@ -19445,6 +19820,7 @@ EmojiReaction :: EmojiReaction -> GeneralResult
 EmojiStatuses :: EmojiStatuses -> GeneralResult
 Emojis :: Emojis -> GeneralResult
 Error :: Error -> GeneralResult
+FailedToAddMembers :: FailedToAddMembers -> GeneralResult
 File :: File -> GeneralResult
 FileDownloadedPrefixSize :: FileDownloadedPrefixSize -> GeneralResult
 FilePart :: FilePart -> GeneralResult
@@ -19516,6 +19892,8 @@ Proxies :: Proxies -> GeneralResult
 Proxy :: Proxy -> GeneralResult
 PublicForwards :: PublicForwards -> GeneralResult
 PushReceiverId :: PushReceiverId -> GeneralResult
+QuickReplyMessage :: QuickReplyMessage -> GeneralResult
+QuickReplyMessages :: QuickReplyMessages -> GeneralResult
 ReadDatePrivacySettings :: ReadDatePrivacySettings -> GeneralResult
 RecommendedChatFolders :: RecommendedChatFolders -> GeneralResult
 RecoveryEmailAddress :: RecoveryEmailAddress -> GeneralResult
@@ -19651,7 +20029,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatFolderByInviteLink.AddCh
 module TD.Query.AddChatMember
 
 -- | Adds a new member to a chat; requires can_invite_users member right.
---   Members can't be added to private or secret chats. Returns <a>Ok</a>
+--   Members can't be added to private or secret chats. Returns information
+--   about members that weren't added. Returns <a>FailedToAddMembers</a>
 data AddChatMember
 AddChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> AddChatMember
 
@@ -19676,7 +20055,9 @@ module TD.Query.AddChatMembers
 -- | Adds multiple new members to a chat; requires can_invite_users member
 --   right. Currently, this method is only available for supergroups and
 --   channels. This method can't be used to join a chat. Members can't be
---   added to a channel if it has more than 200 members. Returns <a>Ok</a>
+--   added to a channel if it has more than 200 members. Returns
+--   information about members that weren't added. Returns
+--   <a>FailedToAddMembers</a>
 data AddChatMembers
 AddChatMembers :: Maybe Int -> Maybe [Int] -> AddChatMembers
 
@@ -19772,7 +20153,7 @@ module TD.Query.AddFileToDownloads
 --   progress and completion of the download will be notified through
 --   updateFile updates. If message database is used, the list of file
 --   downloads is persistent across application restarts. The downloading
---   is independent from download using downloadFile, i.e. it continues if
+--   is independent of download using downloadFile, i.e. it continues if
 --   downloadFile is canceled or is used to download a part of the file.
 --   Returns <a>File</a>
 data AddFileToDownloads
@@ -19912,6 +20293,70 @@ instance GHC.Show.Show TD.Query.AddProxy.AddProxy
 instance GHC.Classes.Eq TD.Query.AddProxy.AddProxy
 instance TD.Lib.Internal.ShortShow TD.Query.AddProxy.AddProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddProxy.AddProxy
+
+module TD.Query.AddQuickReplyShortcutInlineQueryResultMessage
+
+-- | Adds a message to a quick reply shortcut via inline bot. If shortcut
+--   doesn't exist and there are less than
+--   getOption("quick_reply_shortcut_count_max") shortcuts, then a new
+--   shortcut is created. The shortcut must not contain more than
+--   getOption("quick_reply_shortcut_message_count_max") messages after
+--   adding the new message. Returns the added message. Returns
+--   <a>QuickReplyMessage</a>
+data AddQuickReplyShortcutInlineQueryResultMessage
+AddQuickReplyShortcutInlineQueryResultMessage :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> AddQuickReplyShortcutInlineQueryResultMessage
+
+-- | Name of the target shortcut
+[shortcut_name] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Text
+
+-- | Identifier of a quick reply message in the same shortcut to be
+--   replied; pass 0 if none
+[reply_to_message_id] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Int
+
+-- | Identifier of the inline query
+[query_id] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Int
+
+-- | Identifier of the inline query result
+[result_id] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Text
+
+-- | Pass true to hide the bot, via which the message is sent. Can be used
+--   only for bots getOption("animation_search_bot_username"),
+--   getOption("photo_search_bot_username"), and
+--   getOption("venue_search_bot_username")
+[hide_via_bot] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Bool
+defaultAddQuickReplyShortcutInlineQueryResultMessage :: AddQuickReplyShortcutInlineQueryResultMessage
+instance GHC.Show.Show TD.Query.AddQuickReplyShortcutInlineQueryResultMessage.AddQuickReplyShortcutInlineQueryResultMessage
+instance GHC.Classes.Eq TD.Query.AddQuickReplyShortcutInlineQueryResultMessage.AddQuickReplyShortcutInlineQueryResultMessage
+instance TD.Lib.Internal.ShortShow TD.Query.AddQuickReplyShortcutInlineQueryResultMessage.AddQuickReplyShortcutInlineQueryResultMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddQuickReplyShortcutInlineQueryResultMessage.AddQuickReplyShortcutInlineQueryResultMessage
+
+module TD.Query.AddQuickReplyShortcutMessage
+
+-- | Adds a message to a quick reply shortcut. If shortcut doesn't exist
+--   and there are less than getOption("quick_reply_shortcut_count_max")
+--   shortcuts, then a new shortcut is created. The shortcut must not
+--   contain more than getOption("quick_reply_shortcut_message_count_max")
+--   messages after adding the new message. Returns the added message.
+--   Returns <a>QuickReplyMessage</a>
+data AddQuickReplyShortcutMessage
+AddQuickReplyShortcutMessage :: Maybe Text -> Maybe Int -> Maybe InputMessageContent -> AddQuickReplyShortcutMessage
+
+-- | Name of the target shortcut
+[shortcut_name] :: AddQuickReplyShortcutMessage -> Maybe Text
+
+-- | Identifier of a quick reply message in the same shortcut to be
+--   replied; pass 0 if none
+[reply_to_message_id] :: AddQuickReplyShortcutMessage -> Maybe Int
+
+-- | The content of the message to be added; inputMessagePoll,
+--   inputMessageForwarded and inputMessageLocation with live_period aren't
+--   supported
+[input_message_content] :: AddQuickReplyShortcutMessage -> Maybe InputMessageContent
+defaultAddQuickReplyShortcutMessage :: AddQuickReplyShortcutMessage
+instance GHC.Show.Show TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
+instance GHC.Classes.Eq TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
+instance TD.Lib.Internal.ShortShow TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
 
 module TD.Query.AddRecentSticker
 
@@ -20431,27 +20876,6 @@ instance GHC.Classes.Eq TD.Query.ChangeImportedContacts.ChangeImportedContacts
 instance TD.Lib.Internal.ShortShow TD.Query.ChangeImportedContacts.ChangeImportedContacts
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ChangeImportedContacts.ChangeImportedContacts
 
-module TD.Query.ChangePhoneNumber
-
--- | Changes the phone number of the user and sends an authentication code
---   to the user's new phone number; for official Android and iOS
---   applications only. On success, returns information about the sent
---   code. Returns <a>AuthenticationCodeInfo</a>
-data ChangePhoneNumber
-ChangePhoneNumber :: Maybe Text -> Maybe PhoneNumberAuthenticationSettings -> ChangePhoneNumber
-
--- | The new phone number of the user in international format
-[phone_number] :: ChangePhoneNumber -> Maybe Text
-
--- | Settings for the authentication of the user's phone number; pass null
---   to use default settings
-[settings] :: ChangePhoneNumber -> Maybe PhoneNumberAuthenticationSettings
-defaultChangePhoneNumber :: ChangePhoneNumber
-instance GHC.Show.Show TD.Query.ChangePhoneNumber.ChangePhoneNumber
-instance GHC.Classes.Eq TD.Query.ChangePhoneNumber.ChangePhoneNumber
-instance TD.Lib.Internal.ShortShow TD.Query.ChangePhoneNumber.ChangePhoneNumber
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ChangePhoneNumber.ChangePhoneNumber
-
 module TD.Query.ChangeStickerSet
 
 -- | Installs<i>uninstalls or activates</i>archives a sticker set. Returns
@@ -20549,20 +20973,6 @@ instance GHC.Show.Show TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAut
 instance GHC.Classes.Eq TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
 instance TD.Lib.Internal.ShortShow TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
-
-module TD.Query.CheckChangePhoneNumberCode
-
--- | Checks the authentication code sent to confirm a new phone number of
---   the user. Returns <a>Ok</a>
-data CheckChangePhoneNumberCode
-CheckChangePhoneNumberCode :: Maybe Text -> CheckChangePhoneNumberCode
-
--- | Authentication code to check
-[code] :: CheckChangePhoneNumberCode -> Maybe Text
-instance GHC.Show.Show TD.Query.CheckChangePhoneNumberCode.CheckChangePhoneNumberCode
-instance GHC.Classes.Eq TD.Query.CheckChangePhoneNumberCode.CheckChangePhoneNumberCode
-instance TD.Lib.Internal.ShortShow TD.Query.CheckChangePhoneNumberCode.CheckChangePhoneNumberCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckChangePhoneNumberCode.CheckChangePhoneNumberCode
 
 module TD.Query.CheckChatFolderInviteLink
 
@@ -20669,32 +21079,19 @@ instance GHC.Classes.Eq TD.Query.CheckPasswordRecoveryCode.CheckPasswordRecovery
 instance TD.Lib.Internal.ShortShow TD.Query.CheckPasswordRecoveryCode.CheckPasswordRecoveryCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckPasswordRecoveryCode.CheckPasswordRecoveryCode
 
-module TD.Query.CheckPhoneNumberConfirmationCode
+module TD.Query.CheckPhoneNumberCode
 
--- | Checks phone number confirmation code. Returns <a>Ok</a>
-data CheckPhoneNumberConfirmationCode
-CheckPhoneNumberConfirmationCode :: Maybe Text -> CheckPhoneNumberConfirmationCode
+-- | Check the authentication code and completes the request for which the
+--   code was sent if appropriate. Returns <a>Ok</a>
+data CheckPhoneNumberCode
+CheckPhoneNumberCode :: Maybe Text -> CheckPhoneNumberCode
 
--- | Confirmation code to check
-[code] :: CheckPhoneNumberConfirmationCode -> Maybe Text
-instance GHC.Show.Show TD.Query.CheckPhoneNumberConfirmationCode.CheckPhoneNumberConfirmationCode
-instance GHC.Classes.Eq TD.Query.CheckPhoneNumberConfirmationCode.CheckPhoneNumberConfirmationCode
-instance TD.Lib.Internal.ShortShow TD.Query.CheckPhoneNumberConfirmationCode.CheckPhoneNumberConfirmationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckPhoneNumberConfirmationCode.CheckPhoneNumberConfirmationCode
-
-module TD.Query.CheckPhoneNumberVerificationCode
-
--- | Checks the phone number verification code for Telegram Passport.
---   Returns <a>Ok</a>
-data CheckPhoneNumberVerificationCode
-CheckPhoneNumberVerificationCode :: Maybe Text -> CheckPhoneNumberVerificationCode
-
--- | Verification code to check
-[code] :: CheckPhoneNumberVerificationCode -> Maybe Text
-instance GHC.Show.Show TD.Query.CheckPhoneNumberVerificationCode.CheckPhoneNumberVerificationCode
-instance GHC.Classes.Eq TD.Query.CheckPhoneNumberVerificationCode.CheckPhoneNumberVerificationCode
-instance TD.Lib.Internal.ShortShow TD.Query.CheckPhoneNumberVerificationCode.CheckPhoneNumberVerificationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckPhoneNumberVerificationCode.CheckPhoneNumberVerificationCode
+-- | Authentication code to check
+[code] :: CheckPhoneNumberCode -> Maybe Text
+instance GHC.Show.Show TD.Query.CheckPhoneNumberCode.CheckPhoneNumberCode
+instance GHC.Classes.Eq TD.Query.CheckPhoneNumberCode.CheckPhoneNumberCode
+instance TD.Lib.Internal.ShortShow TD.Query.CheckPhoneNumberCode.CheckPhoneNumberCode
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckPhoneNumberCode.CheckPhoneNumberCode
 
 module TD.Query.CheckPremiumGiftCode
 
@@ -21018,6 +21415,22 @@ instance GHC.Classes.Eq TD.Query.CreateBasicGroupChat.CreateBasicGroupChat
 instance TD.Lib.Internal.ShortShow TD.Query.CreateBasicGroupChat.CreateBasicGroupChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateBasicGroupChat.CreateBasicGroupChat
 
+module TD.Query.CreateBusinessChatLink
+
+-- | Creates a business chat link for the current account. Requires
+--   Telegram Business subscription. There can be up to
+--   getOption("business_chat_link_count_max") links created. Returns the
+--   created link. Returns <a>BusinessChatLink</a>
+data CreateBusinessChatLink
+CreateBusinessChatLink :: Maybe InputBusinessChatLink -> CreateBusinessChatLink
+
+-- | Information about the link to create
+[link_info] :: CreateBusinessChatLink -> Maybe InputBusinessChatLink
+instance GHC.Show.Show TD.Query.CreateBusinessChatLink.CreateBusinessChatLink
+instance GHC.Classes.Eq TD.Query.CreateBusinessChatLink.CreateBusinessChatLink
+instance TD.Lib.Internal.ShortShow TD.Query.CreateBusinessChatLink.CreateBusinessChatLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateBusinessChatLink.CreateBusinessChatLink
+
 module TD.Query.CreateCall
 
 -- | Creates a new call. Returns <a>CallId</a>
@@ -21151,8 +21564,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateInvoiceLink.CreateInvoice
 module TD.Query.CreateNewBasicGroupChat
 
 -- | Creates a new basic group and sends a corresponding
---   messageBasicGroupChatCreate. Returns the newly created chat. Returns
---   <a>Chat</a>
+--   messageBasicGroupChatCreate. Returns information about the newly
+--   created chat. Returns <a>CreatedBasicGroupChat</a>
 data CreateNewBasicGroupChat
 CreateNewBasicGroupChat :: Maybe [Int] -> Maybe Text -> Maybe Int -> CreateNewBasicGroupChat
 
@@ -21419,6 +21832,19 @@ instance GHC.Show.Show TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevoked
 instance GHC.Classes.Eq TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
+
+module TD.Query.DeleteBusinessChatLink
+
+-- | Deletes a business chat link of the current account. Returns <a>Ok</a>
+data DeleteBusinessChatLink
+DeleteBusinessChatLink :: Maybe Text -> DeleteBusinessChatLink
+
+-- | The link to delete
+[link] :: DeleteBusinessChatLink -> Maybe Text
+instance GHC.Show.Show TD.Query.DeleteBusinessChatLink.DeleteBusinessChatLink
+instance GHC.Classes.Eq TD.Query.DeleteBusinessChatLink.DeleteBusinessChatLink
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBusinessChatLink.DeleteBusinessChatLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessChatLink.DeleteBusinessChatLink
 
 module TD.Query.DeleteBusinessConnectedBot
 
@@ -21986,6 +22412,25 @@ instance GHC.Classes.Eq TD.Query.DownloadFile.DownloadFile
 instance TD.Lib.Internal.ShortShow TD.Query.DownloadFile.DownloadFile
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DownloadFile.DownloadFile
 
+module TD.Query.EditBusinessChatLink
+
+-- | Edits a business chat link of the current account. Requires Telegram
+--   Business subscription. Returns the edited link. Returns
+--   <a>BusinessChatLink</a>
+data EditBusinessChatLink
+EditBusinessChatLink :: Maybe Text -> Maybe InputBusinessChatLink -> EditBusinessChatLink
+
+-- | The link to edit
+[link] :: EditBusinessChatLink -> Maybe Text
+
+-- | New description of the link
+[link_info] :: EditBusinessChatLink -> Maybe InputBusinessChatLink
+defaultEditBusinessChatLink :: EditBusinessChatLink
+instance GHC.Show.Show TD.Query.EditBusinessChatLink.EditBusinessChatLink
+instance GHC.Classes.Eq TD.Query.EditBusinessChatLink.EditBusinessChatLink
+instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessChatLink.EditBusinessChatLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessChatLink.EditBusinessChatLink
+
 module TD.Query.EditChatFolder
 
 -- | Edits existing chat folder. Returns information about the edited chat
@@ -22416,6 +22861,33 @@ instance GHC.Show.Show TD.Query.EditProxy.EditProxy
 instance GHC.Classes.Eq TD.Query.EditProxy.EditProxy
 instance TD.Lib.Internal.ShortShow TD.Query.EditProxy.EditProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditProxy.EditProxy
+
+module TD.Query.EditQuickReplyMessage
+
+-- | Asynchronously edits the text, media or caption of a quick reply
+--   message. Use quickReplyMessage.can_be_edited to check whether a
+--   message can be edited. Text message can be edited only to a text
+--   message. The type of message content in an album can't be changed with
+--   exception of replacing a photo with a video or vice versa. Returns
+--   <a>Ok</a>
+data EditQuickReplyMessage
+EditQuickReplyMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageContent -> EditQuickReplyMessage
+
+-- | Unique identifier of the quick reply shortcut with the message
+[shortcut_id] :: EditQuickReplyMessage -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: EditQuickReplyMessage -> Maybe Int
+
+-- | New content of the message. Must be one of the following types:
+--   inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto or inputMessageVideo
+[input_message_content] :: EditQuickReplyMessage -> Maybe InputMessageContent
+defaultEditQuickReplyMessage :: EditQuickReplyMessage
+instance GHC.Show.Show TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
+instance GHC.Classes.Eq TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
+instance TD.Lib.Internal.ShortShow TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
 
 module TD.Query.EditStory
 
@@ -22918,6 +23390,31 @@ instance GHC.Classes.Eq TD.Query.GetBotName.GetBotName
 instance TD.Lib.Internal.ShortShow TD.Query.GetBotName.GetBotName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotName.GetBotName
 
+module TD.Query.GetBusinessChatLinkInfo
+
+-- | Returns information about a business chat link. Returns
+--   <a>BusinessChatLinkInfo</a>
+data GetBusinessChatLinkInfo
+GetBusinessChatLinkInfo :: Maybe Text -> GetBusinessChatLinkInfo
+
+-- | Name of the link
+[link_name] :: GetBusinessChatLinkInfo -> Maybe Text
+instance GHC.Show.Show TD.Query.GetBusinessChatLinkInfo.GetBusinessChatLinkInfo
+instance GHC.Classes.Eq TD.Query.GetBusinessChatLinkInfo.GetBusinessChatLinkInfo
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessChatLinkInfo.GetBusinessChatLinkInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessChatLinkInfo.GetBusinessChatLinkInfo
+
+module TD.Query.GetBusinessChatLinks
+
+-- | Returns business chat links created for the current account. Returns
+--   <a>BusinessChatLinks</a>
+data GetBusinessChatLinks
+GetBusinessChatLinks :: GetBusinessChatLinks
+instance GHC.Show.Show TD.Query.GetBusinessChatLinks.GetBusinessChatLinks
+instance GHC.Classes.Eq TD.Query.GetBusinessChatLinks.GetBusinessChatLinks
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessChatLinks.GetBusinessChatLinks
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessChatLinks.GetBusinessChatLinks
+
 module TD.Query.GetBusinessConnectedBot
 
 -- | Returns the business bot that is connected to the current user
@@ -23087,7 +23584,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAvailableMessageSenders.
 
 module TD.Query.GetChatBoostFeatures
 
--- | Returns list of features available on the first 10 chat boost levels;
+-- | Returns list of features available for different chat boost levels;
 --   this is an offline request. Returns <a>ChatBoostFeatures</a>
 data GetChatBoostFeatures
 GetChatBoostFeatures :: Maybe Bool -> GetChatBoostFeatures
@@ -23682,6 +24179,69 @@ instance GHC.Show.Show TD.Query.GetChatPinnedStories.GetChatPinnedStories
 instance GHC.Classes.Eq TD.Query.GetChatPinnedStories.GetChatPinnedStories
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatPinnedStories.GetChatPinnedStories
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatPinnedStories.GetChatPinnedStories
+
+module TD.Query.GetChatRevenueStatistics
+
+-- | Returns detailed revenue statistics about a chat. Currently, this
+--   method can be used only for channels if
+--   supergroupFullInfo.can_get_revenue_statistics == true. Returns
+--   <a>ChatRevenueStatistics</a>
+data GetChatRevenueStatistics
+GetChatRevenueStatistics :: Maybe Int -> Maybe Bool -> GetChatRevenueStatistics
+
+-- | Chat identifier
+[chat_id] :: GetChatRevenueStatistics -> Maybe Int
+
+-- | Pass true if a dark theme is used by the application
+[is_dark] :: GetChatRevenueStatistics -> Maybe Bool
+defaultGetChatRevenueStatistics :: GetChatRevenueStatistics
+instance GHC.Show.Show TD.Query.GetChatRevenueStatistics.GetChatRevenueStatistics
+instance GHC.Classes.Eq TD.Query.GetChatRevenueStatistics.GetChatRevenueStatistics
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatRevenueStatistics.GetChatRevenueStatistics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueStatistics.GetChatRevenueStatistics
+
+module TD.Query.GetChatRevenueTransactions
+
+-- | Returns list of revenue transactions for a chat. Currently, this
+--   method can be used only for channels if
+--   supergroupFullInfo.can_get_revenue_statistics == true. Returns
+--   <a>ChatRevenueTransactions</a>
+data GetChatRevenueTransactions
+GetChatRevenueTransactions :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatRevenueTransactions
+
+-- | Chat identifier
+[chat_id] :: GetChatRevenueTransactions -> Maybe Int
+
+-- | Number of transactions to skip
+[offset] :: GetChatRevenueTransactions -> Maybe Int
+
+-- | The maximum number of transactions to be returned; up to 200
+[limit] :: GetChatRevenueTransactions -> Maybe Int
+defaultGetChatRevenueTransactions :: GetChatRevenueTransactions
+instance GHC.Show.Show TD.Query.GetChatRevenueTransactions.GetChatRevenueTransactions
+instance GHC.Classes.Eq TD.Query.GetChatRevenueTransactions.GetChatRevenueTransactions
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatRevenueTransactions.GetChatRevenueTransactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueTransactions.GetChatRevenueTransactions
+
+module TD.Query.GetChatRevenueWithdrawalUrl
+
+-- | Returns URL for chat revenue withdrawal; requires owner privileges in
+--   the chat. Currently, this method can be used only for channels if
+--   supergroupFullInfo.can_get_revenue_statistics == true and
+--   getOption("can_withdraw_chat_revenue"). Returns <a>HttpUrl</a>
+data GetChatRevenueWithdrawalUrl
+GetChatRevenueWithdrawalUrl :: Maybe Int -> Maybe Text -> GetChatRevenueWithdrawalUrl
+
+-- | Chat identifier
+[chat_id] :: GetChatRevenueWithdrawalUrl -> Maybe Int
+
+-- | The 2-step verification password of the current user
+[password] :: GetChatRevenueWithdrawalUrl -> Maybe Text
+defaultGetChatRevenueWithdrawalUrl :: GetChatRevenueWithdrawalUrl
+instance GHC.Show.Show TD.Query.GetChatRevenueWithdrawalUrl.GetChatRevenueWithdrawalUrl
+instance GHC.Classes.Eq TD.Query.GetChatRevenueWithdrawalUrl.GetChatRevenueWithdrawalUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatRevenueWithdrawalUrl.GetChatRevenueWithdrawalUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueWithdrawalUrl.GetChatRevenueWithdrawalUrl
 
 module TD.Query.GetChatScheduledMessages
 
@@ -24404,6 +24964,17 @@ instance GHC.Classes.Eq TD.Query.GetGameHighScores.GetGameHighScores
 instance TD.Lib.Internal.ShortShow TD.Query.GetGameHighScores.GetGameHighScores
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGameHighScores.GetGameHighScores
 
+module TD.Query.GetGreetingStickers
+
+-- | Returns greeting stickers from regular sticker sets that can be used
+--   for the start page of other users. Returns <a>Stickers</a>
+data GetGreetingStickers
+GetGreetingStickers :: GetGreetingStickers
+instance GHC.Show.Show TD.Query.GetGreetingStickers.GetGreetingStickers
+instance GHC.Classes.Eq TD.Query.GetGreetingStickers.GetGreetingStickers
+instance TD.Lib.Internal.ShortShow TD.Query.GetGreetingStickers.GetGreetingStickers
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGreetingStickers.GetGreetingStickers
+
 module TD.Query.GetGroupCall
 
 -- | Returns information about a group call. Returns <a>GroupCall</a>
@@ -24622,7 +25193,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetInternalLink.GetInternalLink
 
 module TD.Query.GetInternalLinkType
 
--- | Returns information about the type of an internal link. Returns a 404
+-- | Returns information about the type of internal link. Returns a 404
 --   error if the link is not internal. Can be called before authorization.
 --   Returns <a>InternalLinkType</a>
 data GetInternalLinkType
@@ -26326,7 +26897,7 @@ GetSupergroupMembers :: Maybe Int -> Maybe SupergroupMembersFilter -> Maybe Int 
 -- | Number of users to skip
 [offset] :: GetSupergroupMembers -> Maybe Int
 
--- | The maximum number of users be returned; up to 200
+-- | The maximum number of users to be returned; up to 200
 [limit] :: GetSupergroupMembers -> Maybe Int
 defaultGetSupergroupMembers :: GetSupergroupMembers
 instance GHC.Show.Show TD.Query.GetSupergroupMembers.GetSupergroupMembers
@@ -27030,7 +27601,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenChat.OpenChat
 module TD.Query.OpenChatSimilarChat
 
 -- | Informs TDLib that a chat was opened from the list of similar chats.
---   The method is independent from openChat and closeChat methods. Returns
+--   The method is independent of openChat and closeChat methods. Returns
 --   <a>Ok</a>
 data OpenChatSimilarChat
 OpenChatSimilarChat :: Maybe Int -> Maybe Int -> OpenChatSimilarChat
@@ -27488,6 +28059,31 @@ instance GHC.Classes.Eq TD.Query.ReadFilePart.ReadFilePart
 instance TD.Lib.Internal.ShortShow TD.Query.ReadFilePart.ReadFilePart
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadFilePart.ReadFilePart
 
+module TD.Query.ReaddQuickReplyShortcutMessages
+
+-- | Readds quick reply messages which failed to add. Can be called only
+--   for messages for which messageSendingStateFailed.can_retry is true and
+--   after specified in messageSendingStateFailed.retry_after time passed.
+--   If a message is readded, the corresponding failed to send message is
+--   deleted. Returns the sent messages in the same order as the message
+--   identifiers passed in message_ids. If a message can't be readded, null
+--   will be returned instead of the message. Returns
+--   <a>QuickReplyMessages</a>
+data ReaddQuickReplyShortcutMessages
+ReaddQuickReplyShortcutMessages :: Maybe Text -> Maybe [Int] -> ReaddQuickReplyShortcutMessages
+
+-- | Name of the target shortcut
+[shortcut_name] :: ReaddQuickReplyShortcutMessages -> Maybe Text
+
+-- | Identifiers of the quick reply messages to readd. Message identifiers
+--   must be in a strictly increasing order
+[message_ids] :: ReaddQuickReplyShortcutMessages -> Maybe [Int]
+defaultReaddQuickReplyShortcutMessages :: ReaddQuickReplyShortcutMessages
+instance GHC.Show.Show TD.Query.ReaddQuickReplyShortcutMessages.ReaddQuickReplyShortcutMessages
+instance GHC.Classes.Eq TD.Query.ReaddQuickReplyShortcutMessages.ReaddQuickReplyShortcutMessages
+instance TD.Lib.Internal.ShortShow TD.Query.ReaddQuickReplyShortcutMessages.ReaddQuickReplyShortcutMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReaddQuickReplyShortcutMessages.ReaddQuickReplyShortcutMessages
+
 module TD.Query.RecognizeSpeech
 
 -- | Recognizes speech in a video note or a voice note message. The message
@@ -27615,6 +28211,20 @@ instance GHC.Show.Show TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDo
 instance GHC.Classes.Eq TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDownloads
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDownloads
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDownloads
+
+module TD.Query.RemoveBusinessConnectedBotFromChat
+
+-- | Removes the connected business bot from a specific chat by adding the
+--   chat to businessRecipients.excluded_chat_ids. Returns <a>Ok</a>
+data RemoveBusinessConnectedBotFromChat
+RemoveBusinessConnectedBotFromChat :: Maybe Int -> RemoveBusinessConnectedBotFromChat
+
+-- | Chat identifier
+[chat_id] :: RemoveBusinessConnectedBotFromChat -> Maybe Int
+instance GHC.Show.Show TD.Query.RemoveBusinessConnectedBotFromChat.RemoveBusinessConnectedBotFromChat
+instance GHC.Classes.Eq TD.Query.RemoveBusinessConnectedBotFromChat.RemoveBusinessConnectedBotFromChat
+instance TD.Lib.Internal.ShortShow TD.Query.RemoveBusinessConnectedBotFromChat.RemoveBusinessConnectedBotFromChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveBusinessConnectedBotFromChat.RemoveBusinessConnectedBotFromChat
 
 module TD.Query.RemoveChatActionBar
 
@@ -28239,20 +28849,6 @@ instance GHC.Classes.Eq TD.Query.ResendAuthenticationCode.ResendAuthenticationCo
 instance TD.Lib.Internal.ShortShow TD.Query.ResendAuthenticationCode.ResendAuthenticationCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendAuthenticationCode.ResendAuthenticationCode
 
-module TD.Query.ResendChangePhoneNumberCode
-
--- | Resends the authentication code sent to confirm a new phone number for
---   the current user. Works only if the previously received
---   authenticationCodeInfo next_code_type was not null and the
---   server-specified timeout has passed. Returns
---   <a>AuthenticationCodeInfo</a>
-data ResendChangePhoneNumberCode
-ResendChangePhoneNumberCode :: ResendChangePhoneNumberCode
-instance GHC.Show.Show TD.Query.ResendChangePhoneNumberCode.ResendChangePhoneNumberCode
-instance GHC.Classes.Eq TD.Query.ResendChangePhoneNumberCode.ResendChangePhoneNumberCode
-instance TD.Lib.Internal.ShortShow TD.Query.ResendChangePhoneNumberCode.ResendChangePhoneNumberCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendChangePhoneNumberCode.ResendChangePhoneNumberCode
-
 module TD.Query.ResendEmailAddressVerificationCode
 
 -- | Resends the code to verify an email address to be added to a user's
@@ -28304,27 +28900,18 @@ instance GHC.Classes.Eq TD.Query.ResendMessages.ResendMessages
 instance TD.Lib.Internal.ShortShow TD.Query.ResendMessages.ResendMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendMessages.ResendMessages
 
-module TD.Query.ResendPhoneNumberConfirmationCode
+module TD.Query.ResendPhoneNumberCode
 
--- | Resends phone number confirmation code. Returns
+-- | Resends the authentication code sent to a phone number. Works only if
+--   the previously received authenticationCodeInfo next_code_type was not
+--   null and the server-specified timeout has passed. Returns
 --   <a>AuthenticationCodeInfo</a>
-data ResendPhoneNumberConfirmationCode
-ResendPhoneNumberConfirmationCode :: ResendPhoneNumberConfirmationCode
-instance GHC.Show.Show TD.Query.ResendPhoneNumberConfirmationCode.ResendPhoneNumberConfirmationCode
-instance GHC.Classes.Eq TD.Query.ResendPhoneNumberConfirmationCode.ResendPhoneNumberConfirmationCode
-instance TD.Lib.Internal.ShortShow TD.Query.ResendPhoneNumberConfirmationCode.ResendPhoneNumberConfirmationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendPhoneNumberConfirmationCode.ResendPhoneNumberConfirmationCode
-
-module TD.Query.ResendPhoneNumberVerificationCode
-
--- | Resends the code to verify a phone number to be added to a user's
---   Telegram Passport. Returns <a>AuthenticationCodeInfo</a>
-data ResendPhoneNumberVerificationCode
-ResendPhoneNumberVerificationCode :: ResendPhoneNumberVerificationCode
-instance GHC.Show.Show TD.Query.ResendPhoneNumberVerificationCode.ResendPhoneNumberVerificationCode
-instance GHC.Classes.Eq TD.Query.ResendPhoneNumberVerificationCode.ResendPhoneNumberVerificationCode
-instance TD.Lib.Internal.ShortShow TD.Query.ResendPhoneNumberVerificationCode.ResendPhoneNumberVerificationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendPhoneNumberVerificationCode.ResendPhoneNumberVerificationCode
+data ResendPhoneNumberCode
+ResendPhoneNumberCode :: ResendPhoneNumberCode
+instance GHC.Show.Show TD.Query.ResendPhoneNumberCode.ResendPhoneNumberCode
+instance GHC.Classes.Eq TD.Query.ResendPhoneNumberCode.ResendPhoneNumberCode
+instance TD.Lib.Internal.ShortShow TD.Query.ResendPhoneNumberCode.ResendPhoneNumberCode
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendPhoneNumberCode.ResendPhoneNumberCode
 
 module TD.Query.ResendRecoveryEmailAddressCode
 
@@ -29495,47 +30082,45 @@ instance GHC.Classes.Eq TD.Query.SendPaymentForm.SendPaymentForm
 instance TD.Lib.Internal.ShortShow TD.Query.SendPaymentForm.SendPaymentForm
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPaymentForm.SendPaymentForm
 
-module TD.Query.SendPhoneNumberConfirmationCode
+module TD.Query.SendPhoneNumberCode
 
--- | Sends phone number confirmation code to handle links of the type
---   internalLinkTypePhoneNumberConfirmation. Returns
---   <a>AuthenticationCodeInfo</a>
-data SendPhoneNumberConfirmationCode
-SendPhoneNumberConfirmationCode :: Maybe Text -> Maybe Text -> Maybe PhoneNumberAuthenticationSettings -> SendPhoneNumberConfirmationCode
+-- | Sends a code to the specified phone number. Aborts previous phone
+--   number verification if there was one. On success, returns information
+--   about the sent code. Returns <a>AuthenticationCodeInfo</a>
+data SendPhoneNumberCode
+SendPhoneNumberCode :: Maybe Text -> Maybe PhoneNumberAuthenticationSettings -> Maybe PhoneNumberCodeType -> SendPhoneNumberCode
 
--- | Hash value from the link
-[hash] :: SendPhoneNumberConfirmationCode -> Maybe Text
-
--- | Phone number value from the link
-[phone_number] :: SendPhoneNumberConfirmationCode -> Maybe Text
+-- | The phone number, in international format
+[phone_number] :: SendPhoneNumberCode -> Maybe Text
 
 -- | Settings for the authentication of the user's phone number; pass null
 --   to use default settings
-[settings] :: SendPhoneNumberConfirmationCode -> Maybe PhoneNumberAuthenticationSettings
-defaultSendPhoneNumberConfirmationCode :: SendPhoneNumberConfirmationCode
-instance GHC.Show.Show TD.Query.SendPhoneNumberConfirmationCode.SendPhoneNumberConfirmationCode
-instance GHC.Classes.Eq TD.Query.SendPhoneNumberConfirmationCode.SendPhoneNumberConfirmationCode
-instance TD.Lib.Internal.ShortShow TD.Query.SendPhoneNumberConfirmationCode.SendPhoneNumberConfirmationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberConfirmationCode.SendPhoneNumberConfirmationCode
+[settings] :: SendPhoneNumberCode -> Maybe PhoneNumberAuthenticationSettings
 
-module TD.Query.SendPhoneNumberVerificationCode
+-- | Type of the request for which the code is sent
+[_type] :: SendPhoneNumberCode -> Maybe PhoneNumberCodeType
+defaultSendPhoneNumberCode :: SendPhoneNumberCode
+instance GHC.Show.Show TD.Query.SendPhoneNumberCode.SendPhoneNumberCode
+instance GHC.Classes.Eq TD.Query.SendPhoneNumberCode.SendPhoneNumberCode
+instance TD.Lib.Internal.ShortShow TD.Query.SendPhoneNumberCode.SendPhoneNumberCode
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberCode.SendPhoneNumberCode
 
--- | Sends a code to verify a phone number to be added to a user's Telegram
---   Passport. Returns <a>AuthenticationCodeInfo</a>
-data SendPhoneNumberVerificationCode
-SendPhoneNumberVerificationCode :: Maybe Text -> Maybe PhoneNumberAuthenticationSettings -> SendPhoneNumberVerificationCode
+module TD.Query.SendPhoneNumberFirebaseSms
 
--- | The phone number of the user, in international format
-[phone_number] :: SendPhoneNumberVerificationCode -> Maybe Text
+-- | Sends Firebase Authentication SMS to the specified phone number. Works
+--   only when received a code of the type
+--   authenticationCodeTypeFirebaseAndroid or
+--   authenticationCodeTypeFirebaseIos. Returns <a>Ok</a>
+data SendPhoneNumberFirebaseSms
+SendPhoneNumberFirebaseSms :: Maybe Text -> SendPhoneNumberFirebaseSms
 
--- | Settings for the authentication of the user's phone number; pass null
---   to use default settings
-[settings] :: SendPhoneNumberVerificationCode -> Maybe PhoneNumberAuthenticationSettings
-defaultSendPhoneNumberVerificationCode :: SendPhoneNumberVerificationCode
-instance GHC.Show.Show TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
-instance GHC.Classes.Eq TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
-instance TD.Lib.Internal.ShortShow TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberVerificationCode.SendPhoneNumberVerificationCode
+-- | SafetyNet Attestation API token for the Android application, or secret
+--   from push notification for the iOS application
+[token] :: SendPhoneNumberFirebaseSms -> Maybe Text
+instance GHC.Show.Show TD.Query.SendPhoneNumberFirebaseSms.SendPhoneNumberFirebaseSms
+instance GHC.Classes.Eq TD.Query.SendPhoneNumberFirebaseSms.SendPhoneNumberFirebaseSms
+instance TD.Lib.Internal.ShortShow TD.Query.SendPhoneNumberFirebaseSms.SendPhoneNumberFirebaseSms
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberFirebaseSms.SendPhoneNumberFirebaseSms
 
 module TD.Query.SendQuickReplyShortcutMessages
 
@@ -29964,20 +30549,6 @@ instance GHC.Classes.Eq TD.Query.SetBusinessGreetingMessageSettings.SetBusinessG
 instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessGreetingMessageSettings.SetBusinessGreetingMessageSettings
 
-module TD.Query.SetBusinessIntro
-
--- | Changes the business intro of the current user. Requires Telegram
---   Business subscription. Returns <a>Ok</a>
-data SetBusinessIntro
-SetBusinessIntro :: Maybe InputBusinessIntro -> SetBusinessIntro
-
--- | The new intro of the business; pass null to remove the intro
-[intro] :: SetBusinessIntro -> Maybe InputBusinessIntro
-instance GHC.Show.Show TD.Query.SetBusinessIntro.SetBusinessIntro
-instance GHC.Classes.Eq TD.Query.SetBusinessIntro.SetBusinessIntro
-instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessIntro.SetBusinessIntro
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessIntro.SetBusinessIntro
-
 module TD.Query.SetBusinessLocation
 
 -- | Changes the business location of the current user. Requires Telegram
@@ -30006,6 +30577,21 @@ instance GHC.Show.Show TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
 instance GHC.Classes.Eq TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
 instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessOpeningHours.SetBusinessOpeningHours
+
+module TD.Query.SetBusinessStartPage
+
+-- | Changes the business start page of the current user. Requires Telegram
+--   Business subscription. Returns <a>Ok</a>
+data SetBusinessStartPage
+SetBusinessStartPage :: Maybe InputBusinessStartPage -> SetBusinessStartPage
+
+-- | The new start page of the business; pass null to remove custom start
+--   page
+[start_page] :: SetBusinessStartPage -> Maybe InputBusinessStartPage
+instance GHC.Show.Show TD.Query.SetBusinessStartPage.SetBusinessStartPage
+instance GHC.Classes.Eq TD.Query.SetBusinessStartPage.SetBusinessStartPage
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessStartPage.SetBusinessStartPage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessStartPage.SetBusinessStartPage
 
 module TD.Query.SetChatAccentColor
 
@@ -32192,6 +32778,25 @@ instance GHC.Classes.Eq TD.Query.ToggleBotUsernameIsActive.ToggleBotUsernameIsAc
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleBotUsernameIsActive.ToggleBotUsernameIsActive
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleBotUsernameIsActive.ToggleBotUsernameIsActive
 
+module TD.Query.ToggleBusinessConnectedBotChatIsPaused
+
+-- | Pauses or resumes the connected business bot in a specific chat.
+--   Returns <a>Ok</a>
+data ToggleBusinessConnectedBotChatIsPaused
+ToggleBusinessConnectedBotChatIsPaused :: Maybe Int -> Maybe Bool -> ToggleBusinessConnectedBotChatIsPaused
+
+-- | Chat identifier
+[chat_id] :: ToggleBusinessConnectedBotChatIsPaused -> Maybe Int
+
+-- | Pass true to pause the connected bot in the chat; pass false to resume
+--   the bot
+[is_paused] :: ToggleBusinessConnectedBotChatIsPaused -> Maybe Bool
+defaultToggleBusinessConnectedBotChatIsPaused :: ToggleBusinessConnectedBotChatIsPaused
+instance GHC.Show.Show TD.Query.ToggleBusinessConnectedBotChatIsPaused.ToggleBusinessConnectedBotChatIsPaused
+instance GHC.Classes.Eq TD.Query.ToggleBusinessConnectedBotChatIsPaused.ToggleBusinessConnectedBotChatIsPaused
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleBusinessConnectedBotChatIsPaused.ToggleBusinessConnectedBotChatIsPaused
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleBusinessConnectedBotChatIsPaused.ToggleBusinessConnectedBotChatIsPaused
+
 module TD.Query.ToggleChatDefaultDisableNotification
 
 -- | Changes the value of the default disable_notification parameter, used
@@ -32610,6 +33215,26 @@ instance GHC.Show.Show TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
 instance GHC.Classes.Eq TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
+
+module TD.Query.ToggleSupergroupCanHaveSponsoredMessages
+
+-- | Toggles whether sponsored messages are shown in the channel chat;
+--   requires owner privileges in the channel. The chat must have at least
+--   chatBoostFeatures.min_sponsored_message_disable_boost_level boost
+--   level to disable sponsored messages. Returns <a>Ok</a>
+data ToggleSupergroupCanHaveSponsoredMessages
+ToggleSupergroupCanHaveSponsoredMessages :: Maybe Int -> Maybe Bool -> ToggleSupergroupCanHaveSponsoredMessages
+
+-- | The identifier of the channel
+[supergroup_id] :: ToggleSupergroupCanHaveSponsoredMessages -> Maybe Int
+
+-- | The new value of can_have_sponsored_messages
+[can_have_sponsored_messages] :: ToggleSupergroupCanHaveSponsoredMessages -> Maybe Bool
+defaultToggleSupergroupCanHaveSponsoredMessages :: ToggleSupergroupCanHaveSponsoredMessages
+instance GHC.Show.Show TD.Query.ToggleSupergroupCanHaveSponsoredMessages.ToggleSupergroupCanHaveSponsoredMessages
+instance GHC.Classes.Eq TD.Query.ToggleSupergroupCanHaveSponsoredMessages.ToggleSupergroupCanHaveSponsoredMessages
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleSupergroupCanHaveSponsoredMessages.ToggleSupergroupCanHaveSponsoredMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupCanHaveSponsoredMessages.ToggleSupergroupCanHaveSponsoredMessages
 
 module TD.Query.ToggleSupergroupHasAggressiveAntiSpamEnabled
 
