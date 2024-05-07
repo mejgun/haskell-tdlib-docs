@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.30.0
+@version 2.0.31.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -900,6 +900,13 @@ SuggestedActionGiftPremiumForChristmas :: SuggestedAction
 
 -- | Suggests the user to set birthdate
 SuggestedActionSetBirthdate :: SuggestedAction
+
+-- | Suggests the user to extend their expiring Telegram Premium
+--   subscription
+SuggestedActionExtendPremium :: Maybe Text -> SuggestedAction
+
+-- | A URL for managing Telegram Premium subscription
+[manage_premium_subscription_url] :: SuggestedAction -> Maybe Text
 instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
 instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
 instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
@@ -1894,6 +1901,50 @@ instance GHC.Classes.Eq TD.Data.SavedMessagesTags.SavedMessagesTags
 instance TD.Lib.Internal.ShortShow TD.Data.SavedMessagesTags.SavedMessagesTags
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SavedMessagesTags.SavedMessagesTags
 
+module TD.Data.ReactionNotificationSource
+
+-- | Describes sources of reactions for which notifications will be shown
+data ReactionNotificationSource
+
+-- | Notifications for reactions are disabled
+ReactionNotificationSourceNone :: ReactionNotificationSource
+
+-- | Notifications for reactions are shown only for reactions from contacts
+ReactionNotificationSourceContacts :: ReactionNotificationSource
+
+-- | Notifications for reactions are shown for all reactions
+ReactionNotificationSourceAll :: ReactionNotificationSource
+instance GHC.Show.Show TD.Data.ReactionNotificationSource.ReactionNotificationSource
+instance GHC.Classes.Eq TD.Data.ReactionNotificationSource.ReactionNotificationSource
+instance TD.Lib.Internal.ShortShow TD.Data.ReactionNotificationSource.ReactionNotificationSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReactionNotificationSource.ReactionNotificationSource
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReactionNotificationSource.ReactionNotificationSource
+
+module TD.Data.ReactionNotificationSettings
+data ReactionNotificationSettings
+
+-- | Contains information about notification settings for reactions
+ReactionNotificationSettings :: Maybe ReactionNotificationSource -> Maybe ReactionNotificationSource -> Maybe Int -> Maybe Bool -> ReactionNotificationSettings
+
+-- | Source of message reactions for which notifications are shown
+[message_reaction_source] :: ReactionNotificationSettings -> Maybe ReactionNotificationSource
+
+-- | Source of story reactions for which notifications are shown
+[story_reaction_source] :: ReactionNotificationSettings -> Maybe ReactionNotificationSource
+
+-- | Identifier of the notification sound to be played; 0 if sound is
+--   disabled
+[sound_id] :: ReactionNotificationSettings -> Maybe Int
+
+-- | True, if reaction sender and emoji must be displayed in notifications
+[show_preview] :: ReactionNotificationSettings -> Maybe Bool
+defaultReactionNotificationSettings :: ReactionNotificationSettings
+instance GHC.Show.Show TD.Data.ReactionNotificationSettings.ReactionNotificationSettings
+instance GHC.Classes.Eq TD.Data.ReactionNotificationSettings.ReactionNotificationSettings
+instance TD.Lib.Internal.ShortShow TD.Data.ReactionNotificationSettings.ReactionNotificationSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReactionNotificationSettings.ReactionNotificationSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReactionNotificationSettings.ReactionNotificationSettings
+
 module TD.Data.PushReceiverId
 data PushReceiverId
 
@@ -2570,32 +2621,6 @@ instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumFeature.PremiumFeature
-
-module TD.Data.PollOption
-data PollOption
-
--- | Describes one answer option of a poll
-PollOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> PollOption
-
--- | Option text; 1-100 characters
-[text] :: PollOption -> Maybe Text
-
--- | Number of voters for this option, available only for closed or voted
---   polls
-[voter_count] :: PollOption -> Maybe Int
-
--- | The percentage of votes for this option; 0-100
-[vote_percentage] :: PollOption -> Maybe Int
-
--- | True, if the option was chosen by the user
-[is_chosen] :: PollOption -> Maybe Bool
-
--- | True, if the option is being chosen by a pending setPollAnswer request
-[is_being_chosen] :: PollOption -> Maybe Bool
-instance GHC.Show.Show TD.Data.PollOption.PollOption
-instance GHC.Classes.Eq TD.Data.PollOption.PollOption
-instance TD.Lib.Internal.ShortShow TD.Data.PollOption.PollOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollOption.PollOption
 
 module TD.Data.Point
 data Point
@@ -5625,17 +5650,44 @@ instance TD.Lib.Internal.ShortShow TD.Data.PollType.PollType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollType.PollType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PollType.PollType
 
+module TD.Data.PollOption
+data PollOption
+
+-- | Describes one answer option of a poll
+PollOption :: Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> PollOption
+
+-- | Option text; 1-100 characters. Only custom emoji entities are allowed
+[text] :: PollOption -> Maybe FormattedText
+
+-- | Number of voters for this option, available only for closed or voted
+--   polls
+[voter_count] :: PollOption -> Maybe Int
+
+-- | The percentage of votes for this option; 0-100
+[vote_percentage] :: PollOption -> Maybe Int
+
+-- | True, if the option was chosen by the user
+[is_chosen] :: PollOption -> Maybe Bool
+
+-- | True, if the option is being chosen by a pending setPollAnswer request
+[is_being_chosen] :: PollOption -> Maybe Bool
+instance GHC.Show.Show TD.Data.PollOption.PollOption
+instance GHC.Classes.Eq TD.Data.PollOption.PollOption
+instance TD.Lib.Internal.ShortShow TD.Data.PollOption.PollOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollOption.PollOption
+
 module TD.Data.Poll
 data Poll
 
 -- | Describes a poll
-Poll :: Maybe Int -> Maybe Text -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Poll
+Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Poll
 
 -- | Unique poll identifier
 [_id] :: Poll -> Maybe Int
 
--- | Poll question; 1-300 characters
-[question] :: Poll -> Maybe Text
+-- | Poll question; 1-300 characters. Only custom emoji entities are
+--   allowed
+[question] :: Poll -> Maybe FormattedText
 
 -- | List of poll answer options
 [options] :: Poll -> Maybe [PollOption]
@@ -5798,7 +5850,7 @@ module TD.Data.PhoneNumberAuthenticationSettings
 data PhoneNumberAuthenticationSettings
 
 -- | Contains settings for the authentication of the user's phone number
-PhoneNumberAuthenticationSettings :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FirebaseAuthenticationSettings -> Maybe [Text] -> PhoneNumberAuthenticationSettings
+PhoneNumberAuthenticationSettings :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FirebaseAuthenticationSettings -> Maybe [Text] -> PhoneNumberAuthenticationSettings
 
 -- | Pass true if the authentication code may be sent via a flash call to
 --   the specified phone number
@@ -5811,6 +5863,10 @@ PhoneNumberAuthenticationSettings :: Maybe Bool -> Maybe Bool -> Maybe Bool -> M
 -- | Pass true if the authenticated phone number is used on the current
 --   device
 [is_current_phone_number] :: PhoneNumberAuthenticationSettings -> Maybe Bool
+
+-- | Pass true if there is a SIM card in the current device, but it is not
+--   possible to check whether phone number matches
+[has_unknown_phone_number] :: PhoneNumberAuthenticationSettings -> Maybe Bool
 
 -- | For official applications only. True, if the application can use
 --   Android SMS Retriever API (requires Google Play Services &gt;= 10.2)
@@ -6348,7 +6404,7 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 
 -- | True, if the story is saved in the sender's profile and will be
 --   available there after expiration
-[is_pinned] :: Story -> Maybe Bool
+[is_posted_to_chat_page] :: Story -> Maybe Bool
 
 -- | True, if the story is visible only for the current user
 [is_visible_only_for_self] :: Story -> Maybe Bool
@@ -6366,8 +6422,8 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 -- | True, if the story can be replied in the chat with the story sender
 [can_be_replied] :: Story -> Maybe Bool
 
--- | True, if the story's is_pinned value can be changed
-[can_toggle_is_pinned] :: Story -> Maybe Bool
+-- | True, if the story's is_posted_to_chat_page value can be changed
+[can_toggle_is_posted_to_chat_page] :: Story -> Maybe Bool
 
 -- | True, if the story statistics are available through getStoryStatistics
 [can_get_statistics] :: Story -> Maybe Bool
@@ -6413,13 +6469,17 @@ module TD.Data.Stories
 data Stories
 
 -- | Represents a list of stories
-Stories :: Maybe Int -> Maybe [Story] -> Stories
+Stories :: Maybe Int -> Maybe [Story] -> Maybe [Int] -> Stories
 
 -- | Approximate total number of stories found
 [total_count] :: Stories -> Maybe Int
 
 -- | The list of stories
 [stories] :: Stories -> Maybe [Story]
+
+-- | Identifiers of the pinned stories; returned only in
+--   getChatPostedToChatPageStories with from_story_id == 0
+[pinned_story_ids] :: Stories -> Maybe [Int]
 instance GHC.Show.Show TD.Data.Stories.Stories
 instance GHC.Classes.Eq TD.Data.Stories.Stories
 instance TD.Lib.Internal.ShortShow TD.Data.Stories.Stories
@@ -6498,6 +6558,26 @@ instance GHC.Show.Show TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance GHC.Classes.Eq TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
+
+module TD.Data.MessageSponsor
+data MessageSponsor
+
+-- | Information about the sponsor of a message
+MessageSponsor :: Maybe Text -> Maybe Photo -> Maybe Text -> MessageSponsor
+
+-- | URL of the sponsor to be opened when the message is clicked
+[url] :: MessageSponsor -> Maybe Text
+
+-- | Photo of the sponsor; may be null if must not be shown
+[photo] :: MessageSponsor -> Maybe Photo
+
+-- | Additional optional information about the sponsor to be shown along
+--   with the message
+[info] :: MessageSponsor -> Maybe Text
+instance GHC.Show.Show TD.Data.MessageSponsor.MessageSponsor
+instance GHC.Classes.Eq TD.Data.MessageSponsor.MessageSponsor
+instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsor.MessageSponsor
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsor.MessageSponsor
 
 module TD.Data.MessageExtendedMedia
 
@@ -6678,9 +6758,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SpeechRecognitionResult.Spee
 module TD.Data.VoiceNote
 data VoiceNote
 
--- | Describes a voice note. The voice note must be encoded with the Opus
---   codec, and stored inside an OGG container. Voice notes can have only a
---   single audio channel
+-- | Describes a voice note
 VoiceNote :: Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe SpeechRecognitionResult -> Maybe File -> VoiceNote
 
 -- | Duration of the voice note, in seconds; as defined by the sender
@@ -6689,7 +6767,9 @@ VoiceNote :: Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe SpeechRecognit
 -- | A waveform representation of the voice note in 5-bit format
 [waveform] :: VoiceNote -> Maybe ByteString
 
--- | MIME type of the file; as defined by the sender
+-- | MIME type of the file; as defined by the sender. Usually, one of
+--   "audio<i>ogg" for Opus in an OGG container, "audio</i>mpeg" for an MP3
+--   audio, or "audio/mp4" for an M4A audio
 [mime_type] :: VoiceNote -> Maybe Text
 
 -- | Result of speech recognition in the voice note; may be null
@@ -6984,8 +7064,13 @@ module TD.Data.EmojiCategoryType
 -- | Describes type of emoji category
 data EmojiCategoryType
 
--- | The category must be used by default
+-- | The category must be used by default (e.g., for custom emoji or
+--   animation search)
 EmojiCategoryTypeDefault :: EmojiCategoryType
+
+-- | The category must be used by default for regular sticker selection. It
+--   may contain greeting emoji category and Premium stickers
+EmojiCategoryTypeRegularStickers :: EmojiCategoryType
 
 -- | The category must be used for emoji status selection
 EmojiCategoryTypeEmojiStatus :: EmojiCategoryType
@@ -6998,9 +7083,30 @@ instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategoryType.EmojiCategoryType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategoryType.EmojiCategoryType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.EmojiCategoryType.EmojiCategoryType
 
+module TD.Data.EmojiCategorySource
+
+-- | Describes source of stickers for an emoji category
+data EmojiCategorySource
+
+-- | The category contains a list of similar emoji to search for in
+--   getStickers and searchStickers for stickers, or getInlineQueryResults
+--   with the bot getOption("animation_search_bot_username") for animations
+EmojiCategorySourceSearch :: Maybe [Text] -> EmojiCategorySource
+
+-- | List of emojis for search for
+[emojis] :: EmojiCategorySource -> Maybe [Text]
+
+-- | The category contains Premium stickers that must be found by
+--   getPremiumStickers
+EmojiCategorySourcePremium :: EmojiCategorySource
+instance GHC.Show.Show TD.Data.EmojiCategorySource.EmojiCategorySource
+instance GHC.Classes.Eq TD.Data.EmojiCategorySource.EmojiCategorySource
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategorySource.EmojiCategorySource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategorySource.EmojiCategorySource
+
 module TD.Data.EmailAddressResetState
 
--- | Describes reset state of a email address
+-- | Describes reset state of an email address
 data EmailAddressResetState
 
 -- | Email address can be reset after the given period. Call
@@ -8022,7 +8128,9 @@ InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int ->
 -- | A voice note message
 InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> Maybe FormattedText -> Maybe MessageSelfDestructType -> InputMessageContent
 
--- | Voice note to be sent
+-- | Voice note to be sent. The voice note must be encoded with the Opus
+--   codec and stored inside an OGG container with a single audio channel,
+--   or be in MP3 or M4A format as regular audio
 [voice_note] :: InputMessageContent -> Maybe InputFile
 
 -- | Duration of the animation, in seconds
@@ -8045,7 +8153,8 @@ InputMessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int ->
 [location] :: InputMessageContent -> Maybe Location
 
 -- | Period for which the location can be updated, in seconds; must be
---   between 60 and 86400 for a live location and 0 otherwise
+--   between 60 and 86400 for a temporary live location, 0x7FFFFFFF for
+--   permanent live location, and 0 otherwise
 [live_period] :: InputMessageContent -> Maybe Int
 
 -- | For live locations, a direction in which the location moves, in
@@ -8131,13 +8240,17 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 
 -- | A message with a poll. Polls can't be sent to secret chats. Polls can
 --   be sent only to a private chat with a bot
-InputMessagePoll :: Maybe Text -> Maybe [Text] -> Maybe Bool -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
+InputMessagePoll :: Maybe FormattedText -> Maybe [FormattedText] -> Maybe Bool -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
 
--- | Poll question; 1-255 characters (up to 300 characters for bots)
-[question] :: InputMessageContent -> Maybe Text
+-- | Poll question; 1-255 characters (up to 300 characters for bots). Only
+--   custom emoji entities are allowed to be added and only by Premium
+--   users
+[question] :: InputMessageContent -> Maybe FormattedText
 
--- | List of poll answer options, 2-10 strings 1-100 characters each
-[options] :: InputMessageContent -> Maybe [Text]
+-- | List of poll answer options, 2-10 strings 1-100 characters each. Only
+--   custom emoji entities are allowed to be added and only by Premium
+--   users
+[options] :: InputMessageContent -> Maybe [FormattedText]
 
 -- | True, if the poll voters are anonymous. Non-anonymous polls can't be
 --   sent or forwarded to channels
@@ -8619,9 +8732,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiReaction.EmojiReaction
 module TD.Data.EmojiCategory
 data EmojiCategory
 
--- | Contains a list of similar emoji to search for in getStickers and
---   searchStickers
-EmojiCategory :: Maybe Text -> Maybe Sticker -> Maybe [Text] -> EmojiCategory
+-- | Describes an emoji category
+EmojiCategory :: Maybe Text -> Maybe Sticker -> Maybe EmojiCategorySource -> Maybe Bool -> EmojiCategory
 
 -- | Name of the category
 [name] :: EmojiCategory -> Maybe Text
@@ -8629,8 +8741,12 @@ EmojiCategory :: Maybe Text -> Maybe Sticker -> Maybe [Text] -> EmojiCategory
 -- | Custom emoji sticker, which represents icon of the category
 [icon] :: EmojiCategory -> Maybe Sticker
 
--- | List of emojis in the category
-[emojis] :: EmojiCategory -> Maybe [Text]
+-- | Source of stickers for the emoji category
+[source] :: EmojiCategory -> Maybe EmojiCategorySource
+
+-- | True, if the category must be shown first when choosing a sticker for
+--   the start page
+[is_greeting] :: EmojiCategory -> Maybe Bool
 instance GHC.Show.Show TD.Data.EmojiCategory.EmojiCategory
 instance GHC.Classes.Eq TD.Data.EmojiCategory.EmojiCategory
 instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategory.EmojiCategory
@@ -9144,12 +9260,38 @@ instance GHC.Classes.Eq TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
 instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
 
+module TD.Data.ChatRevenueAmount
+data ChatRevenueAmount
+
+-- | Contains information about revenue earned from sponsored messages in a
+--   chat
+ChatRevenueAmount :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> ChatRevenueAmount
+
+-- | Cryptocurrency in which revenue is calculated
+[cryptocurrency] :: ChatRevenueAmount -> Maybe Text
+
+-- | Total amount of the cryptocurrency earned, in the smallest units of
+--   the cryptocurrency
+[total_amount] :: ChatRevenueAmount -> Maybe Int
+
+-- | Amount of the cryptocurrency that isn't withdrawn yet, in the smallest
+--   units of the cryptocurrency
+[balance_amount] :: ChatRevenueAmount -> Maybe Int
+
+-- | Amount of the cryptocurrency available for withdrawal, in the smallest
+--   units of the cryptocurrency
+[available_amount] :: ChatRevenueAmount -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatRevenueAmount.ChatRevenueAmount
+instance GHC.Classes.Eq TD.Data.ChatRevenueAmount.ChatRevenueAmount
+instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueAmount.ChatRevenueAmount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueAmount.ChatRevenueAmount
+
 module TD.Data.ChatRevenueStatistics
 data ChatRevenueStatistics
 
 -- | A detailed statistics about revenue earned from sponsored messages in
 --   a chat
-ChatRevenueStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> ChatRevenueStatistics
+ChatRevenueStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> Maybe ChatRevenueAmount -> Maybe Double -> ChatRevenueStatistics
 
 -- | A graph containing amount of revenue in a given hour
 [revenue_by_hour_graph] :: ChatRevenueStatistics -> Maybe StatisticalGraph
@@ -9157,22 +9299,11 @@ ChatRevenueStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> May
 -- | A graph containing amount of revenue
 [revenue_graph] :: ChatRevenueStatistics -> Maybe StatisticalGraph
 
--- | Cryptocurrency in which revenue is calculated
-[cryptocurrency] :: ChatRevenueStatistics -> Maybe Text
+-- | Amount of earned revenue
+[revenue_amount] :: ChatRevenueStatistics -> Maybe ChatRevenueAmount
 
--- | Total amount of the cryptocurrency earned, in the smallest units of
---   the cryptocurrency
-[cryptocurrency_total_amount] :: ChatRevenueStatistics -> Maybe Int
-
--- | Amount of the cryptocurrency that isn't withdrawn yet, in the smallest
---   units of the cryptocurrency
-[cryptocurrency_balance_amount] :: ChatRevenueStatistics -> Maybe Int
-
--- | Amount of the cryptocurrency available for withdrawal, in the smallest
---   units of the cryptocurrency
-[cryptocurrency_available_amount] :: ChatRevenueStatistics -> Maybe Int
-
--- | Current conversion rate of the cryptocurrency to USD
+-- | Current conversion rate of the cryptocurrency in which revenue is
+--   calculated to USD
 [usd_rate] :: ChatRevenueStatistics -> Maybe Double
 instance GHC.Show.Show TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
 instance GHC.Classes.Eq TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
@@ -10418,13 +10549,19 @@ module TD.Data.ChatAvailableReactions
 data ChatAvailableReactions
 
 -- | All reactions are available in the chat
-ChatAvailableReactionsAll :: ChatAvailableReactions
+ChatAvailableReactionsAll :: Maybe Int -> ChatAvailableReactions
+
+-- | The maximum allowed number of reactions per message; 1-11
+[max_reaction_count] :: ChatAvailableReactions -> Maybe Int
 
 -- | Only specific reactions are available in the chat
-ChatAvailableReactionsSome :: Maybe [ReactionType] -> ChatAvailableReactions
+ChatAvailableReactionsSome :: Maybe [ReactionType] -> Maybe Int -> ChatAvailableReactions
 
 -- | The list of reactions
 [reactions] :: ChatAvailableReactions -> Maybe [ReactionType]
+
+-- | The maximum allowed number of reactions per message; 1-11
+[max_reaction_count] :: ChatAvailableReactions -> Maybe Int
 instance GHC.Show.Show TD.Data.ChatAvailableReactions.ChatAvailableReactions
 instance GHC.Classes.Eq TD.Data.ChatAvailableReactions.ChatAvailableReactions
 instance TD.Lib.Internal.ShortShow TD.Data.ChatAvailableReactions.ChatAvailableReactions
@@ -10485,9 +10622,9 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 --   delete posted stories; applicable to supergroups and channels only
 [can_post_stories] :: ChatAdministratorRights -> Maybe Bool
 
--- | True, if the administrator can edit stories posted by other users, pin
---   stories and access story archive; applicable to supergroups and
---   channels only
+-- | True, if the administrator can edit stories posted by other users,
+--   post stories to the chat page, pin chat stories, and access story
+--   archive; applicable to supergroups and channels only
 [can_edit_stories] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can delete stories posted by other users;
@@ -11615,80 +11752,6 @@ instance GHC.Classes.Eq TD.Data.PremiumFeatures.PremiumFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeatures.PremiumFeatures
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeatures.PremiumFeatures
 
-module TD.Data.MessageSponsorType
-
--- | Describes type of message sponsor
-data MessageSponsorType
-
--- | The sponsor is a bot
-MessageSponsorTypeBot :: Maybe Int -> Maybe InternalLinkType -> MessageSponsorType
-
--- | User identifier of the bot
-[bot_user_id] :: MessageSponsorType -> Maybe Int
-
--- | An internal link to be opened when the sponsored message is clicked
-[link] :: MessageSponsorType -> Maybe InternalLinkType
-
--- | The sponsor is a web app
-MessageSponsorTypeWebApp :: Maybe Text -> Maybe InternalLinkType -> MessageSponsorType
-
--- | Web App title
-[web_app_title] :: MessageSponsorType -> Maybe Text
-
--- | An internal link to be opened when the sponsored message is clicked
-[link] :: MessageSponsorType -> Maybe InternalLinkType
-
--- | The sponsor is a public channel chat
-MessageSponsorTypePublicChannel :: Maybe Int -> Maybe InternalLinkType -> MessageSponsorType
-
--- | Sponsor chat identifier
-[chat_id] :: MessageSponsorType -> Maybe Int
-
--- | An internal link to be opened when the sponsored message is clicked
-[link] :: MessageSponsorType -> Maybe InternalLinkType
-
--- | The sponsor is a private channel chat
-MessageSponsorTypePrivateChannel :: Maybe Text -> Maybe Text -> MessageSponsorType
-
--- | Title of the chat
-[title] :: MessageSponsorType -> Maybe Text
-
--- | Invite link for the channel
-[invite_link] :: MessageSponsorType -> Maybe Text
-
--- | The sponsor is a website
-MessageSponsorTypeWebsite :: Maybe Text -> Maybe Text -> MessageSponsorType
-
--- | URL of the website
-[url] :: MessageSponsorType -> Maybe Text
-
--- | Name of the website
-[name] :: MessageSponsorType -> Maybe Text
-instance GHC.Show.Show TD.Data.MessageSponsorType.MessageSponsorType
-instance GHC.Classes.Eq TD.Data.MessageSponsorType.MessageSponsorType
-instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsorType.MessageSponsorType
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsorType.MessageSponsorType
-
-module TD.Data.MessageSponsor
-data MessageSponsor
-
--- | Information about the sponsor of a message
-MessageSponsor :: Maybe MessageSponsorType -> Maybe ChatPhotoInfo -> Maybe Text -> MessageSponsor
-
--- | Type of the sponsor
-[_type] :: MessageSponsor -> Maybe MessageSponsorType
-
--- | Photo of the sponsor; may be null if must not be shown
-[photo] :: MessageSponsor -> Maybe ChatPhotoInfo
-
--- | Additional optional information about the sponsor to be shown along
---   with the message
-[info] :: MessageSponsor -> Maybe Text
-instance GHC.Show.Show TD.Data.MessageSponsor.MessageSponsor
-instance GHC.Classes.Eq TD.Data.MessageSponsor.MessageSponsor
-instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsor.MessageSponsor
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsor.MessageSponsor
-
 module TD.Data.ChatMemberStatus
 
 -- | Provides information about the status of a member in a chat
@@ -12577,11 +12640,14 @@ data BusinessOpeningHoursInterval
 -- | Describes an interval of time when the business is open
 BusinessOpeningHoursInterval :: Maybe Int -> Maybe Int -> BusinessOpeningHoursInterval
 
--- | The first minute of the interval since start of the week; 0-7*24*60
+-- | The minute's sequence number in a week, starting on Monday, marking
+--   the start of the time interval during which the business is open;
+--   0-7*24*60
 [start_minute] :: BusinessOpeningHoursInterval -> Maybe Int
 
--- | The first minute after the end of the interval since start of the
---   week; 1-8*24*60
+-- | The minute's sequence number in a week, starting on Monday, marking
+--   the end of the time interval during which the business is open;
+--   1-8*24*60
 [end_minute] :: BusinessOpeningHoursInterval -> Maybe Int
 defaultBusinessOpeningHoursInterval :: BusinessOpeningHoursInterval
 instance GHC.Show.Show TD.Data.BusinessOpeningHoursInterval.BusinessOpeningHoursInterval
@@ -12935,7 +13001,7 @@ module TD.Data.BusinessInfo
 data BusinessInfo
 
 -- | Contains information about a Telegram Business account
-BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> Maybe BusinessStartPage -> BusinessInfo
+BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe BusinessOpeningHours -> Maybe Int -> Maybe Int -> Maybe BusinessGreetingMessageSettings -> Maybe BusinessAwayMessageSettings -> Maybe BusinessStartPage -> BusinessInfo
 
 -- | Location of the business; may be null if none
 [location] :: BusinessInfo -> Maybe BusinessLocation
@@ -12943,6 +13009,23 @@ BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe Bu
 -- | Opening hours of the business; may be null if none. The hours are
 --   guaranteed to be valid and has already been split by week days
 [opening_hours] :: BusinessInfo -> Maybe BusinessOpeningHours
+
+-- | Opening hours of the business in the local time; may be null if none.
+--   The hours are guaranteed to be valid and has already been split by
+--   week days. Local time zone identifier will be empty. An
+--   updateUserFullInfo update is not triggered when value of this field
+--   changes
+[local_opening_hours] :: BusinessInfo -> Maybe BusinessOpeningHours
+
+-- | Time left before the business will open the next time, in seconds; 0
+--   if unknown. An updateUserFullInfo update is not triggered when value
+--   of this field changes
+[next_open_in] :: BusinessInfo -> Maybe Int
+
+-- | Time left before the business will close the next time, in seconds; 0
+--   if unknown. An updateUserFullInfo update is not triggered when value
+--   of this field changes
+[next_close_in] :: BusinessInfo -> Maybe Int
 
 -- | The greeting message; may be null if none or the Business account is
 --   not of the current user
@@ -13193,7 +13276,7 @@ BackgroundFillGradient :: Maybe Int -> Maybe Int -> Maybe Int -> BackgroundFill
 -- | Describes a freeform gradient fill of a background
 BackgroundFillFreeformGradient :: Maybe [Int] -> BackgroundFill
 
--- | A list of 3 or 4 colors of the freeform gradients in the RGB24 format
+-- | A list of 3 or 4 colors of the freeform gradient in the RGB24 format
 [colors] :: BackgroundFill -> Maybe [Int]
 instance GHC.Show.Show TD.Data.BackgroundFill.BackgroundFill
 instance GHC.Classes.Eq TD.Data.BackgroundFill.BackgroundFill
@@ -13604,22 +13687,39 @@ module TD.Data.AuthenticationCodeType
 --   is delivered to the user
 data AuthenticationCodeType
 
--- | An authentication code is delivered via a private Telegram message,
---   which can be viewed from another active session
+-- | A digit-only authentication code is delivered via a private Telegram
+--   message, which can be viewed from another active session
 AuthenticationCodeTypeTelegramMessage :: Maybe Int -> AuthenticationCodeType
 
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
 
--- | An authentication code is delivered via an SMS message to the
---   specified phone number; applications may not receive this type of code
+-- | A digit-only authentication code is delivered via an SMS message to
+--   the specified phone number; non-official applications may not receive
+--   this type of code
 AuthenticationCodeTypeSms :: Maybe Int -> AuthenticationCodeType
 
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
 
--- | An authentication code is delivered via a phone call to the specified
---   phone number
+-- | An authentication code is a word delivered via an SMS message to the
+--   specified phone number; non-official applications may not receive this
+--   type of code
+AuthenticationCodeTypeSmsWord :: Maybe Text -> AuthenticationCodeType
+
+-- | The first letters of the word if known
+[first_letter] :: AuthenticationCodeType -> Maybe Text
+
+-- | An authentication code is a phrase from multiple words delivered via
+--   an SMS message to the specified phone number; non-official
+--   applications may not receive this type of code
+AuthenticationCodeTypeSmsPhrase :: Maybe Text -> AuthenticationCodeType
+
+-- | The first word of the phrase if known
+[first_word] :: AuthenticationCodeType -> Maybe Text
+
+-- | A digit-only authentication code is delivered via a phone call to the
+--   specified phone number
 AuthenticationCodeTypeCall :: Maybe Int -> AuthenticationCodeType
 
 -- | Length of the code
@@ -13644,9 +13744,9 @@ AuthenticationCodeTypeMissedCall :: Maybe Text -> Maybe Int -> AuthenticationCod
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
 
--- | An authentication code is delivered to <a>https://fragment.com</a>.
---   The user must be logged in there via a wallet owning the phone
---   number's NFT
+-- | A digit-only authentication code is delivered to
+--   <a>https://fragment.com</a>. The user must be logged in there via a
+--   wallet owning the phone number's NFT
 AuthenticationCodeTypeFragment :: Maybe Text -> Maybe Int -> AuthenticationCodeType
 
 -- | URL to open to receive the code
@@ -13655,8 +13755,8 @@ AuthenticationCodeTypeFragment :: Maybe Text -> Maybe Int -> AuthenticationCodeT
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
 
--- | An authentication code is delivered via Firebase Authentication to the
---   official Android application
+-- | A digit-only authentication code is delivered via Firebase
+--   Authentication to the official Android application
 AuthenticationCodeTypeFirebaseAndroid :: Maybe ByteString -> Maybe Int -> AuthenticationCodeType
 
 -- | Nonce to pass to the SafetyNet Attestation API
@@ -13665,8 +13765,8 @@ AuthenticationCodeTypeFirebaseAndroid :: Maybe ByteString -> Maybe Int -> Authen
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
 
--- | An authentication code is delivered via Firebase Authentication to the
---   official iOS application
+-- | A digit-only authentication code is delivered via Firebase
+--   Authentication to the official iOS application
 AuthenticationCodeTypeFirebaseIos :: Maybe Text -> Maybe Int -> Maybe Int -> AuthenticationCodeType
 
 -- | Receipt of successful application token validation to compare with
@@ -14035,7 +14135,7 @@ module TD.Data.WebPage
 data WebPage
 
 -- | Describes a link preview
-WebPage :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe Photo -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Animation -> Maybe Audio -> Maybe Document -> Maybe Sticker -> Maybe Video -> Maybe VideoNote -> Maybe VoiceNote -> Maybe Int -> Maybe Int -> Maybe Int -> WebPage
+WebPage :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe Photo -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Animation -> Maybe Audio -> Maybe Document -> Maybe Sticker -> Maybe Video -> Maybe VideoNote -> Maybe VoiceNote -> Maybe Int -> Maybe Int -> Maybe [Sticker] -> Maybe Int -> WebPage
 
 -- | Original URL of the link
 [url] :: WebPage -> Maybe Text
@@ -14119,6 +14219,9 @@ WebPage :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text ->
 
 -- | The identifier of the previewed story; 0 if none
 [story_id] :: WebPage -> Maybe Int
+
+-- | Up to 4 stickers from the sticker set available via the link
+[stickers] :: WebPage -> Maybe [Sticker]
 
 -- | Version of web page instant view (currently, can be 1 or 2); 0 if none
 [instant_view_version] :: WebPage -> Maybe Int
@@ -15250,7 +15353,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -15292,8 +15395,12 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 -- | True, if voice and video notes can't be sent or forwarded to the user
 [has_restricted_voice_and_video_note_messages] :: UserFullInfo -> Maybe Bool
 
--- | True, if the user has pinned stories
-[has_pinned_stories] :: UserFullInfo -> Maybe Bool
+-- | True, if the user has posted to profile stories
+[has_posted_to_profile_stories] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user always enabled sponsored messages; known only for
+--   the current user
+[has_sponsored_messages_enabled] :: UserFullInfo -> Maybe Bool
 
 -- | True, if the current user needs to explicitly allow to share their
 --   phone number with the user when the method addContact is used
@@ -15907,10 +16014,12 @@ MessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Mayb
 [location] :: MessageContent -> Maybe Location
 
 -- | Time relative to the message send date, for which the location can be
---   updated, in seconds
+--   updated, in seconds; if 0x7FFFFFFF, then location can be updated
+--   forever
 [live_period] :: MessageContent -> Maybe Int
 
--- | Left time for which the location can be updated, in seconds.
+-- | Left time for which the location can be updated, in seconds. If 0,
+--   then the location can't be updated anymore. The update
 --   updateMessageContent is not sent when this field changes
 [expires_in] :: MessageContent -> Maybe Int
 
@@ -15948,13 +16057,13 @@ MessageAnimatedEmoji :: Maybe AnimatedEmoji -> Maybe Text -> MessageContent
 MessageDice :: Maybe DiceStickers -> Maybe DiceStickers -> Maybe Text -> Maybe Int -> Maybe Int -> MessageContent
 
 -- | The animated stickers with the initial dice animation; may be null if
---   unknown. updateMessageContent will be sent when the sticker became
---   known
+--   unknown. The update updateMessageContent will be sent when the sticker
+--   became known
 [initial_state] :: MessageContent -> Maybe DiceStickers
 
 -- | The animated stickers with the final dice animation; may be null if
---   unknown. updateMessageContent will be sent when the sticker became
---   known
+--   unknown. The update updateMessageContent will be sent when the sticker
+--   became known
 [final_state] :: MessageContent -> Maybe DiceStickers
 
 -- | The corresponding emoji
@@ -16517,7 +16626,7 @@ module TD.Data.SponsoredMessage
 data SponsoredMessage
 
 -- | Describes a sponsored message
-SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> SponsoredMessage
+SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> SponsoredMessage
 
 -- | Message identifier; unique for the chat to which the sponsored message
 --   belongs among both ordinary and sponsored messages
@@ -16537,8 +16646,19 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageConten
 -- | Information about the sponsor of the message
 [sponsor] :: SponsoredMessage -> Maybe MessageSponsor
 
--- | If non-empty, text for the message action button
+-- | Title of the sponsored message
+[title] :: SponsoredMessage -> Maybe Text
+
+-- | Text for the message action button
 [button_text] :: SponsoredMessage -> Maybe Text
+
+-- | Identifier of the accent color for title, button text and message
+--   background
+[accent_color_id] :: SponsoredMessage -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the message background; 0
+--   if none
+[background_custom_emoji_id] :: SponsoredMessage -> Maybe Int
 
 -- | If non-empty, additional information about the sponsored message to be
 --   shown along with the message
@@ -18769,6 +18889,12 @@ UpdateScopeNotificationSettings :: Maybe NotificationSettingsScope -> Maybe Scop
 -- | The new notification settings
 [_notification_settings] :: Update -> Maybe ScopeNotificationSettings
 
+-- | Notification settings for reactions were updated
+UpdateReactionNotificationSettings :: Maybe ReactionNotificationSettings -> Update
+
+-- | The new notification settings
+[__notification_settings] :: Update -> Maybe ReactionNotificationSettings
+
 -- | A notification was changed
 UpdateNotification :: Maybe Int -> Maybe Notification -> Update
 
@@ -19349,6 +19475,11 @@ UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 -- | The new tags
 [tags] :: Update -> Maybe SavedMessagesTags
 
+-- | The revenue earned from sponsored messages in a chat has changed. If
+--   chat revenue screen is opened, then getChatRevenueTransactions may be
+--   called to fetch new transactions
+UpdateChatRevenueAmount :: Update
+
 -- | The parameters of speech recognition without Telegram Premium
 --   subscription has changed
 UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
@@ -19633,7 +19764,7 @@ UpdatePollAnswer :: Maybe Int -> Maybe MessageSender -> Maybe [Int] -> Update
 [option_ids] :: Update -> Maybe [Int]
 
 -- | User rights changed in a chat; for bots only
-UpdateChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatInviteLink -> Maybe Bool -> Maybe ChatMember -> Maybe ChatMember -> Update
+UpdateChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatInviteLink -> Maybe Bool -> Maybe Bool -> Maybe ChatMember -> Maybe ChatMember -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -19647,6 +19778,10 @@ UpdateChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatInviteLink 
 -- | If user has joined the chat using an invite link, the invite link; may
 --   be null
 [invite_link] :: Update -> Maybe ChatInviteLink
+
+-- | True, if the user has joined the chat after sending a join request and
+--   being approved by an administrator
+[via_join_request] :: Update -> Maybe Bool
 
 -- | True, if the user has joined the chat using an invite link for a chat
 --   folder
@@ -20357,6 +20492,32 @@ instance GHC.Show.Show TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortc
 instance GHC.Classes.Eq TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
 instance TD.Lib.Internal.ShortShow TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
+
+module TD.Query.AddQuickReplyShortcutMessageAlbum
+
+-- | Adds 2-10 messages grouped together into an album to a quick reply
+--   shortcut. Currently, only audio, document, photo and video messages
+--   can be grouped into an album. Documents and audio files can be only
+--   grouped in an album with messages of the same type. Returns sent
+--   messages. Returns <a>QuickReplyMessages</a>
+data AddQuickReplyShortcutMessageAlbum
+AddQuickReplyShortcutMessageAlbum :: Maybe Text -> Maybe Int -> Maybe [InputMessageContent] -> AddQuickReplyShortcutMessageAlbum
+
+-- | Name of the target shortcut
+[shortcut_name] :: AddQuickReplyShortcutMessageAlbum -> Maybe Text
+
+-- | Identifier of a quick reply message in the same shortcut to be
+--   replied; pass 0 if none
+[reply_to_message_id] :: AddQuickReplyShortcutMessageAlbum -> Maybe Int
+
+-- | Contents of messages to be sent. At most 10 messages can be added to
+--   an album
+[input_message_contents] :: AddQuickReplyShortcutMessageAlbum -> Maybe [InputMessageContent]
+defaultAddQuickReplyShortcutMessageAlbum :: AddQuickReplyShortcutMessageAlbum
+instance GHC.Show.Show TD.Query.AddQuickReplyShortcutMessageAlbum.AddQuickReplyShortcutMessageAlbum
+instance GHC.Classes.Eq TD.Query.AddQuickReplyShortcutMessageAlbum.AddQuickReplyShortcutMessageAlbum
+instance TD.Lib.Internal.ShortShow TD.Query.AddQuickReplyShortcutMessageAlbum.AddQuickReplyShortcutMessageAlbum
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddQuickReplyShortcutMessageAlbum.AddQuickReplyShortcutMessageAlbum
 
 module TD.Query.AddRecentSticker
 
@@ -21790,8 +21951,9 @@ DeleteAccount :: Maybe Text -> Maybe Text -> DeleteAccount
 -- | The reason why the account was deleted; optional
 [reason] :: DeleteAccount -> Maybe Text
 
--- | The 2-step verification password of the current user. If not
---   specified, account deletion can be canceled within one week
+-- | The 2-step verification password of the current user. If the current
+--   user isn't authorized, then an empty string can be passed and account
+--   deletion can be canceled within one week
 [password] :: DeleteAccount -> Maybe Text
 defaultDeleteAccount :: DeleteAccount
 instance GHC.Show.Show TD.Query.DeleteAccount.DeleteAccount
@@ -22585,7 +22747,7 @@ module TD.Query.EditInlineMessageLiveLocation
 -- | Edits the content of a live location in an inline message sent via a
 --   bot; for bots only. Returns <a>Ok</a>
 data EditInlineMessageLiveLocation
-EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> EditInlineMessageLiveLocation
+EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditInlineMessageLiveLocation
 
 -- | Inline message identifier
 [inline_message_id] :: EditInlineMessageLiveLocation -> Maybe Text
@@ -22596,6 +22758,13 @@ EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe Locati
 -- | New location content of the message; pass null to stop sharing the
 --   live location
 [location] :: EditInlineMessageLiveLocation -> Maybe Location
+
+-- | New time relative to the message send date, for which the location can
+--   be updated, in seconds. If 0x7FFFFFFF specified, then the location can
+--   be updated forever. Otherwise, must not exceed the current live_period
+--   by more than a day, and the live location expiration date must remain
+--   in the next 90 days. Pass 0 to keep the current live_period
+[live_period] :: EditInlineMessageLiveLocation -> Maybe Int
 
 -- | The new direction in which the location moves, in degrees; 1-360. Pass
 --   0 if unknown
@@ -22705,7 +22874,7 @@ module TD.Query.EditMessageLiveLocation
 --   the edited message after the edit is completed on the server side.
 --   Returns <a>Message</a>
 data EditMessageLiveLocation
-EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> EditMessageLiveLocation
+EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditMessageLiveLocation
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageLiveLocation -> Maybe Int
@@ -22719,6 +22888,13 @@ EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe 
 -- | New location content of the message; pass null to stop sharing the
 --   live location
 [location] :: EditMessageLiveLocation -> Maybe Location
+
+-- | New time relative to the message send date, for which the location can
+--   be updated, in seconds. If 0x7FFFFFFF specified, then the location can
+--   be updated forever. Otherwise, must not exceed the current live_period
+--   by more than a day, and the live location expiration date must remain
+--   in the next 90 days. Pass 0 to keep the current live_period
+[live_period] :: EditMessageLiveLocation -> Maybe Int
 
 -- | The new direction in which the location moves, in degrees; 1-360. Pass
 --   0 if unknown
@@ -23570,8 +23746,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatArchivedStories.GetChatA
 
 module TD.Query.GetChatAvailableMessageSenders
 
--- | Returns list of message sender identifiers, which can be used to send
---   messages in a chat. Returns <a>ChatMessageSenders</a>
+-- | Returns the list of message sender identifiers, which can be used to
+--   send messages in a chat. Returns <a>ChatMessageSenders</a>
 data GetChatAvailableMessageSenders
 GetChatAvailableMessageSenders :: Maybe Int -> GetChatAvailableMessageSenders
 
@@ -23584,8 +23760,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAvailableMessageSenders.
 
 module TD.Query.GetChatBoostFeatures
 
--- | Returns list of features available for different chat boost levels;
---   this is an offline request. Returns <a>ChatBoostFeatures</a>
+-- | Returns the list of features available for different chat boost
+--   levels; this is an offline request. Returns <a>ChatBoostFeatures</a>
 data GetChatBoostFeatures
 GetChatBoostFeatures :: Maybe Bool -> GetChatBoostFeatures
 
@@ -23599,8 +23775,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoostFeatures.GetChatBoo
 
 module TD.Query.GetChatBoostLevelFeatures
 
--- | Returns list of features available on the specific chat boost level;
---   this is an offline request. Returns <a>ChatBoostLevelFeatures</a>
+-- | Returns the list of features available on the specific chat boost
+--   level; this is an offline request. Returns
+--   <a>ChatBoostLevelFeatures</a>
 data GetChatBoostLevelFeatures
 GetChatBoostLevelFeatures :: Maybe Bool -> Maybe Int -> GetChatBoostLevelFeatures
 
@@ -23661,7 +23838,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoostStatus.GetChatBoost
 
 module TD.Query.GetChatBoosts
 
--- | Returns list of boosts applied to a chat; requires administrator
+-- | Returns the list of boosts applied to a chat; requires administrator
 --   rights in the chat. Returns <a>FoundChatBoosts</a>
 data GetChatBoosts
 GetChatBoosts :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Int -> GetChatBoosts
@@ -23869,8 +24046,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatInviteLink.GetChatInvite
 
 module TD.Query.GetChatInviteLinkCounts
 
--- | Returns list of chat administrators with number of their invite links.
---   Requires owner privileges in the chat. Returns
+-- | Returns the list of chat administrators with number of their invite
+--   links. Requires owner privileges in the chat. Returns
 --   <a>ChatInviteLinkCounts</a>
 data GetChatInviteLinkCounts
 GetChatInviteLinkCounts :: Maybe Int -> GetChatInviteLinkCounts
@@ -24123,8 +24300,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatMessagePosition.GetChatM
 
 module TD.Query.GetChatNotificationSettingsExceptions
 
--- | Returns list of chats with non-default notification settings for new
---   messages. Returns <a>Chats</a>
+-- | Returns the list of chats with non-default notification settings for
+--   new messages. Returns <a>Chats</a>
 data GetChatNotificationSettingsExceptions
 GetChatNotificationSettingsExceptions :: Maybe NotificationSettingsScope -> Maybe Bool -> GetChatNotificationSettingsExceptions
 
@@ -24154,31 +24331,32 @@ instance GHC.Classes.Eq TD.Query.GetChatPinnedMessage.GetChatPinnedMessage
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatPinnedMessage.GetChatPinnedMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatPinnedMessage.GetChatPinnedMessage
 
-module TD.Query.GetChatPinnedStories
+module TD.Query.GetChatPostedToChatPageStories
 
--- | Returns the list of pinned stories posted by the given chat. The
---   stories are returned in a reverse chronological order (i.e., in order
---   of decreasing story_id). For optimal performance, the number of
+-- | Returns the list of stories that posted by the given chat to its chat
+--   page. If from_story_id == 0, then pinned stories are returned first.
+--   Then, stories are returned in a reverse chronological order (i.e., in
+--   order of decreasing story_id). For optimal performance, the number of
 --   returned stories is chosen by TDLib. Returns <a>Stories</a>
-data GetChatPinnedStories
-GetChatPinnedStories :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatPinnedStories
+data GetChatPostedToChatPageStories
+GetChatPostedToChatPageStories :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatPostedToChatPageStories
 
 -- | Chat identifier
-[chat_id] :: GetChatPinnedStories -> Maybe Int
+[chat_id] :: GetChatPostedToChatPageStories -> Maybe Int
 
 -- | Identifier of the story starting from which stories must be returned;
---   use 0 to get results from the last story
-[from_story_id] :: GetChatPinnedStories -> Maybe Int
+--   use 0 to get results from pinned and the newest story
+[from_story_id] :: GetChatPostedToChatPageStories -> Maybe Int
 
 -- | The maximum number of stories to be returned For optimal performance,
 --   the number of returned stories is chosen by TDLib and can be smaller
 --   than the specified limit
-[limit] :: GetChatPinnedStories -> Maybe Int
-defaultGetChatPinnedStories :: GetChatPinnedStories
-instance GHC.Show.Show TD.Query.GetChatPinnedStories.GetChatPinnedStories
-instance GHC.Classes.Eq TD.Query.GetChatPinnedStories.GetChatPinnedStories
-instance TD.Lib.Internal.ShortShow TD.Query.GetChatPinnedStories.GetChatPinnedStories
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatPinnedStories.GetChatPinnedStories
+[limit] :: GetChatPostedToChatPageStories -> Maybe Int
+defaultGetChatPostedToChatPageStories :: GetChatPostedToChatPageStories
+instance GHC.Show.Show TD.Query.GetChatPostedToChatPageStories.GetChatPostedToChatPageStories
+instance GHC.Classes.Eq TD.Query.GetChatPostedToChatPageStories.GetChatPostedToChatPageStories
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatPostedToChatPageStories.GetChatPostedToChatPageStories
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatPostedToChatPageStories.GetChatPostedToChatPageStories
 
 module TD.Query.GetChatRevenueStatistics
 
@@ -24202,7 +24380,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueStatistics.GetCha
 
 module TD.Query.GetChatRevenueTransactions
 
--- | Returns list of revenue transactions for a chat. Currently, this
+-- | Returns the list of revenue transactions for a chat. Currently, this
 --   method can be used only for channels if
 --   supergroupFullInfo.can_get_revenue_statistics == true. Returns
 --   <a>ChatRevenueTransactions</a>
@@ -24474,8 +24652,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCollectibleItemInfo.GetColle
 
 module TD.Query.GetCommands
 
--- | Returns list of commands supported by the bot for the given user scope
---   and language; for bots only. Returns <a>BotCommands</a>
+-- | Returns the list of commands supported by the bot for the given user
+--   scope and language; for bots only. Returns <a>BotCommands</a>
 data GetCommands
 GetCommands :: Maybe BotCommandScope -> Maybe Text -> GetCommands
 
@@ -24590,9 +24768,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCustomEmojiReactionAnimation
 
 module TD.Query.GetCustomEmojiStickers
 
--- | Returns list of custom emoji stickers by their identifiers. Stickers
---   are returned in arbitrary order. Only found stickers are returned.
---   Returns <a>Stickers</a>
+-- | Returns the list of custom emoji stickers by their identifiers.
+--   Stickers are returned in arbitrary order. Only found stickers are
+--   returned. Returns <a>Stickers</a>
 data GetCustomEmojiStickers
 GetCustomEmojiStickers :: Maybe [Int] -> GetCustomEmojiStickers
 
@@ -24879,8 +25057,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetForumTopic.GetForumTopic
 
 module TD.Query.GetForumTopicDefaultIcons
 
--- | Returns list of custom emojis, which can be used as forum topic icon
---   by all users. Returns <a>Stickers</a>
+-- | Returns the list of custom emojis, which can be used as forum topic
+--   icon by all users. Returns <a>Stickers</a>
 data GetForumTopicDefaultIcons
 GetForumTopicDefaultIcons :: GetForumTopicDefaultIcons
 instance GHC.Show.Show TD.Query.GetForumTopicDefaultIcons.GetForumTopicDefaultIcons
@@ -25359,7 +25537,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLogTagVerbosityLevel.GetLogT
 
 module TD.Query.GetLogTags
 
--- | Returns list of available TDLib internal log tags, for example,
+-- | Returns the list of available TDLib internal log tags, for example,
 --   ["actor", "binlog", "connections", "notifications", "proxy"]. Can be
 --   called synchronously. Returns <a>LogTags</a>
 data GetLogTags
@@ -26214,7 +26392,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumStickers.GetPremiumSt
 
 module TD.Query.GetProxies
 
--- | Returns list of proxies that are currently set up. Can be called
+-- | Returns the list of proxies that are currently set up. Can be called
 --   before authorization. Returns <a>Proxies</a>
 data GetProxies
 GetProxies :: GetProxies
@@ -26339,6 +26517,17 @@ instance GHC.Show.Show TD.Query.GetRecommendedChatFolders.GetRecommendedChatFold
 instance GHC.Classes.Eq TD.Query.GetRecommendedChatFolders.GetRecommendedChatFolders
 instance TD.Lib.Internal.ShortShow TD.Query.GetRecommendedChatFolders.GetRecommendedChatFolders
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetRecommendedChatFolders.GetRecommendedChatFolders
+
+module TD.Query.GetRecommendedChats
+
+-- | Returns a list of channel chats recommended to the current user.
+--   Returns <a>Chats</a>
+data GetRecommendedChats
+GetRecommendedChats :: GetRecommendedChats
+instance GHC.Show.Show TD.Query.GetRecommendedChats.GetRecommendedChats
+instance GHC.Classes.Eq TD.Query.GetRecommendedChats.GetRecommendedChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetRecommendedChats.GetRecommendedChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetRecommendedChats.GetRecommendedChats
 
 module TD.Query.GetRecoveryEmailAddress
 
@@ -26495,7 +26684,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedNotificationSound.GetSa
 
 module TD.Query.GetSavedNotificationSounds
 
--- | Returns list of saved notification sounds. If a sound isn't in the
+-- | Returns the list of saved notification sounds. If a sound isn't in the
 --   list, then default sound needs to be used. Returns
 --   <a>NotificationSounds</a>
 data GetSavedNotificationSounds
@@ -26729,7 +26918,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStoryInteractions.GetStoryIn
 
 module TD.Query.GetStoryNotificationSettingsExceptions
 
--- | Returns list of chats with non-default notification settings for
+-- | Returns the list of chats with non-default notification settings for
 --   stories. Returns <a>Chats</a>
 data GetStoryNotificationSettingsExceptions
 GetStoryNotificationSettingsExceptions :: GetStoryNotificationSettingsExceptions
@@ -27058,7 +27247,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUser.GetUser
 
 module TD.Query.GetUserChatBoosts
 
--- | Returns list of boosts applied to a chat by a given user; requires
+-- | Returns the list of boosts applied to a chat by a given user; requires
 --   administrator rights in the chat; for bots only. Returns
 --   <a>FoundChatBoosts</a>
 data GetUserChatBoosts
@@ -27151,8 +27340,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUserSupportInfo.GetUserSuppo
 
 module TD.Query.GetVideoChatAvailableParticipants
 
--- | Returns list of participant identifiers, on whose behalf a video chat
---   in the chat can be joined. Returns <a>MessageSenders</a>
+-- | Returns the list of participant identifiers, on whose behalf a video
+--   chat in the chat can be joined. Returns <a>MessageSenders</a>
 data GetVideoChatAvailableParticipants
 GetVideoChatAvailableParticipants :: Maybe Int -> GetVideoChatAvailableParticipants
 
@@ -27278,6 +27467,17 @@ instance GHC.Show.Show TD.Query.GetWebPagePreview.GetWebPagePreview
 instance GHC.Classes.Eq TD.Query.GetWebPagePreview.GetWebPagePreview
 instance TD.Lib.Internal.ShortShow TD.Query.GetWebPagePreview.GetWebPagePreview
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebPagePreview.GetWebPagePreview
+
+module TD.Query.HideContactCloseBirthdays
+
+-- | Hides the list of contacts that have close birthdays for 24 hours.
+--   Returns <a>Ok</a>
+data HideContactCloseBirthdays
+HideContactCloseBirthdays :: HideContactCloseBirthdays
+instance GHC.Show.Show TD.Query.HideContactCloseBirthdays.HideContactCloseBirthdays
+instance GHC.Classes.Eq TD.Query.HideContactCloseBirthdays.HideContactCloseBirthdays
+instance TD.Lib.Internal.ShortShow TD.Query.HideContactCloseBirthdays.HideContactCloseBirthdays
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.HideContactCloseBirthdays.HideContactCloseBirthdays
 
 module TD.Query.HideSuggestedAction
 
@@ -27832,10 +28032,10 @@ module TD.Query.PreliminaryUploadFile
 
 -- | Preliminary uploads a file to the cloud before sending it in a
 --   message, which can be useful for uploading of being recorded voice and
---   video notes. Updates updateFile will be used to notify about upload
---   progress and successful completion of the upload. The file will not
---   have a persistent remote identifier until it is sent in a message.
---   Returns <a>File</a>
+--   video notes. In all other cases there is no need to preliminary upload
+--   a file. Updates updateFile will be used to notify about upload
+--   progress. The upload will not be completed until the file is sent in a
+--   message. Returns <a>File</a>
 data PreliminaryUploadFile
 PreliminaryUploadFile :: Maybe InputFile -> Maybe FileType -> Maybe Int -> PreliminaryUploadFile
 
@@ -28634,6 +28834,21 @@ instance GHC.Classes.Eq TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 
+module TD.Query.ReportAuthenticationCodeMissing
+
+-- | Reports that authentication code wasn't delivered via SMS; for
+--   official mobile apps only. Works only when the current authorization
+--   state is authorizationStateWaitCode. Returns <a>Ok</a>
+data ReportAuthenticationCodeMissing
+ReportAuthenticationCodeMissing :: Maybe Text -> ReportAuthenticationCodeMissing
+
+-- | Current mobile network code
+[mobile_network_code] :: ReportAuthenticationCodeMissing -> Maybe Text
+instance GHC.Show.Show TD.Query.ReportAuthenticationCodeMissing.ReportAuthenticationCodeMissing
+instance GHC.Classes.Eq TD.Query.ReportAuthenticationCodeMissing.ReportAuthenticationCodeMissing
+instance TD.Lib.Internal.ShortShow TD.Query.ReportAuthenticationCodeMissing.ReportAuthenticationCodeMissing
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportAuthenticationCodeMissing.ReportAuthenticationCodeMissing
+
 module TD.Query.ReportChat
 
 -- | Reports a chat to the Telegram moderators. A chat can be reported only
@@ -28728,6 +28943,21 @@ instance GHC.Show.Show TD.Query.ReportMessageReactions.ReportMessageReactions
 instance GHC.Classes.Eq TD.Query.ReportMessageReactions.ReportMessageReactions
 instance TD.Lib.Internal.ShortShow TD.Query.ReportMessageReactions.ReportMessageReactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportMessageReactions.ReportMessageReactions
+
+module TD.Query.ReportPhoneNumberCodeMissing
+
+-- | Reports that authentication code wasn't delivered via SMS to the
+--   specified phone number; for official mobile apps only. Returns
+--   <a>Ok</a>
+data ReportPhoneNumberCodeMissing
+ReportPhoneNumberCodeMissing :: Maybe Text -> ReportPhoneNumberCodeMissing
+
+-- | Current mobile network code
+[mobile_network_code] :: ReportPhoneNumberCodeMissing -> Maybe Text
+instance GHC.Show.Show TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
+instance GHC.Classes.Eq TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
+instance TD.Lib.Internal.ShortShow TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
 
 module TD.Query.ReportStory
 
@@ -28926,9 +29156,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendRecoveryEmailAddressCode.
 
 module TD.Query.ResetAllNotificationSettings
 
--- | Resets all notification settings to their default values. By default,
---   all chats are unmuted and message previews are shown. Returns
---   <a>Ok</a>
+-- | Resets all chat and scope notification settings to their default
+--   values. By default, all chats are unmuted and message previews are
+--   shown. Returns <a>Ok</a>
 data ResetAllNotificationSettings
 ResetAllNotificationSettings :: ResetAllNotificationSettings
 instance GHC.Show.Show TD.Query.ResetAllNotificationSettings.ResetAllNotificationSettings
@@ -29352,12 +29582,15 @@ module TD.Query.SearchMessages
 --   returned messages is chosen by TDLib and can be smaller than the
 --   specified limit. Returns <a>FoundMessages</a>
 data SearchMessages
-SearchMessages :: Maybe ChatList -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> SearchMessages
+SearchMessages :: Maybe ChatList -> Maybe Bool -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> SearchMessages
 
 -- | Chat list in which to search messages; pass null to search in all
 --   chats regardless of their chat list. Only Main and Archive chat lists
 --   are supported
 [chat_list] :: SearchMessages -> Maybe ChatList
+
+-- | Pass true to search only for messages in channels
+[only_in_channels] :: SearchMessages -> Maybe Bool
 
 -- | Query to search for
 [query] :: SearchMessages -> Maybe Text
@@ -30183,7 +30416,7 @@ SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 [from_story_full_id] :: SendStory -> Maybe StoryFullId
 
 -- | Pass true to keep the story accessible after expiration
-[is_pinned] :: SendStory -> Maybe Bool
+[is_posted_to_chat_page] :: SendStory -> Maybe Bool
 
 -- | Pass true if the content of the story must be protected from
 --   forwarding and screenshotting
@@ -30943,6 +31176,26 @@ instance GHC.Show.Show TD.Query.SetChatPhoto.SetChatPhoto
 instance GHC.Classes.Eq TD.Query.SetChatPhoto.SetChatPhoto
 instance TD.Lib.Internal.ShortShow TD.Query.SetChatPhoto.SetChatPhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatPhoto.SetChatPhoto
+
+module TD.Query.SetChatPinnedStories
+
+-- | Changes the list of pinned stories on a chat page; requires
+--   can_edit_stories right in the chat. Returns <a>Ok</a>
+data SetChatPinnedStories
+SetChatPinnedStories :: Maybe Int -> Maybe [Int] -> SetChatPinnedStories
+
+-- | Identifier of the chat that posted the stories
+[chat_id] :: SetChatPinnedStories -> Maybe Int
+
+-- | New list of pinned stories. All stories must be posted to the chat
+--   page first. There can be up to getOption("pinned_story_count_max")
+--   pinned stories on a chat page
+[story_ids] :: SetChatPinnedStories -> Maybe [Int]
+defaultSetChatPinnedStories :: SetChatPinnedStories
+instance GHC.Show.Show TD.Query.SetChatPinnedStories.SetChatPinnedStories
+instance GHC.Classes.Eq TD.Query.SetChatPinnedStories.SetChatPinnedStories
+instance TD.Lib.Internal.ShortShow TD.Query.SetChatPinnedStories.SetChatPinnedStories
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatPinnedStories.SetChatPinnedStories
 
 module TD.Query.SetChatProfileAccentColor
 
@@ -31842,6 +32095,19 @@ instance GHC.Show.Show TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutN
 instance GHC.Classes.Eq TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
 instance TD.Lib.Internal.ShortShow TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetQuickReplyShortcutName.SetQuickReplyShortcutName
+
+module TD.Query.SetReactionNotificationSettings
+
+-- | Changes notification settings for reactions. Returns <a>Ok</a>
+data SetReactionNotificationSettings
+SetReactionNotificationSettings :: Maybe ReactionNotificationSettings -> SetReactionNotificationSettings
+
+-- | The new notification settings for reactions
+[notification_settings] :: SetReactionNotificationSettings -> Maybe ReactionNotificationSettings
+instance GHC.Show.Show TD.Query.SetReactionNotificationSettings.SetReactionNotificationSettings
+instance GHC.Classes.Eq TD.Query.SetReactionNotificationSettings.SetReactionNotificationSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetReactionNotificationSettings.SetReactionNotificationSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetReactionNotificationSettings.SetReactionNotificationSettings
 
 module TD.Query.SetReadDatePrivacySettings
 
@@ -33138,6 +33404,22 @@ instance GHC.Classes.Eq TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGrou
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroupCallScreenSharingIsPaused
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallScreenSharingIsPaused.ToggleGroupCallScreenSharingIsPaused
 
+module TD.Query.ToggleHasSponsoredMessagesEnabled
+
+-- | Toggles whether the current user has sponsored messages enabled. The
+--   setting has no effect for users without Telegram Premium for which
+--   sponsored messages are always enabled. Returns <a>Ok</a>
+data ToggleHasSponsoredMessagesEnabled
+ToggleHasSponsoredMessagesEnabled :: Maybe Bool -> ToggleHasSponsoredMessagesEnabled
+
+-- | Pass true to enable sponsored messages for the current user; false to
+--   disable them
+[has_sponsored_messages_enabled] :: ToggleHasSponsoredMessagesEnabled -> Maybe Bool
+instance GHC.Show.Show TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
+instance GHC.Classes.Eq TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
+
 module TD.Query.ToggleSavedMessagesTopicIsPinned
 
 -- | Changes the pinned state of a Saved Messages topic. There can be up to
@@ -33194,27 +33476,28 @@ instance GHC.Classes.Eq TD.Query.ToggleSessionCanAcceptSecretChats.ToggleSession
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleSessionCanAcceptSecretChats.ToggleSessionCanAcceptSecretChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSessionCanAcceptSecretChats.ToggleSessionCanAcceptSecretChats
 
-module TD.Query.ToggleStoryIsPinned
+module TD.Query.ToggleStoryIsPostedToChatPage
 
 -- | Toggles whether a story is accessible after expiration. Can be called
---   only if story.can_toggle_is_pinned == true. Returns <a>Ok</a>
-data ToggleStoryIsPinned
-ToggleStoryIsPinned :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleStoryIsPinned
+--   only if story.can_toggle_is_posted_to_chat_page == true. Returns
+--   <a>Ok</a>
+data ToggleStoryIsPostedToChatPage
+ToggleStoryIsPostedToChatPage :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleStoryIsPostedToChatPage
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: ToggleStoryIsPinned -> Maybe Int
+[story_sender_chat_id] :: ToggleStoryIsPostedToChatPage -> Maybe Int
 
 -- | Identifier of the story
-[story_id] :: ToggleStoryIsPinned -> Maybe Int
+[story_id] :: ToggleStoryIsPostedToChatPage -> Maybe Int
 
 -- | Pass true to make the story accessible after expiration; pass false to
 --   make it private
-[is_pinned] :: ToggleStoryIsPinned -> Maybe Bool
-defaultToggleStoryIsPinned :: ToggleStoryIsPinned
-instance GHC.Show.Show TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
-instance GHC.Classes.Eq TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
-instance TD.Lib.Internal.ShortShow TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleStoryIsPinned.ToggleStoryIsPinned
+[is_posted_to_chat_page] :: ToggleStoryIsPostedToChatPage -> Maybe Bool
+defaultToggleStoryIsPostedToChatPage :: ToggleStoryIsPostedToChatPage
+instance GHC.Show.Show TD.Query.ToggleStoryIsPostedToChatPage.ToggleStoryIsPostedToChatPage
+instance GHC.Classes.Eq TD.Query.ToggleStoryIsPostedToChatPage.ToggleStoryIsPostedToChatPage
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleStoryIsPostedToChatPage.ToggleStoryIsPostedToChatPage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleStoryIsPostedToChatPage.ToggleStoryIsPostedToChatPage
 
 module TD.Query.ToggleSupergroupCanHaveSponsoredMessages
 
