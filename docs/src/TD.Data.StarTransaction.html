@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.StarTransaction</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier">StarTransaction</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.StarTransactionSource.html"><span class="hs-identifier">TD.Data.StarTransactionSource</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">StarTransactionSource</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="StarTransaction"><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-var">StarTransaction</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="StarTransaction"><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-var">StarTransaction</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Represents a transaction changing the amount of owned Telegram stars</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_id"><span class="annot"><span class="annottext">StarTransaction -&gt; Maybe Text
+</span><a href="TD.Data.StarTransaction.html#_id"><span class="hs-identifier hs-var hs-var">_id</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                      </span><span class="annot"><span class="hs-comment">-- ^ Unique identifier of the transaction</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="star_count"><span class="annot"><span class="annottext">StarTransaction -&gt; Maybe Int
+</span><a href="TD.Data.StarTransaction.html#star_count"><span class="hs-identifier hs-var hs-var">star_count</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                         </span><span class="annot"><span class="hs-comment">-- ^ The amount of added owned Telegram stars; negative for outgoing transactions</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_refund"><span class="annot"><span class="annottext">StarTransaction -&gt; Maybe Bool
+</span><a href="TD.Data.StarTransaction.html#is_refund"><span class="hs-identifier hs-var hs-var">is_refund</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                        </span><span class="annot"><span class="hs-comment">-- ^ True, if the transaction is a refund of a previous transaction</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="date"><span class="annot"><span class="annottext">StarTransaction -&gt; Maybe Int
+</span><a href="TD.Data.StarTransaction.html#date"><span class="hs-identifier hs-var hs-var">date</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                         </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the transaction was completed</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="source"><span class="annot"><span class="annottext">StarTransaction -&gt; Maybe StarTransactionSource
+</span><a href="TD.Data.StarTransaction.html#source"><span class="hs-identifier hs-var hs-var">source</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.StarTransactionSource.html#StarTransactionSource"><span class="hs-identifier hs-type">StarTransactionSource.StarTransactionSource</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Source of the transaction, or its recipient for outgoing transactions</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679657582"><span id="local-6989586621679657594"><span class="annot"><span class="annottext">StarTransaction -&gt; StarTransaction -&gt; Bool
+(StarTransaction -&gt; StarTransaction -&gt; Bool)
+-&gt; (StarTransaction -&gt; StarTransaction -&gt; Bool)
+-&gt; Eq StarTransaction
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: StarTransaction -&gt; StarTransaction -&gt; Bool
+== :: StarTransaction -&gt; StarTransaction -&gt; Bool
+$c/= :: StarTransaction -&gt; StarTransaction -&gt; Bool
+/= :: StarTransaction -&gt; StarTransaction -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679657603"><span id="local-6989586621679657617"><span id="local-6989586621679657621"><span class="annot"><span class="annottext">Int -&gt; StarTransaction -&gt; ShowS
+[StarTransaction] -&gt; ShowS
+StarTransaction -&gt; String
+(Int -&gt; StarTransaction -&gt; ShowS)
+-&gt; (StarTransaction -&gt; String)
+-&gt; ([StarTransaction] -&gt; ShowS)
+-&gt; Show StarTransaction
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; StarTransaction -&gt; ShowS
+showsPrec :: Int -&gt; StarTransaction -&gt; ShowS
+$cshow :: StarTransaction -&gt; String
+show :: StarTransaction -&gt; String
+$cshowList :: [StarTransaction] -&gt; ShowS
+showList :: [StarTransaction] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-type">StarTransaction</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679657643"><span class="annot"><span class="annottext">shortShow :: StarTransaction -&gt; String
+</span><a href="#local-6989586621679657643"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-type">StarTransaction</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: StarTransaction -&gt; Maybe Text
+</span><a href="TD.Data.StarTransaction.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679657645"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679657645"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: StarTransaction -&gt; Maybe Int
+</span><a href="TD.Data.StarTransaction.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679657646"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657646"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_refund :: StarTransaction -&gt; Maybe Bool
+</span><a href="TD.Data.StarTransaction.html#is_refund"><span class="hs-identifier hs-var">is_refund</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679657647"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679657647"><span class="hs-identifier hs-var">is_refund_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: StarTransaction -&gt; Maybe Int
+</span><a href="TD.Data.StarTransaction.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679657648"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657648"><span class="hs-identifier hs-var">date_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">source :: StarTransaction -&gt; Maybe StarTransactionSource
+</span><a href="TD.Data.StarTransaction.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679657649"><span class="annot"><span class="annottext">Maybe StarTransactionSource
+</span><a href="#local-6989586621679657649"><span class="hs-identifier hs-var">source_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StarTransaction&quot;</span></span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_id&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679657645"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;star_count&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657646"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_refund&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679657647"><span class="hs-identifier hs-var">is_refund_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;date&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657648"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;source&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe StarTransactionSource -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe StarTransactionSource
+</span><a href="#local-6989586621679657649"><span class="hs-identifier hs-var">source_</span></a></span><span>
+</span><span id="line-35"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679657654"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-type">StarTransaction</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-38"></span><span>  </span><span id="local-6989586621679657696"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser StarTransaction
+</span><a href="#local-6989586621679657696"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679657698"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679657698"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679657700"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657700"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-39"></span><span>    </span><span id="local-6989586621679657701"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679657701"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657700"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679657701"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-42"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;starTransaction&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser StarTransaction
+</span><a href="#local-6989586621679657703"><span class="hs-identifier hs-var">parseStarTransaction</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679657698"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-43"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                 </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser StarTransaction
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-44"></span><span>    </span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>      </span><span class="annot"><a href="#local-6989586621679657703"><span class="hs-identifier hs-type">parseStarTransaction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-type">StarTransaction</span></a></span><span>
+</span><span id="line-47"></span><span>      </span><span id="local-6989586621679657703"><span class="annot"><span class="annottext">parseStarTransaction :: Value -&gt; Parser StarTransaction
+</span><a href="#local-6989586621679657703"><span class="hs-identifier hs-var hs-var">parseStarTransaction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser StarTransaction)
+-&gt; Value
+-&gt; Parser StarTransaction
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;StarTransaction&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser StarTransaction)
+ -&gt; Value -&gt; Parser StarTransaction)
+-&gt; (Object -&gt; Parser StarTransaction)
+-&gt; Value
+-&gt; Parser StarTransaction
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679657705"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679657706"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679657706"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;id&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679657708"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657708"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;star_count&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679657709"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679657709"><span class="hs-identifier hs-var">is_refund_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_refund&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679657710"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657710"><span class="hs-identifier hs-var">date_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;date&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span id="local-6989586621679657711"><span class="annot"><span class="annottext">Maybe StarTransactionSource
+</span><a href="#local-6989586621679657711"><span class="hs-identifier hs-var">source_</span></a></span></span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679657705"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe StarTransactionSource)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;source&quot;</span></span><span>
+</span><span id="line-53"></span><span>        </span><span class="annot"><span class="annottext">StarTransaction -&gt; Parser StarTransaction
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(StarTransaction -&gt; Parser StarTransaction)
+-&gt; StarTransaction -&gt; Parser StarTransaction
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.StarTransaction.html#StarTransaction"><span class="hs-identifier hs-type">StarTransaction</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: Maybe Text
+</span><a href="TD.Data.StarTransaction.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679657706"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: Maybe Int
+</span><a href="TD.Data.StarTransaction.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657708"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_refund :: Maybe Bool
+</span><a href="TD.Data.StarTransaction.html#is_refund"><span class="hs-identifier hs-var">is_refund</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679657709"><span class="hs-identifier hs-var">is_refund_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: Maybe Int
+</span><a href="TD.Data.StarTransaction.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679657710"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">source :: Maybe StarTransactionSource
+</span><a href="TD.Data.StarTransaction.html#source"><span class="hs-identifier hs-var">source</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe StarTransactionSource
+</span><a href="#local-6989586621679657711"><span class="hs-identifier hs-var">source_</span></a></span><span>
+</span><span id="line-59"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-60"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser StarTransaction
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-61"></span><span>
+</span><span id="line-62"></span></pre></body></html>
