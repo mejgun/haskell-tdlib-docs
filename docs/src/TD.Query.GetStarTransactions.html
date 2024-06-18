@@ -6,18 +6,23 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html"><span class="hs-identifier">TD.Data.MessageSender</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSender</span></span><span>
 </span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.StarTransactionDirection.html"><span class="hs-identifier">TD.Data.StarTransactionDirection</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">StarTransactionDirection</span></span><span>
-</span><span id="line-11"></span><span>
-</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Returns the list of Telegram star transactions for the current user. Returns 'TD.Data.StarTransactions.StarTransactions'</span></span><span>
-</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="GetStarTransactions"><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-var">GetStarTransactions</span></a></span></span><span>
-</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetStarTransactions"><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-var">GetStarTransactions</span></a></span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="offset"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe Text
-</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var hs-var">offset</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                            </span><span class="annot"><span class="hs-comment">-- ^ Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="direction"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe StarTransactionDirection
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><span class="hs-comment">-- | Returns the list of Telegram star transactions for the specified owner. Returns 'TD.Data.StarTransactions.StarTransactions'</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">data</span><span> </span><span id="GetStarTransactions"><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-var">GetStarTransactions</span></a></span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetStarTransactions"><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-var">GetStarTransactions</span></a></span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="owner_id"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe MessageSender
+</span><a href="TD.Query.GetStarTransactions.html#owner_id"><span class="hs-identifier hs-var hs-var">owner_id</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html#MessageSender"><span class="hs-identifier hs-type">MessageSender.MessageSender</span></a></span><span>                       </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the owner of the Telegram stars; can be the identifier of the current user, identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="direction"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe StarTransactionDirection
 </span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var hs-var">direction</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.StarTransactionDirection.html#StarTransactionDirection"><span class="hs-identifier hs-type">StarTransactionDirection.StarTransactionDirection</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Direction of the transactions to receive; pass null to get all transactions</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679769888"><span id="local-6989586621679769895"><span class="annot"><span class="annottext">GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="offset"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe Text
+</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var hs-var">offset</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                            </span><span class="annot"><span class="hs-comment">-- ^ Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="limit"><span class="annot"><span class="annottext">GetStarTransactions -&gt; Maybe Int
+</span><a href="TD.Query.GetStarTransactions.html#limit"><span class="hs-identifier hs-var hs-var">limit</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                               </span><span class="annot"><span class="hs-comment">-- ^ The maximum number of transactions to return</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679779168"><span id="local-6989586621679779179"><span class="annot"><span class="annottext">GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
 (GetStarTransactions -&gt; GetStarTransactions -&gt; Bool)
 -&gt; (GetStarTransactions -&gt; GetStarTransactions -&gt; Bool)
 -&gt; Eq GetStarTransactions
@@ -26,7 +31,7 @@ $c== :: GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
 == :: GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
 $c/= :: GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
 /= :: GetStarTransactions -&gt; GetStarTransactions -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679769902"><span id="local-6989586621679769911"><span id="local-6989586621679769915"><span class="annot"><span class="annottext">Int -&gt; GetStarTransactions -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679779188"><span id="local-6989586621679779201"><span id="local-6989586621679779205"><span class="annot"><span class="annottext">Int -&gt; GetStarTransactions -&gt; ShowS
 [GetStarTransactions] -&gt; ShowS
 GetStarTransactions -&gt; String
 (Int -&gt; GetStarTransactions -&gt; ShowS)
@@ -42,82 +47,124 @@ show :: GetStarTransactions -&gt; String
 $cshowList :: [GetStarTransactions] -&gt; ShowS
 showList :: [GetStarTransactions] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-19"></span><span>
-</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-21"></span><span>  </span><span id="local-6989586621679769930"><span class="annot"><span class="annottext">shortShow :: GetStarTransactions -&gt; String
-</span><a href="#local-6989586621679769930"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
-</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">offset :: GetStarTransactions -&gt; Maybe Text
-</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679769932"><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679769932"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
-</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: GetStarTransactions -&gt; Maybe StarTransactionDirection
-</span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var">direction</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679769933"><span class="annot"><span class="annottext">Maybe StarTransactionDirection
-</span><a href="#local-6989586621679769933"><span class="hs-identifier hs-var">direction_</span></a></span></span><span>
-</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679779226"><span class="annot"><span class="annottext">shortShow :: GetStarTransactions -&gt; String
+</span><a href="#local-6989586621679779226"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">owner_id :: GetStarTransactions -&gt; Maybe MessageSender
+</span><a href="TD.Query.GetStarTransactions.html#owner_id"><span class="hs-identifier hs-var">owner_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779228"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679779228"><span class="hs-identifier hs-var">owner_id_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: GetStarTransactions -&gt; Maybe StarTransactionDirection
+</span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var">direction</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779229"><span class="annot"><span class="annottext">Maybe StarTransactionDirection
+</span><a href="#local-6989586621679779229"><span class="hs-identifier hs-var">direction_</span></a></span></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetStarTransactions -&gt; Maybe Text
+</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779230"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679779230"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetStarTransactions -&gt; Maybe Int
+</span><a href="TD.Query.GetStarTransactions.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779231"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679779231"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;GetStarTransactions&quot;</span></span><span>
-</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span id="line-32"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
-</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;offset&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+</span><span id="line-33"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;owner_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSender -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679769932"><span class="hs-identifier hs-var">offset_</span></a></span><span>
-</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679779228"><span class="hs-identifier hs-var">owner_id_</span></a></span><span>
+</span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;direction&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe StarTransactionDirection -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe StarTransactionDirection
-</span><a href="#local-6989586621679769933"><span class="hs-identifier hs-var">direction_</span></a></span><span>
-</span><span id="line-30"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-31"></span><span>
-</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679769938"><span id="local-6989586621679769942"><span id="local-6989586621679769945"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-33"></span><span>  </span><span id="local-6989586621679769969"><span class="annot"><span class="annottext">toJSON :: GetStarTransactions -&gt; Value
-</span><a href="#local-6989586621679769969"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-34"></span><span>    </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
-</span><span id="line-35"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">offset :: GetStarTransactions -&gt; Maybe Text
-</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679769971"><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679769971"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
-</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: GetStarTransactions -&gt; Maybe StarTransactionDirection
-</span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var">direction</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679769972"><span class="annot"><span class="annottext">Maybe StarTransactionDirection
-</span><a href="#local-6989586621679769972"><span class="hs-identifier hs-var">direction_</span></a></span></span><span>
-</span><span id="line-37"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-38"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679779229"><span class="hs-identifier hs-var">direction_</span></a></span><span>
+</span><span id="line-35"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;offset&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679779230"><span class="hs-identifier hs-var">offset_</span></a></span><span>
+</span><span id="line-36"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;limit&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679779231"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><span id="line-37"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679779236"><span id="local-6989586621679779240"><span id="local-6989586621679779243"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-40"></span><span>  </span><span id="local-6989586621679779277"><span class="annot"><span class="annottext">toJSON :: GetStarTransactions -&gt; Value
+</span><a href="#local-6989586621679779277"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">owner_id :: GetStarTransactions -&gt; Maybe MessageSender
+</span><a href="TD.Query.GetStarTransactions.html#owner_id"><span class="hs-identifier hs-var">owner_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779279"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679779279"><span class="hs-identifier hs-var">owner_id_</span></a></span></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: GetStarTransactions -&gt; Maybe StarTransactionDirection
+</span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var">direction</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779280"><span class="annot"><span class="annottext">Maybe StarTransactionDirection
+</span><a href="#local-6989586621679779280"><span class="hs-identifier hs-var">direction_</span></a></span></span><span>
+</span><span id="line-44"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: GetStarTransactions -&gt; Maybe Text
+</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779281"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679779281"><span class="hs-identifier hs-var">offset_</span></a></span></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: GetStarTransactions -&gt; Maybe Int
+</span><a href="TD.Query.GetStarTransactions.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679779282"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679779282"><span class="hs-identifier hs-var">limit_</span></a></span></span><span>
+</span><span id="line-46"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-47"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-39"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span id="line-48"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;@type&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;getStarTransactions&quot;</span></span><span>
-</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;offset&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;owner_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSender -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
-</span><a href="#local-6989586621679769971"><span class="hs-identifier hs-var">offset_</span></a></span><span>
-</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679779279"><span class="hs-identifier hs-var">owner_id_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;direction&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe StarTransactionDirection -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe StarTransactionDirection
-</span><a href="#local-6989586621679769972"><span class="hs-identifier hs-var">direction_</span></a></span><span>
-</span><span id="line-42"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-43"></span><span>
-</span><span id="line-44"></span><span class="annot"><a href="TD.Query.GetStarTransactions.html#defaultGetStarTransactions"><span class="hs-identifier hs-type">defaultGetStarTransactions</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
-</span><span id="line-45"></span><span id="defaultGetStarTransactions"><span class="annot"><span class="annottext">defaultGetStarTransactions :: GetStarTransactions
+</span><a href="#local-6989586621679779280"><span class="hs-identifier hs-var">direction_</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;offset&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679779281"><span class="hs-identifier hs-var">offset_</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;limit&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679779282"><span class="hs-identifier hs-var">limit_</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="annot"><a href="TD.Query.GetStarTransactions.html#defaultGetStarTransactions"><span class="hs-identifier hs-type">defaultGetStarTransactions</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
+</span><span id="line-56"></span><span id="defaultGetStarTransactions"><span class="annot"><span class="annottext">defaultGetStarTransactions :: GetStarTransactions
 </span><a href="TD.Query.GetStarTransactions.html#defaultGetStarTransactions"><span class="hs-identifier hs-var hs-var">defaultGetStarTransactions</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-46"></span><span>  </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
-</span><span id="line-47"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">offset :: Maybe Text
-</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><span id="line-57"></span><span>  </span><span class="annot"><a href="TD.Query.GetStarTransactions.html#GetStarTransactions"><span class="hs-identifier hs-type">GetStarTransactions</span></a></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">owner_id :: Maybe MessageSender
+</span><a href="TD.Query.GetStarTransactions.html#owner_id"><span class="hs-identifier hs-var">owner_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: Maybe StarTransactionDirection
+</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">direction :: Maybe StarTransactionDirection
 </span><a href="TD.Query.GetStarTransactions.html#direction"><span class="hs-identifier hs-var">direction</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe StarTransactionDirection
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-50"></span><span>
-</span><span id="line-51"></span></pre></body></html>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">offset :: Maybe Text
+</span><a href="TD.Query.GetStarTransactions.html#offset"><span class="hs-identifier hs-var">offset</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">limit :: Maybe Int
+</span><a href="TD.Query.GetStarTransactions.html#limit"><span class="hs-identifier hs-var">limit</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span></pre></body></html>
