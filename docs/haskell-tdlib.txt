@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.36.0
+@version 2.0.37.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -467,7 +467,7 @@ module TD.Data.ThemeParameters
 data ThemeParameters
 
 -- | Contains parameters of the application theme
-ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ThemeParameters
+ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ThemeParameters
 
 -- | A color of the background in the RGB24 format
 [background_color] :: ThemeParameters -> Maybe Int
@@ -480,6 +480,9 @@ ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
 
 -- | A color of the section background in the RGB24 format
 [section_background_color] :: ThemeParameters -> Maybe Int
+
+-- | A color of the section separator in the RGB24 format
+[section_separator_color] :: ThemeParameters -> Maybe Int
 
 -- | A color of text in the RGB24 format
 [text_color] :: ThemeParameters -> Maybe Int
@@ -1298,7 +1301,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRe
 module TD.Data.StarPaymentOption
 data StarPaymentOption
 
--- | Describes an option for buying Telegram stars
+-- | Describes an option for buying Telegram stars. Use
+--   telegramPaymentPurposeStars for out-of-store payments
 StarPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> StarPaymentOption
 
 -- | ISO 4217 currency code for the payment
@@ -1818,8 +1822,7 @@ ResendCodeReasonUserRequest :: ResendCodeReason
 ResendCodeReasonVerificationFailed :: Maybe Text -> ResendCodeReason
 
 -- | Cause of the verification failure, for example,
---   PLAY_SERVICES_NOT_AVAILABLE, APNS_RECEIVE_TIMEOUT, APNS_INIT_FAILED,
---   etc.
+--   PLAY_SERVICES_NOT_AVAILABLE, APNS_RECEIVE_TIMEOUT, or APNS_INIT_FAILED
 [error_message] :: ResendCodeReason -> Maybe Text
 instance GHC.Show.Show TD.Data.ResendCodeReason.ResendCodeReason
 instance GHC.Classes.Eq TD.Data.ResendCodeReason.ResendCodeReason
@@ -1976,7 +1979,7 @@ ReadDatePrivacySettings :: Maybe Bool -> ReadDatePrivacySettings
 
 -- | True, if message read date is shown to other users in private chats.
 --   If false and the current user isn't a Telegram Premium user, then they
---   will not be able to see other's message read date.
+--   will not be able to see other's message read date
 [show_read_date] :: ReadDatePrivacySettings -> Maybe Bool
 defaultReadDatePrivacySettings :: ReadDatePrivacySettings
 instance GHC.Show.Show TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
@@ -2680,7 +2683,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayInfo.PremiumG
 module TD.Data.PremiumGiftCodePaymentOption
 data PremiumGiftCodePaymentOption
 
--- | Describes an option for creating Telegram Premium gift codes
+-- | Describes an option for creating Telegram Premium gift codes. Use
+--   telegramPaymentPurposePremiumGiftCodes for out-of-store payments
 PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> PremiumGiftCodePaymentOption
 
 -- | ISO 4217 currency code for Telegram Premium gift code payment
@@ -2799,6 +2803,9 @@ PremiumFeatureLastSeenTimes :: PremiumFeature
 
 -- | The ability to use Business features
 PremiumFeatureBusiness :: PremiumFeature
+
+-- | The ability to use all available message effects
+PremiumFeatureMessageEffects :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
@@ -4854,12 +4861,37 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputPassportElementError.InputPasspo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPassportElementError.InputPassportElementError
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPassportElementError.InputPassportElementError
 
+module TD.Data.InputPaidMediaType
+
+-- | Describes type of paid media to sent
+data InputPaidMediaType
+
+-- | The media is a photo. The photo must be at most 10 MB in size. The
+--   photo's width and height must not exceed 10000 in total. Width and
+--   height ratio must be at most 20
+InputPaidMediaTypePhoto :: InputPaidMediaType
+
+-- | The media is a video
+InputPaidMediaTypeVideo :: Maybe Int -> Maybe Bool -> InputPaidMediaType
+
+-- | Duration of the video, in seconds
+[duration] :: InputPaidMediaType -> Maybe Int
+
+-- | True, if the video is supposed to be streamed
+[supports_streaming] :: InputPaidMediaType -> Maybe Bool
+instance GHC.Show.Show TD.Data.InputPaidMediaType.InputPaidMediaType
+instance GHC.Classes.Eq TD.Data.InputPaidMediaType.InputPaidMediaType
+instance TD.Lib.Internal.ShortShow TD.Data.InputPaidMediaType.InputPaidMediaType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPaidMediaType.InputPaidMediaType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPaidMediaType.InputPaidMediaType
+
 module TD.Data.InputInvoice
 
 -- | Describes an invoice to process
 data InputInvoice
 
--- | An invoice from a message of the type messageInvoice
+-- | An invoice from a message of the type messageInvoice or paid media
+--   purchase from messagePaidMedia
 InputInvoiceMessage :: Maybe Int -> Maybe Int -> InputInvoice
 
 -- | Chat identifier of the message
@@ -5045,6 +5077,36 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputPersonalDocument.InputPersonalDo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPersonalDocument.InputPersonalDocument
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPersonalDocument.InputPersonalDocument
 
+module TD.Data.InputPaidMedia
+data InputPaidMedia
+
+-- | Describes a paid media to be sent
+InputPaidMedia :: Maybe InputPaidMediaType -> Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> InputPaidMedia
+
+-- | Type of the media
+[_type] :: InputPaidMedia -> Maybe InputPaidMediaType
+
+-- | Photo or video to be sent
+[media] :: InputPaidMedia -> Maybe InputFile
+
+-- | Media thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputPaidMedia -> Maybe InputThumbnail
+
+-- | File identifiers of the stickers added to the media, if applicable
+[added_sticker_file_ids] :: InputPaidMedia -> Maybe [Int]
+
+-- | Media width
+[width] :: InputPaidMedia -> Maybe Int
+
+-- | Media height
+[height] :: InputPaidMedia -> Maybe Int
+defaultInputPaidMedia :: InputPaidMedia
+instance GHC.Show.Show TD.Data.InputPaidMedia.InputPaidMedia
+instance GHC.Classes.Eq TD.Data.InputPaidMedia.InputPaidMedia
+instance TD.Lib.Internal.ShortShow TD.Data.InputPaidMedia.InputPaidMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPaidMedia.InputPaidMedia
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPaidMedia.InputPaidMedia
+
 module TD.Data.InputCredentials
 
 -- | Contains information about the payment method chosen by the user
@@ -5190,14 +5252,18 @@ data InlineKeyboardButtonType
 -- | A button that opens a specified URL
 InlineKeyboardButtonTypeUrl :: Maybe Text -> InlineKeyboardButtonType
 
--- | HTTP or tg:// URL to open
+-- | HTTP or tg:// URL to open. If the link is of the type
+--   internalLinkTypeWebApp, then the button must be marked as a Web App
+--   button
 [url] :: InlineKeyboardButtonType -> Maybe Text
 
 -- | A button that opens a specified URL and automatically authorize the
 --   current user by calling getLoginUrlInfo
 InlineKeyboardButtonTypeLoginUrl :: Maybe Text -> Maybe Int -> Maybe Text -> InlineKeyboardButtonType
 
--- | HTTP or tg:// URL to open
+-- | HTTP or tg:// URL to open. If the link is of the type
+--   internalLinkTypeWebApp, then the button must be marked as a Web App
+--   button
 [url] :: InlineKeyboardButtonType -> Maybe Text
 
 -- | Unique button identifier
@@ -5209,7 +5275,9 @@ InlineKeyboardButtonTypeLoginUrl :: Maybe Text -> Maybe Int -> Maybe Text -> Inl
 -- | A button that opens a Web App by calling openWebApp
 InlineKeyboardButtonTypeWebApp :: Maybe Text -> InlineKeyboardButtonType
 
--- | HTTP or tg:// URL to open
+-- | HTTP or tg:// URL to open. If the link is of the type
+--   internalLinkTypeWebApp, then the button must be marked as a Web App
+--   button
 [url] :: InlineKeyboardButtonType -> Maybe Text
 
 -- | A button that sends a callback query to a bot
@@ -5954,7 +6022,7 @@ data MessageCopyOptions
 
 -- | Options to be used when a message content is copied without reference
 --   to the original sender. Service messages, messages with
---   messageInvoice, messagePremiumGiveaway, or
+--   messageInvoice, messagePaidMedia, messagePremiumGiveaway, or
 --   messagePremiumGiveawayWinners content can't be copied
 MessageCopyOptions :: Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Bool -> MessageCopyOptions
 
@@ -6066,6 +6134,33 @@ instance GHC.Classes.Eq TD.Data.InputBusinessChatLink.InputBusinessChatLink
 instance TD.Lib.Internal.ShortShow TD.Data.InputBusinessChatLink.InputBusinessChatLink
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBusinessChatLink.InputBusinessChatLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBusinessChatLink.InputBusinessChatLink
+
+module TD.Data.FirebaseDeviceVerificationParameters
+
+-- | Describes parameters to be used for device verification
+data FirebaseDeviceVerificationParameters
+
+-- | Device verification must be performed with the SafetyNet Attestation
+--   API
+FirebaseDeviceVerificationParametersSafetyNet :: Maybe ByteString -> FirebaseDeviceVerificationParameters
+
+-- | Nonce to pass to the SafetyNet Attestation API
+[nonce] :: FirebaseDeviceVerificationParameters -> Maybe ByteString
+
+-- | Device verification must be performed with the classic Play Integrity
+--   verification
+--   (https:/<i>developer.android.com</i>google<i>play</i>integrity/classic)
+FirebaseDeviceVerificationParametersPlayIntegrity :: Maybe Text -> Maybe Int -> FirebaseDeviceVerificationParameters
+
+-- | Base64url-encoded nonce to pass to the Play Integrity API
+[_nonce] :: FirebaseDeviceVerificationParameters -> Maybe Text
+
+-- | Cloud project number to pass to the Play Integrity API
+[cloud_project_number] :: FirebaseDeviceVerificationParameters -> Maybe Int
+instance GHC.Show.Show TD.Data.FirebaseDeviceVerificationParameters.FirebaseDeviceVerificationParameters
+instance GHC.Classes.Eq TD.Data.FirebaseDeviceVerificationParameters.FirebaseDeviceVerificationParameters
+instance TD.Lib.Internal.ShortShow TD.Data.FirebaseDeviceVerificationParameters.FirebaseDeviceVerificationParameters
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FirebaseDeviceVerificationParameters.FirebaseDeviceVerificationParameters
 
 module TD.Data.FirebaseAuthenticationSettings
 
@@ -6814,6 +6909,45 @@ instance GHC.Classes.Eq TD.Data.ProductInfo.ProductInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ProductInfo.ProductInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProductInfo.ProductInfo
 
+module TD.Data.PaidMedia
+
+-- | Describes a paid media
+data PaidMedia
+
+-- | The media is hidden until the invoice is paid
+PaidMediaPreview :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Minithumbnail -> PaidMedia
+
+-- | Media width; 0 if unknown
+[width] :: PaidMedia -> Maybe Int
+
+-- | Media height; 0 if unknown
+[height] :: PaidMedia -> Maybe Int
+
+-- | Media duration, in seconds; 0 if unknown
+[duration] :: PaidMedia -> Maybe Int
+
+-- | Media minithumbnail; may be null
+[minithumbnail] :: PaidMedia -> Maybe Minithumbnail
+
+-- | The media is a photo
+PaidMediaPhoto :: Maybe Photo -> PaidMedia
+
+-- | The photo
+[photo] :: PaidMedia -> Maybe Photo
+
+-- | The media is a video
+PaidMediaVideo :: Maybe Video -> PaidMedia
+
+-- | The video
+[video] :: PaidMedia -> Maybe Video
+
+-- | The media is unsupported
+PaidMediaUnsupported :: PaidMedia
+instance GHC.Show.Show TD.Data.PaidMedia.PaidMedia
+instance GHC.Classes.Eq TD.Data.PaidMedia.PaidMedia
+instance TD.Lib.Internal.ShortShow TD.Data.PaidMedia.PaidMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PaidMedia.PaidMedia
+
 module TD.Data.StarTransactionPartner
 
 -- | Describes source or recipient of a transaction with Telegram stars
@@ -6834,20 +6968,33 @@ StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactio
 -- | State of the withdrawal; may be null for refunds from Fragment
 [withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
 
--- | The transaction is a transaction with another user
-StarTransactionPartnerUser :: Maybe Int -> Maybe ProductInfo -> StarTransactionPartner
+-- | The transaction is a transaction with Telegram Ad platform
+StarTransactionPartnerTelegramAds :: StarTransactionPartner
 
--- | Identifier of the user
-[user_id] :: StarTransactionPartner -> Maybe Int
+-- | The transaction is a transaction with a bot
+StarTransactionPartnerBot :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> StarTransactionPartner
 
--- | Information about the bought product; may be null if none
+-- | Identifier of the bot
+[bot_user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Information about the bought product; may be null if not applicable
 [product_info] :: StarTransactionPartner -> Maybe ProductInfo
 
+-- | Invoice payload; for bots only
+[invoice_payload] :: StarTransactionPartner -> Maybe ByteString
+
 -- | The transaction is a transaction with a channel chat
-StarTransactionPartnerChannel :: Maybe Int -> StarTransactionPartner
+StarTransactionPartnerChannel :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
 
 -- | Identifier of the chat
 [chat_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be an
+--   identifier of a deleted message
+[paid_media_message_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Information about the bought media
+[media] :: StarTransactionPartner -> Maybe [PaidMedia]
 
 -- | The transaction is a transaction with unknown partner
 StarTransactionPartnerUnsupported :: StarTransactionPartner
@@ -6949,57 +7096,6 @@ instance GHC.Show.Show TD.Data.MessageSponsor.MessageSponsor
 instance GHC.Classes.Eq TD.Data.MessageSponsor.MessageSponsor
 instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsor.MessageSponsor
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsor.MessageSponsor
-
-module TD.Data.MessageExtendedMedia
-
--- | Describes a media, which is attached to an invoice
-data MessageExtendedMedia
-
--- | The media is hidden until the invoice is paid
-MessageExtendedMediaPreview :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Minithumbnail -> Maybe FormattedText -> MessageExtendedMedia
-
--- | Media width; 0 if unknown
-[width] :: MessageExtendedMedia -> Maybe Int
-
--- | Media height; 0 if unknown
-[height] :: MessageExtendedMedia -> Maybe Int
-
--- | Media duration, in seconds; 0 if unknown
-[duration] :: MessageExtendedMedia -> Maybe Int
-
--- | Media minithumbnail; may be null
-[minithumbnail] :: MessageExtendedMedia -> Maybe Minithumbnail
-
--- | Media caption
-[caption] :: MessageExtendedMedia -> Maybe FormattedText
-
--- | The media is a photo
-MessageExtendedMediaPhoto :: Maybe Photo -> Maybe FormattedText -> MessageExtendedMedia
-
--- | The photo
-[photo] :: MessageExtendedMedia -> Maybe Photo
-
--- | Media caption
-[caption] :: MessageExtendedMedia -> Maybe FormattedText
-
--- | The media is a video
-MessageExtendedMediaVideo :: Maybe Video -> Maybe FormattedText -> MessageExtendedMedia
-
--- | The video
-[video] :: MessageExtendedMedia -> Maybe Video
-
--- | Media caption
-[caption] :: MessageExtendedMedia -> Maybe FormattedText
-
--- | The media is unsupported
-MessageExtendedMediaUnsupported :: Maybe FormattedText -> MessageExtendedMedia
-
--- | Media caption
-[caption] :: MessageExtendedMedia -> Maybe FormattedText
-instance GHC.Show.Show TD.Data.MessageExtendedMedia.MessageExtendedMedia
-instance GHC.Classes.Eq TD.Data.MessageExtendedMedia.MessageExtendedMedia
-instance TD.Lib.Internal.ShortShow TD.Data.MessageExtendedMedia.MessageExtendedMedia
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageExtendedMedia.MessageExtendedMedia
 
 module TD.Data.NotificationSound
 data NotificationSound
@@ -8367,8 +8463,9 @@ InputMessageAnimation :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] 
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation; not supported in secret chats
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
 [show_caption_above_media] :: InputMessageContent -> Maybe Bool
 
 -- | True, if the animation preview must be covered by a spoiler animation;
@@ -8415,6 +8512,26 @@ InputMessageDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool ->
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
 
+-- | A message with paid media; can be used only in channel chats with
+--   supergroupFullInfo.has_paid_media_allowed
+InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedText -> Maybe Bool -> InputMessageContent
+
+-- | The number of stars that must be paid to see the media;
+--   1-getOption("paid_media_message_star_count_max")
+[star_count] :: InputMessageContent -> Maybe Int
+
+-- | The content of the paid media
+[paid_media] :: InputMessageContent -> Maybe [InputPaidMedia]
+
+-- | Animation caption; pass null to use an empty caption;
+--   0-getOption("message_caption_length_max") characters
+[caption] :: InputMessageContent -> Maybe FormattedText
+
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
+[show_caption_above_media] :: InputMessageContent -> Maybe Bool
+
 -- | A photo message
 InputMessagePhoto :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
 
@@ -8439,8 +8556,9 @@ InputMessagePhoto :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> M
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation; not supported in secret chats
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
 [show_caption_above_media] :: InputMessageContent -> Maybe Bool
 
 -- | Photo self-destruct type; pass null if none; private chats only
@@ -8496,8 +8614,9 @@ InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> M
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation; not supported in secret chats
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
 [show_caption_above_media] :: InputMessageContent -> Maybe Bool
 
 -- | Photo self-destruct type; pass null if none; private chats only
@@ -8597,7 +8716,7 @@ InputMessageGame :: Maybe Int -> Maybe Text -> InputMessageContent
 [game_short_name] :: InputMessageContent -> Maybe Text
 
 -- | A message with an invoice; can be used only by bots
-InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe InputMessageContent -> InputMessageContent
+InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe InputPaidMedia -> Maybe FormattedText -> InputMessageContent
 
 -- | Invoice
 [invoice] :: InputMessageContent -> Maybe Invoice
@@ -8633,10 +8752,12 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 --   of the invoice message
 [start_parameter] :: InputMessageContent -> Maybe Text
 
--- | The content of extended media attached to the invoice. The content of
---   the message to be sent. Must be one of the following types:
---   inputMessagePhoto, inputMessageVideo
-[extended_media_content] :: InputMessageContent -> Maybe InputMessageContent
+-- | The content of paid media attached to the invoice; pass null if none
+[_paid_media] :: InputMessageContent -> Maybe InputPaidMedia
+
+-- | Paid media caption; pass null to use an empty caption;
+--   0-getOption("message_caption_length_max") characters
+[paid_media_caption] :: InputMessageContent -> Maybe FormattedText
 
 -- | A message with a poll. Polls can't be sent to secret chats. Polls can
 --   be sent only to a private chat with a bot
@@ -11749,7 +11870,7 @@ InternalLinkTypeBotStart :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLi
 --   group chat to a supergroup chat. Then, if start_parameter isn't empty,
 --   call sendBotStartMessage with the given start parameter and the chosen
 --   chat; otherwise, just send /start message with bot's username added to
---   the chat.
+--   the chat
 InternalLinkTypeBotStartInGroup :: Maybe Text -> Maybe Text -> Maybe ChatAdministratorRights -> InternalLinkType
 
 -- | Username of the bot
@@ -11994,13 +12115,17 @@ InternalLinkTypeSettings :: InternalLinkType
 --   toggleBotIsAddedToAttachmentMenu to add the bot. If the bot is added
 --   to side menu, then use getWebAppUrl with the given URL and open the
 --   returned URL as a Web App
-InternalLinkTypeSideMenuBot :: Maybe Text -> Maybe Text -> InternalLinkType
+InternalLinkTypeSideMenuBot :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
 
 -- | Username of the bot
 [bot_username] :: InternalLinkType -> Maybe Text
 
 -- | URL to be passed to openWebApp
 [url] :: InternalLinkType -> Maybe Text
+
+-- | True, if the Web App must be opened in a compact mode instead of a
+--   full-size mode
+[is_compact] :: InternalLinkType -> Maybe Bool
 
 -- | The link is a link to a sticker set. Call searchStickerSet with the
 --   given sticker set name to process the link and show the sticker set.
@@ -12092,7 +12217,7 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 --   service. If the user accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
-InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> InternalLinkType
+InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
 
 -- | Username of the bot
 [bot_username] :: InternalLinkType -> Maybe Text
@@ -12102,6 +12227,10 @@ InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> InternalLink
 
 -- | The parameter to be passed to sendBotStartMessage
 [start_parameter] :: InternalLinkType -> Maybe Text
+
+-- | True, if the Web App must be opened in a compact mode instead of a
+--   full-size mode
+[is_compact] :: InternalLinkType -> Maybe Bool
 instance GHC.Show.Show TD.Data.InternalLinkType.InternalLinkType
 instance GHC.Classes.Eq TD.Data.InternalLinkType.InternalLinkType
 instance TD.Lib.Internal.ShortShow TD.Data.InternalLinkType.InternalLinkType
@@ -13481,7 +13610,9 @@ BotMenuButton :: Maybe Text -> Maybe Text -> BotMenuButton
 -- | Text of the button
 [text] :: BotMenuButton -> Maybe Text
 
--- | URL to be passed to openWebApp
+-- | URL of a Web App to open when the button is pressed. If the link is of
+--   the type internalLinkTypeWebApp, then it must be processed
+--   accordingly. Otherwise, the link must be passed to openWebApp
 [url] :: BotMenuButton -> Maybe Text
 defaultBotMenuButton :: BotMenuButton
 instance GHC.Show.Show TD.Data.BotMenuButton.BotMenuButton
@@ -13800,7 +13931,7 @@ BackgroundTypePattern :: Maybe BackgroundFill -> Maybe Int -> Maybe Bool -> Mayb
 [fill] :: BackgroundType -> Maybe BackgroundFill
 
 -- | Intensity of the pattern when it is shown above the filled background;
---   0-100.
+--   0-100
 [intensity] :: BackgroundType -> Maybe Int
 
 -- | True, if the background fill must be applied only to the pattern
@@ -14187,15 +14318,10 @@ AuthenticationCodeTypeFragment :: Maybe Text -> Maybe Int -> AuthenticationCodeT
 
 -- | A digit-only authentication code is delivered via Firebase
 --   Authentication to the official Android application
-AuthenticationCodeTypeFirebaseAndroid :: Maybe Bool -> Maybe ByteString -> Maybe Int -> AuthenticationCodeType
+AuthenticationCodeTypeFirebaseAndroid :: Maybe FirebaseDeviceVerificationParameters -> Maybe Int -> AuthenticationCodeType
 
--- | True, if Play Integrity API must be used for device verification.
---   Otherwise, SafetyNet Attestation API must be used
-[use_play_integrity] :: AuthenticationCodeType -> Maybe Bool
-
--- | Nonce to pass to the Play Integrity API or the SafetyNet Attestation
---   API
-[nonce] :: AuthenticationCodeType -> Maybe ByteString
+-- | Parameters to be used for device verification
+[device_verification_parameters] :: AuthenticationCodeType -> Maybe FirebaseDeviceVerificationParameters
 
 -- | Length of the code
 [_length] :: AuthenticationCodeType -> Maybe Int
@@ -14830,6 +14956,16 @@ PushMessageContentLocation :: Maybe Bool -> Maybe Bool -> PushMessageContent
 
 -- | True, if the location is live
 [is_live] :: PushMessageContent -> Maybe Bool
+
+-- | True, if the message is a pinned message with the specified content
+[is_pinned] :: PushMessageContent -> Maybe Bool
+
+-- | A message with paid media
+PushMessageContentPaidMedia :: Maybe Int -> Maybe Bool -> PushMessageContent
+
+-- | Number of stars needed to buy access to the media in the message; 0
+--   for pinned message
+[star_count] :: PushMessageContent -> Maybe Int
 
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
@@ -15877,7 +16013,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -15952,6 +16088,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 -- | True, if aggressive anti-spam checks are enabled in the supergroup.
 --   The value of this field is only available to chat administrators
 [has_aggressive_anti_spam_enabled] :: SupergroupFullInfo -> Maybe Bool
+
+-- | True, if paid media can be sent and forwarded to the channel chat; for
+--   channels only
+[has_paid_media_allowed] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if the supergroup or channel has pinned stories
 [has_pinned_stories] :: SupergroupFullInfo -> Maybe Bool
@@ -16374,8 +16514,8 @@ MessageAnimation :: Maybe Animation -> Maybe FormattedText -> Maybe Bool -> Mayb
 -- | Animation caption
 [caption] :: MessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation
 [show_caption_above_media] :: MessageContent -> Maybe Bool
 
 -- | True, if the animation preview must be covered by a spoiler animation
@@ -16403,6 +16543,22 @@ MessageDocument :: Maybe Document -> Maybe FormattedText -> MessageContent
 -- | Animation caption
 [caption] :: MessageContent -> Maybe FormattedText
 
+-- | A message with paid media
+MessagePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> Maybe FormattedText -> Maybe Bool -> MessageContent
+
+-- | Number of stars needed to buy access to the media in the message
+[star_count] :: MessageContent -> Maybe Int
+
+-- | Information about the media
+[media] :: MessageContent -> Maybe [PaidMedia]
+
+-- | Animation caption
+[caption] :: MessageContent -> Maybe FormattedText
+
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation
+[show_caption_above_media] :: MessageContent -> Maybe Bool
+
 -- | A photo message
 MessagePhoto :: Maybe Photo -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
 
@@ -16412,8 +16568,8 @@ MessagePhoto :: Maybe Photo -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -
 -- | Animation caption
 [caption] :: MessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation
 [show_caption_above_media] :: MessageContent -> Maybe Bool
 
 -- | True, if the animation preview must be covered by a spoiler animation
@@ -16441,8 +16597,8 @@ MessageVideo :: Maybe Video -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -
 -- | Animation caption
 [caption] :: MessageContent -> Maybe FormattedText
 
--- | True, if caption must be shown above the animation; otherwise, caption
---   must be shown below the animation
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation
 [show_caption_above_media] :: MessageContent -> Maybe Bool
 
 -- | True, if the animation preview must be covered by a spoiler animation
@@ -16585,7 +16741,7 @@ MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
 
 -- | A message with an invoice from a bot. Use getInternalLink with
 --   internalLinkTypeBotStart to share the invoice
-MessageInvoice :: Maybe ProductInfo -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe MessageExtendedMedia -> MessageContent
+MessageInvoice :: Maybe ProductInfo -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe PaidMedia -> Maybe FormattedText -> MessageContent
 
 -- | Information about the product
 [product_info] :: MessageContent -> Maybe ProductInfo
@@ -16609,8 +16765,11 @@ MessageInvoice :: Maybe ProductInfo -> Maybe Text -> Maybe Int -> Maybe Text -> 
 --   been purchased
 [receipt_message_id] :: MessageContent -> Maybe Int
 
--- | Extended media attached to the invoice; may be null
-[extended_media] :: MessageContent -> Maybe MessageExtendedMedia
+-- | Extended media attached to the invoice; may be null if none
+[paid_media] :: MessageContent -> Maybe PaidMedia
+
+-- | Extended media caption; may be null if none
+[paid_media_caption] :: MessageContent -> Maybe FormattedText
 
 -- | A message with information about an ended call
 MessageCall :: Maybe Bool -> Maybe CallDiscardReason -> Maybe Int -> MessageContent
@@ -16947,7 +17106,9 @@ MessagePremiumGiftCode :: Maybe MessageSender -> Maybe Bool -> Maybe Bool -> May
 -- | The gift code
 [code] :: MessageContent -> Maybe Text
 
--- | A Telegram Premium giveaway was created for the chat
+-- | A Telegram Premium giveaway was created for the chat. Use
+--   telegramPaymentPurposePremiumGiveaway or
+--   storePaymentPurposePremiumGiveaway to create a giveaway
 MessagePremiumGiveawayCreated :: MessageContent
 
 -- | A Telegram Premium giveaway
@@ -17271,7 +17432,7 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Mess
 --   without media. Can be only one of the following types:
 --   messageAnimation, messageAudio, messageContact, messageDice,
 --   messageDocument, messageGame, messageInvoice, messageLocation,
---   messagePhoto, messagePoll, messagePremiumGiveaway,
+--   messagePaidMedia, messagePhoto, messagePoll, messagePremiumGiveaway,
 --   messagePremiumGiveawayWinners, messageSticker, messageStory,
 --   messageText (for link preview), messageVenue, messageVideo,
 --   messageVideoNote, or messageVoiceNote
@@ -19649,16 +19810,20 @@ UpdateFileRemovedFromDownloads :: Maybe Int -> Maybe DownloadedFileCounts -> Upd
 --   performed; for official mobile applications only. The method
 --   setApplicationVerificationToken must be called once the verification
 --   is completed or failed
-UpdateApplicationVerificationRequired :: Maybe Int -> Maybe Text -> Update
+UpdateApplicationVerificationRequired :: Maybe Int -> Maybe Text -> Maybe Int -> Update
 
 -- | Unique identifier for the verification process
 [verification_id] :: Update -> Maybe Int
 
--- | Unique nonce for the classic Play Integrity verification
+-- | Unique base64url-encoded nonce for the classic Play Integrity
+--   verification
 --   (https:/<i>developer.android.com</i>google<i>play</i>integrity/classic)
 --   for Android, or a unique string to compare with verify_nonce field
 --   from a push notification for iOS
 [nonce] :: Update -> Maybe Text
+
+-- | Cloud project number to pass to the Play Integrity API on Android
+[cloud_project_number] :: Update -> Maybe Int
 
 -- | New call was created or information about a call was updated
 UpdateCall :: Maybe Call -> Update
@@ -23203,9 +23368,9 @@ EditBusinessMessageCaption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Repl
 --   0-getOption("message_caption_length_max") characters
 [caption] :: EditBusinessMessageCaption -> Maybe FormattedText
 
--- | Pass true to show the caption above the media; otherwise, caption will
---   be shown below the media. Can be true only for animation, photo, and
---   video messages
+-- | Pass true to show the caption above the media; otherwise, the caption
+--   will be shown below the media. Can be true only for animation, photo,
+--   and video messages
 [show_caption_above_media] :: EditBusinessMessageCaption -> Maybe Bool
 defaultEditBusinessMessageCaption :: EditBusinessMessageCaption
 instance GHC.Show.Show TD.Query.EditBusinessMessageCaption.EditBusinessMessageCaption
@@ -23485,9 +23650,9 @@ EditInlineMessageCaption :: Maybe Text -> Maybe ReplyMarkup -> Maybe FormattedTe
 --   0-getOption("message_caption_length_max") characters
 [caption] :: EditInlineMessageCaption -> Maybe FormattedText
 
--- | Pass true to show the caption above the media; otherwise, caption will
---   be shown below the media. Can be true only for animation, photo, and
---   video messages
+-- | Pass true to show the caption above the media; otherwise, the caption
+--   will be shown below the media. Can be true only for animation, photo,
+--   and video messages
 [show_caption_above_media] :: EditInlineMessageCaption -> Maybe Bool
 defaultEditInlineMessageCaption :: EditInlineMessageCaption
 instance GHC.Show.Show TD.Query.EditInlineMessageCaption.EditInlineMessageCaption
@@ -23616,9 +23781,9 @@ EditMessageCaption :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Forma
 --   characters; pass null to remove caption
 [caption] :: EditMessageCaption -> Maybe FormattedText
 
--- | Pass true to show the caption above the media; otherwise, caption will
---   be shown below the media. Can be true only for animation, photo, and
---   video messages
+-- | Pass true to show the caption above the media; otherwise, the caption
+--   will be shown below the media. Can be true only for animation, photo,
+--   and video messages
 [show_caption_above_media] :: EditMessageCaption -> Maybe Bool
 defaultEditMessageCaption :: EditMessageCaption
 instance GHC.Show.Show TD.Query.EditMessageCaption.EditMessageCaption
@@ -25163,8 +25328,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueTransactions.GetC
 
 module TD.Query.GetChatRevenueWithdrawalUrl
 
--- | Returns URL for chat revenue withdrawal; requires owner privileges in
---   the chat. Currently, this method can be used only for channels if
+-- | Returns a URL for chat revenue withdrawal; requires owner privileges
+--   in the chat. Currently, this method can be used only for channels if
 --   supergroupFullInfo.can_get_revenue_statistics == true and
 --   getOption("can_withdraw_chat_revenue"). Returns <a>HttpUrl</a>
 data GetChatRevenueWithdrawalUrl
@@ -26948,8 +27113,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPasswordState.GetPasswordSta
 module TD.Query.GetPaymentForm
 
 -- | Returns an invoice payment form. This method must be called when the
---   user presses inline button of the type inlineKeyboardButtonTypeBuy.
---   Returns <a>PaymentForm</a>
+--   user presses inline button of the type inlineKeyboardButtonTypeBuy, or
+--   wants to buy access to media in a messagePaidMedia message. Returns
+--   <a>PaymentForm</a>
 data GetPaymentForm
 GetPaymentForm :: Maybe InputInvoice -> Maybe ThemeParameters -> GetPaymentForm
 
@@ -27526,6 +27692,22 @@ instance GHC.Classes.Eq TD.Query.GetSecretChat.GetSecretChat
 instance TD.Lib.Internal.ShortShow TD.Query.GetSecretChat.GetSecretChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSecretChat.GetSecretChat
 
+module TD.Query.GetStarAdAccountUrl
+
+-- | Returns a URL for a Telegram Ad platform account that can be used to
+--   set up advertisments for the chat paid in the owned Telegram stars.
+--   Returns <a>HttpUrl</a>
+data GetStarAdAccountUrl
+GetStarAdAccountUrl :: Maybe MessageSender -> GetStarAdAccountUrl
+
+-- | Identifier of the owner of the Telegram stars; can be identifier of an
+--   owned bot, or identifier of an owned channel chat
+[owner_id] :: GetStarAdAccountUrl -> Maybe MessageSender
+instance GHC.Show.Show TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
+instance GHC.Classes.Eq TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
+
 module TD.Query.GetStarPaymentOptions
 
 -- | Returns available options for Telegram stars purchase. Returns
@@ -27545,8 +27727,7 @@ data GetStarRevenueStatistics
 GetStarRevenueStatistics :: Maybe MessageSender -> Maybe Bool -> GetStarRevenueStatistics
 
 -- | Identifier of the owner of the Telegram stars; can be identifier of an
---   owned bot, or identifier of a channel chat with
---   supergroupFullInfo.can_get_revenue_statistics == true
+--   owned bot, or identifier of an owned channel chat
 [owner_id] :: GetStarRevenueStatistics -> Maybe MessageSender
 
 -- | Pass true if a dark theme is used by the application
@@ -27588,13 +27769,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarTransactions.GetStarTran
 
 module TD.Query.GetStarWithdrawalUrl
 
--- | Returns URL for Telegram star withdrawal. Returns <a>HttpUrl</a>
+-- | Returns a URL for Telegram star withdrawal. Returns <a>HttpUrl</a>
 data GetStarWithdrawalUrl
 GetStarWithdrawalUrl :: Maybe MessageSender -> Maybe Int -> Maybe Text -> GetStarWithdrawalUrl
 
 -- | Identifier of the owner of the Telegram stars; can be identifier of an
---   owned bot, or identifier of a channel chat with
---   supergroupFullInfo.can_get_revenue_statistics == true
+--   owned bot, or identifier of an owned channel chat
 [owner_id] :: GetStarWithdrawalUrl -> Maybe MessageSender
 
 -- | The number of Telegram stars to withdraw. Must be at least
