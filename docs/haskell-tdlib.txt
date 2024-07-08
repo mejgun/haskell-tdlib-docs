@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.37.0
+@version 2.0.38.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -630,7 +630,7 @@ TextEntityTypeMediaTimestamp :: Maybe Int -> TextEntityType
 
 -- | Timestamp from which a video<i>audio</i>video note<i>voice
 --   note</i>story playing must start, in seconds. The media can be in the
---   content or the web page preview of the current message, or in the same
+--   content or the link preview of the current message, or in the same
 --   places in the replied message
 [media_timestamp] :: TextEntityType -> Maybe Int
 instance GHC.Show.Show TD.Data.TextEntityType.TextEntityType
@@ -7097,6 +7097,27 @@ instance GHC.Classes.Eq TD.Data.MessageSponsor.MessageSponsor
 instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsor.MessageSponsor
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsor.MessageSponsor
 
+module TD.Data.LinkPreviewAlbumMedia
+
+-- | Describes a media from a link preview album
+data LinkPreviewAlbumMedia
+
+-- | The media is a photo
+LinkPreviewAlbumMediaPhoto :: Maybe Photo -> LinkPreviewAlbumMedia
+
+-- | Photo description
+[photo] :: LinkPreviewAlbumMedia -> Maybe Photo
+
+-- | The media is a video
+LinkPreviewAlbumMediaVideo :: Maybe Video -> LinkPreviewAlbumMedia
+
+-- | Video description
+[video] :: LinkPreviewAlbumMedia -> Maybe Video
+instance GHC.Show.Show TD.Data.LinkPreviewAlbumMedia.LinkPreviewAlbumMedia
+instance GHC.Classes.Eq TD.Data.LinkPreviewAlbumMedia.LinkPreviewAlbumMedia
+instance TD.Lib.Internal.ShortShow TD.Data.LinkPreviewAlbumMedia.LinkPreviewAlbumMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LinkPreviewAlbumMedia.LinkPreviewAlbumMedia
+
 module TD.Data.NotificationSound
 data NotificationSound
 
@@ -7740,7 +7761,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Document.Document
 
 module TD.Data.RichText
 
--- | Describes a text object inside an instant-view web page
+-- | Describes a formatted text object
 data RichText
 
 -- | A plain text
@@ -7841,7 +7862,7 @@ RichTextIcon :: Maybe Document -> Maybe Int -> Maybe Int -> RichText
 --   unknown
 [height] :: RichText -> Maybe Int
 
--- | A reference to a richTexts object on the same web page
+-- | A reference to a richTexts object on the same page
 RichTextReference :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
 
 -- | Text
@@ -7860,7 +7881,7 @@ RichTextAnchor :: Maybe Text -> RichText
 -- | Anchor name
 [name] :: RichText -> Maybe Text
 
--- | A link to an anchor on the same web page
+-- | A link to an anchor on the same page
 RichTextAnchorLink :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
 
 -- | Text
@@ -7915,8 +7936,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockTableCell.PageBlock
 module TD.Data.PageBlockCaption
 data PageBlockCaption
 
--- | Contains a caption of an instant view web page block, consisting of a
---   text and a trailing credit
+-- | Contains a caption of another block
 PageBlockCaption :: Maybe RichText -> Maybe RichText -> PageBlockCaption
 
 -- | Content of the caption
@@ -9950,8 +9970,8 @@ ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe
 --   use inline bots
 [can_send_other_messages] :: ChatPermissions -> Maybe Bool
 
--- | True, if the user may add a web page preview to their messages
-[can_add_web_page_previews] :: ChatPermissions -> Maybe Bool
+-- | True, if the user may add a link preview to their messages
+[can_add_link_previews] :: ChatPermissions -> Maybe Bool
 
 -- | True, if the user can change the chat title, photo, and other settings
 [can_change_info] :: ChatPermissions -> Maybe Bool
@@ -12150,7 +12170,7 @@ InternalLinkTypeStory :: Maybe Text -> Maybe Int -> InternalLinkType
 -- | Story identifier
 [story_id] :: InternalLinkType -> Maybe Int
 
--- | The link is a link to a theme. TDLib has no theme support yet
+-- | The link is a link to a cloud theme. TDLib has no theme support yet
 InternalLinkTypeTheme :: Maybe Text -> InternalLinkType
 
 -- | Name of the theme
@@ -14692,105 +14712,6 @@ instance GHC.Classes.Eq TD.Data.Animation.Animation
 instance TD.Lib.Internal.ShortShow TD.Data.Animation.Animation
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Animation.Animation
 
-module TD.Data.WebPage
-data WebPage
-
--- | Describes a link preview
-WebPage :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe Photo -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Animation -> Maybe Audio -> Maybe Document -> Maybe Sticker -> Maybe Video -> Maybe VideoNote -> Maybe VoiceNote -> Maybe Int -> Maybe Int -> Maybe [Sticker] -> Maybe Int -> WebPage
-
--- | Original URL of the link
-[url] :: WebPage -> Maybe Text
-
--- | URL to display
-[display_url] :: WebPage -> Maybe Text
-
--- | Type of the web page. Can be: article, photo, audio, video, document,
---   profile, app, or something else
-[_type] :: WebPage -> Maybe Text
-
--- | Short name of the site (e.g., Google Docs, App Store)
-[site_name] :: WebPage -> Maybe Text
-
--- | Title of the content
-[title] :: WebPage -> Maybe Text
-[description] :: WebPage -> Maybe FormattedText
-
--- | Image representing the content; may be null
-[photo] :: WebPage -> Maybe Photo
-
--- | URL to show in the embedded preview
-[embed_url] :: WebPage -> Maybe Text
-
--- | MIME type of the embedded preview, (e.g., text<i>html or video</i>mp4)
-[embed_type] :: WebPage -> Maybe Text
-
--- | Width of the embedded preview
-[embed_width] :: WebPage -> Maybe Int
-
--- | Height of the embedded preview
-[embed_height] :: WebPage -> Maybe Int
-
--- | Duration of the content, in seconds
-[duration] :: WebPage -> Maybe Int
-
--- | Author of the content
-[author] :: WebPage -> Maybe Text
-
--- | True, if size of media in the preview can be changed
-[has_large_media] :: WebPage -> Maybe Bool
-
--- | True, if large media preview must be shown; otherwise, the media
---   preview must be shown small and only the first frame must be shown for
---   videos
-[show_large_media] :: WebPage -> Maybe Bool
-
--- | True, if there is no need to show an ordinary open URL confirmation,
---   when opening the URL from the preview, because the URL is shown in the
---   message text in clear
-[skip_confirmation] :: WebPage -> Maybe Bool
-
--- | True, if the link preview must be shown above message text; otherwise,
---   the link preview must be shown below the message text
-[show_above_text] :: WebPage -> Maybe Bool
-
--- | Preview of the content as an animation, if available; may be null
-[animation] :: WebPage -> Maybe Animation
-
--- | Preview of the content as an audio file, if available; may be null
-[audio] :: WebPage -> Maybe Audio
-
--- | Preview of the content as a document, if available; may be null
-[document] :: WebPage -> Maybe Document
-
--- | Preview of the content as a sticker for small WEBP files, if
---   available; may be null
-[sticker] :: WebPage -> Maybe Sticker
-
--- | Preview of the content as a video, if available; may be null
-[video] :: WebPage -> Maybe Video
-
--- | Preview of the content as a video note, if available; may be null
-[video_note] :: WebPage -> Maybe VideoNote
-
--- | Preview of the content as a voice note, if available; may be null
-[voice_note] :: WebPage -> Maybe VoiceNote
-
--- | The identifier of the sender of the previewed story; 0 if none
-[story_sender_chat_id] :: WebPage -> Maybe Int
-
--- | The identifier of the previewed story; 0 if none
-[story_id] :: WebPage -> Maybe Int
-
--- | Up to 4 stickers from the sticker set available via the link
-[stickers] :: WebPage -> Maybe [Sticker]
-
--- | Version of web page instant view (currently, can be 1 or 2); 0 if none
-[instant_view_version] :: WebPage -> Maybe Int
-instance GHC.Show.Show TD.Data.WebPage.WebPage
-instance GHC.Classes.Eq TD.Data.WebPage.WebPage
-instance TD.Lib.Internal.ShortShow TD.Data.WebPage.WebPage
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebPage.WebPage
-
 module TD.Data.WebApp
 data WebApp
 
@@ -15192,7 +15113,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeaturePromotionAnima
 
 module TD.Data.PageBlock
 
--- | Describes a block of an instant view web page
+-- | Describes a block of an instant view for a web page
 data PageBlock
 
 -- | The title of a page
@@ -15500,7 +15421,7 @@ data WebPageInstantView
 -- | Describes an instant view page for a web page
 WebPageInstantView :: Maybe [PageBlock] -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> WebPageInstantView
 
--- | Content of the web page
+-- | Content of the instant view page
 [page_blocks] :: WebPageInstantView -> Maybe [PageBlock]
 
 -- | Number of the instant view views; 0 if unknown
@@ -15513,7 +15434,7 @@ WebPageInstantView :: Maybe [PageBlock] -> Maybe Int -> Maybe Int -> Maybe Bool 
 [is_rtl] :: WebPageInstantView -> Maybe Bool
 
 -- | True, if the instant view contains the full page. A network request
---   might be needed to get the full web page instant view
+--   might be needed to get the full instant view
 [is_full] :: WebPageInstantView -> Maybe Bool
 
 -- | An internal link to be opened to leave feedback about the instant view
@@ -16013,7 +15934,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -16069,6 +15990,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 
 -- | True, if the supergroup or channel revenue statistics are available
 [can_get_revenue_statistics] :: SupergroupFullInfo -> Maybe Bool
+
+-- | True, if the supergroup or channel Telegram Star revenue statistics
+--   are available
+[can_get_star_revenue_statistics] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if aggressive anti-spam checks can be enabled or disabled in the
 --   supergroup
@@ -16132,6 +16057,301 @@ instance GHC.Show.Show TD.Data.SupergroupFullInfo.SupergroupFullInfo
 instance GHC.Classes.Eq TD.Data.SupergroupFullInfo.SupergroupFullInfo
 instance TD.Lib.Internal.ShortShow TD.Data.SupergroupFullInfo.SupergroupFullInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SupergroupFullInfo.SupergroupFullInfo
+
+module TD.Data.LinkPreviewType
+
+-- | Describes type of link preview
+data LinkPreviewType
+
+-- | The link is a link to a media album consisting of photos and videos
+LinkPreviewTypeAlbum :: Maybe [LinkPreviewAlbumMedia] -> Maybe Text -> LinkPreviewType
+
+-- | The list of album media
+[media] :: LinkPreviewType -> Maybe [LinkPreviewAlbumMedia]
+
+-- | Album caption
+[caption] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to an animation
+LinkPreviewTypeAnimation :: Maybe Animation -> Maybe Text -> LinkPreviewType
+
+-- | The animation
+[animation] :: LinkPreviewType -> Maybe Animation
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to an app at App Store or Google Play
+LinkPreviewTypeApp :: Maybe Photo -> Maybe Text -> LinkPreviewType
+
+-- | Photo for the app
+[photo] :: LinkPreviewType -> Maybe Photo
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to a web site
+LinkPreviewTypeArticle :: Maybe Photo -> Maybe Text -> LinkPreviewType
+
+-- | Photo for the app
+[photo] :: LinkPreviewType -> Maybe Photo
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to an audio
+LinkPreviewTypeAudio :: Maybe Text -> Maybe Text -> Maybe Audio -> Maybe Int -> Maybe Text -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | MIME type of the audio file
+[mime_type] :: LinkPreviewType -> Maybe Text
+
+-- | The audio description; may be null if unknown
+[audio] :: LinkPreviewType -> Maybe Audio
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to a background. Link preview title and description
+--   are available only for filled backgrounds
+LinkPreviewTypeBackground :: Maybe Document -> LinkPreviewType
+
+-- | Document with the background; may be null for filled backgrounds
+[document] :: LinkPreviewType -> Maybe Document
+
+-- | The link is a link to boost a channel chat
+LinkPreviewTypeChannelBoost :: Maybe ChatPhoto -> LinkPreviewType
+
+-- | Photo of the chat; may be null
+[_photo] :: LinkPreviewType -> Maybe ChatPhoto
+
+-- | The link is a link to a chat
+LinkPreviewTypeChat :: Maybe InviteLinkChatType -> Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
+
+-- | Type of the chat
+[_type] :: LinkPreviewType -> Maybe InviteLinkChatType
+
+-- | Photo of the chat; may be null
+[_photo] :: LinkPreviewType -> Maybe ChatPhoto
+
+-- | True, if the link only creates join request
+[creates_join_request] :: LinkPreviewType -> Maybe Bool
+
+-- | The link is a link to a general file
+LinkPreviewTypeDocument :: Maybe Document -> Maybe Text -> LinkPreviewType
+
+-- | Document with the background; may be null for filled backgrounds
+[document] :: LinkPreviewType -> Maybe Document
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to an audio player
+LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Int -> Maybe Text -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to a video player
+LinkPreviewTypeEmbeddedVideoPlayer :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | Expected width of the preview
+[width] :: LinkPreviewType -> Maybe Int
+
+-- | Expected height of the preview
+[height] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to an invoice
+LinkPreviewTypeInvoice :: LinkPreviewType
+
+-- | The link is a link to a text or a poll Telegram message
+LinkPreviewTypeMessage :: LinkPreviewType
+
+-- | The link is a link to a photo
+LinkPreviewTypePhoto :: Maybe Photo -> Maybe Text -> LinkPreviewType
+
+-- | Photo for the app
+[photo] :: LinkPreviewType -> Maybe Photo
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to a Telegram Premium gift code
+LinkPreviewTypePremiumGiftCode :: LinkPreviewType
+
+-- | The link is a link to a shareable chat folder
+LinkPreviewTypeShareableChatFolder :: LinkPreviewType
+
+-- | The link is a link to a sticker message
+LinkPreviewTypeSticker :: Maybe Sticker -> LinkPreviewType
+
+-- | The sticker
+[sticker] :: LinkPreviewType -> Maybe Sticker
+
+-- | The link is a link to a sticker set
+LinkPreviewTypeStickerSet :: Maybe [Sticker] -> LinkPreviewType
+
+-- | Up to 4 stickers from the sticker set
+[stickers] :: LinkPreviewType -> Maybe [Sticker]
+
+-- | The link is a link to a story. Link preview description is unavailable
+LinkPreviewTypeStory :: Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | The identifier of the chat that posted the story
+[story_sender_chat_id] :: LinkPreviewType -> Maybe Int
+
+-- | Story identifier
+[story_id] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to boost a supergroup chat
+LinkPreviewTypeSupergroupBoost :: Maybe ChatPhoto -> LinkPreviewType
+
+-- | Photo of the chat; may be null
+[_photo] :: LinkPreviewType -> Maybe ChatPhoto
+
+-- | The link is a link to a cloud theme. TDLib has no theme support yet
+LinkPreviewTypeTheme :: Maybe [Document] -> Maybe ThemeSettings -> LinkPreviewType
+
+-- | The list of files with theme description
+[documents] :: LinkPreviewType -> Maybe [Document]
+
+-- | Settings for the cloud theme
+[settings] :: LinkPreviewType -> Maybe ThemeSettings
+
+-- | The link preview type is unsupported yet
+LinkPreviewTypeUnsupported :: LinkPreviewType
+
+-- | The link is a link to a user
+LinkPreviewTypeUser :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
+
+-- | Photo of the chat; may be null
+[_photo] :: LinkPreviewType -> Maybe ChatPhoto
+
+-- | True, if the user is a bot
+[is_bot] :: LinkPreviewType -> Maybe Bool
+
+-- | The link is a link to a video
+LinkPreviewTypeVideo :: Maybe Text -> Maybe Text -> Maybe Video -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | MIME type of the audio file
+[mime_type] :: LinkPreviewType -> Maybe Text
+
+-- | The video description; may be null if unknown
+[video] :: LinkPreviewType -> Maybe Video
+
+-- | Expected width of the preview
+[width] :: LinkPreviewType -> Maybe Int
+
+-- | Expected height of the preview
+[height] :: LinkPreviewType -> Maybe Int
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | The link is a link to a video chat
+LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
+
+-- | Photo of the chat; may be null
+[_photo] :: LinkPreviewType -> Maybe ChatPhoto
+
+-- | True, if the video chat is expected to be a live stream in a channel
+--   or a broadcast group
+[is_live_stream] :: LinkPreviewType -> Maybe Bool
+
+-- | The link is a link to a video note message
+LinkPreviewTypeVideoNote :: Maybe VideoNote -> LinkPreviewType
+
+-- | The video note
+[video_note] :: LinkPreviewType -> Maybe VideoNote
+
+-- | The link is a link to a voice note message
+LinkPreviewTypeVoiceNote :: Maybe VoiceNote -> LinkPreviewType
+
+-- | The voice note
+[voice_note] :: LinkPreviewType -> Maybe VoiceNote
+
+-- | The link is a link to a Web App
+LinkPreviewTypeWebApp :: Maybe Photo -> LinkPreviewType
+
+-- | Photo for the app
+[photo] :: LinkPreviewType -> Maybe Photo
+instance GHC.Show.Show TD.Data.LinkPreviewType.LinkPreviewType
+instance GHC.Classes.Eq TD.Data.LinkPreviewType.LinkPreviewType
+instance TD.Lib.Internal.ShortShow TD.Data.LinkPreviewType.LinkPreviewType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LinkPreviewType.LinkPreviewType
+
+module TD.Data.LinkPreview
+data LinkPreview
+
+-- | Describes a link preview
+LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe LinkPreviewType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> LinkPreview
+
+-- | Original URL of the link
+[url] :: LinkPreview -> Maybe Text
+
+-- | URL to display
+[display_url] :: LinkPreview -> Maybe Text
+
+-- | Short name of the site (e.g., Google Docs, App Store)
+[site_name] :: LinkPreview -> Maybe Text
+
+-- | Title of the content
+[title] :: LinkPreview -> Maybe Text
+[description] :: LinkPreview -> Maybe FormattedText
+
+-- | Type of the link preview
+[_type] :: LinkPreview -> Maybe LinkPreviewType
+
+-- | True, if size of media in the preview can be changed
+[has_large_media] :: LinkPreview -> Maybe Bool
+
+-- | True, if large media preview must be shown; otherwise, the media
+--   preview must be shown small and only the first frame must be shown for
+--   videos
+[show_large_media] :: LinkPreview -> Maybe Bool
+
+-- | True, if there is no need to show an ordinary open URL confirmation,
+--   when opening the URL from the preview, because the URL is shown in the
+--   message text in clear
+[skip_confirmation] :: LinkPreview -> Maybe Bool
+
+-- | True, if the link preview must be shown above message text; otherwise,
+--   the link preview must be shown below the message text
+[show_above_text] :: LinkPreview -> Maybe Bool
+
+-- | Version of instant view (currently, can be 1 or 2) for the web page; 0
+--   if none
+[instant_view_version] :: LinkPreview -> Maybe Int
+instance GHC.Show.Show TD.Data.LinkPreview.LinkPreview
+instance GHC.Classes.Eq TD.Data.LinkPreview.LinkPreview
+instance TD.Lib.Internal.ShortShow TD.Data.LinkPreview.LinkPreview
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LinkPreview.LinkPreview
 
 module TD.Data.ChatPhotos
 data ChatPhotos
@@ -16493,13 +16713,13 @@ module TD.Data.MessageContent
 data MessageContent
 
 -- | A text message
-MessageText :: Maybe FormattedText -> Maybe WebPage -> Maybe LinkPreviewOptions -> MessageContent
+MessageText :: Maybe FormattedText -> Maybe LinkPreview -> Maybe LinkPreviewOptions -> MessageContent
 
 -- | Text of the message
 [text] :: MessageContent -> Maybe FormattedText
 
 -- | A link preview attached to the message; may be null
-[web_page] :: MessageContent -> Maybe WebPage
+[link_preview] :: MessageContent -> Maybe LinkPreview
 
 -- | Options which were used for generation of the link preview; may be
 --   null if default options were used
@@ -17044,6 +17264,28 @@ MessagePaymentSuccessfulBot :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bo
 -- | Provider payment identifier
 [provider_payment_charge_id] :: MessageContent -> Maybe Text
 
+-- | A payment has been refunded
+MessagePaymentRefunded :: Maybe MessageSender -> Maybe Text -> Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe Text -> MessageContent
+
+-- | Identifier of the previous owner of the Telegram stars that refunds
+--   them
+[owner_id] :: MessageContent -> Maybe MessageSender
+
+-- | Currency for the product price
+[currency] :: MessageContent -> Maybe Text
+
+-- | Product total price in the smallest units of the currency
+[total_amount] :: MessageContent -> Maybe Int
+
+-- | Invoice payload
+[invoice_payload] :: MessageContent -> Maybe ByteString
+
+-- | Telegram payment identifier
+[telegram_payment_charge_id] :: MessageContent -> Maybe Text
+
+-- | Provider payment identifier
+[provider_payment_charge_id] :: MessageContent -> Maybe Text
+
 -- | Telegram Premium was gifted to the user
 MessageGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
 
@@ -17526,8 +17768,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 [can_get_viewers] :: Message -> Maybe Bool
 
 -- | True, if media timestamp links can be generated for media timestamp
---   entities in the message text, caption or web page description through
---   getMessageLink
+--   entities in the message text, caption or link preview description
+--   through getMessageLink
 [can_get_media_timestamp_links] :: Message -> Maybe Bool
 
 -- | True, if reactions on the message can be reported through
@@ -17949,7 +18191,7 @@ MessageLinkInfo :: Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Message -> Mayb
 
 -- | Timestamp from which the video<i>audio</i>video note<i>voice
 --   note</i>story playing must start, in seconds; 0 if not specified. The
---   media can be in the message content or in its web page preview
+--   media can be in the message content or in its link preview
 [media_timestamp] :: MessageLinkInfo -> Maybe Int
 
 -- | True, if the whole media album to which the message belongs is linked
@@ -20714,6 +20956,7 @@ JsonValue :: JsonValue -> GeneralResult
 LanguagePackInfo :: LanguagePackInfo -> GeneralResult
 LanguagePackStringValue :: LanguagePackStringValue -> GeneralResult
 LanguagePackStrings :: LanguagePackStrings -> GeneralResult
+LinkPreview :: LinkPreview -> GeneralResult
 LocalizationTargetInfo :: LocalizationTargetInfo -> GeneralResult
 LogStream :: LogStream -> GeneralResult
 LogTags :: LogTags -> GeneralResult
@@ -20814,7 +21057,6 @@ UserSupportInfo :: UserSupportInfo -> GeneralResult
 Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
-WebPage :: WebPage -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
 instance GHC.Show.Show TD.GeneralResult.GeneralResult
 instance GHC.Classes.Eq TD.GeneralResult.GeneralResult
@@ -25879,7 +26121,7 @@ module TD.Query.GetExternalLinkInfo
 
 -- | Returns information about an action to be done when the current user
 --   clicks an external link. Don't use this method for links from secret
---   chats if web page preview is disabled in secret chats. Returns
+--   chats if link preview is disabled in secret chats. Returns
 --   <a>LoginUrlInfo</a>
 data GetExternalLinkInfo
 GetExternalLinkInfo :: Maybe Text -> GetExternalLinkInfo
@@ -26418,6 +26660,26 @@ instance GHC.Classes.Eq TD.Query.GetLanguagePackStrings.GetLanguagePackStrings
 instance TD.Lib.Internal.ShortShow TD.Query.GetLanguagePackStrings.GetLanguagePackStrings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLanguagePackStrings.GetLanguagePackStrings
 
+module TD.Query.GetLinkPreview
+
+-- | Returns a link preview by the text of a message. Do not call this
+--   function too often. Returns a 404 error if the text has no link
+--   preview. Returns <a>LinkPreview</a>
+data GetLinkPreview
+GetLinkPreview :: Maybe FormattedText -> Maybe LinkPreviewOptions -> GetLinkPreview
+
+-- | Message text with formatting
+[text] :: GetLinkPreview -> Maybe FormattedText
+
+-- | Options to be used for generation of the link preview; pass null to
+--   use default link preview options
+[link_preview_options] :: GetLinkPreview -> Maybe LinkPreviewOptions
+defaultGetLinkPreview :: GetLinkPreview
+instance GHC.Show.Show TD.Query.GetLinkPreview.GetLinkPreview
+instance GHC.Classes.Eq TD.Query.GetLinkPreview.GetLinkPreview
+instance TD.Lib.Internal.ShortShow TD.Query.GetLinkPreview.GetLinkPreview
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLinkPreview.GetLinkPreview
+
 module TD.Query.GetLocalizationTargetInfo
 
 -- | Returns information about the current localization target. This is an
@@ -26759,7 +27021,7 @@ GetMessageLink :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Boo
 
 -- | If not 0, timestamp from which the video<i>audio</i>video note<i>voice
 --   note</i>story playing must start, in seconds. The media can be in the
---   message content or in its web page preview
+--   message content or in its link preview
 [media_timestamp] :: GetMessageLink -> Maybe Int
 
 -- | Pass true to create a link for the whole media album
@@ -27695,7 +27957,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSecretChat.GetSecretChat
 module TD.Query.GetStarAdAccountUrl
 
 -- | Returns a URL for a Telegram Ad platform account that can be used to
---   set up advertisments for the chat paid in the owned Telegram stars.
+--   set up advertisements for the chat paid in the owned Telegram stars.
 --   Returns <a>HttpUrl</a>
 data GetStarAdAccountUrl
 GetStarAdAccountUrl :: Maybe MessageSender -> GetStarAdAccountUrl
@@ -27727,7 +27989,8 @@ data GetStarRevenueStatistics
 GetStarRevenueStatistics :: Maybe MessageSender -> Maybe Bool -> GetStarRevenueStatistics
 
 -- | Identifier of the owner of the Telegram stars; can be identifier of an
---   owned bot, or identifier of an owned channel chat
+--   owned bot, or identifier of a channel chat with
+--   supergroupFullInfo.can_get_star_revenue_statistics == true
 [owner_id] :: GetStarRevenueStatistics -> Maybe MessageSender
 
 -- | Pass true if a dark theme is used by the application
@@ -27747,8 +28010,8 @@ GetStarTransactions :: Maybe MessageSender -> Maybe StarTransactionDirection -> 
 
 -- | Identifier of the owner of the Telegram stars; can be the identifier
 --   of the current user, identifier of an owned bot, or identifier of a
---   channel chat with supergroupFullInfo.can_get_revenue_statistics ==
---   true
+--   channel chat with supergroupFullInfo.can_get_star_revenue_statistics
+--   == true
 [owner_id] :: GetStarTransactions -> Maybe MessageSender
 
 -- | Direction of the transactions to receive; pass null to get all
@@ -28502,26 +28765,6 @@ instance GHC.Show.Show TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance GHC.Classes.Eq TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance TD.Lib.Internal.ShortShow TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebPageInstantView.GetWebPageInstantView
-
-module TD.Query.GetWebPagePreview
-
--- | Returns a link preview by the text of a message. Do not call this
---   function too often. Returns a 404 error if the text has no link
---   preview. Returns <a>WebPage</a>
-data GetWebPagePreview
-GetWebPagePreview :: Maybe FormattedText -> Maybe LinkPreviewOptions -> GetWebPagePreview
-
--- | Message text with formatting
-[text] :: GetWebPagePreview -> Maybe FormattedText
-
--- | Options to be used for generation of the link preview; pass null to
---   use default link preview options
-[link_preview_options] :: GetWebPagePreview -> Maybe LinkPreviewOptions
-defaultGetWebPagePreview :: GetWebPagePreview
-instance GHC.Show.Show TD.Query.GetWebPagePreview.GetWebPagePreview
-instance GHC.Classes.Eq TD.Query.GetWebPagePreview.GetWebPagePreview
-instance TD.Lib.Internal.ShortShow TD.Query.GetWebPagePreview.GetWebPagePreview
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebPagePreview.GetWebPagePreview
 
 module TD.Query.HideContactCloseBirthdays
 
