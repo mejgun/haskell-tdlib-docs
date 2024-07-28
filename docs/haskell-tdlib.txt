@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.38.0
+@version 2.0.39.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -12445,7 +12445,7 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 --   getVideoChatAvailableParticipants, searchChatsNearby,
 --   searchPublicChats, or in chatFolderInviteLinkInfo.missing_chat_ids, or
 --   in userFullInfo.personal_chat_id, or for chats with messages or
---   stories from publicForwards
+--   stories from publicForwards and foundStories
 [member_count] :: Supergroup -> Maybe Int
 
 -- | Approximate boost level for the chat
@@ -21923,7 +21923,8 @@ module TD.Query.CanSendStory
 data CanSendStory
 CanSendStory :: Maybe Int -> CanSendStory
 
--- | Chat identifier
+-- | Chat identifier. Pass Saved Messages chat identifier when posting a
+--   story on behalf of the current user
 [chat_id] :: CanSendStory -> Maybe Int
 instance GHC.Show.Show TD.Query.CanSendStory.CanSendStory
 instance GHC.Classes.Eq TD.Query.CanSendStory.CanSendStory
@@ -31841,7 +31842,8 @@ module TD.Query.SendStory
 data SendStory
 SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> SendStory
 
--- | Identifier of the chat that will post the story
+-- | Identifier of the chat that will post the story. Pass Saved Messages
+--   chat identifier when posting a story on behalf of the current user
 [chat_id] :: SendStory -> Maybe Int
 
 -- | Content of the story
@@ -31866,7 +31868,7 @@ SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 [active_period] :: SendStory -> Maybe Int
 
 -- | Full identifier of the original story, which content was used to
---   create the story
+--   create the story; pass null if the story isn't repost of another story
 [from_story_full_id] :: SendStory -> Maybe StoryFullId
 
 -- | Pass true to keep the story accessible after expiration
