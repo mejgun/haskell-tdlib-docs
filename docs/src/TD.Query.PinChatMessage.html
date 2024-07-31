@@ -7,7 +7,7 @@
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
 </span><span id="line-9"></span><span>
-</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Pins a message in a chat; requires can_pin_messages member right if the chat is a basic group or supergroup, or can_edit_messages administrator right if the chat is a channel. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Pins a message in a chat. A message can be pinned only if messageProperties.can_be_pinned. Returns 'TD.Data.Ok.Ok'</span></span><span>
 </span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="PinChatMessage"><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-var">PinChatMessage</span></a></span></span><span>
 </span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="PinChatMessage"><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-var">PinChatMessage</span></a></span></span><span>
 </span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">PinChatMessage -&gt; Maybe Int
@@ -19,7 +19,7 @@
 </span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="only_for_self"><span class="annot"><span class="annottext">PinChatMessage -&gt; Maybe Bool
 </span><a href="TD.Query.PinChatMessage.html#only_for_self"><span class="hs-identifier hs-var hs-var">only_for_self</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Pass true to pin the message only for self; private chats only</span></span><span>
 </span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679794585"><span id="local-6989586621679794594"><span class="annot"><span class="annottext">PinChatMessage -&gt; PinChatMessage -&gt; Bool
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679806503"><span id="local-6989586621679806512"><span class="annot"><span class="annottext">PinChatMessage -&gt; PinChatMessage -&gt; Bool
 (PinChatMessage -&gt; PinChatMessage -&gt; Bool)
 -&gt; (PinChatMessage -&gt; PinChatMessage -&gt; Bool) -&gt; Eq PinChatMessage
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -27,7 +27,7 @@ $c== :: PinChatMessage -&gt; PinChatMessage -&gt; Bool
 == :: PinChatMessage -&gt; PinChatMessage -&gt; Bool
 $c/= :: PinChatMessage -&gt; PinChatMessage -&gt; Bool
 /= :: PinChatMessage -&gt; PinChatMessage -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679794601"><span id="local-6989586621679794612"><span id="local-6989586621679794616"><span class="annot"><span class="annottext">Int -&gt; PinChatMessage -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679806519"><span id="local-6989586621679806530"><span id="local-6989586621679806534"><span class="annot"><span class="annottext">Int -&gt; PinChatMessage -&gt; ShowS
 [PinChatMessage] -&gt; ShowS
 PinChatMessage -&gt; String
 (Int -&gt; PinChatMessage -&gt; ShowS)
@@ -45,21 +45,21 @@ showList :: [PinChatMessage] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-19"></span><span>
 </span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-21"></span><span>  </span><span id="local-6989586621679794633"><span class="annot"><span class="annottext">shortShow :: PinChatMessage -&gt; String
-</span><a href="#local-6989586621679794633"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679806551"><span class="annot"><span class="annottext">shortShow :: PinChatMessage -&gt; String
+</span><a href="#local-6989586621679806551"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
 </span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span><span>
 </span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: PinChatMessage -&gt; Maybe Int
-</span><a href="TD.Query.PinChatMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794635"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794635"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806553"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679806553"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: PinChatMessage -&gt; Maybe Int
-</span><a href="TD.Query.PinChatMessage.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794636"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794636"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806554"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679806554"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
 </span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">disable_notification :: PinChatMessage -&gt; Maybe Bool
-</span><a href="TD.Query.PinChatMessage.html#disable_notification"><span class="hs-identifier hs-var">disable_notification</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794637"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794637"><span class="hs-identifier hs-var">disable_notification_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#disable_notification"><span class="hs-identifier hs-var">disable_notification</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806555"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679806555"><span class="hs-identifier hs-var">disable_notification_</span></a></span></span><span>
 </span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">only_for_self :: PinChatMessage -&gt; Maybe Bool
-</span><a href="TD.Query.PinChatMessage.html#only_for_self"><span class="hs-identifier hs-var">only_for_self</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794638"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794638"><span class="hs-identifier hs-var">only_for_self_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#only_for_self"><span class="hs-identifier hs-var">only_for_self</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806556"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679806556"><span class="hs-identifier hs-var">only_for_self_</span></a></span></span><span>
 </span><span id="line-27"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-28"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;PinChatMessage&quot;</span></span><span>
@@ -71,40 +71,40 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-string">&quot;chat_id&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794635"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679806553"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;message_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794636"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><a href="#local-6989586621679806554"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
 </span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;disable_notification&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794637"><span class="hs-identifier hs-var">disable_notification_</span></a></span><span>
+</span><a href="#local-6989586621679806555"><span class="hs-identifier hs-var">disable_notification_</span></a></span><span>
 </span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;only_for_self&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794638"><span class="hs-identifier hs-var">only_for_self_</span></a></span><span>
+</span><a href="#local-6989586621679806556"><span class="hs-identifier hs-var">only_for_self_</span></a></span><span>
 </span><span id="line-34"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-35"></span><span>
-</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679794643"><span id="local-6989586621679794647"><span id="local-6989586621679794650"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-37"></span><span>  </span><span id="local-6989586621679794680"><span class="annot"><span class="annottext">toJSON :: PinChatMessage -&gt; Value
-</span><a href="#local-6989586621679794680"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679806561"><span id="local-6989586621679806565"><span id="local-6989586621679806568"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679806598"><span class="annot"><span class="annottext">toJSON :: PinChatMessage -&gt; Value
+</span><a href="#local-6989586621679806598"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
 </span><span id="line-38"></span><span>    </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span><span>
 </span><span id="line-39"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: PinChatMessage -&gt; Maybe Int
-</span><a href="TD.Query.PinChatMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794682"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794682"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806600"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679806600"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
 </span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: PinChatMessage -&gt; Maybe Int
-</span><a href="TD.Query.PinChatMessage.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794683"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794683"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806601"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679806601"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
 </span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">disable_notification :: PinChatMessage -&gt; Maybe Bool
-</span><a href="TD.Query.PinChatMessage.html#disable_notification"><span class="hs-identifier hs-var">disable_notification</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794684"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794684"><span class="hs-identifier hs-var">disable_notification_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#disable_notification"><span class="hs-identifier hs-var">disable_notification</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806602"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679806602"><span class="hs-identifier hs-var">disable_notification_</span></a></span></span><span>
 </span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">only_for_self :: PinChatMessage -&gt; Maybe Bool
-</span><a href="TD.Query.PinChatMessage.html#only_for_self"><span class="hs-identifier hs-var">only_for_self</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679794685"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794685"><span class="hs-identifier hs-var">only_for_self_</span></a></span></span><span>
+</span><a href="TD.Query.PinChatMessage.html#only_for_self"><span class="hs-identifier hs-var">only_for_self</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679806603"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679806603"><span class="hs-identifier hs-var">only_for_self_</span></a></span></span><span>
 </span><span id="line-43"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-44"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
@@ -120,25 +120,25 @@ forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794682"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><a href="#local-6989586621679806600"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;message_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679794683"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><a href="#local-6989586621679806601"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
 </span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;disable_notification&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794684"><span class="hs-identifier hs-var">disable_notification_</span></a></span><span>
+</span><a href="#local-6989586621679806602"><span class="hs-identifier hs-var">disable_notification_</span></a></span><span>
 </span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;only_for_self&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679794685"><span class="hs-identifier hs-var">only_for_self_</span></a></span><span>
+</span><a href="#local-6989586621679806603"><span class="hs-identifier hs-var">only_for_self_</span></a></span><span>
 </span><span id="line-50"></span><span>          </span><span class="hs-special">]</span><span>
 </span><span id="line-51"></span><span>
 </span><span id="line-52"></span><span class="annot"><a href="TD.Query.PinChatMessage.html#defaultPinChatMessage"><span class="hs-identifier hs-type">defaultPinChatMessage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.PinChatMessage.html#PinChatMessage"><span class="hs-identifier hs-type">PinChatMessage</span></a></span><span>

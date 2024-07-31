@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.39.0
+@version 2.0.40.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -105,7 +105,7 @@ UserTypeRegular :: UserType
 UserTypeDeleted :: UserType
 
 -- | A bot (see <a>https://core.telegram.org/bots)</a>
-UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> UserType
+UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
 
 -- | True, if the bot is owned by the current user and can be edited using
 --   the methods toggleBotUsernameIsActive, reorderBotActiveUsernames,
@@ -120,6 +120,9 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Tex
 --   chats and not just those addressed to the bot. In private and channel
 --   chats a bot can always read all messages
 [can_read_all_group_messages] :: UserType -> Maybe Bool
+
+-- | True, if the bot has the main Web App
+[has_main_web_app] :: UserType -> Maybe Bool
 
 -- | True, if the bot supports inline queries
 [is_inline] :: UserType -> Maybe Bool
@@ -137,6 +140,9 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Tex
 
 -- | True, if the bot can be added to attachment or side menu
 [can_be_added_to_attachment_menu] :: UserType -> Maybe Bool
+
+-- | The number of recently active users of the bot
+[active_user_count] :: UserType -> Maybe Int
 
 -- | No information on the user besides the user identifier is available,
 --   yet this user has not been deleted. This object is extremely rare and
@@ -385,6 +391,10 @@ TopChatCategoryChannels :: TopChatCategory
 -- | A category containing frequently used chats with inline bots sorted by
 --   their usage in inline mode
 TopChatCategoryInlineBots :: TopChatCategory
+
+-- | A category containing frequently used chats with bots, which Web Apps
+--   were opened
+TopChatCategoryWebAppBots :: TopChatCategory
 
 -- | A category containing frequently used chats used for calls
 TopChatCategoryCalls :: TopChatCategory
@@ -1237,15 +1247,15 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryStatistics.StoryStatist
 
 module TD.Data.StarTransactionDirection
 
--- | Describes direction of a transaction with Telegram stars
+-- | Describes direction of a transaction with Telegram Stars
 data StarTransactionDirection
 
 -- | The transaction is incoming and increases the number of owned Telegram
---   stars
+--   Stars
 StarTransactionDirectionIncoming :: StarTransactionDirection
 
 -- | The transaction is outgoing and decreases the number of owned Telegram
---   stars
+--   Stars
 StarTransactionDirectionOutgoing :: StarTransactionDirection
 instance GHC.Show.Show TD.Data.StarTransactionDirection.StarTransactionDirection
 instance GHC.Classes.Eq TD.Data.StarTransactionDirection.StarTransactionDirection
@@ -1256,19 +1266,19 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarTransactionDirection.StarTra
 module TD.Data.StarRevenueStatus
 data StarRevenueStatus
 
--- | Contains information about Telegram stars earned by a bot or a chat
+-- | Contains information about Telegram Stars earned by a bot or a chat
 StarRevenueStatus :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> StarRevenueStatus
 
--- | Total number of the stars earned
+-- | Total number of Telegram Stars earned
 [total_count] :: StarRevenueStatus -> Maybe Int
 
--- | The number of Telegram stars that aren't withdrawn yet
+-- | The number of Telegram Stars that aren't withdrawn yet
 [current_count] :: StarRevenueStatus -> Maybe Int
 
--- | The number of Telegram stars that are available for withdrawal
+-- | The number of Telegram Stars that are available for withdrawal
 [available_count] :: StarRevenueStatus -> Maybe Int
 
--- | True, if Telegram stars can be withdrawn now or later
+-- | True, if Telegram Stars can be withdrawn now or later
 [withdrawal_enabled] :: StarRevenueStatus -> Maybe Bool
 
 -- | Time left before the next withdrawal can be started, in seconds; 0 if
@@ -1282,16 +1292,16 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatus.StarRevenu
 module TD.Data.StarRevenueStatistics
 data StarRevenueStatistics
 
--- | A detailed statistics about Telegram stars earned by a bot or a chat
+-- | A detailed statistics about Telegram Stars earned by a bot or a chat
 StarRevenueStatistics :: Maybe StatisticalGraph -> Maybe StarRevenueStatus -> Maybe Double -> StarRevenueStatistics
 
 -- | A graph containing amount of revenue in a given day
 [revenue_by_day_graph] :: StarRevenueStatistics -> Maybe StatisticalGraph
 
--- | Telegram star revenue status
+-- | Telegram Star revenue status
 [status] :: StarRevenueStatistics -> Maybe StarRevenueStatus
 
--- | Current conversion rate of a Telegram star to USD
+-- | Current conversion rate of a Telegram Star to USD
 [usd_rate] :: StarRevenueStatistics -> Maybe Double
 instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
@@ -1301,7 +1311,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRe
 module TD.Data.StarPaymentOption
 data StarPaymentOption
 
--- | Describes an option for buying Telegram stars. Use
+-- | Describes an option for buying Telegram Stars. Use
 --   telegramPaymentPurposeStars for out-of-store payments
 StarPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> StarPaymentOption
 
@@ -1311,7 +1321,7 @@ StarPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe
 -- | The amount to pay, in the smallest units of the currency
 [amount] :: StarPaymentOption -> Maybe Int
 
--- | Number of Telegram stars that will be purchased
+-- | Number of Telegram Stars that will be purchased
 [star_count] :: StarPaymentOption -> Maybe Int
 
 -- | Identifier of the store product associated with the option; may be
@@ -1329,7 +1339,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarPaymentOption.StarPaymen
 module TD.Data.StarPaymentOptions
 data StarPaymentOptions
 
--- | Contains a list of options for buying Telegram stars
+-- | Contains a list of options for buying Telegram Stars
 StarPaymentOptions :: Maybe [StarPaymentOption] -> StarPaymentOptions
 
 -- | The list of options
@@ -2544,7 +2554,7 @@ TelegramPaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Mayb
 --   the users
 [month_count] :: TelegramPaymentPurpose -> Maybe Int
 
--- | The user buying Telegram stars
+-- | The user buying Telegram Stars
 TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
 
 -- | ISO 4217 currency code of the payment currency
@@ -2553,7 +2563,22 @@ TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramP
 -- | Paid amount, in the smallest units of the currency
 [amount] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Number of bought stars
+-- | Number of bought Telegram Stars
+[star_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars for other users
+TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
+
+-- | Identifier of the user to which Telegram Stars are gifted
+[user_id] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of bought Telegram Stars
 [star_count] :: TelegramPaymentPurpose -> Maybe Int
 instance GHC.Show.Show TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
 instance GHC.Classes.Eq TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
@@ -2580,7 +2605,7 @@ StorePaymentPurposePremiumSubscription :: Maybe Bool -> Maybe Bool -> StorePayme
 -- | The user gifting Telegram Premium to another user
 StorePaymentPurposeGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> StorePaymentPurpose
 
--- | Identifier of the user to which Premium was gifted
+-- | Identifier of the user to which Telegram Premium is gifted
 [user_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -2618,7 +2643,7 @@ StorePaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe T
 -- | Paid amount, in the smallest units of the currency
 [amount] :: StorePaymentPurpose -> Maybe Int
 
--- | The user buying Telegram stars
+-- | The user buying Telegram Stars
 StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
 
 -- | ISO 4217 currency code of the payment currency
@@ -2627,7 +2652,22 @@ StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePayment
 -- | Paid amount, in the smallest units of the currency
 [amount] :: StorePaymentPurpose -> Maybe Int
 
--- | Number of bought stars
+-- | Number of bought Telegram Stars
+[star_count] :: StorePaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars for other users
+StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
+
+-- | Identifier of the user to which Telegram Premium is gifted
+[user_id] :: StorePaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | Number of bought Telegram Stars
 [star_count] :: StorePaymentPurpose -> Maybe Int
 instance GHC.Show.Show TD.Data.StorePaymentPurpose.StorePaymentPurpose
 instance GHC.Classes.Eq TD.Data.StorePaymentPurpose.StorePaymentPurpose
@@ -3732,6 +3772,116 @@ instance GHC.Classes.Eq TD.Data.MessageReactions.MessageReactions
 instance TD.Lib.Internal.ShortShow TD.Data.MessageReactions.MessageReactions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReactions.MessageReactions
 
+module TD.Data.MessageProperties
+data MessageProperties
+
+-- | Contains properties of a message and describes actions that can be
+--   done with the message right now
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+
+-- | True, if the message can be deleted only for the current user while
+--   other users will continue to see it using the method deleteMessages
+--   with revoke == false
+[can_be_deleted_only_for_self] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be deleted for all users using the method
+--   deleteMessages with revoke == true
+[can_be_deleted_for_all_users] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be edited using the methods editMessageText,
+--   editMessageMedia, editMessageCaption, or editMessageReplyMarkup. For
+--   live location and poll messages this fields shows whether
+--   editMessageLiveLocation or stopPoll can be used with this message
+[can_be_edited] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be forwarded using inputMessageForwarded or
+--   forwardMessages
+[can_be_forwarded] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be paid using inputInvoiceMessage
+[can_be_paid] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be pinned or unpinned in the chat using
+--   pinChatMessage or unpinChatMessage
+[can_be_pinned] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be replied in the same chat and forum topic
+--   using inputMessageReplyToMessage
+[can_be_replied] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be replied in another chat or forum topic
+--   using inputMessageReplyToExternalMessage
+[can_be_replied_in_another_chat] :: MessageProperties -> Maybe Bool
+
+-- | True, if content of the message can be saved locally or copied using
+--   inputMessageForwarded or forwardMessages with copy options
+[can_be_saved] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be shared in a story using
+--   inputStoryAreaTypeMessage
+[can_be_shared_in_story] :: MessageProperties -> Maybe Bool
+
+-- | True, if scheduling state of the message can be edited
+[can_edit_scheduling_state] :: MessageProperties -> Maybe Bool
+
+-- | True, if the list of added reactions is available using
+--   getMessageAddedReactions
+[can_get_added_reactions] :: MessageProperties -> Maybe Bool
+
+-- | True, if code for message embedding can be received using
+--   getMessageEmbeddingCode
+[can_get_embedding_code] :: MessageProperties -> Maybe Bool
+
+-- | True, if a link can be generated for the message using getMessageLink
+[can_get_link] :: MessageProperties -> Maybe Bool
+
+-- | True, if media timestamp links can be generated for media timestamp
+--   entities in the message text, caption or link preview description
+--   using getMessageLink
+[can_get_media_timestamp_links] :: MessageProperties -> Maybe Bool
+
+-- | True, if information about the message thread is available through
+--   getMessageThread and getMessageThreadHistory
+[can_get_message_thread] :: MessageProperties -> Maybe Bool
+
+-- | True, if read date of the message can be received through
+--   getMessageReadDate
+[can_get_read_date] :: MessageProperties -> Maybe Bool
+
+-- | True, if message statistics are available through getMessageStatistics
+--   and message forwards can be received using getMessagePublicForwards
+[can_get_statistics] :: MessageProperties -> Maybe Bool
+
+-- | True, if chat members already viewed the message can be received
+--   through getMessageViewers
+[can_get_viewers] :: MessageProperties -> Maybe Bool
+
+-- | True, if speech can be recognized for the message through
+--   recognizeSpeech
+[can_recognize_speech] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be reported using reportChat
+[can_report_chat] :: MessageProperties -> Maybe Bool
+
+-- | True, if reactions on the message can be reported through
+--   reportMessageReactions
+[can_report_reactions] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be reported using reportSupergroupSpam
+[can_report_supergroup_spam] :: MessageProperties -> Maybe Bool
+
+-- | True, if fact check for the message can be changed through
+--   setMessageFactCheck
+[can_set_fact_check] :: MessageProperties -> Maybe Bool
+
+-- | True, if message statistics must be available from context menu of the
+--   message
+[need_show_statistics] :: MessageProperties -> Maybe Bool
+instance GHC.Show.Show TD.Data.MessageProperties.MessageProperties
+instance GHC.Classes.Eq TD.Data.MessageProperties.MessageProperties
+instance TD.Lib.Internal.ShortShow TD.Data.MessageProperties.MessageProperties
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageProperties.MessageProperties
+
 module TD.Data.MessagePosition
 data MessagePosition
 
@@ -3962,6 +4112,23 @@ instance TD.Lib.Internal.ShortShow TD.Data.MaskPosition.MaskPosition
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MaskPosition.MaskPosition
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MaskPosition.MaskPosition
 
+module TD.Data.MainWebApp
+data MainWebApp
+
+-- | Contains information about the main Web App of a bot
+MainWebApp :: Maybe Text -> Maybe Bool -> MainWebApp
+
+-- | URL of the Web App to open
+[url] :: MainWebApp -> Maybe Text
+
+-- | True, if the Web App must always be opened in the compact mode instead
+--   of the full-size mode
+[is_compact] :: MainWebApp -> Maybe Bool
+instance GHC.Show.Show TD.Data.MainWebApp.MainWebApp
+instance GHC.Classes.Eq TD.Data.MainWebApp.MainWebApp
+instance TD.Lib.Internal.ShortShow TD.Data.MainWebApp.MainWebApp
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MainWebApp.MainWebApp
+
 module TD.Data.LoginUrlInfo
 
 -- | Contains information about an inline button of type
@@ -4133,7 +4300,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Venue.Venue
 
 module TD.Data.StoryAreaType
 
--- | Describes type of clickable rectangle area on a story media
+-- | Describes type of clickable area on a story media
 data StoryAreaType
 
 -- | An area pointing to a location
@@ -4182,6 +4349,18 @@ StoryAreaTypeLink :: Maybe Text -> StoryAreaType
 
 -- | HTTP or tg:// URL to be opened when the area is clicked
 [url] :: StoryAreaType -> Maybe Text
+
+-- | An area with information about weather
+StoryAreaTypeWeather :: Maybe Double -> Maybe Text -> Maybe Int -> StoryAreaType
+
+-- | Temperature, in degree Celsius
+[temperature] :: StoryAreaType -> Maybe Double
+
+-- | Emoji representing the weather
+[emoji] :: StoryAreaType -> Maybe Text
+
+-- | A color of the area background in the ARGB format
+[background_color] :: StoryAreaType -> Maybe Int
 instance GHC.Show.Show TD.Data.StoryAreaType.StoryAreaType
 instance GHC.Classes.Eq TD.Data.StoryAreaType.StoryAreaType
 instance TD.Lib.Internal.ShortShow TD.Data.StoryAreaType.StoryAreaType
@@ -4653,8 +4832,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TargetChat.TargetChat
 
 module TD.Data.InputStoryAreaType
 
--- | Describes type of clickable rectangle area on a story media to be
---   added
+-- | Describes type of clickable area on a story media to be added
 data InputStoryAreaType
 
 -- | An area pointing to a location
@@ -4704,8 +4882,9 @@ InputStoryAreaTypeMessage :: Maybe Int -> Maybe Int -> InputStoryAreaType
 --   supergroup or a channel chat
 [chat_id] :: InputStoryAreaType -> Maybe Int
 
--- | Identifier of the message. Only successfully sent non-scheduled
---   messages can be specified
+-- | Identifier of the message. Use
+--   messageProperties.can_be_shared_in_story to check whether the message
+--   is suitable
 [message_id] :: InputStoryAreaType -> Maybe Int
 
 -- | An area pointing to a HTTP or tg:// link
@@ -4713,6 +4892,18 @@ InputStoryAreaTypeLink :: Maybe Text -> InputStoryAreaType
 
 -- | HTTP or tg:// URL to be opened when the area is clicked
 [url] :: InputStoryAreaType -> Maybe Text
+
+-- | An area with information about weather
+InputStoryAreaTypeWeather :: Maybe Double -> Maybe Text -> Maybe Int -> InputStoryAreaType
+
+-- | Temperature, in degree Celsius
+[temperature] :: InputStoryAreaType -> Maybe Double
+
+-- | Emoji representing the weather
+[emoji] :: InputStoryAreaType -> Maybe Text
+
+-- | A color of the area background in the ARGB format
+[background_color] :: InputStoryAreaType -> Maybe Int
 instance GHC.Show.Show TD.Data.InputStoryAreaType.InputStoryAreaType
 instance GHC.Classes.Eq TD.Data.InputStoryAreaType.InputStoryAreaType
 instance TD.Lib.Internal.ShortShow TD.Data.InputStoryAreaType.InputStoryAreaType
@@ -4748,9 +4939,10 @@ InputStoryAreas :: Maybe [InputStoryArea] -> InputStoryAreas
 --   inputStoryAreaTypePreviousVenue areas, up to
 --   getOption("story_suggested_reaction_area_count_max")
 --   inputStoryAreaTypeSuggestedReaction areas, up to 1
---   inputStoryAreaTypeMessage area, and up to
+--   inputStoryAreaTypeMessage area, up to
 --   getOption("story_link_area_count_max") inputStoryAreaTypeLink areas if
---   the current user is a Telegram Premium user
+--   the current user is a Telegram Premium user, and up to 3
+--   inputStoryAreaTypeWeather areas
 [areas] :: InputStoryAreas -> Maybe [InputStoryArea]
 defaultInputStoryAreas :: InputStoryAreas
 instance GHC.Show.Show TD.Data.InputStoryAreas.InputStoryAreas
@@ -5005,7 +5197,7 @@ InputStoryContentPhoto :: Maybe InputFile -> Maybe [Int] -> InputStoryContent
 [added_sticker_file_ids] :: InputStoryContent -> Maybe [Int]
 
 -- | A video story
-InputStoryContentVideo :: Maybe InputFile -> Maybe [Int] -> Maybe Double -> Maybe Bool -> InputStoryContent
+InputStoryContentVideo :: Maybe InputFile -> Maybe [Int] -> Maybe Double -> Maybe Double -> Maybe Bool -> InputStoryContent
 
 -- | Video to be sent. The video size must be 720x1280. The video must be
 --   streamable and stored in MPEG4 format, after encoding with x265 codec
@@ -5017,6 +5209,9 @@ InputStoryContentVideo :: Maybe InputFile -> Maybe [Int] -> Maybe Double -> Mayb
 
 -- | Precise duration of the video, in seconds; 0-60
 [duration] :: InputStoryContent -> Maybe Double
+
+-- | Timestamp of the frame, which will be used as video thumbnail
+[cover_frame_timestamp] :: InputStoryContent -> Maybe Double
 
 -- | True, if the video has no sound
 [is_animation] :: InputStoryContent -> Maybe Bool
@@ -5692,6 +5887,23 @@ instance GHC.Classes.Eq TD.Data.GameHighScores.GameHighScores
 instance TD.Lib.Internal.ShortShow TD.Data.GameHighScores.GameHighScores
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GameHighScores.GameHighScores
 
+module TD.Data.FoundUsers
+data FoundUsers
+
+-- | Represents a list of found users
+FoundUsers :: Maybe [Int] -> Maybe Text -> FoundUsers
+
+-- | Identifiers of the found users
+[user_ids] :: FoundUsers -> Maybe [Int]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: FoundUsers -> Maybe Text
+instance GHC.Show.Show TD.Data.FoundUsers.FoundUsers
+instance GHC.Classes.Eq TD.Data.FoundUsers.FoundUsers
+instance TD.Lib.Internal.ShortShow TD.Data.FoundUsers.FoundUsers
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundUsers.FoundUsers
+
 module TD.Data.FoundPositions
 data FoundPositions
 
@@ -6080,7 +6292,8 @@ data InputMessageReplyTo
 InputMessageReplyToMessage :: Maybe Int -> Maybe InputTextQuote -> InputMessageReplyTo
 
 -- | The identifier of the message to be replied in the same chat and forum
---   topic
+--   topic. A message can be replied in the same chat and forum topic only
+--   if messageProperties.can_be_replied
 [message_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | Quote from the message to be replied; pass null if none. Must always
@@ -6095,7 +6308,8 @@ InputMessageReplyToExternalMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQ
 [chat_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | The identifier of the message to be replied in the same chat and forum
---   topic
+--   topic. A message can be replied in the same chat and forum topic only
+--   if messageProperties.can_be_replied
 [message_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | Quote from the message to be replied; pass null if none. Must always
@@ -6540,7 +6754,7 @@ module TD.Data.StoryVideo
 data StoryVideo
 
 -- | Describes a video file sent in a story
-StoryVideo :: Maybe Double -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Minithumbnail -> Maybe Thumbnail -> Maybe Int -> Maybe File -> StoryVideo
+StoryVideo :: Maybe Double -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Minithumbnail -> Maybe Thumbnail -> Maybe Int -> Maybe Double -> Maybe File -> StoryVideo
 
 -- | Duration of the video, in seconds
 [duration] :: StoryVideo -> Maybe Double
@@ -6566,6 +6780,9 @@ StoryVideo :: Maybe Double -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool
 
 -- | Size of file prefix, which is supposed to be preloaded, in bytes
 [preload_prefix_size] :: StoryVideo -> Maybe Int
+
+-- | Timestamp of the frame used as video thumbnail
+[cover_frame_timestamp] :: StoryVideo -> Maybe Double
 
 -- | File containing the video
 [video] :: StoryVideo -> Maybe File
@@ -6948,108 +7165,6 @@ instance GHC.Classes.Eq TD.Data.PaidMedia.PaidMedia
 instance TD.Lib.Internal.ShortShow TD.Data.PaidMedia.PaidMedia
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PaidMedia.PaidMedia
 
-module TD.Data.StarTransactionPartner
-
--- | Describes source or recipient of a transaction with Telegram stars
-data StarTransactionPartner
-
--- | The transaction is a transaction with Telegram through a bot
-StarTransactionPartnerTelegram :: StarTransactionPartner
-
--- | The transaction is a transaction with App Store
-StarTransactionPartnerAppStore :: StarTransactionPartner
-
--- | The transaction is a transaction with Google Play
-StarTransactionPartnerGooglePlay :: StarTransactionPartner
-
--- | The transaction is a transaction with Fragment
-StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
-
--- | State of the withdrawal; may be null for refunds from Fragment
-[withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
-
--- | The transaction is a transaction with Telegram Ad platform
-StarTransactionPartnerTelegramAds :: StarTransactionPartner
-
--- | The transaction is a transaction with a bot
-StarTransactionPartnerBot :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> StarTransactionPartner
-
--- | Identifier of the bot
-[bot_user_id] :: StarTransactionPartner -> Maybe Int
-
--- | Information about the bought product; may be null if not applicable
-[product_info] :: StarTransactionPartner -> Maybe ProductInfo
-
--- | Invoice payload; for bots only
-[invoice_payload] :: StarTransactionPartner -> Maybe ByteString
-
--- | The transaction is a transaction with a channel chat
-StarTransactionPartnerChannel :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
-
--- | Identifier of the chat
-[chat_id] :: StarTransactionPartner -> Maybe Int
-
--- | Identifier of the corresponding message with paid media; can be an
---   identifier of a deleted message
-[paid_media_message_id] :: StarTransactionPartner -> Maybe Int
-
--- | Information about the bought media
-[media] :: StarTransactionPartner -> Maybe [PaidMedia]
-
--- | The transaction is a transaction with unknown partner
-StarTransactionPartnerUnsupported :: StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransactionPartner.StarTransactionPartner
-instance GHC.Classes.Eq TD.Data.StarTransactionPartner.StarTransactionPartner
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionPartner.StarTransactionPartner
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionPartner.StarTransactionPartner
-
-module TD.Data.StarTransaction
-data StarTransaction
-
--- | Represents a transaction changing the amount of owned Telegram stars
-StarTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe StarTransactionPartner -> StarTransaction
-
--- | Unique identifier of the transaction
-[_id] :: StarTransaction -> Maybe Text
-
--- | The amount of added owned Telegram stars; negative for outgoing
---   transactions
-[star_count] :: StarTransaction -> Maybe Int
-
--- | True, if the transaction is a refund of a previous transaction
-[is_refund] :: StarTransaction -> Maybe Bool
-
--- | Point in time (Unix timestamp) when the transaction was completed
-[date] :: StarTransaction -> Maybe Int
-
--- | Source of the incoming transaction, or its recipient for outgoing
---   transactions
-[partner] :: StarTransaction -> Maybe StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
-instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
-
-module TD.Data.StarTransactions
-data StarTransactions
-
--- | Represents a list of Telegram star transactions
-StarTransactions :: Maybe Int -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
-
--- | The amount of owned Telegram stars
-[star_count] :: StarTransactions -> Maybe Int
-
--- | List of transactions with Telegram stars
-[transactions] :: StarTransactions -> Maybe [StarTransaction]
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: StarTransactions -> Maybe Text
-instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
-instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
-
 module TD.Data.PageBlockRelatedArticle
 data PageBlockRelatedArticle
 
@@ -7339,7 +7454,8 @@ MessageSendingStateFailed :: Maybe Error -> Maybe Bool -> Maybe Bool -> Maybe Bo
 -- | The cause of the message sending failure
 [_error] :: MessageSendingState -> Maybe Error
 
--- | True, if the message can be re-sent
+-- | True, if the message can be re-sent using resendMessages or
+--   readdQuickReplyShortcutMessages
 [can_retry] :: MessageSendingState -> Maybe Bool
 
 -- | True, if the message can be re-sent only on behalf of a different
@@ -8315,6 +8431,22 @@ instance GHC.Classes.Eq TD.Data.CustomRequestResult.CustomRequestResult
 instance TD.Lib.Internal.ShortShow TD.Data.CustomRequestResult.CustomRequestResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CustomRequestResult.CustomRequestResult
 
+module TD.Data.CurrentWeather
+data CurrentWeather
+
+-- | Describes the current weather
+CurrentWeather :: Maybe Double -> Maybe Text -> CurrentWeather
+
+-- | Temperature, in degree Celsius
+[temperature] :: CurrentWeather -> Maybe Double
+
+-- | Emoji representing the weather
+[emoji] :: CurrentWeather -> Maybe Text
+instance GHC.Show.Show TD.Data.CurrentWeather.CurrentWeather
+instance GHC.Classes.Eq TD.Data.CurrentWeather.CurrentWeather
+instance TD.Lib.Internal.ShortShow TD.Data.CurrentWeather.CurrentWeather
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CurrentWeather.CurrentWeather
+
 module TD.Data.CreatedBasicGroupChat
 data CreatedBasicGroupChat
 
@@ -8536,7 +8668,7 @@ InputMessageDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool ->
 --   supergroupFullInfo.has_paid_media_allowed
 InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedText -> Maybe Bool -> InputMessageContent
 
--- | The number of stars that must be paid to see the media;
+-- | The number of Telegram Stars that must be paid to see the media;
 --   1-getOption("paid_media_message_star_count_max")
 [star_count] :: InputMessageContent -> Maybe Int
 
@@ -8828,7 +8960,7 @@ InputMessageForwarded :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe MessageCo
 [from_chat_id] :: InputMessageContent -> Maybe Int
 
 -- | Identifier of the message to forward. A message can be forwarded only
---   if message.can_be_forwarded
+--   if messageProperties.can_be_forwarded
 [message_id] :: InputMessageContent -> Maybe Int
 
 -- | True, if a game message is being shared from a launched game; applies
@@ -9232,6 +9364,118 @@ instance GHC.Show.Show TD.Data.StickerSet.StickerSet
 instance GHC.Classes.Eq TD.Data.StickerSet.StickerSet
 instance TD.Lib.Internal.ShortShow TD.Data.StickerSet.StickerSet
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
+
+module TD.Data.StarTransactionPartner
+
+-- | Describes source or recipient of a transaction with Telegram Stars
+data StarTransactionPartner
+
+-- | The transaction is a transaction with Telegram through a bot
+StarTransactionPartnerTelegram :: StarTransactionPartner
+
+-- | The transaction is a transaction with App Store
+StarTransactionPartnerAppStore :: StarTransactionPartner
+
+-- | The transaction is a transaction with Google Play
+StarTransactionPartnerGooglePlay :: StarTransactionPartner
+
+-- | The transaction is a transaction with Fragment
+StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
+
+-- | State of the withdrawal; may be null for refunds from Fragment
+[withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
+
+-- | The transaction is a transaction with Telegram Ad platform
+StarTransactionPartnerTelegramAds :: StarTransactionPartner
+
+-- | The transaction is a transaction with a bot
+StarTransactionPartnerBot :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> StarTransactionPartner
+
+-- | Identifier of the bot for the user, or the user for the bot
+[user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Information about the bought product; may be null if not applicable
+[product_info] :: StarTransactionPartner -> Maybe ProductInfo
+
+-- | Invoice payload; for bots only
+[invoice_payload] :: StarTransactionPartner -> Maybe ByteString
+
+-- | The transaction is a transaction with a channel chat
+StarTransactionPartnerChannel :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
+
+-- | Identifier of the chat
+[chat_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be an
+--   identifier of a deleted message
+[paid_media_message_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Information about the bought media
+[media] :: StarTransactionPartner -> Maybe [PaidMedia]
+
+-- | The transaction is a gift of Telegram Stars from another user
+StarTransactionPartnerUser :: Maybe Int -> Maybe Sticker -> StarTransactionPartner
+
+-- | Identifier of the bot for the user, or the user for the bot
+[user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | A sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: StarTransactionPartner -> Maybe Sticker
+
+-- | The transaction is a transaction with unknown partner
+StarTransactionPartnerUnsupported :: StarTransactionPartner
+instance GHC.Show.Show TD.Data.StarTransactionPartner.StarTransactionPartner
+instance GHC.Classes.Eq TD.Data.StarTransactionPartner.StarTransactionPartner
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionPartner.StarTransactionPartner
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionPartner.StarTransactionPartner
+
+module TD.Data.StarTransaction
+data StarTransaction
+
+-- | Represents a transaction changing the amount of owned Telegram Stars
+StarTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe StarTransactionPartner -> StarTransaction
+
+-- | Unique identifier of the transaction
+[_id] :: StarTransaction -> Maybe Text
+
+-- | The amount of added owned Telegram Stars; negative for outgoing
+--   transactions
+[star_count] :: StarTransaction -> Maybe Int
+
+-- | True, if the transaction is a refund of a previous transaction
+[is_refund] :: StarTransaction -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the transaction was completed
+[date] :: StarTransaction -> Maybe Int
+
+-- | Source of the incoming transaction, or its recipient for outgoing
+--   transactions
+[partner] :: StarTransaction -> Maybe StarTransactionPartner
+instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
+instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
+
+module TD.Data.StarTransactions
+data StarTransactions
+
+-- | Represents a list of Telegram Star transactions
+StarTransactions :: Maybe Int -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
+
+-- | The amount of owned Telegram Stars
+[star_count] :: StarTransactions -> Maybe Int
+
+-- | List of transactions with Telegram Stars
+[transactions] :: StarTransactions -> Maybe [StarTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StarTransactions -> Maybe Text
+instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
+instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
 
 module TD.Data.MessageEffectType
 
@@ -11805,9 +12049,9 @@ InternalLinkTypeActiveSessions :: InternalLinkType
 --   that the user is a bot and can be added to attachment menu. Then, use
 --   getAttachmentMenuBot to receive information about the bot. If the bot
 --   isn't added to attachment menu, then show a disclaimer about Mini Apps
---   being a third-party apps, ask the user to accept their Terms of
---   service and confirm adding the bot to side and attachment menu. If the
---   user accept the terms and confirms adding, then use
+--   being third-party apps, ask the user to accept their Terms of service
+--   and confirm adding the bot to side and attachment menu. If the user
+--   accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. If the attachment
 --   menu bot can't be used in the opened chat, show an error to the user.
 --   If the bot is added to attachment menu and can be used in the chat,
@@ -11994,6 +12238,29 @@ InternalLinkTypeLanguagePack :: Maybe Text -> InternalLinkType
 -- | The link is a link to the language section of the app settings
 InternalLinkTypeLanguageSettings :: InternalLinkType
 
+-- | The link is a link to the main Web App of a bot. Call searchPublicChat
+--   with the given bot username, check that the user is a bot and has the
+--   main Web App. If the bot can be added to attachment menu, then use
+--   getAttachmentMenuBot to receive information about the bot, then if the
+--   bot isn't added to side menu, show a disclaimer about Mini Apps being
+--   third-party apps, ask the user to accept their Terms of service and
+--   confirm adding the bot to side and attachment menu, then if the user
+--   accepts the terms and confirms adding, use
+--   toggleBotIsAddedToAttachmentMenu to add the bot. Then, use
+--   getMainWebApp with the given start parameter and open the returned URL
+--   as a Web App
+InternalLinkTypeMainWebApp :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
+
+-- | Username of the bot
+[bot_username] :: InternalLinkType -> Maybe Text
+
+-- | The parameter to be passed to sendBotStartMessage
+[start_parameter] :: InternalLinkType -> Maybe Text
+
+-- | True, if the Web App must be opened in the compact mode instead of the
+--   full-size mode
+[is_compact] :: InternalLinkType -> Maybe Bool
+
 -- | The link is a link to a Telegram message or a forum topic. Call
 --   getMessageLinkInfo with the given URL to process the link, and then
 --   open received forum topic or chat and show the message there
@@ -12102,13 +12369,17 @@ InternalLinkTypeProxy :: Maybe Text -> Maybe Int -> Maybe ProxyType -> InternalL
 --   open its profile information screen or the chat itself. If draft text
 --   isn't empty and the chat is a private chat with a regular user, then
 --   put the draft text in the input field
-InternalLinkTypePublicChat :: Maybe Text -> Maybe Text -> InternalLinkType
+InternalLinkTypePublicChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
 
 -- | Username of the chat
 [chat_username] :: InternalLinkType -> Maybe Text
 
 -- | Draft text for message to send in the chat
 [draft_text] :: InternalLinkType -> Maybe Text
+
+-- | True, if chat profile information screen must be opened; otherwise,
+--   the chat itself must be opened
+[open_profile] :: InternalLinkType -> Maybe Bool
 
 -- | The link can be used to login the current user on another device, but
 --   it must be scanned from QR-code using in-app camera. An alert similar
@@ -12123,29 +12394,6 @@ InternalLinkTypeRestorePurchases :: InternalLinkType
 
 -- | The link is a link to application settings
 InternalLinkTypeSettings :: InternalLinkType
-
--- | The link is a link to a bot, which can be installed to the side menu.
---   Call searchPublicChat with the given bot username, check that the user
---   is a bot and can be added to attachment menu. Then, use
---   getAttachmentMenuBot to receive information about the bot. If the bot
---   isn't added to side menu, then show a disclaimer about Mini Apps being
---   a third-party apps, ask the user to accept their Terms of service and
---   confirm adding the bot to side and attachment menu. If the user accept
---   the terms and confirms adding, then use
---   toggleBotIsAddedToAttachmentMenu to add the bot. If the bot is added
---   to side menu, then use getWebAppUrl with the given URL and open the
---   returned URL as a Web App
-InternalLinkTypeSideMenuBot :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
-
--- | Username of the bot
-[bot_username] :: InternalLinkType -> Maybe Text
-
--- | URL to be passed to openWebApp
-[url] :: InternalLinkType -> Maybe Text
-
--- | True, if the Web App must be opened in a compact mode instead of a
---   full-size mode
-[is_compact] :: InternalLinkType -> Maybe Bool
 
 -- | The link is a link to a sticker set. Call searchStickerSet with the
 --   given sticker set name to process the link and show the sticker set.
@@ -12192,16 +12440,20 @@ InternalLinkTypeUnsupportedProxy :: InternalLinkType
 
 -- | The link is a link to a user by its phone number. Call
 --   searchUserByPhoneNumber with the given phone number to process the
---   link. If the user is found, then call createPrivateChat and open the
---   chat. If draft text isn't empty, then put the draft text in the input
---   field
-InternalLinkTypeUserPhoneNumber :: Maybe Text -> Maybe Text -> InternalLinkType
+--   link. If the user is found, then call createPrivateChat and open
+--   user's profile information screen or the chat itself. If draft text
+--   isn't empty, then put the draft text in the input field
+InternalLinkTypeUserPhoneNumber :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
 
 -- | Phone number value from the link
 [phone_number] :: InternalLinkType -> Maybe Text
 
 -- | Draft text for message to send in the chat
 [draft_text] :: InternalLinkType -> Maybe Text
+
+-- | True, if chat profile information screen must be opened; otherwise,
+--   the chat itself must be opened
+[open_profile] :: InternalLinkType -> Maybe Bool
 
 -- | The link is a link to a user by a temporary token. Call
 --   searchUserByToken with the given token to process the link. If the
@@ -12232,9 +12484,9 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 --   with the received bot and the given web_app_short_name. Process
 --   received foundWebApp by showing a confirmation dialog if needed. If
 --   the bot can be added to attachment or side menu, but isn't added yet,
---   then show a disclaimer about Mini Apps being a third-party apps
---   instead of the dialog and ask the user to accept their Terms of
---   service. If the user accept the terms and confirms adding, then use
+--   then show a disclaimer about Mini Apps being third-party apps instead
+--   of the dialog and ask the user to accept their Terms of service. If
+--   the user accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
 InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
@@ -12248,7 +12500,7 @@ InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -
 -- | The parameter to be passed to sendBotStartMessage
 [start_parameter] :: InternalLinkType -> Maybe Text
 
--- | True, if the Web App must be opened in a compact mode instead of a
+-- | True, if the Web App must be opened in the compact mode instead of the
 --   full-size mode
 [is_compact] :: InternalLinkType -> Maybe Bool
 instance GHC.Show.Show TD.Data.InternalLinkType.InternalLinkType
@@ -12608,8 +12860,8 @@ ChatActiveStories :: Maybe Int -> Maybe StoryList -> Maybe Int -> Maybe Int -> M
 [max_read_story_id] :: ChatActiveStories -> Maybe Int
 
 -- | Basic information about the stories; use getStory to get full
---   information about the stories. The stories are in a chronological
---   order (i.e., in order of increasing story identifiers)
+--   information about the stories. The stories are in chronological order
+--   (i.e., in order of increasing story identifiers)
 [stories] :: ChatActiveStories -> Maybe [StoryInfo]
 instance GHC.Show.Show TD.Data.ChatActiveStories.ChatActiveStories
 instance GHC.Classes.Eq TD.Data.ChatActiveStories.ChatActiveStories
@@ -13640,6 +13892,53 @@ instance GHC.Classes.Eq TD.Data.BotMenuButton.BotMenuButton
 instance TD.Lib.Internal.ShortShow TD.Data.BotMenuButton.BotMenuButton
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotMenuButton.BotMenuButton
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BotMenuButton.BotMenuButton
+
+module TD.Data.BotMediaPreview
+data BotMediaPreview
+
+-- | Describes media previews of a bot
+BotMediaPreview :: Maybe Int -> Maybe StoryContent -> BotMediaPreview
+
+-- | Point in time (Unix timestamp) when the preview was added or changed
+--   last time
+[date] :: BotMediaPreview -> Maybe Int
+
+-- | Content of the preview
+[content] :: BotMediaPreview -> Maybe StoryContent
+instance GHC.Show.Show TD.Data.BotMediaPreview.BotMediaPreview
+instance GHC.Classes.Eq TD.Data.BotMediaPreview.BotMediaPreview
+instance TD.Lib.Internal.ShortShow TD.Data.BotMediaPreview.BotMediaPreview
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotMediaPreview.BotMediaPreview
+
+module TD.Data.BotMediaPreviews
+data BotMediaPreviews
+
+-- | Contains a list of media previews of a bot
+BotMediaPreviews :: Maybe [BotMediaPreview] -> BotMediaPreviews
+
+-- | List of media previews
+[previews] :: BotMediaPreviews -> Maybe [BotMediaPreview]
+instance GHC.Show.Show TD.Data.BotMediaPreviews.BotMediaPreviews
+instance GHC.Classes.Eq TD.Data.BotMediaPreviews.BotMediaPreviews
+instance TD.Lib.Internal.ShortShow TD.Data.BotMediaPreviews.BotMediaPreviews
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotMediaPreviews.BotMediaPreviews
+
+module TD.Data.BotMediaPreviewInfo
+data BotMediaPreviewInfo
+
+-- | Contains a list of media previews of a bot for the given language and
+--   the list of languages for which the bot has dedicated previews
+BotMediaPreviewInfo :: Maybe [BotMediaPreview] -> Maybe [Text] -> BotMediaPreviewInfo
+
+-- | List of media previews
+[previews] :: BotMediaPreviewInfo -> Maybe [BotMediaPreview]
+
+-- | List of language codes for which the bot has dedicated previews
+[language_codes] :: BotMediaPreviewInfo -> Maybe [Text]
+instance GHC.Show.Show TD.Data.BotMediaPreviewInfo.BotMediaPreviewInfo
+instance GHC.Classes.Eq TD.Data.BotMediaPreviewInfo.BotMediaPreviewInfo
+instance TD.Lib.Internal.ShortShow TD.Data.BotMediaPreviewInfo.BotMediaPreviewInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotMediaPreviewInfo.BotMediaPreviewInfo
 
 module TD.Data.BotCommandScope
 
@@ -14884,8 +15183,8 @@ PushMessageContentLocation :: Maybe Bool -> Maybe Bool -> PushMessageContent
 -- | A message with paid media
 PushMessageContentPaidMedia :: Maybe Int -> Maybe Bool -> PushMessageContent
 
--- | Number of stars needed to buy access to the media in the message; 0
---   for pinned message
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message; 0 for pinned message
 [star_count] :: PushMessageContent -> Maybe Int
 
 -- | True, if the message is a pinned message with the specified content
@@ -15699,7 +15998,7 @@ module TD.Data.BotInfo
 data BotInfo
 
 -- | Contains information about a bot
-BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
+BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
 
 -- | The text that is shown on the bot's profile page and is sent together
 --   with the link when users share the bot
@@ -15727,6 +16026,9 @@ BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe B
 -- | Default administrator rights for adding the bot to channels; may be
 --   null
 [default_channel_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
+
+-- | True, if the bot has media previews
+[has_media_previews] :: BotInfo -> Maybe Bool
 
 -- | The internal link, which can be used to edit bot commands; may be null
 [edit_commands_link] :: BotInfo -> Maybe InternalLinkType
@@ -16151,11 +16453,14 @@ LinkPreviewTypeDocument :: Maybe Document -> Maybe Text -> LinkPreviewType
 -- | Author of the animation
 [author] :: LinkPreviewType -> Maybe Text
 
--- | The link is a link to an audio player
-LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Int -> Maybe Text -> LinkPreviewType
+-- | The link is a link to an animation player
+LinkPreviewTypeEmbeddedAnimationPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
 
 -- | URL of the audio; may be empty if none
 [url] :: LinkPreviewType -> Maybe Text
+
+-- | Thumbnail of the animation; may be null if unknown
+[thumbnail] :: LinkPreviewType -> Maybe Photo
 
 -- | Duration of the audio, in seconds; 0 if unknown
 [duration] :: LinkPreviewType -> Maybe Int
@@ -16163,22 +16468,52 @@ LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Int -> Maybe Text -> L
 -- | Author of the animation
 [author] :: LinkPreviewType -> Maybe Text
 
--- | The link is a link to a video player
-LinkPreviewTypeEmbeddedVideoPlayer :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
-
--- | URL of the audio; may be empty if none
-[url] :: LinkPreviewType -> Maybe Text
-
--- | Duration of the audio, in seconds; 0 if unknown
-[duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
-
--- | Expected width of the preview
+-- | Expected width of the embedded player
 [width] :: LinkPreviewType -> Maybe Int
 
--- | Expected height of the preview
+-- | Expected height of the embedded player
+[height] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to an audio player
+LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | Thumbnail of the animation; may be null if unknown
+[thumbnail] :: LinkPreviewType -> Maybe Photo
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | Expected width of the embedded player
+[width] :: LinkPreviewType -> Maybe Int
+
+-- | Expected height of the embedded player
+[height] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to a video player
+LinkPreviewTypeEmbeddedVideoPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | URL of the audio; may be empty if none
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | Thumbnail of the animation; may be null if unknown
+[thumbnail] :: LinkPreviewType -> Maybe Photo
+
+-- | Duration of the audio, in seconds; 0 if unknown
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | Author of the animation
+[author] :: LinkPreviewType -> Maybe Text
+
+-- | Expected width of the embedded player
+[width] :: LinkPreviewType -> Maybe Int
+
+-- | Expected height of the embedded player
 [height] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to an invoice
@@ -16262,10 +16597,10 @@ LinkPreviewTypeVideo :: Maybe Text -> Maybe Text -> Maybe Video -> Maybe Int -> 
 -- | The video description; may be null if unknown
 [video] :: LinkPreviewType -> Maybe Video
 
--- | Expected width of the preview
+-- | Expected width of the embedded player
 [width] :: LinkPreviewType -> Maybe Int
 
--- | Expected height of the preview
+-- | Expected height of the embedded player
 [height] :: LinkPreviewType -> Maybe Int
 
 -- | Duration of the audio, in seconds; 0 if unknown
@@ -16310,7 +16645,7 @@ module TD.Data.LinkPreview
 data LinkPreview
 
 -- | Describes a link preview
-LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe LinkPreviewType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> LinkPreview
+LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe LinkPreviewType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> LinkPreview
 
 -- | Original URL of the link
 [url] :: LinkPreview -> Maybe Text
@@ -16335,6 +16670,10 @@ LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe For
 --   preview must be shown small and only the first frame must be shown for
 --   videos
 [show_large_media] :: LinkPreview -> Maybe Bool
+
+-- | True, if media must be shown above link preview description;
+--   otherwise, the media must be shown below the description
+[show_media_above_description] :: LinkPreview -> Maybe Bool
 
 -- | True, if there is no need to show an ordinary open URL confirmation,
 --   when opening the URL from the preview, because the URL is shown in the
@@ -16607,10 +16946,10 @@ PaymentReceiptTypeRegular :: Maybe Int -> Maybe Invoice -> Maybe OrderInfo -> Ma
 --   currency
 [tip_amount] :: PaymentReceiptType -> Maybe Int
 
--- | The payment was done using Telegram stars
+-- | The payment was done using Telegram Stars
 PaymentReceiptTypeStars :: Maybe Int -> Maybe Text -> PaymentReceiptType
 
--- | Number of Telegram stars that were paid
+-- | Number of Telegram Stars that were paid
 [star_count] :: PaymentReceiptType -> Maybe Int
 
 -- | Unique identifier of the transaction that can be used to dispute it
@@ -16675,10 +17014,10 @@ PaymentFormTypeRegular :: Maybe Invoice -> Maybe Int -> Maybe PaymentProvider ->
 --   2-step verification password
 [need_password] :: PaymentFormType -> Maybe Bool
 
--- | The payment form is for a payment in Telegram stars
+-- | The payment form is for a payment in Telegram Stars
 PaymentFormTypeStars :: Maybe Int -> PaymentFormType
 
--- | Number of Telegram stars that will be paid
+-- | Number of Telegram Stars that will be paid
 [star_count] :: PaymentFormType -> Maybe Int
 instance GHC.Show.Show TD.Data.PaymentFormType.PaymentFormType
 instance GHC.Classes.Eq TD.Data.PaymentFormType.PaymentFormType
@@ -16766,7 +17105,8 @@ MessageDocument :: Maybe Document -> Maybe FormattedText -> MessageContent
 -- | A message with paid media
 MessagePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> Maybe FormattedText -> Maybe Bool -> MessageContent
 
--- | Number of stars needed to buy access to the media in the message
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message
 [star_count] :: MessageContent -> Maybe Int
 
 -- | Information about the media
@@ -17267,7 +17607,7 @@ MessagePaymentSuccessfulBot :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bo
 -- | A payment has been refunded
 MessagePaymentRefunded :: Maybe MessageSender -> Maybe Text -> Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe Text -> MessageContent
 
--- | Identifier of the previous owner of the Telegram stars that refunds
+-- | Identifier of the previous owner of the Telegram Stars that refunds
 --   them
 [owner_id] :: MessageContent -> Maybe MessageSender
 
@@ -17286,12 +17626,16 @@ MessagePaymentRefunded :: Maybe MessageSender -> Maybe Text -> Maybe Int -> Mayb
 -- | Provider payment identifier
 [provider_payment_charge_id] :: MessageContent -> Maybe Text
 
--- | Telegram Premium was gifted to the user
-MessageGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
+-- | Telegram Premium was gifted to a user
+MessageGiftedPremium :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
 
 -- | The identifier of a user that gifted Telegram Premium; 0 if the gift
---   was anonymous
+--   was anonymous or is outgoing
 [gifter_user_id] :: MessageContent -> Maybe Int
+
+-- | The identifier of a user that received Telegram Premium; 0 if the gift
+--   is incoming
+[receiver_user_id] :: MessageContent -> Maybe Int
 
 -- | Currency for the product price
 [currency] :: MessageContent -> Maybe Text
@@ -17425,6 +17769,41 @@ MessagePremiumGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe In
 
 -- | Number of undistributed prizes
 [unclaimed_prize_count] :: MessageContent -> Maybe Int
+
+-- | Telegram Stars were gifted to a user
+MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> MessageContent
+
+-- | The identifier of a user that gifted Telegram Premium; 0 if the gift
+--   was anonymous or is outgoing
+[gifter_user_id] :: MessageContent -> Maybe Int
+
+-- | The identifier of a user that received Telegram Premium; 0 if the gift
+--   is incoming
+[receiver_user_id] :: MessageContent -> Maybe Int
+
+-- | Currency for the product price
+[currency] :: MessageContent -> Maybe Text
+
+-- | The paid amount, in the smallest units of the currency
+[amount] :: MessageContent -> Maybe Int
+
+-- | Cryptocurrency used to pay for the gift; may be empty if none
+[cryptocurrency] :: MessageContent -> Maybe Text
+
+-- | The paid amount, in the smallest units of the cryptocurrency; 0 if
+--   none
+[cryptocurrency_amount] :: MessageContent -> Maybe Int
+
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message
+[star_count] :: MessageContent -> Maybe Int
+
+-- | Identifier of the transaction for Telegram Stars purchase; for
+--   receiver only
+[transaction_id] :: MessageContent -> Maybe Text
+
+-- | The sticker description
+[sticker] :: MessageContent -> Maybe Sticker
 
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
@@ -17697,7 +18076,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -17726,55 +18105,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   message sender, for example, as away, or greeting service message
 [is_from_offline] :: Message -> Maybe Bool
 
--- | True, if the message can be edited. For live location and poll
---   messages this fields shows whether editMessageLiveLocation or stopPoll
---   can be used with this message by the application
-[can_be_edited] :: Message -> Maybe Bool
-
--- | True, if the message can be forwarded
-[can_be_forwarded] :: Message -> Maybe Bool
-
--- | True, if the message can be replied in another chat or topic
-[can_be_replied_in_another_chat] :: Message -> Maybe Bool
-
 -- | True, if content of the message can be saved locally or copied
 [can_be_saved] :: Message -> Maybe Bool
-
--- | True, if the message can be deleted only for the current user while
---   other users will continue to see it
-[can_be_deleted_only_for_self] :: Message -> Maybe Bool
-
--- | True, if the message can be deleted for all users
-[can_be_deleted_for_all_users] :: Message -> Maybe Bool
-
--- | True, if the list of added reactions is available through
---   getMessageAddedReactions
-[can_get_added_reactions] :: Message -> Maybe Bool
-
--- | True, if the message statistics are available through
---   getMessageStatistics
-[can_get_statistics] :: Message -> Maybe Bool
-
--- | True, if information about the message thread is available through
---   getMessageThread and getMessageThreadHistory
-[can_get_message_thread] :: Message -> Maybe Bool
-
--- | True, if read date of the message can be received through
---   getMessageReadDate
-[can_get_read_date] :: Message -> Maybe Bool
-
--- | True, if chat members already viewed the message can be received
---   through getMessageViewers
-[can_get_viewers] :: Message -> Maybe Bool
-
--- | True, if media timestamp links can be generated for media timestamp
---   entities in the message text, caption or link preview description
---   through getMessageLink
-[can_get_media_timestamp_links] :: Message -> Maybe Bool
-
--- | True, if reactions on the message can be reported through
---   reportMessageReactions
-[can_report_reactions] :: Message -> Maybe Bool
 
 -- | True, if media timestamp entities refers to a media in this message as
 --   opposed to a media in the replied message
@@ -18157,7 +18489,7 @@ MessageThreadInfo :: Maybe Int -> Maybe Int -> Maybe MessageReplyInfo -> Maybe I
 [unread_message_count] :: MessageThreadInfo -> Maybe Int
 
 -- | The messages from which the thread starts. The messages are returned
---   in a reverse chronological order (i.e., in order of decreasing
+--   in reverse chronological order (i.e., in order of decreasing
 --   message_id)
 [messages] :: MessageThreadInfo -> Maybe [Message]
 
@@ -20402,10 +20734,10 @@ UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 -- | The new tags
 [tags] :: Update -> Maybe SavedMessagesTags
 
--- | The number of Telegram stars owned by the current user has changed
+-- | The number of Telegram Stars owned by the current user has changed
 UpdateOwnedStarCount :: Maybe Int -> Update
 
--- | The new number of Telegram stars owned
+-- | The new number of Telegram Stars owned
 [star_count] :: Update -> Maybe Int
 
 -- | The revenue earned from sponsored messages in a chat has changed. If
@@ -20419,15 +20751,15 @@ UpdateChatRevenueAmount :: Maybe Int -> Maybe ChatRevenueAmount -> Update
 -- | New amount of earned revenue
 [revenue_amount] :: Update -> Maybe ChatRevenueAmount
 
--- | The Telegram star revenue earned by a bot or a chat has changed. If
---   star transactions screen of the chat is opened, then
+-- | The Telegram Star revenue earned by a bot or a chat has changed. If
+--   Telegram Star transaction screen of the chat is opened, then
 --   getStarTransactions may be called to fetch new transactions
 UpdateStarRevenueStatus :: Maybe MessageSender -> Maybe StarRevenueStatus -> Update
 
--- | Identifier of the owner of the Telegram stars
+-- | Identifier of the owner of the Telegram Stars
 [owner_id] :: Update -> Maybe MessageSender
 
--- | New Telegram star revenue status
+-- | New Telegram Star revenue status
 [_status] :: Update -> Maybe StarRevenueStatus
 
 -- | The parameters of speech recognition without Telegram Premium
@@ -20864,6 +21196,9 @@ BankCardInfo :: BankCardInfo -> GeneralResult
 BasicGroup :: BasicGroup -> GeneralResult
 BasicGroupFullInfo :: BasicGroupFullInfo -> GeneralResult
 BotCommands :: BotCommands -> GeneralResult
+BotMediaPreview :: BotMediaPreview -> GeneralResult
+BotMediaPreviewInfo :: BotMediaPreviewInfo -> GeneralResult
+BotMediaPreviews :: BotMediaPreviews -> GeneralResult
 BotMenuButton :: BotMenuButton -> GeneralResult
 BusinessChatLink :: BusinessChatLink -> GeneralResult
 BusinessChatLinkInfo :: BusinessChatLinkInfo -> GeneralResult
@@ -20917,6 +21252,7 @@ ConnectedWebsites :: ConnectedWebsites -> GeneralResult
 Count :: Count -> GeneralResult
 Countries :: Countries -> GeneralResult
 CreatedBasicGroupChat :: CreatedBasicGroupChat -> GeneralResult
+CurrentWeather :: CurrentWeather -> GeneralResult
 CustomRequestResult :: CustomRequestResult -> GeneralResult
 DatabaseStatistics :: DatabaseStatistics -> GeneralResult
 DeepLinkInfo :: DeepLinkInfo -> GeneralResult
@@ -20942,6 +21278,7 @@ FoundMessages :: FoundMessages -> GeneralResult
 FoundPosition :: FoundPosition -> GeneralResult
 FoundPositions :: FoundPositions -> GeneralResult
 FoundStories :: FoundStories -> GeneralResult
+FoundUsers :: FoundUsers -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
@@ -20962,6 +21299,7 @@ LogStream :: LogStream -> GeneralResult
 LogTags :: LogTags -> GeneralResult
 LogVerbosityLevel :: LogVerbosityLevel -> GeneralResult
 LoginUrlInfo :: LoginUrlInfo -> GeneralResult
+MainWebApp :: MainWebApp -> GeneralResult
 Message :: Message -> GeneralResult
 MessageAutoDeleteTime :: MessageAutoDeleteTime -> GeneralResult
 MessageCalendar :: MessageCalendar -> GeneralResult
@@ -20970,6 +21308,7 @@ MessageFileType :: MessageFileType -> GeneralResult
 MessageLink :: MessageLink -> GeneralResult
 MessageLinkInfo :: MessageLinkInfo -> GeneralResult
 MessagePositions :: MessagePositions -> GeneralResult
+MessageProperties :: MessageProperties -> GeneralResult
 MessageReadDate :: MessageReadDate -> GeneralResult
 MessageSenders :: MessageSenders -> GeneralResult
 MessageStatistics :: MessageStatistics -> GeneralResult
@@ -21119,6 +21458,35 @@ instance GHC.Show.Show TD.Query.ActivateStoryStealthMode.ActivateStoryStealthMod
 instance GHC.Classes.Eq TD.Query.ActivateStoryStealthMode.ActivateStoryStealthMode
 instance TD.Lib.Internal.ShortShow TD.Query.ActivateStoryStealthMode.ActivateStoryStealthMode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ActivateStoryStealthMode.ActivateStoryStealthMode
+
+module TD.Query.AddBotMediaPreview
+
+-- | Adds a new media preview to the beginning of the list of media
+--   previews of a bot. Returns the added preview after addition is
+--   completed server-side. The total number of previews must not exceed
+--   getOption("bot_media_preview_count_max") for the given language.
+--   Returns <a>BotMediaPreview</a>
+data AddBotMediaPreview
+AddBotMediaPreview :: Maybe Int -> Maybe Text -> Maybe InputStoryContent -> AddBotMediaPreview
+
+-- | Identifier of the target bot. The bot must be owned and must have the
+--   main Web App
+[bot_user_id] :: AddBotMediaPreview -> Maybe Int
+
+-- | A two-letter ISO 639-1 language code for which preview is added. If
+--   empty, then the preview will be shown to all users for whose languages
+--   there are no dedicated previews. If non-empty, then there must be an
+--   official language pack of the same name, which is returned by
+--   getLocalizationTargetInfo
+[language_code] :: AddBotMediaPreview -> Maybe Text
+
+-- | Content of the added preview
+[content] :: AddBotMediaPreview -> Maybe InputStoryContent
+defaultAddBotMediaPreview :: AddBotMediaPreview
+instance GHC.Show.Show TD.Query.AddBotMediaPreview.AddBotMediaPreview
+instance GHC.Classes.Eq TD.Query.AddBotMediaPreview.AddBotMediaPreview
+instance TD.Lib.Internal.ShortShow TD.Query.AddBotMediaPreview.AddBotMediaPreview
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddBotMediaPreview.AddBotMediaPreview
 
 module TD.Query.AddChatFolderByInviteLink
 
@@ -22989,6 +23357,28 @@ instance GHC.Classes.Eq TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevoke
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllRevokedChatInviteLinks.DeleteAllRevokedChatInviteLinks
 
+module TD.Query.DeleteBotMediaPreviews
+
+-- | Delete media previews from the list of media previews of a bot.
+--   Returns <a>Ok</a>
+data DeleteBotMediaPreviews
+DeleteBotMediaPreviews :: Maybe Int -> Maybe Text -> Maybe [Int] -> DeleteBotMediaPreviews
+
+-- | Identifier of the target bot. The bot must be owned and must have the
+--   main Web App
+[bot_user_id] :: DeleteBotMediaPreviews -> Maybe Int
+
+-- | Language code of the media previews to delete
+[language_code] :: DeleteBotMediaPreviews -> Maybe Text
+
+-- | File identifiers of the media to delete
+[file_ids] :: DeleteBotMediaPreviews -> Maybe [Int]
+defaultDeleteBotMediaPreviews :: DeleteBotMediaPreviews
+instance GHC.Show.Show TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
+instance GHC.Classes.Eq TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
+
 module TD.Query.DeleteBusinessChatLink
 
 -- | Deletes a business chat link of the current account. Returns <a>Ok</a>
@@ -23265,7 +23655,10 @@ DeleteMessages :: Maybe Int -> Maybe [Int] -> Maybe Bool -> DeleteMessages
 -- | Chat identifier
 [chat_id] :: DeleteMessages -> Maybe Int
 
--- | Identifiers of the messages to be deleted
+-- | Identifiers of the messages to be deleted. Use
+--   messageProperties.can_be_deleted_only_for_self and
+--   messageProperties.can_be_deleted_for_all_users to get suitable
+--   messages
 [message_ids] :: DeleteMessages -> Maybe [Int]
 
 -- | Pass true to delete messages for all chat members. Always true for
@@ -23567,6 +23960,32 @@ instance GHC.Show.Show TD.Query.DownloadFile.DownloadFile
 instance GHC.Classes.Eq TD.Query.DownloadFile.DownloadFile
 instance TD.Lib.Internal.ShortShow TD.Query.DownloadFile.DownloadFile
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DownloadFile.DownloadFile
+
+module TD.Query.EditBotMediaPreview
+
+-- | Replaces media preview in the list of media previews of a bot. Returns
+--   the new preview after edit is completed server-side. Returns
+--   <a>BotMediaPreview</a>
+data EditBotMediaPreview
+EditBotMediaPreview :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe InputStoryContent -> EditBotMediaPreview
+
+-- | Identifier of the target bot. The bot must be owned and must have the
+--   main Web App
+[bot_user_id] :: EditBotMediaPreview -> Maybe Int
+
+-- | Language code of the media preview to edit
+[language_code] :: EditBotMediaPreview -> Maybe Text
+
+-- | File identifier of the media to replace
+[file_id] :: EditBotMediaPreview -> Maybe Int
+
+-- | Content of the new preview
+[content] :: EditBotMediaPreview -> Maybe InputStoryContent
+defaultEditBotMediaPreview :: EditBotMediaPreview
+instance GHC.Show.Show TD.Query.EditBotMediaPreview.EditBotMediaPreview
+instance GHC.Classes.Eq TD.Query.EditBotMediaPreview.EditBotMediaPreview
+instance TD.Lib.Internal.ShortShow TD.Query.EditBotMediaPreview.EditBotMediaPreview
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBotMediaPreview.EditBotMediaPreview
 
 module TD.Query.EditBusinessChatLink
 
@@ -24006,15 +24425,15 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditInlineMessageText.EditInlin
 module TD.Query.EditMessageCaption
 
 -- | Edits the message content caption. Returns the edited message after
---   the edit is completed on the server side. Can be used only if
---   message.can_be_edited == true. Returns <a>Message</a>
+--   the edit is completed on the server side. Returns <a>Message</a>
 data EditMessageCaption
 EditMessageCaption :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe FormattedText -> Maybe Bool -> EditMessageCaption
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageCaption -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
 [message_id] :: EditMessageCaption -> Maybe Int
 
 -- | The new message reply markup; pass null if none; for bots only
@@ -24038,15 +24457,16 @@ module TD.Query.EditMessageLiveLocation
 
 -- | Edits the message content of a live location. Messages can be edited
 --   for a limited period of time specified in the live location. Returns
---   the edited message after the edit is completed on the server side. Can
---   be used only if message.can_be_edited == true. Returns <a>Message</a>
+--   the edited message after the edit is completed on the server side.
+--   Returns <a>Message</a>
 data EditMessageLiveLocation
 EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditMessageLiveLocation
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageLiveLocation -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
 [message_id] :: EditMessageLiveLocation -> Maybe Int
 
 -- | The new message reply markup; pass null if none; for bots only
@@ -24085,15 +24505,15 @@ module TD.Query.EditMessageMedia
 --   self-destructing media. The type of message content in an album can't
 --   be changed with exception of replacing a photo with a video or vice
 --   versa. Returns the edited message after the edit is completed on the
---   server side. Can be used only if message.can_be_edited == true.
---   Returns <a>Message</a>
+--   server side. Returns <a>Message</a>
 data EditMessageMedia
 EditMessageMedia :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditMessageMedia
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageMedia -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
 [message_id] :: EditMessageMedia -> Maybe Int
 
 -- | The new message reply markup; pass null if none; for bots only
@@ -24112,15 +24532,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageMedia.EditMessageMed
 module TD.Query.EditMessageReplyMarkup
 
 -- | Edits the message reply markup; for bots only. Returns the edited
---   message after the edit is completed on the server side. Can be used
---   only if message.can_be_edited == true. Returns <a>Message</a>
+--   message after the edit is completed on the server side. Returns
+--   <a>Message</a>
 data EditMessageReplyMarkup
 EditMessageReplyMarkup :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> EditMessageReplyMarkup
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageReplyMarkup -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
 [message_id] :: EditMessageReplyMarkup -> Maybe Int
 
 -- | The new message reply markup; pass null if none
@@ -24142,7 +24563,9 @@ EditMessageSchedulingState :: Maybe Int -> Maybe Int -> Maybe MessageSchedulingS
 -- | The chat the message belongs to
 [chat_id] :: EditMessageSchedulingState -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use
+--   messageProperties.can_edit_scheduling_state to check whether the
+--   message is suitable
 [message_id] :: EditMessageSchedulingState -> Maybe Int
 
 -- | The new message scheduling state; pass null to send the message
@@ -24157,15 +24580,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageSchedulingState.Edit
 module TD.Query.EditMessageText
 
 -- | Edits the text of a message (or a text of a game message). Returns the
---   edited message after the edit is completed on the server side. Can be
---   used only if message.can_be_edited == true. Returns <a>Message</a>
+--   edited message after the edit is completed on the server side. Returns
+--   <a>Message</a>
 data EditMessageText
 EditMessageText :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditMessageText
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageText -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
 [message_id] :: EditMessageText -> Maybe Int
 
 -- | The new message reply markup; pass null if none; for bots only
@@ -24262,6 +24686,28 @@ instance GHC.Classes.Eq TD.Query.EditStory.EditStory
 instance TD.Lib.Internal.ShortShow TD.Query.EditStory.EditStory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStory.EditStory
 
+module TD.Query.EditStoryCover
+
+-- | Changes cover of a video story. Can be called only if
+--   story.can_be_edited == true and the story isn't being edited now.
+--   Returns <a>Ok</a>
+data EditStoryCover
+EditStoryCover :: Maybe Int -> Maybe Int -> Maybe Double -> EditStoryCover
+
+-- | Identifier of the chat that posted the story
+[story_sender_chat_id] :: EditStoryCover -> Maybe Int
+
+-- | Identifier of the story to edit
+[story_id] :: EditStoryCover -> Maybe Int
+
+-- | New timestamp of the frame, which will be used as video thumbnail
+[cover_frame_timestamp] :: EditStoryCover -> Maybe Double
+defaultEditStoryCover :: EditStoryCover
+instance GHC.Show.Show TD.Query.EditStoryCover.EditStoryCover
+instance GHC.Classes.Eq TD.Query.EditStoryCover.EditStoryCover
+instance TD.Lib.Internal.ShortShow TD.Query.EditStoryCover.EditStoryCover
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStoryCover.EditStoryCover
+
 module TD.Query.EnableProxy
 
 -- | Enables a proxy. Only one proxy can be enabled at a time. Can be
@@ -24357,7 +24803,7 @@ ForwardMessages :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe M
 -- | Identifiers of the messages to forward. Message identifiers must be in
 --   a strictly increasing order. At most 100 messages can be forwarded
 --   simultaneously. A message can be forwarded only if
---   message.can_be_forwarded
+--   messageProperties.can_be_forwarded
 [message_ids] :: ForwardMessages -> Maybe [Int]
 
 -- | Options to be used to send the messages; pass null to use default
@@ -24716,6 +25162,41 @@ instance GHC.Classes.Eq TD.Query.GetBotInfoShortDescription.GetBotInfoShortDescr
 instance TD.Lib.Internal.ShortShow TD.Query.GetBotInfoShortDescription.GetBotInfoShortDescription
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotInfoShortDescription.GetBotInfoShortDescription
 
+module TD.Query.GetBotMediaPreviewInfo
+
+-- | Returns the list of media previews for the given language and the list
+--   of languages for which the bot has dedicated previews. Returns
+--   <a>BotMediaPreviewInfo</a>
+data GetBotMediaPreviewInfo
+GetBotMediaPreviewInfo :: Maybe Int -> Maybe Text -> GetBotMediaPreviewInfo
+
+-- | Identifier of the target bot. The bot must be owned and must have the
+--   main Web App
+[bot_user_id] :: GetBotMediaPreviewInfo -> Maybe Int
+
+-- | A two-letter ISO 639-1 language code for which to get previews. If
+--   empty, then default previews are returned
+[language_code] :: GetBotMediaPreviewInfo -> Maybe Text
+defaultGetBotMediaPreviewInfo :: GetBotMediaPreviewInfo
+instance GHC.Show.Show TD.Query.GetBotMediaPreviewInfo.GetBotMediaPreviewInfo
+instance GHC.Classes.Eq TD.Query.GetBotMediaPreviewInfo.GetBotMediaPreviewInfo
+instance TD.Lib.Internal.ShortShow TD.Query.GetBotMediaPreviewInfo.GetBotMediaPreviewInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotMediaPreviewInfo.GetBotMediaPreviewInfo
+
+module TD.Query.GetBotMediaPreviews
+
+-- | Returns the list of media previews of a bot. Returns
+--   <a>BotMediaPreviews</a>
+data GetBotMediaPreviews
+GetBotMediaPreviews :: Maybe Int -> GetBotMediaPreviews
+
+-- | Identifier of the target bot. The bot must have the main Web App
+[bot_user_id] :: GetBotMediaPreviews -> Maybe Int
+instance GHC.Show.Show TD.Query.GetBotMediaPreviews.GetBotMediaPreviews
+instance GHC.Classes.Eq TD.Query.GetBotMediaPreviews.GetBotMediaPreviews
+instance TD.Lib.Internal.ShortShow TD.Query.GetBotMediaPreviews.GetBotMediaPreviews
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotMediaPreviews.GetBotMediaPreviews
+
 module TD.Query.GetBotName
 
 -- | Returns the name of a bot in the given language. Can be called only if
@@ -24811,7 +25292,8 @@ GetCallbackQueryAnswer :: Maybe Int -> Maybe Int -> Maybe CallbackQueryPayload -
 -- | Identifier of the chat with the message
 [chat_id] :: GetCallbackQueryAnswer -> Maybe Int
 
--- | Identifier of the message from which the query originated
+-- | Identifier of the message from which the query originated. The message
+--   must not be scheduled
 [message_id] :: GetCallbackQueryAnswer -> Maybe Int
 
 -- | Query payload
@@ -24888,7 +25370,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAdministrators.GetChatAd
 module TD.Query.GetChatArchivedStories
 
 -- | Returns the list of all stories posted by the given chat; requires
---   can_edit_stories right in the chat. The stories are returned in a
+--   can_edit_stories right in the chat. The stories are returned in
 --   reverse chronological order (i.e., in order of decreasing story_id).
 --   For optimal performance, the number of returned stories is chosen by
 --   TDLib. Returns <a>Stories</a>
@@ -25158,7 +25640,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatFolderNewChats.GetChatFo
 
 module TD.Query.GetChatHistory
 
--- | Returns messages in a chat. The messages are returned in a reverse
+-- | Returns messages in a chat. The messages are returned in reverse
 --   chronological order (i.e., in order of decreasing message_id). For
 --   optimal performance, the number of returned messages is chosen by
 --   TDLib. This is an offline request if only_local is true. Returns
@@ -25503,7 +25985,7 @@ module TD.Query.GetChatPostedToChatPageStories
 
 -- | Returns the list of stories that posted by the given chat to its chat
 --   page. If from_story_id == 0, then pinned stories are returned first.
---   Then, stories are returned in a reverse chronological order (i.e., in
+--   Then, stories are returned in reverse chronological order (i.e., in
 --   order of decreasing story_id). For optimal performance, the number of
 --   returned stories is chosen by TDLib. Returns <a>Stories</a>
 data GetChatPostedToChatPageStories
@@ -25592,8 +26074,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueWithdrawalUrl.Get
 module TD.Query.GetChatScheduledMessages
 
 -- | Returns all scheduled messages in a chat. The messages are returned in
---   a reverse chronological order (i.e., in order of decreasing
---   message_id). Returns <a>Messages</a>
+--   reverse chronological order (i.e., in order of decreasing message_id).
+--   Returns <a>Messages</a>
 data GetChatScheduledMessages
 GetChatScheduledMessages :: Maybe Int -> GetChatScheduledMessages
 
@@ -25922,6 +26404,20 @@ instance GHC.Show.Show TD.Query.GetCurrentState.GetCurrentState
 instance GHC.Classes.Eq TD.Query.GetCurrentState.GetCurrentState
 instance TD.Lib.Internal.ShortShow TD.Query.GetCurrentState.GetCurrentState
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCurrentState.GetCurrentState
+
+module TD.Query.GetCurrentWeather
+
+-- | Returns the current weather in the given location. Returns
+--   <a>CurrentWeather</a>
+data GetCurrentWeather
+GetCurrentWeather :: Maybe Location -> GetCurrentWeather
+
+-- | The location
+[location] :: GetCurrentWeather -> Maybe Location
+instance GHC.Show.Show TD.Query.GetCurrentWeather.GetCurrentWeather
+instance GHC.Classes.Eq TD.Query.GetCurrentWeather.GetCurrentWeather
+instance TD.Lib.Internal.ShortShow TD.Query.GetCurrentWeather.GetCurrentWeather
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCurrentWeather.GetCurrentWeather
 
 module TD.Query.GetCustomEmojiReactionAnimations
 
@@ -26785,7 +27281,8 @@ GetLoginUrlInfo :: Maybe Int -> Maybe Int -> Maybe Int -> GetLoginUrlInfo
 -- | Chat identifier of the message with the button
 [chat_id] :: GetLoginUrlInfo -> Maybe Int
 
--- | Message identifier of the message with the button
+-- | Message identifier of the message with the button. The message must
+--   not be scheduled
 [message_id] :: GetLoginUrlInfo -> Maybe Int
 
 -- | Button identifier
@@ -26795,6 +27292,34 @@ instance GHC.Show.Show TD.Query.GetLoginUrlInfo.GetLoginUrlInfo
 instance GHC.Classes.Eq TD.Query.GetLoginUrlInfo.GetLoginUrlInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetLoginUrlInfo.GetLoginUrlInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLoginUrlInfo.GetLoginUrlInfo
+
+module TD.Query.GetMainWebApp
+
+-- | Returns information needed to open the main Web App of a bot. Returns
+--   <a>MainWebApp</a>
+data GetMainWebApp
+GetMainWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> GetMainWebApp
+
+-- | Identifier of the chat in which the Web App is opened; pass 0 if none
+[chat_id] :: GetMainWebApp -> Maybe Int
+
+-- | Identifier of the target bot
+[bot_user_id] :: GetMainWebApp -> Maybe Int
+
+-- | Start parameter from internalLinkTypeMainWebApp
+[start_parameter] :: GetMainWebApp -> Maybe Text
+
+-- | Preferred Web App theme; pass null to use the default theme
+[theme] :: GetMainWebApp -> Maybe ThemeParameters
+
+-- | Short name of the current application; 0-64 English letters, digits,
+--   and underscores
+[application_name] :: GetMainWebApp -> Maybe Text
+defaultGetMainWebApp :: GetMainWebApp
+instance GHC.Show.Show TD.Query.GetMainWebApp.GetMainWebApp
+instance GHC.Classes.Eq TD.Query.GetMainWebApp.GetMainWebApp
+instance TD.Lib.Internal.ShortShow TD.Query.GetMainWebApp.GetMainWebApp
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMainWebApp.GetMainWebApp
 
 module TD.Query.GetMapThumbnailFile
 
@@ -26895,7 +27420,9 @@ GetMessageAddedReactions :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Mayb
 -- | Identifier of the chat to which the message belongs
 [chat_id] :: GetMessageAddedReactions -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use
+--   messageProperties.can_get_added_reactions to check whether added
+--   reactions can be received for the message
 [message_id] :: GetMessageAddedReactions -> Maybe Int
 
 -- | Type of the reactions to return; pass null to return all added
@@ -26954,9 +27481,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageEffect.GetMessageEffe
 
 module TD.Query.GetMessageEmbeddingCode
 
--- | Returns an HTML code for embedding the message. Available only for
---   messages in supergroups and channels with a username. Returns
---   <a>Text</a>
+-- | Returns an HTML code for embedding the message. Available only if
+--   messageProperties.can_get_embedding_code. Returns <a>Text</a>
 data GetMessageEmbeddingCode
 GetMessageEmbeddingCode :: Maybe Int -> Maybe Int -> Maybe Bool -> GetMessageEmbeddingCode
 
@@ -27007,10 +27533,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageImportConfirmationTex
 
 module TD.Query.GetMessageLink
 
--- | Returns an HTTPS link to a message in a chat. Available only for
---   already sent messages in supergroups and channels, or if
---   message.can_get_media_timestamp_links and a media timestamp link is
---   generated. This is an offline request. Returns <a>MessageLink</a>
+-- | Returns an HTTPS link to a message in a chat. Available only if
+--   messageProperties.can_get_link, or if
+--   messageProperties.can_get_media_timestamp_links and a media timestamp
+--   link is generated. This is an offline request. Returns
+--   <a>MessageLink</a>
 data GetMessageLink
 GetMessageLink :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> GetMessageLink
 
@@ -27071,13 +27598,31 @@ instance GHC.Classes.Eq TD.Query.GetMessageLocally.GetMessageLocally
 instance TD.Lib.Internal.ShortShow TD.Query.GetMessageLocally.GetMessageLocally
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageLocally.GetMessageLocally
 
+module TD.Query.GetMessageProperties
+
+-- | Returns properties of a message; this is an offline request. Returns
+--   <a>MessageProperties</a>
+data GetMessageProperties
+GetMessageProperties :: Maybe Int -> Maybe Int -> GetMessageProperties
+
+-- | Chat identifier
+[chat_id] :: GetMessageProperties -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: GetMessageProperties -> Maybe Int
+defaultGetMessageProperties :: GetMessageProperties
+instance GHC.Show.Show TD.Query.GetMessageProperties.GetMessageProperties
+instance GHC.Classes.Eq TD.Query.GetMessageProperties.GetMessageProperties
+instance TD.Lib.Internal.ShortShow TD.Query.GetMessageProperties.GetMessageProperties
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageProperties.GetMessageProperties
+
 module TD.Query.GetMessagePublicForwards
 
 -- | Returns forwarded copies of a channel message to different public
 --   channels and public reposts as a story. Can be used only if
---   message.can_get_statistics == true. For optimal performance, the
---   number of returned messages and stories is chosen by TDLib. Returns
---   <a>PublicForwards</a>
+--   messageProperties.can_get_statistics == true. For optimal performance,
+--   the number of returned messages and stories is chosen by TDLib.
+--   Returns <a>PublicForwards</a>
 data GetMessagePublicForwards
 GetMessagePublicForwards :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> GetMessagePublicForwards
 
@@ -27105,8 +27650,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessagePublicForwards.GetMes
 module TD.Query.GetMessageReadDate
 
 -- | Returns read date of a recent outgoing message in a private chat. The
---   method can be called if message.can_get_read_date == true and the
---   message is read. Returns <a>MessageReadDate</a>
+--   method can be called if messageProperties.can_get_read_date == true.
+--   Returns <a>MessageReadDate</a>
 data GetMessageReadDate
 GetMessageReadDate :: Maybe Int -> Maybe Int -> GetMessageReadDate
 
@@ -27124,7 +27669,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageReadDate.GetMessageRe
 module TD.Query.GetMessageStatistics
 
 -- | Returns detailed statistics about a message. Can be used only if
---   message.can_get_statistics == true. Returns <a>MessageStatistics</a>
+--   messageProperties.can_get_statistics == true. Returns
+--   <a>MessageStatistics</a>
 data GetMessageStatistics
 GetMessageStatistics :: Maybe Int -> Maybe Int -> Maybe Bool -> GetMessageStatistics
 
@@ -27145,7 +27691,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageStatistics.GetMessage
 module TD.Query.GetMessageThread
 
 -- | Returns information about a message thread. Can be used only if
---   message.can_get_message_thread == true. Returns
+--   messageProperties.can_get_message_thread == true. Returns
 --   <a>MessageThreadInfo</a>
 data GetMessageThread
 GetMessageThread :: Maybe Int -> Maybe Int -> GetMessageThread
@@ -27164,9 +27710,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageThread.GetMessageThre
 module TD.Query.GetMessageThreadHistory
 
 -- | Returns messages in a message thread of a message. Can be used only if
---   message.can_get_message_thread == true. Message thread of a channel
---   message is in the channel's linked supergroup. The messages are
---   returned in a reverse chronological order (i.e., in order of
+--   messageProperties.can_get_message_thread == true. Message thread of a
+--   channel message is in the channel's linked supergroup. The messages
+--   are returned in reverse chronological order (i.e., in order of
 --   decreasing message_id). For optimal performance, the number of
 --   returned messages is chosen by TDLib. Returns <a>Messages</a>
 data GetMessageThreadHistory
@@ -27203,7 +27749,8 @@ module TD.Query.GetMessageViewers
 -- | Returns viewers of a recent outgoing message in a basic group or a
 --   supergroup chat. For video notes and voice notes only users, opened
 --   content of the message, are returned. The method can be called if
---   message.can_get_viewers == true. Returns <a>MessageViewers</a>
+--   messageProperties.can_get_viewers == true. Returns
+--   <a>MessageViewers</a>
 data GetMessageViewers
 GetMessageViewers :: Maybe Int -> Maybe Int -> GetMessageViewers
 
@@ -27477,6 +28024,24 @@ instance GHC.Show.Show TD.Query.GetPollVoters.GetPollVoters
 instance GHC.Classes.Eq TD.Query.GetPollVoters.GetPollVoters
 instance TD.Lib.Internal.ShortShow TD.Query.GetPollVoters.GetPollVoters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPollVoters.GetPollVoters
+
+module TD.Query.GetPopularWebAppBots
+
+-- | Returns popular Web App bots. Returns <a>FoundUsers</a>
+data GetPopularWebAppBots
+GetPopularWebAppBots :: Maybe Text -> Maybe Int -> GetPopularWebAppBots
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetPopularWebAppBots -> Maybe Text
+
+-- | The maximum number of bots to be returned; up to 100
+[limit] :: GetPopularWebAppBots -> Maybe Int
+defaultGetPopularWebAppBots :: GetPopularWebAppBots
+instance GHC.Show.Show TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
+instance GHC.Classes.Eq TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
+instance TD.Lib.Internal.ShortShow TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
 
 module TD.Query.GetPreferredCountryLanguage
 
@@ -27823,7 +28388,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSavedMessagesTags.GetSavedMe
 module TD.Query.GetSavedMessagesTopicHistory
 
 -- | Returns messages in a Saved Messages topic. The messages are returned
---   in a reverse chronological order (i.e., in order of decreasing
+--   in reverse chronological order (i.e., in order of decreasing
 --   message_id). Returns <a>Messages</a>
 data GetSavedMessagesTopicHistory
 GetSavedMessagesTopicHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetSavedMessagesTopicHistory
@@ -27958,12 +28523,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSecretChat.GetSecretChat
 module TD.Query.GetStarAdAccountUrl
 
 -- | Returns a URL for a Telegram Ad platform account that can be used to
---   set up advertisements for the chat paid in the owned Telegram stars.
+--   set up advertisements for the chat paid in the owned Telegram Stars.
 --   Returns <a>HttpUrl</a>
 data GetStarAdAccountUrl
 GetStarAdAccountUrl :: Maybe MessageSender -> GetStarAdAccountUrl
 
--- | Identifier of the owner of the Telegram stars; can be identifier of an
+-- | Identifier of the owner of the Telegram Stars; can be identifier of an
 --   owned bot, or identifier of an owned channel chat
 [owner_id] :: GetStarAdAccountUrl -> Maybe MessageSender
 instance GHC.Show.Show TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
@@ -27971,9 +28536,24 @@ instance GHC.Classes.Eq TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
 instance TD.Lib.Internal.ShortShow TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarAdAccountUrl.GetStarAdAccountUrl
 
+module TD.Query.GetStarGiftPaymentOptions
+
+-- | Returns available options for Telegram Stars gifting. Returns
+--   <a>StarPaymentOptions</a>
+data GetStarGiftPaymentOptions
+GetStarGiftPaymentOptions :: Maybe Int -> GetStarGiftPaymentOptions
+
+-- | Identifier of the user that will receive Telegram Stars; pass 0 to get
+--   options for an unspecified user
+[user_id] :: GetStarGiftPaymentOptions -> Maybe Int
+instance GHC.Show.Show TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
+instance GHC.Classes.Eq TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
+
 module TD.Query.GetStarPaymentOptions
 
--- | Returns available options for Telegram stars purchase. Returns
+-- | Returns available options for Telegram Stars purchase. Returns
 --   <a>StarPaymentOptions</a>
 data GetStarPaymentOptions
 GetStarPaymentOptions :: GetStarPaymentOptions
@@ -27984,12 +28564,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarPaymentOptions.GetStarPa
 
 module TD.Query.GetStarRevenueStatistics
 
--- | Returns detailed Telegram star revenue statistics. Returns
+-- | Returns detailed Telegram Star revenue statistics. Returns
 --   <a>StarRevenueStatistics</a>
 data GetStarRevenueStatistics
 GetStarRevenueStatistics :: Maybe MessageSender -> Maybe Bool -> GetStarRevenueStatistics
 
--- | Identifier of the owner of the Telegram stars; can be identifier of an
+-- | Identifier of the owner of the Telegram Stars; can be identifier of an
 --   owned bot, or identifier of a channel chat with
 --   supergroupFullInfo.can_get_star_revenue_statistics == true
 [owner_id] :: GetStarRevenueStatistics -> Maybe MessageSender
@@ -28004,12 +28584,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarRevenueStatistics.GetSta
 
 module TD.Query.GetStarTransactions
 
--- | Returns the list of Telegram star transactions for the specified
+-- | Returns the list of Telegram Star transactions for the specified
 --   owner. Returns <a>StarTransactions</a>
 data GetStarTransactions
 GetStarTransactions :: Maybe MessageSender -> Maybe StarTransactionDirection -> Maybe Text -> Maybe Int -> GetStarTransactions
 
--- | Identifier of the owner of the Telegram stars; can be the identifier
+-- | Identifier of the owner of the Telegram Stars; can be the identifier
 --   of the current user, identifier of an owned bot, or identifier of a
 --   channel chat with supergroupFullInfo.can_get_star_revenue_statistics
 --   == true
@@ -28033,15 +28613,15 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarTransactions.GetStarTran
 
 module TD.Query.GetStarWithdrawalUrl
 
--- | Returns a URL for Telegram star withdrawal. Returns <a>HttpUrl</a>
+-- | Returns a URL for Telegram Star withdrawal. Returns <a>HttpUrl</a>
 data GetStarWithdrawalUrl
 GetStarWithdrawalUrl :: Maybe MessageSender -> Maybe Int -> Maybe Text -> GetStarWithdrawalUrl
 
--- | Identifier of the owner of the Telegram stars; can be identifier of an
+-- | Identifier of the owner of the Telegram Stars; can be identifier of an
 --   owned bot, or identifier of an owned channel chat
 [owner_id] :: GetStarWithdrawalUrl -> Maybe MessageSender
 
--- | The number of Telegram stars to withdraw. Must be at least
+-- | The number of Telegram Stars to withdraw. Must be at least
 --   getOption("star_withdrawal_count_min")
 [star_count] :: GetStarWithdrawalUrl -> Maybe Int
 
@@ -28707,8 +29287,8 @@ GetWebAppLinkUrl :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe 
 -- | Preferred Web App theme; pass null to use the default theme
 [theme] :: GetWebAppLinkUrl -> Maybe ThemeParameters
 
--- | Short name of the application; 0-64 English letters, digits, and
---   underscores
+-- | Short name of the current application; 0-64 English letters, digits,
+--   and underscores
 [application_name] :: GetWebAppLinkUrl -> Maybe Text
 
 -- | Pass true if the current user allowed the bot to send them messages
@@ -28722,8 +29302,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebAppLinkUrl.GetWebAppLinkU
 module TD.Query.GetWebAppUrl
 
 -- | Returns an HTTPS URL of a Web App to open from the side menu, a
---   keyboardButtonTypeWebApp button, an inlineQueryResultsButtonTypeWebApp
---   button, or an internalLinkTypeSideMenuBot link. Returns <a>HttpUrl</a>
+--   keyboardButtonTypeWebApp button, or an
+--   inlineQueryResultsButtonTypeWebApp button. Returns <a>HttpUrl</a>
 data GetWebAppUrl
 GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> GetWebAppUrl
 
@@ -28731,16 +29311,15 @@ GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -
 [bot_user_id] :: GetWebAppUrl -> Maybe Int
 
 -- | The URL from a keyboardButtonTypeWebApp button,
---   inlineQueryResultsButtonTypeWebApp button, an
---   internalLinkTypeSideMenuBot link, or an empty when the bot is opened
---   from the side menu
+--   inlineQueryResultsButtonTypeWebApp button, or an empty string when the
+--   bot is opened from the side menu
 [url] :: GetWebAppUrl -> Maybe Text
 
 -- | Preferred Web App theme; pass null to use the default theme
 [theme] :: GetWebAppUrl -> Maybe ThemeParameters
 
--- | Short name of the application; 0-64 English letters, digits, and
---   underscores
+-- | Short name of the current application; 0-64 English letters, digits,
+--   and underscores
 [application_name] :: GetWebAppUrl -> Maybe Text
 defaultGetWebAppUrl :: GetWebAppUrl
 instance GHC.Show.Show TD.Query.GetWebAppUrl.GetWebAppUrl
@@ -29180,8 +29759,8 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> M
 -- | Preferred Web App theme; pass null to use the default theme
 [theme] :: OpenWebApp -> Maybe ThemeParameters
 
--- | Short name of the application; 0-64 English letters, digits, and
---   underscores
+-- | Short name of the current application; 0-64 English letters, digits,
+--   and underscores
 [application_name] :: OpenWebApp -> Maybe Text
 
 -- | If not 0, the message thread identifier in which the message will be
@@ -29288,9 +29867,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ParseTextEntities.ParseTextEnti
 
 module TD.Query.PinChatMessage
 
--- | Pins a message in a chat; requires can_pin_messages member right if
---   the chat is a basic group or supergroup, or can_edit_messages
---   administrator right if the chat is a channel. Returns <a>Ok</a>
+-- | Pins a message in a chat. A message can be pinned only if
+--   messageProperties.can_be_pinned. Returns <a>Ok</a>
 data PinChatMessage
 PinChatMessage :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> PinChatMessage
 
@@ -29585,16 +30163,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReaddQuickReplyShortcutMessages
 
 module TD.Query.RecognizeSpeech
 
--- | Recognizes speech in a video note or a voice note message. The message
---   must be successfully sent, must not be scheduled, and must be from a
---   non-secret chat. Returns <a>Ok</a>
+-- | Recognizes speech in a video note or a voice note message. Returns
+--   <a>Ok</a>
 data RecognizeSpeech
 RecognizeSpeech :: Maybe Int -> Maybe Int -> RecognizeSpeech
 
 -- | Identifier of the chat to which the message belongs
 [chat_id] :: RecognizeSpeech -> Maybe Int
 
--- | Identifier of the message
+-- | Identifier of the message. Use messageProperties.can_recognize_speech
+--   to check whether the message is suitable
 [message_id] :: RecognizeSpeech -> Maybe Int
 defaultRecognizeSpeech :: RecognizeSpeech
 instance GHC.Show.Show TD.Query.RecognizeSpeech.RecognizeSpeech
@@ -30042,6 +30620,28 @@ instance GHC.Classes.Eq TD.Query.ReorderBotActiveUsernames.ReorderBotActiveUsern
 instance TD.Lib.Internal.ShortShow TD.Query.ReorderBotActiveUsernames.ReorderBotActiveUsernames
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReorderBotActiveUsernames.ReorderBotActiveUsernames
 
+module TD.Query.ReorderBotMediaPreviews
+
+-- | Changes order of media previews in the list of media previews of a
+--   bot. Returns <a>Ok</a>
+data ReorderBotMediaPreviews
+ReorderBotMediaPreviews :: Maybe Int -> Maybe Text -> Maybe [Int] -> ReorderBotMediaPreviews
+
+-- | Identifier of the target bot. The bot must be owned and must have the
+--   main Web App
+[bot_user_id] :: ReorderBotMediaPreviews -> Maybe Int
+
+-- | Language code of the media previews to reorder
+[language_code] :: ReorderBotMediaPreviews -> Maybe Text
+
+-- | File identifiers of the media in the new order
+[file_ids] :: ReorderBotMediaPreviews -> Maybe [Int]
+defaultReorderBotMediaPreviews :: ReorderBotMediaPreviews
+instance GHC.Show.Show TD.Query.ReorderBotMediaPreviews.ReorderBotMediaPreviews
+instance GHC.Classes.Eq TD.Query.ReorderBotMediaPreviews.ReorderBotMediaPreviews
+instance TD.Lib.Internal.ShortShow TD.Query.ReorderBotMediaPreviews.ReorderBotMediaPreviews
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReorderBotMediaPreviews.ReorderBotMediaPreviews
+
 module TD.Query.ReorderChatFolders
 
 -- | Changes the order of chat folders. Returns <a>Ok</a>
@@ -30191,7 +30791,8 @@ ReportChat :: Maybe Int -> Maybe [Int] -> Maybe ReportReason -> Maybe Text -> Re
 [chat_id] :: ReportChat -> Maybe Int
 
 -- | Identifiers of reported messages; may be empty to report the whole
---   chat
+--   chat. Use messageProperties.can_be_reported to check whether the
+--   message can be reported
 [message_ids] :: ReportChat -> Maybe [Int]
 
 -- | The reason for reporting the chat
@@ -30256,7 +30857,7 @@ module TD.Query.ReportMessageReactions
 
 -- | Reports reactions set on a message to the Telegram moderators.
 --   Reactions on a message can be reported only if
---   message.can_report_reactions. Returns <a>Ok</a>
+--   messageProperties.can_report_reactions. Returns <a>Ok</a>
 data ReportMessageReactions
 ReportMessageReactions :: Maybe Int -> Maybe Int -> Maybe MessageSender -> ReportMessageReactions
 
@@ -30324,7 +30925,8 @@ ReportSupergroupAntiSpamFalsePositive :: Maybe Int -> Maybe Int -> ReportSupergr
 -- | Supergroup identifier
 [supergroup_id] :: ReportSupergroupAntiSpamFalsePositive -> Maybe Int
 
--- | Identifier of the erroneously deleted message
+-- | Identifier of the erroneously deleted message from
+--   chatEventMessageDeleted
 [message_id] :: ReportSupergroupAntiSpamFalsePositive -> Maybe Int
 defaultReportSupergroupAntiSpamFalsePositive :: ReportSupergroupAntiSpamFalsePositive
 instance GHC.Show.Show TD.Query.ReportSupergroupAntiSpamFalsePositive.ReportSupergroupAntiSpamFalsePositive
@@ -30342,7 +30944,9 @@ ReportSupergroupSpam :: Maybe Int -> Maybe [Int] -> ReportSupergroupSpam
 -- | Supergroup identifier
 [supergroup_id] :: ReportSupergroupSpam -> Maybe Int
 
--- | Identifiers of messages to report
+-- | Identifiers of messages to report. Use
+--   messageProperties.can_be_reported to check whether the message can be
+--   reported
 [message_ids] :: ReportSupergroupSpam -> Maybe [Int]
 defaultReportSupergroupSpam :: ReportSupergroupSpam
 instance GHC.Show.Show TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
@@ -31759,7 +32363,7 @@ SendPaymentForm :: Maybe InputInvoice -> Maybe Int -> Maybe Text -> Maybe Text -
 [shipping_option_id] :: SendPaymentForm -> Maybe Text
 
 -- | The credentials chosen by user for payment; pass null for a payment in
---   Telegram stars
+--   Telegram Stars
 [credentials] :: SendPaymentForm -> Maybe InputCredentials
 
 -- | Chosen by the user amount of tip in the smallest units of the currency
@@ -32273,6 +32877,31 @@ instance GHC.Show.Show TD.Query.SetBusinessLocation.SetBusinessLocation
 instance GHC.Classes.Eq TD.Query.SetBusinessLocation.SetBusinessLocation
 instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessLocation.SetBusinessLocation
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessLocation.SetBusinessLocation
+
+module TD.Query.SetBusinessMessageIsPinned
+
+-- | Pins or unpins a message sent on behalf of a business account; for
+--   bots only. Returns <a>Ok</a>
+data SetBusinessMessageIsPinned
+SetBusinessMessageIsPinned :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> SetBusinessMessageIsPinned
+
+-- | Unique identifier of business connection on behalf of which the
+--   message was sent
+[business_connection_id] :: SetBusinessMessageIsPinned -> Maybe Text
+
+-- | The chat the message belongs to
+[chat_id] :: SetBusinessMessageIsPinned -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: SetBusinessMessageIsPinned -> Maybe Int
+
+-- | Pass true to pin the message, pass false to unpin it
+[is_pinned] :: SetBusinessMessageIsPinned -> Maybe Bool
+defaultSetBusinessMessageIsPinned :: SetBusinessMessageIsPinned
+instance GHC.Show.Show TD.Query.SetBusinessMessageIsPinned.SetBusinessMessageIsPinned
+instance GHC.Classes.Eq TD.Query.SetBusinessMessageIsPinned.SetBusinessMessageIsPinned
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessMessageIsPinned.SetBusinessMessageIsPinned
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessMessageIsPinned.SetBusinessMessageIsPinned
 
 module TD.Query.SetBusinessOpeningHours
 
@@ -33253,16 +33882,14 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetMenuButton.SetMenuButton
 module TD.Query.SetMessageFactCheck
 
 -- | Changes the fact-check of a message. Can be only used if
---   getOption("can_edit_fact_check") == true. Returns <a>Ok</a>
+--   messageProperties.can_set_fact_check == true. Returns <a>Ok</a>
 data SetMessageFactCheck
 SetMessageFactCheck :: Maybe Int -> Maybe Int -> Maybe FormattedText -> SetMessageFactCheck
 
 -- | The channel chat the message belongs to
 [chat_id] :: SetMessageFactCheck -> Maybe Int
 
--- | Identifier of the message. The message must be one of the following
---   types: messageAnimation, messageAudio, messageDocument, messagePhoto,
---   messageText, messageVideo
+-- | Identifier of the message
 [message_id] :: SetMessageFactCheck -> Maybe Int
 
 -- | New text of the fact-check; 0-getOption("fact_check_length_max")
@@ -34244,15 +34871,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StopBusinessPoll.StopBusinessPo
 
 module TD.Query.StopPoll
 
--- | Stops a poll. A poll in a message can be stopped when the message has
---   can_be_edited flag is set. Returns <a>Ok</a>
+-- | Stops a poll. Returns <a>Ok</a>
 data StopPoll
 StopPoll :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> StopPoll
 
 -- | Identifier of the chat to which the poll belongs
 [chat_id] :: StopPoll -> Maybe Int
 
--- | Identifier of the message containing the poll
+-- | Identifier of the message containing the poll. Use
+--   messageProperties.can_be_edited to check whether the poll can be
+--   stopped
 [message_id] :: StopPoll -> Maybe Int
 
 -- | The new message reply markup; pass null if none; for bots only
