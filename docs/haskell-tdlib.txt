@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.41.0
+@version 2.0.42.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -926,6 +926,12 @@ SuggestedActionExtendPremium :: Maybe Text -> SuggestedAction
 
 -- | A URL for managing Telegram Premium subscription
 [manage_premium_subscription_url] :: SuggestedAction -> Maybe Text
+
+-- | Suggests the user to extend their expiring Telegram Star
+--   subscriptions. Call getStarSubscriptions with only_expiring == true to
+--   get the number of expiring subscriptions and the number of required to
+--   buy Telegram Stars
+SuggestedActionExtendStarSubscriptions :: SuggestedAction
 instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
 instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
 instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
@@ -1262,6 +1268,87 @@ instance GHC.Classes.Eq TD.Data.StarTransactionDirection.StarTransactionDirectio
 instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionDirection.StarTransactionDirection
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionDirection.StarTransactionDirection
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarTransactionDirection.StarTransactionDirection
+
+module TD.Data.StarSubscriptionPricing
+data StarSubscriptionPricing
+
+-- | Describes subscription plan paid in Telegram Stars
+StarSubscriptionPricing :: Maybe Int -> Maybe Int -> StarSubscriptionPricing
+
+-- | The number of seconds between consecutive Telegram Star debiting
+[period] :: StarSubscriptionPricing -> Maybe Int
+
+-- | The amount of Telegram Stars that must be paid for each period
+[star_count] :: StarSubscriptionPricing -> Maybe Int
+defaultStarSubscriptionPricing :: StarSubscriptionPricing
+instance GHC.Show.Show TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
+instance GHC.Classes.Eq TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
+
+module TD.Data.StarSubscription
+data StarSubscription
+
+-- | Contains information about subscription to a channel chat paid in
+--   Telegram Stars
+StarSubscription :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe StarSubscriptionPricing -> StarSubscription
+
+-- | Unique identifier of the subscription
+[_id] :: StarSubscription -> Maybe Text
+
+-- | Identifier of the channel chat that is subscribed
+[chat_id] :: StarSubscription -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the subscription will expire or
+--   expired
+[expiration_date] :: StarSubscription -> Maybe Int
+
+-- | True, if the subscription is active and the user can use the method
+--   reuseStarSubscription to join the subscribed chat again
+[can_reuse] :: StarSubscription -> Maybe Bool
+
+-- | True, if the subscription was canceled
+[is_canceled] :: StarSubscription -> Maybe Bool
+
+-- | True, if the subscription expires soon and there are no enough
+--   Telegram Stars on the user's balance to extend it
+[is_expiring] :: StarSubscription -> Maybe Bool
+
+-- | The invite link that can be used to renew the subscription if it has
+--   been expired; may be empty, if the link isn't available anymore
+[invite_link] :: StarSubscription -> Maybe Text
+
+-- | The subscription plan
+[pricing] :: StarSubscription -> Maybe StarSubscriptionPricing
+instance GHC.Show.Show TD.Data.StarSubscription.StarSubscription
+instance GHC.Classes.Eq TD.Data.StarSubscription.StarSubscription
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscription.StarSubscription
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscription.StarSubscription
+
+module TD.Data.StarSubscriptions
+data StarSubscriptions
+
+-- | Represents a list of Telegram Star subscriptions
+StarSubscriptions :: Maybe Int -> Maybe [StarSubscription] -> Maybe Int -> Maybe Text -> StarSubscriptions
+
+-- | The amount of owned Telegram Stars
+[star_count] :: StarSubscriptions -> Maybe Int
+
+-- | List of subbscriptions for Telegram Stars
+[subscriptions] :: StarSubscriptions -> Maybe [StarSubscription]
+
+-- | The number of Telegram Stars required to buy to extend subscriptions
+--   expiring soon
+[required_star_count] :: StarSubscriptions -> Maybe Int
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StarSubscriptions -> Maybe Text
+instance GHC.Show.Show TD.Data.StarSubscriptions.StarSubscriptions
+instance GHC.Classes.Eq TD.Data.StarSubscriptions.StarSubscriptions
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptions.StarSubscriptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptions.StarSubscriptions
 
 module TD.Data.StarRevenueStatus
 data StarRevenueStatus
@@ -2032,6 +2119,9 @@ ReactionTypeCustomEmoji :: Maybe Int -> ReactionType
 
 -- | Unique identifier of the custom emoji
 [custom_emoji_id] :: ReactionType -> Maybe Int
+
+-- | The paid reaction in a channel chat
+ReactionTypePaid :: ReactionType
 instance GHC.Show.Show TD.Data.ReactionType.ReactionType
 instance GHC.Classes.Eq TD.Data.ReactionType.ReactionType
 instance TD.Lib.Internal.ShortShow TD.Data.ReactionType.ReactionType
@@ -2580,6 +2670,13 @@ TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> May
 
 -- | Number of bought Telegram Stars
 [star_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user joins a chat and subscribes to regular payments in Telegram
+--   Stars
+TelegramPaymentPurposeJoinChat :: Maybe Text -> TelegramPaymentPurpose
+
+-- | Invite link to use
+[invite_link] :: TelegramPaymentPurpose -> Maybe Text
 instance GHC.Show.Show TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
 instance GHC.Classes.Eq TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
 instance TD.Lib.Internal.ShortShow TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
@@ -3566,6 +3663,33 @@ instance GHC.Classes.Eq TD.Data.PremiumGiftCodeInfo.PremiumGiftCodeInfo
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodeInfo.PremiumGiftCodeInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodeInfo.PremiumGiftCodeInfo
 
+module TD.Data.PaidReactor
+data PaidReactor
+
+-- | Contains information about a user that added paid reactions
+PaidReactor :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> PaidReactor
+
+-- | Identifier of the user or chat that added the reactions; may be null
+--   for anonymous reactors that aren't the current user
+[sender_id] :: PaidReactor -> Maybe MessageSender
+
+-- | Number of Telegram Stars added
+[star_count] :: PaidReactor -> Maybe Int
+
+-- | True, if the reactor is one of the most active reactors; can be false
+--   if the reactor is the current user
+[is_top] :: PaidReactor -> Maybe Bool
+
+-- | True, if the paid reaction was added by the current user
+[is_me] :: PaidReactor -> Maybe Bool
+
+-- | True, if the reactor is anonymous
+[is_anonymous] :: PaidReactor -> Maybe Bool
+instance GHC.Show.Show TD.Data.PaidReactor.PaidReactor
+instance GHC.Classes.Eq TD.Data.PaidReactor.PaidReactor
+instance TD.Lib.Internal.ShortShow TD.Data.PaidReactor.PaidReactor
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PaidReactor.PaidReactor
+
 module TD.Data.MessageSenders
 data MessageSenders
 
@@ -3759,7 +3883,7 @@ module TD.Data.MessageReactions
 data MessageReactions
 
 -- | Contains a list of reactions added to a message
-MessageReactions :: Maybe [MessageReaction] -> Maybe Bool -> MessageReactions
+MessageReactions :: Maybe [MessageReaction] -> Maybe Bool -> Maybe [PaidReactor] -> Maybe Bool -> MessageReactions
 
 -- | List of added reactions
 [reactions] :: MessageReactions -> Maybe [MessageReaction]
@@ -3767,6 +3891,13 @@ MessageReactions :: Maybe [MessageReaction] -> Maybe Bool -> MessageReactions
 -- | True, if the reactions are tags and Telegram Premium users can filter
 --   messages by them
 [are_tags] :: MessageReactions -> Maybe Bool
+
+-- | Information about top users that added the paid reaction
+[paid_reactors] :: MessageReactions -> Maybe [PaidReactor]
+
+-- | True, if the list of added reactions is available using
+--   getMessageAddedReactions
+[can_get_added_reactions] :: MessageReactions -> Maybe Bool
 instance GHC.Show.Show TD.Data.MessageReactions.MessageReactions
 instance GHC.Classes.Eq TD.Data.MessageReactions.MessageReactions
 instance TD.Lib.Internal.ShortShow TD.Data.MessageReactions.MessageReactions
@@ -3777,7 +3908,7 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
 
 -- | True, if the message can be deleted only for the current user while
 --   other users will continue to see it using the method deleteMessages
@@ -3823,10 +3954,6 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 
 -- | True, if scheduling state of the message can be edited
 [can_edit_scheduling_state] :: MessageProperties -> Maybe Bool
-
--- | True, if the list of added reactions is available using
---   getMessageAddedReactions
-[can_get_added_reactions] :: MessageProperties -> Maybe Bool
 
 -- | True, if code for message embedding can be received using
 --   getMessageEmbeddingCode
@@ -9371,118 +9498,6 @@ instance GHC.Classes.Eq TD.Data.StickerSet.StickerSet
 instance TD.Lib.Internal.ShortShow TD.Data.StickerSet.StickerSet
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
 
-module TD.Data.StarTransactionPartner
-
--- | Describes source or recipient of a transaction with Telegram Stars
-data StarTransactionPartner
-
--- | The transaction is a transaction with Telegram through a bot
-StarTransactionPartnerTelegram :: StarTransactionPartner
-
--- | The transaction is a transaction with App Store
-StarTransactionPartnerAppStore :: StarTransactionPartner
-
--- | The transaction is a transaction with Google Play
-StarTransactionPartnerGooglePlay :: StarTransactionPartner
-
--- | The transaction is a transaction with Fragment
-StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
-
--- | State of the withdrawal; may be null for refunds from Fragment
-[withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
-
--- | The transaction is a transaction with Telegram Ad platform
-StarTransactionPartnerTelegramAds :: StarTransactionPartner
-
--- | The transaction is a transaction with a bot
-StarTransactionPartnerBot :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> StarTransactionPartner
-
--- | Identifier of the bot for the user, or the user for the bot
-[user_id] :: StarTransactionPartner -> Maybe Int
-
--- | Information about the bought product; may be null if not applicable
-[product_info] :: StarTransactionPartner -> Maybe ProductInfo
-
--- | Invoice payload; for bots only
-[invoice_payload] :: StarTransactionPartner -> Maybe ByteString
-
--- | The transaction is a transaction with a channel chat
-StarTransactionPartnerChannel :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
-
--- | Identifier of the chat
-[chat_id] :: StarTransactionPartner -> Maybe Int
-
--- | Identifier of the corresponding message with paid media; can be an
---   identifier of a deleted message
-[paid_media_message_id] :: StarTransactionPartner -> Maybe Int
-
--- | Information about the bought media
-[media] :: StarTransactionPartner -> Maybe [PaidMedia]
-
--- | The transaction is a gift of Telegram Stars from another user
-StarTransactionPartnerUser :: Maybe Int -> Maybe Sticker -> StarTransactionPartner
-
--- | Identifier of the bot for the user, or the user for the bot
-[user_id] :: StarTransactionPartner -> Maybe Int
-
--- | A sticker to be shown in the transaction information; may be null if
---   unknown
-[sticker] :: StarTransactionPartner -> Maybe Sticker
-
--- | The transaction is a transaction with unknown partner
-StarTransactionPartnerUnsupported :: StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransactionPartner.StarTransactionPartner
-instance GHC.Classes.Eq TD.Data.StarTransactionPartner.StarTransactionPartner
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionPartner.StarTransactionPartner
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionPartner.StarTransactionPartner
-
-module TD.Data.StarTransaction
-data StarTransaction
-
--- | Represents a transaction changing the amount of owned Telegram Stars
-StarTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe StarTransactionPartner -> StarTransaction
-
--- | Unique identifier of the transaction
-[_id] :: StarTransaction -> Maybe Text
-
--- | The amount of added owned Telegram Stars; negative for outgoing
---   transactions
-[star_count] :: StarTransaction -> Maybe Int
-
--- | True, if the transaction is a refund of a previous transaction
-[is_refund] :: StarTransaction -> Maybe Bool
-
--- | Point in time (Unix timestamp) when the transaction was completed
-[date] :: StarTransaction -> Maybe Int
-
--- | Source of the incoming transaction, or its recipient for outgoing
---   transactions
-[partner] :: StarTransaction -> Maybe StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
-instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
-
-module TD.Data.StarTransactions
-data StarTransactions
-
--- | Represents a list of Telegram Star transactions
-StarTransactions :: Maybe Int -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
-
--- | The amount of owned Telegram Stars
-[star_count] :: StarTransactions -> Maybe Int
-
--- | List of transactions with Telegram Stars
-[transactions] :: StarTransactions -> Maybe [StarTransaction]
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: StarTransactions -> Maybe Text
-instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
-instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
-
 module TD.Data.MessageEffectType
 
 -- | Describes type of emoji effect
@@ -10545,6 +10560,29 @@ instance GHC.Classes.Eq TD.Data.ChatJoinRequests.ChatJoinRequests
 instance TD.Lib.Internal.ShortShow TD.Data.ChatJoinRequests.ChatJoinRequests
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatJoinRequests.ChatJoinRequests
 
+module TD.Data.ChatInviteLinkSubscriptionInfo
+data ChatInviteLinkSubscriptionInfo
+
+-- | Contains information about subscription plan that must be paid by the
+--   user to use a chat invite link
+ChatInviteLinkSubscriptionInfo :: Maybe StarSubscriptionPricing -> Maybe Bool -> Maybe Int -> ChatInviteLinkSubscriptionInfo
+
+-- | Information about subscription plan that must be paid by the user to
+--   use the link
+[pricing] :: ChatInviteLinkSubscriptionInfo -> Maybe StarSubscriptionPricing
+
+-- | True, if the user has already paid for the subscription and can use
+--   joinChatByInviteLink to join the subscribed chat again
+[can_reuse] :: ChatInviteLinkSubscriptionInfo -> Maybe Bool
+
+-- | Identifier of the payment form to use for subscription payment; 0 if
+--   the subscription can't be paid
+[form_id] :: ChatInviteLinkSubscriptionInfo -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatInviteLinkSubscriptionInfo.ChatInviteLinkSubscriptionInfo
+instance GHC.Classes.Eq TD.Data.ChatInviteLinkSubscriptionInfo.ChatInviteLinkSubscriptionInfo
+instance TD.Lib.Internal.ShortShow TD.Data.ChatInviteLinkSubscriptionInfo.ChatInviteLinkSubscriptionInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatInviteLinkSubscriptionInfo.ChatInviteLinkSubscriptionInfo
+
 module TD.Data.ChatInviteLinkMember
 data ChatInviteLinkMember
 
@@ -10590,7 +10628,7 @@ module TD.Data.ChatInviteLinkInfo
 data ChatInviteLinkInfo
 
 -- | Contains information about a chat invite link
-ChatInviteLinkInfo :: Maybe Int -> Maybe Int -> Maybe InviteLinkChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatInviteLinkInfo
+ChatInviteLinkInfo :: Maybe Int -> Maybe Int -> Maybe InviteLinkChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe ChatInviteLinkSubscriptionInfo -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatInviteLinkInfo
 
 -- | Chat identifier of the invite link; 0 if the user has no access to the
 --   chat before joining
@@ -10622,6 +10660,10 @@ ChatInviteLinkInfo :: Maybe Int -> Maybe Int -> Maybe InviteLinkChatType -> Mayb
 -- | User identifiers of some chat members that may be known to the current
 --   user
 [member_user_ids] :: ChatInviteLinkInfo -> Maybe [Int]
+
+-- | Information about subscription plan that must be paid by the user to
+--   use the link; may be null if the link doesn't require subscription
+[subscription_info] :: ChatInviteLinkInfo -> Maybe ChatInviteLinkSubscriptionInfo
 
 -- | True, if the link only creates join request
 [creates_join_request] :: ChatInviteLinkInfo -> Maybe Bool
@@ -10742,7 +10784,7 @@ module TD.Data.ChatInviteLink
 data ChatInviteLink
 
 -- | Contains a chat invite link
-ChatInviteLink :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatInviteLink
+ChatInviteLink :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe StarSubscriptionPricing -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatInviteLink
 
 -- | Chat invite link
 [invite_link] :: ChatInviteLink -> Maybe Text
@@ -10763,6 +10805,11 @@ ChatInviteLink :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe In
 -- | Point in time (Unix timestamp) when the link will expire; 0 if never
 [expiration_date] :: ChatInviteLink -> Maybe Int
 
+-- | Information about subscription plan that is applied to the users
+--   joining the chat by the link; may be null if the link doesn't require
+--   subscription
+[subscription_pricing] :: ChatInviteLink -> Maybe StarSubscriptionPricing
+
 -- | The maximum number of members, which can join the chat using the link
 --   simultaneously; 0 if not limited. Always 0 if the link requires
 --   approval
@@ -10770,6 +10817,11 @@ ChatInviteLink :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe In
 
 -- | Number of chat members, which joined the chat using the link
 [member_count] :: ChatInviteLink -> Maybe Int
+
+-- | Number of chat members, which joined the chat using the link, but have
+--   already left because of expired subscription; for subscription links
+--   only
+[expired_member_count] :: ChatInviteLink -> Maybe Int
 
 -- | Number of pending join requests created using this link
 [pending_join_request_count] :: ChatInviteLink -> Maybe Int
@@ -11374,7 +11426,8 @@ module TD.Data.ChatAvailableReactions
 -- | Describes reactions available in the chat
 data ChatAvailableReactions
 
--- | All reactions are available in the chat
+-- | All reactions are available in the chat, excluding the paid reaction
+--   and custom reactions in channel chats
 ChatAvailableReactionsAll :: Maybe Int -> ChatAvailableReactions
 
 -- | The maximum allowed number of reactions per message; 1-11
@@ -12067,9 +12120,9 @@ InternalLinkTypeActiveSessions :: InternalLinkType
 --   that the user is a bot and can be added to attachment menu. Then, use
 --   getAttachmentMenuBot to receive information about the bot. If the bot
 --   isn't added to attachment menu, then show a disclaimer about Mini Apps
---   being third-party apps, ask the user to accept their Terms of service
---   and confirm adding the bot to side and attachment menu. If the user
---   accept the terms and confirms adding, then use
+--   being third-party applications, ask the user to accept their Terms of
+--   service and confirm adding the bot to side and attachment menu. If the
+--   user accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. If the attachment
 --   menu bot can't be used in the opened chat, show an error to the user.
 --   If the bot is added to attachment menu and can be used in the chat,
@@ -12173,7 +12226,20 @@ InternalLinkTypeBusinessChat :: Maybe Text -> InternalLinkType
 -- | Name of the link
 [link_name] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to the change phone number section of the app
+-- | The link is a link to the Telegram Star purchase section of the
+--   application
+InternalLinkTypeBuyStars :: Maybe Int -> Maybe Text -> InternalLinkType
+
+-- | The number of Telegram Stars that must be owned by the user
+[star_count] :: InternalLinkType -> Maybe Int
+
+-- | Purpose of Telegram Star purchase. Arbitrary string specified by the
+--   server, for example, "subs" if the Telegram Stars are required to
+--   extend channel subscriptions
+[purpose] :: InternalLinkType -> Maybe Text
+
+-- | The link is a link to the change phone number section of the
+--   application
 InternalLinkTypeChangePhoneNumber :: InternalLinkType
 
 -- | The link is a link to boost a Telegram chat. Call getChatBoostLinkInfo
@@ -12196,7 +12262,7 @@ InternalLinkTypeChatFolderInvite :: Maybe Text -> InternalLinkType
 -- | Internal representation of the invite link
 [invite_link] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to the folder section of the app settings
+-- | The link is a link to the folder section of the application settings
 InternalLinkTypeChatFolderSettings :: InternalLinkType
 
 -- | The link is a chat invite link. Call checkChatInviteLink with the
@@ -12208,10 +12274,11 @@ InternalLinkTypeChatInvite :: Maybe Text -> InternalLinkType
 [invite_link] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to the default message auto-delete timer settings
---   section of the app settings
+--   section of the application settings
 InternalLinkTypeDefaultMessageAutoDeleteTimerSettings :: InternalLinkType
 
--- | The link is a link to the edit profile section of the app settings
+-- | The link is a link to the edit profile section of the application
+--   settings
 InternalLinkTypeEditProfileSettings :: InternalLinkType
 
 -- | The link is a link to a game. Call searchPublicChat with the given bot
@@ -12253,7 +12320,7 @@ InternalLinkTypeLanguagePack :: Maybe Text -> InternalLinkType
 -- | Language pack identifier
 [language_pack_id] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to the language section of the app settings
+-- | The link is a link to the language section of the application settings
 InternalLinkTypeLanguageSettings :: InternalLinkType
 
 -- | The link is a link to the main Web App of a bot. Call searchPublicChat
@@ -12261,9 +12328,9 @@ InternalLinkTypeLanguageSettings :: InternalLinkType
 --   main Web App. If the bot can be added to attachment menu, then use
 --   getAttachmentMenuBot to receive information about the bot, then if the
 --   bot isn't added to side menu, show a disclaimer about Mini Apps being
---   third-party apps, ask the user to accept their Terms of service and
---   confirm adding the bot to side and attachment menu, then if the user
---   accepts the terms and confirms adding, use
+--   third-party applications, ask the user to accept their Terms of
+--   service and confirm adding the bot to side and attachment menu, then
+--   if the user accepts the terms and confirms adding, use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, use
 --   getMainWebApp with the given start parameter and open the returned URL
 --   as a Web App
@@ -12365,8 +12432,8 @@ InternalLinkTypePremiumGiftCode :: Maybe Text -> InternalLinkType
 -- | The authentication code
 [code] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to the privacy and security section of the app
---   settings
+-- | The link is a link to the privacy and security section of the
+--   application settings
 InternalLinkTypePrivacyAndSecuritySettings :: InternalLinkType
 
 -- | The link is a link to a proxy. Call addProxy with the given parameters
@@ -12442,7 +12509,7 @@ InternalLinkTypeTheme :: Maybe Text -> InternalLinkType
 -- | Name of the theme
 [theme_name] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to the theme section of the app settings
+-- | The link is a link to the theme section of the application settings
 InternalLinkTypeThemeSettings :: InternalLinkType
 
 -- | The link is an unknown tg: link. Call getDeepLinkInfo to process the
@@ -12502,9 +12569,9 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 --   with the received bot and the given web_app_short_name. Process
 --   received foundWebApp by showing a confirmation dialog if needed. If
 --   the bot can be added to attachment or side menu, but isn't added yet,
---   then show a disclaimer about Mini Apps being third-party apps instead
---   of the dialog and ask the user to accept their Terms of service. If
---   the user accept the terms and confirms adding, then use
+--   then show a disclaimer about Mini Apps being third-party applications
+--   instead of the dialog and ask the user to accept their Terms of
+--   service. If the user accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
 InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
@@ -12642,7 +12709,12 @@ ChatMemberStatusAdministrator :: Maybe Text -> Maybe Bool -> Maybe ChatAdministr
 
 -- | The user is a member of the chat, without any additional privileges or
 --   restrictions
-ChatMemberStatusMember :: ChatMemberStatus
+ChatMemberStatusMember :: Maybe Int -> ChatMemberStatus
+
+-- | Point in time (Unix timestamp) when the user will be removed from the
+--   chat because of the expired subscription; 0 if never. Ignored in
+--   setChatMemberStatus
+[member_until_date] :: ChatMemberStatus -> Maybe Int
 
 -- | The user is under certain restrictions in the chat. Not supported in
 --   basic groups and channels
@@ -12689,7 +12761,7 @@ data Supergroup
 --   all administrators use the name and photo of the channel instead of
 --   individual names and profile photos. Unlike supergroups, channels can
 --   have an unlimited number of subscribers
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Supergroup
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Supergroup
 
 -- | Supergroup or channel identifier
 [_id] :: Supergroup -> Maybe Int
@@ -12729,9 +12801,13 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 --   supergroup is a location-based supergroup
 [has_location] :: Supergroup -> Maybe Bool
 
--- | True, if messages sent to the channel need to contain information
---   about the sender. This field is only applicable to channels
+-- | True, if messages sent to the channel contains name of the sender.
+--   This field is only applicable to channels
 [sign_messages] :: Supergroup -> Maybe Bool
+
+-- | True, if messages sent to the channel have information about the
+--   sender user. This field is only applicable to channels
+[show_message_sender] :: Supergroup -> Maybe Bool
 
 -- | True, if users need to join the supergroup before they can send
 --   messages. Always true for channels and non-discussion supergroups
@@ -12757,6 +12833,10 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 
 -- | True, if the supergroup or channel is verified
 [is_verified] :: Supergroup -> Maybe Bool
+
+-- | True, if content of media messages in the supergroup or channel chat
+--   must be hidden with 18+ spoiler
+[has_sensitive_content] :: Supergroup -> Maybe Bool
 
 -- | If non-empty, contains a human-readable description of the reason why
 --   access to this supergroup or channel must be restricted
@@ -13030,6 +13110,39 @@ instance GHC.Classes.Eq TD.Data.ChatAction.ChatAction
 instance TD.Lib.Internal.ShortShow TD.Data.ChatAction.ChatAction
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatAction.ChatAction
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatAction.ChatAction
+
+module TD.Data.ChannelTransactionPurpose
+
+-- | Describes purpose of a transaction with a channel
+data ChannelTransactionPurpose
+
+-- | Paid media were bought
+ChannelTransactionPurposePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> ChannelTransactionPurpose
+
+-- | Identifier of the corresponding message with paid media; can be an
+--   identifier of a deleted message
+[message_id] :: ChannelTransactionPurpose -> Maybe Int
+
+-- | The bought media if the trancastion wasn't refunded
+[media] :: ChannelTransactionPurpose -> Maybe [PaidMedia]
+
+-- | User joined the channel and subscribed to regular payments in Telegram
+--   Stars
+ChannelTransactionPurposeJoin :: Maybe Int -> ChannelTransactionPurpose
+
+-- | The number of seconds between consecutive Telegram Star debiting
+[period] :: ChannelTransactionPurpose -> Maybe Int
+
+-- | User paid for a reaction
+ChannelTransactionPurposeReaction :: Maybe Int -> ChannelTransactionPurpose
+
+-- | Identifier of the corresponding message with paid media; can be an
+--   identifier of a deleted message
+[message_id] :: ChannelTransactionPurpose -> Maybe Int
+instance GHC.Show.Show TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
+instance GHC.Classes.Eq TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
 
 module TD.Data.CanTransferOwnershipResult
 
@@ -13890,6 +14003,144 @@ instance GHC.Show.Show TD.Data.BusinessInfo.BusinessInfo
 instance GHC.Classes.Eq TD.Data.BusinessInfo.BusinessInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessInfo.BusinessInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessInfo.BusinessInfo
+
+module TD.Data.BotTransactionPurpose
+
+-- | Describes purpose of a transaction with a bot
+data BotTransactionPurpose
+
+-- | Paid media were bought
+BotTransactionPurposePaidMedia :: Maybe [PaidMedia] -> BotTransactionPurpose
+
+-- | The bought media if the trancastion wasn't refunded
+[media] :: BotTransactionPurpose -> Maybe [PaidMedia]
+
+-- | User bought a product from the bot
+BotTransactionPurposeInvoicePayment :: Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
+
+-- | Information about the bought product; may be null if not applicable
+[product_info] :: BotTransactionPurpose -> Maybe ProductInfo
+
+-- | Invoice payload; for bots only
+[invoice_payload] :: BotTransactionPurpose -> Maybe ByteString
+instance GHC.Show.Show TD.Data.BotTransactionPurpose.BotTransactionPurpose
+instance GHC.Classes.Eq TD.Data.BotTransactionPurpose.BotTransactionPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.BotTransactionPurpose.BotTransactionPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotTransactionPurpose.BotTransactionPurpose
+
+module TD.Data.StarTransactionPartner
+
+-- | Describes source or recipient of a transaction with Telegram Stars
+data StarTransactionPartner
+
+-- | The transaction is a transaction with Telegram through a bot
+StarTransactionPartnerTelegram :: StarTransactionPartner
+
+-- | The transaction is a transaction with App Store
+StarTransactionPartnerAppStore :: StarTransactionPartner
+
+-- | The transaction is a transaction with Google Play
+StarTransactionPartnerGooglePlay :: StarTransactionPartner
+
+-- | The transaction is a transaction with Fragment
+StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
+
+-- | State of the withdrawal; may be null for refunds from Fragment
+[withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
+
+-- | The transaction is a transaction with Telegram Ad platform
+StarTransactionPartnerTelegramAds :: StarTransactionPartner
+
+-- | The transaction is a transaction with a bot
+StarTransactionPartnerBot :: Maybe Int -> Maybe BotTransactionPurpose -> StarTransactionPartner
+
+-- | Identifier of the bot
+[user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Purpose of the transaction
+[purpose] :: StarTransactionPartner -> Maybe BotTransactionPurpose
+
+-- | The transaction is a transaction with a business account
+StarTransactionPartnerBusiness :: Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
+
+-- | Identifier of the bot
+[user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | The bought media if the trancastion wasn't refunded
+[media] :: StarTransactionPartner -> Maybe [PaidMedia]
+
+-- | The transaction is a transaction with a channel chat
+StarTransactionPartnerChannel :: Maybe Int -> Maybe ChannelTransactionPurpose -> StarTransactionPartner
+
+-- | Identifier of the chat
+[chat_id] :: StarTransactionPartner -> Maybe Int
+
+-- | Purpose of the transaction
+[_purpose] :: StarTransactionPartner -> Maybe ChannelTransactionPurpose
+
+-- | The transaction is a gift of Telegram Stars from another user
+StarTransactionPartnerUser :: Maybe Int -> Maybe Sticker -> StarTransactionPartner
+
+-- | Identifier of the bot
+[user_id] :: StarTransactionPartner -> Maybe Int
+
+-- | A sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: StarTransactionPartner -> Maybe Sticker
+
+-- | The transaction is a transaction with unknown partner
+StarTransactionPartnerUnsupported :: StarTransactionPartner
+instance GHC.Show.Show TD.Data.StarTransactionPartner.StarTransactionPartner
+instance GHC.Classes.Eq TD.Data.StarTransactionPartner.StarTransactionPartner
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionPartner.StarTransactionPartner
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionPartner.StarTransactionPartner
+
+module TD.Data.StarTransaction
+data StarTransaction
+
+-- | Represents a transaction changing the amount of owned Telegram Stars
+StarTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe StarTransactionPartner -> StarTransaction
+
+-- | Unique identifier of the transaction
+[_id] :: StarTransaction -> Maybe Text
+
+-- | The amount of added owned Telegram Stars; negative for outgoing
+--   transactions
+[star_count] :: StarTransaction -> Maybe Int
+
+-- | True, if the transaction is a refund of a previous transaction
+[is_refund] :: StarTransaction -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the transaction was completed
+[date] :: StarTransaction -> Maybe Int
+
+-- | Source of the incoming transaction, or its recipient for outgoing
+--   transactions
+[partner] :: StarTransaction -> Maybe StarTransactionPartner
+instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
+instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
+
+module TD.Data.StarTransactions
+data StarTransactions
+
+-- | Represents a list of Telegram Star transactions
+StarTransactions :: Maybe Int -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
+
+-- | The amount of owned Telegram Stars
+[star_count] :: StarTransactions -> Maybe Int
+
+-- | List of transactions with Telegram Stars
+[transactions] :: StarTransactions -> Maybe [StarTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StarTransactions -> Maybe Text
+instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
+instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
 
 module TD.Data.BotMenuButton
 data BotMenuButton
@@ -16030,7 +16281,7 @@ module TD.Data.BotInfo
 data BotInfo
 
 -- | Contains information about a bot
-BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
+BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
 
 -- | The text that is shown on the bot's profile page and is sent together
 --   with the link when users share the bot
@@ -16052,6 +16303,12 @@ BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe B
 
 -- | List of the bot commands
 [commands] :: BotInfo -> Maybe [BotCommand]
+
+-- | The HTTP link to the privacy policy of the bot. If empty, then
+--   <i>privacy command must be used if supported by the bot. If the
+--   command isn't supported, then https:</i><i>telegram.org</i>privacy-tpa
+--   must be opened
+[privacy_policy_url] :: BotInfo -> Maybe Text
 
 -- | Default administrator rights for adding the bot to basic group and
 --   supergroup chats; may be null
@@ -16270,7 +16527,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -16304,6 +16561,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   seconds. An updateSupergroupFullInfo update is not triggered when
 --   value of this field changes, but both new and old values are non-zero
 [slow_mode_delay_expires_in] :: SupergroupFullInfo -> Maybe Double
+
+-- | True, if paid reaction can be enabled in the channel chat; for
+--   channels only
+[can_enable_paid_reaction] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if members of the chat can be retrieved via getSupergroupMembers
 --   or searchChatMembers
@@ -16457,10 +16718,13 @@ LinkPreviewTypeAudio :: Maybe Text -> Maybe Text -> Maybe Audio -> Maybe Int -> 
 
 -- | The link is a link to a background. Link preview title and description
 --   are available only for filled backgrounds
-LinkPreviewTypeBackground :: Maybe Document -> LinkPreviewType
+LinkPreviewTypeBackground :: Maybe Document -> Maybe BackgroundType -> LinkPreviewType
 
 -- | Document with the background; may be null for filled backgrounds
 [document] :: LinkPreviewType -> Maybe Document
+
+-- | Type of the background; may be null if unknown
+[background_type] :: LinkPreviewType -> Maybe BackgroundType
 
 -- | The link is a link to boost a channel chat
 LinkPreviewTypeChannelBoost :: Maybe ChatPhoto -> LinkPreviewType
@@ -16573,10 +16837,11 @@ LinkPreviewTypePremiumGiftCode :: LinkPreviewType
 -- | The link is a link to a shareable chat folder
 LinkPreviewTypeShareableChatFolder :: LinkPreviewType
 
--- | The link is a link to a sticker message
+-- | The link is a link to a sticker
 LinkPreviewTypeSticker :: Maybe Sticker -> LinkPreviewType
 
--- | The sticker
+-- | The sticker. It can be an arbitrary WEBP image and can have dimensions
+--   bigger than 512
 [sticker] :: LinkPreviewType -> Maybe Sticker
 
 -- | The link is a link to a sticker set
@@ -17940,7 +18205,8 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageConten
 --   reportChatSponsoredMessage
 [can_be_reported] :: SponsoredMessage -> Maybe Bool
 
--- | Content of the message. Currently, can be only of the type messageText
+-- | Content of the message. Currently, can be only of the types
+--   messageText, messageAnimation, messagePhoto, or messageVideo
 [content] :: SponsoredMessage -> Maybe MessageContent
 
 -- | Information about the sponsor of the message
@@ -18116,7 +18382,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -18232,6 +18498,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 
 -- | Unique identifier of the effect added to the message; 0 if none
 [effect_id] :: Message -> Maybe Int
+
+-- | True, if media content of the message must be hidden with 18+ spoiler
+[has_sensitive_content] :: Message -> Maybe Bool
 
 -- | If non-empty, contains a human-readable description of the reason why
 --   access to this message must be restricted
@@ -19055,6 +19324,12 @@ ChatEventSignMessagesToggled :: Maybe Bool -> ChatEventAction
 
 -- | New value of sign_messages
 [sign_messages] :: ChatEventAction -> Maybe Bool
+
+-- | The show_message_sender setting of a channel was toggled
+ChatEventShowMessageSenderToggled :: Maybe Bool -> ChatEventAction
+
+-- | New value of show_message_sender
+[show_message_sender] :: ChatEventAction -> Maybe Bool
 
 -- | A chat invite link was edited
 ChatEventInviteLinkEdited :: Maybe ChatInviteLink -> Maybe ChatInviteLink -> ChatEventAction
@@ -20774,6 +21049,14 @@ UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 -- | The new tags
 [tags] :: Update -> Maybe SavedMessagesTags
 
+-- | The list of messages with active live location that need to be updated
+--   by the application has changed. The list is persistent across
+--   application restarts only if the message database is used
+UpdateActiveLiveLocationMessages :: Maybe [Message] -> Update
+
+-- | The list of messages with active live locations
+[_messages] :: Update -> Maybe [Message]
+
 -- | The number of Telegram Stars owned by the current user has changed
 UpdateOwnedStarCount :: Maybe Int -> Update
 
@@ -21399,6 +21682,7 @@ Sessions :: Sessions -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
 StarPaymentOptions :: StarPaymentOptions -> GeneralResult
 StarRevenueStatistics :: StarRevenueStatistics -> GeneralResult
+StarSubscriptions :: StarSubscriptions -> GeneralResult
 StarTransactions :: StarTransactions -> GeneralResult
 StatisticalGraph :: StatisticalGraph -> GeneralResult
 Sticker :: Sticker -> GeneralResult
@@ -21761,7 +22045,8 @@ AddMessageReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool
 -- | Identifier of the message
 [message_id] :: AddMessageReaction -> Maybe Int
 
--- | Type of the reaction to add
+-- | Type of the reaction to add. Use addPaidMessageReaction instead to add
+--   the paid reaction
 [reaction_type] :: AddMessageReaction -> Maybe ReactionType
 
 -- | Pass true if the reaction is added with a big animation
@@ -21789,6 +22074,33 @@ instance GHC.Show.Show TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance GHC.Classes.Eq TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance TD.Lib.Internal.ShortShow TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddNetworkStatistics.AddNetworkStatistics
+
+module TD.Query.AddPaidMessageReaction
+
+-- | Adds the paid message reaction to a message. Use
+--   getMessageAvailableReactions to receive the list of available
+--   reactions for the message. Returns <a>Ok</a>
+data AddPaidMessageReaction
+AddPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> AddPaidMessageReaction
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: AddPaidMessageReaction -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: AddPaidMessageReaction -> Maybe Int
+
+-- | Number of Telegram Stars to be used for the reaction;
+--   1-getOption("paid_reaction_star_count_max")
+[star_count] :: AddPaidMessageReaction -> Maybe Int
+
+-- | Pass true to make paid reaction of the user on the message anonymous;
+--   pass false to make the user's profile visible among top reactors
+[is_anonymous] :: AddPaidMessageReaction -> Maybe Bool
+defaultAddPaidMessageReaction :: AddPaidMessageReaction
+instance GHC.Show.Show TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
+instance GHC.Classes.Eq TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
+instance TD.Lib.Internal.ShortShow TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
 
 module TD.Query.AddProxy
 
@@ -23085,6 +23397,30 @@ instance GHC.Classes.Eq TD.Query.CreateChatInviteLink.CreateChatInviteLink
 instance TD.Lib.Internal.ShortShow TD.Query.CreateChatInviteLink.CreateChatInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateChatInviteLink.CreateChatInviteLink
 
+module TD.Query.CreateChatSubscriptionInviteLink
+
+-- | Creates a new subscription invite link for a channel chat. Requires
+--   can_invite_users right in the chat. Returns <a>ChatInviteLink</a>
+data CreateChatSubscriptionInviteLink
+CreateChatSubscriptionInviteLink :: Maybe Int -> Maybe Text -> Maybe StarSubscriptionPricing -> CreateChatSubscriptionInviteLink
+
+-- | Chat identifier
+[chat_id] :: CreateChatSubscriptionInviteLink -> Maybe Int
+
+-- | Invite link name; 0-32 characters
+[name] :: CreateChatSubscriptionInviteLink -> Maybe Text
+
+-- | Information about subscription plan that will be applied to the users
+--   joining the chat via the link. Subscription period must be 2592000 in
+--   production environment, and 60 or 300 if Telegram test environment is
+--   used
+[subscription_pricing] :: CreateChatSubscriptionInviteLink -> Maybe StarSubscriptionPricing
+defaultCreateChatSubscriptionInviteLink :: CreateChatSubscriptionInviteLink
+instance GHC.Show.Show TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
+instance GHC.Classes.Eq TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
+instance TD.Lib.Internal.ShortShow TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
+
 module TD.Query.CreateForumTopic
 
 -- | Creates a topic in a forum supergroup chat; requires can_manage_topics
@@ -24257,9 +24593,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatFolderInviteLink.EditCh
 module TD.Query.EditChatInviteLink
 
 -- | Edits a non-primary invite link for a chat. Available for basic
---   groups, supergroups, and channels. Requires administrator privileges
---   and can_invite_users right in the chat for own links and owner
---   privileges for other links. Returns <a>ChatInviteLink</a>
+--   groups, supergroups, and channels. If the link creates a subscription,
+--   then expiration_date, member_limit and creates_join_request must not
+--   be used Requires administrator privileges and can_invite_users right
+--   in the chat for own links and owner privileges for other links.
+--   Returns <a>ChatInviteLink</a>
 data EditChatInviteLink
 EditChatInviteLink :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> EditChatInviteLink
 
@@ -24288,6 +24626,28 @@ instance GHC.Show.Show TD.Query.EditChatInviteLink.EditChatInviteLink
 instance GHC.Classes.Eq TD.Query.EditChatInviteLink.EditChatInviteLink
 instance TD.Lib.Internal.ShortShow TD.Query.EditChatInviteLink.EditChatInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatInviteLink.EditChatInviteLink
+
+module TD.Query.EditChatSubscriptionInviteLink
+
+-- | Edits a subscription invite link for a channel chat. Requires
+--   can_invite_users right in the chat for own links and owner privileges
+--   for other links. Returns <a>ChatInviteLink</a>
+data EditChatSubscriptionInviteLink
+EditChatSubscriptionInviteLink :: Maybe Int -> Maybe Text -> Maybe Text -> EditChatSubscriptionInviteLink
+
+-- | Chat identifier
+[chat_id] :: EditChatSubscriptionInviteLink -> Maybe Int
+
+-- | Invite link to be edited
+[invite_link] :: EditChatSubscriptionInviteLink -> Maybe Text
+
+-- | Invite link name; 0-32 characters
+[name] :: EditChatSubscriptionInviteLink -> Maybe Text
+defaultEditChatSubscriptionInviteLink :: EditChatSubscriptionInviteLink
+instance GHC.Show.Show TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
+instance GHC.Classes.Eq TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
+instance TD.Lib.Internal.ShortShow TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
 
 module TD.Query.EditCustomLanguagePackInfo
 
@@ -24699,6 +25059,24 @@ instance GHC.Classes.Eq TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
 instance TD.Lib.Internal.ShortShow TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
 
+module TD.Query.EditStarSubscription
+
+-- | Cancels or reenables Telegram Star subscription to a channel. Returns
+--   <a>Ok</a>
+data EditStarSubscription
+EditStarSubscription :: Maybe Text -> Maybe Bool -> EditStarSubscription
+
+-- | Identifier of the subscription to change
+[subscription_id] :: EditStarSubscription -> Maybe Text
+
+-- | New value of is_canceled
+[is_canceled] :: EditStarSubscription -> Maybe Bool
+defaultEditStarSubscription :: EditStarSubscription
+instance GHC.Show.Show TD.Query.EditStarSubscription.EditStarSubscription
+instance GHC.Classes.Eq TD.Query.EditStarSubscription.EditStarSubscription
+instance TD.Lib.Internal.ShortShow TD.Query.EditStarSubscription.EditStarSubscription
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStarSubscription.EditStarSubscription
+
 module TD.Query.EditStory
 
 -- | Changes content and caption of a story. Can be called only if
@@ -24876,18 +25254,6 @@ instance GHC.Show.Show TD.Query.GetAccountTtl.GetAccountTtl
 instance GHC.Classes.Eq TD.Query.GetAccountTtl.GetAccountTtl
 instance TD.Lib.Internal.ShortShow TD.Query.GetAccountTtl.GetAccountTtl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAccountTtl.GetAccountTtl
-
-module TD.Query.GetActiveLiveLocationMessages
-
--- | Returns all active live locations that need to be updated by the
---   application. The list is persistent across application restarts only
---   if the message database is used. Returns <a>Messages</a>
-data GetActiveLiveLocationMessages
-GetActiveLiveLocationMessages :: GetActiveLiveLocationMessages
-instance GHC.Show.Show TD.Query.GetActiveLiveLocationMessages.GetActiveLiveLocationMessages
-instance GHC.Classes.Eq TD.Query.GetActiveLiveLocationMessages.GetActiveLiveLocationMessages
-instance TD.Lib.Internal.ShortShow TD.Query.GetActiveLiveLocationMessages.GetActiveLiveLocationMessages
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetActiveLiveLocationMessages.GetActiveLiveLocationMessages
 
 module TD.Query.GetActiveSessions
 
@@ -25758,13 +26124,17 @@ module TD.Query.GetChatInviteLinkMembers
 --   own links and owner privileges for other links. Returns
 --   <a>ChatInviteLinkMembers</a>
 data GetChatInviteLinkMembers
-GetChatInviteLinkMembers :: Maybe Int -> Maybe Text -> Maybe ChatInviteLinkMember -> Maybe Int -> GetChatInviteLinkMembers
+GetChatInviteLinkMembers :: Maybe Int -> Maybe Text -> Maybe Bool -> Maybe ChatInviteLinkMember -> Maybe Int -> GetChatInviteLinkMembers
 
 -- | Chat identifier
 [chat_id] :: GetChatInviteLinkMembers -> Maybe Int
 
 -- | Invite link for which to return chat members
 [invite_link] :: GetChatInviteLinkMembers -> Maybe Text
+
+-- | Pass true if the link is a subscription link and only members with
+--   expired subscription must be returned
+[only_with_expired_subscription] :: GetChatInviteLinkMembers -> Maybe Bool
 
 -- | A chat member from which to return next chat members; pass null to get
 --   results from the beginning
@@ -26250,7 +26620,7 @@ GetChatStoryInteractions :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Mayb
 
 -- | Pass the default heart reaction or a suggested reaction type to
 --   receive only interactions with the specified reaction type; pass null
---   to receive all interactions
+--   to receive all interactions; reactionTypePaid isn't supported
 [reaction_type] :: GetChatStoryInteractions -> Maybe ReactionType
 
 -- | Pass true to get forwards and reposts first, then reactions, then
@@ -27463,12 +27833,12 @@ GetMessageAddedReactions :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Mayb
 [chat_id] :: GetMessageAddedReactions -> Maybe Int
 
 -- | Identifier of the message. Use
---   messageProperties.can_get_added_reactions to check whether added
---   reactions can be received for the message
+--   message.interaction_info.reactions.can_get_added_reactions to check
+--   whether added reactions can be received for the message
 [message_id] :: GetMessageAddedReactions -> Maybe Int
 
 -- | Type of the reactions to return; pass null to return all added
---   reactions
+--   reactions; reactionTypePaid isn't supported
 [reaction_type] :: GetMessageAddedReactions -> Maybe ReactionType
 
 -- | Offset of the first entry to return as received from the previous
@@ -28624,18 +28994,42 @@ instance GHC.Classes.Eq TD.Query.GetStarRevenueStatistics.GetStarRevenueStatisti
 instance TD.Lib.Internal.ShortShow TD.Query.GetStarRevenueStatistics.GetStarRevenueStatistics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarRevenueStatistics.GetStarRevenueStatistics
 
+module TD.Query.GetStarSubscriptions
+
+-- | Returns the list of Telegram Star subscriptions for the current user.
+--   Returns <a>StarSubscriptions</a>
+data GetStarSubscriptions
+GetStarSubscriptions :: Maybe Bool -> Maybe Text -> GetStarSubscriptions
+
+-- | Pass true to receive only expiring subscriptions for which there are
+--   no enough Telegram Stars to extend
+[only_expiring] :: GetStarSubscriptions -> Maybe Bool
+
+-- | Offset of the first subscription to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: GetStarSubscriptions -> Maybe Text
+defaultGetStarSubscriptions :: GetStarSubscriptions
+instance GHC.Show.Show TD.Query.GetStarSubscriptions.GetStarSubscriptions
+instance GHC.Classes.Eq TD.Query.GetStarSubscriptions.GetStarSubscriptions
+instance TD.Lib.Internal.ShortShow TD.Query.GetStarSubscriptions.GetStarSubscriptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarSubscriptions.GetStarSubscriptions
+
 module TD.Query.GetStarTransactions
 
 -- | Returns the list of Telegram Star transactions for the specified
 --   owner. Returns <a>StarTransactions</a>
 data GetStarTransactions
-GetStarTransactions :: Maybe MessageSender -> Maybe StarTransactionDirection -> Maybe Text -> Maybe Int -> GetStarTransactions
+GetStarTransactions :: Maybe MessageSender -> Maybe Text -> Maybe StarTransactionDirection -> Maybe Text -> Maybe Int -> GetStarTransactions
 
 -- | Identifier of the owner of the Telegram Stars; can be the identifier
 --   of the current user, identifier of an owned bot, or identifier of a
 --   channel chat with supergroupFullInfo.can_get_star_revenue_statistics
 --   == true
 [owner_id] :: GetStarTransactions -> Maybe MessageSender
+
+-- | If non-empty, only transactions related to the Star Subscription will
+--   be returned
+[subscription_id] :: GetStarTransactions -> Maybe Text
 
 -- | Direction of the transactions to receive; pass null to get all
 --   transactions
@@ -30446,7 +30840,7 @@ RemoveMessageReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> RemoveM
 -- | Identifier of the message
 [message_id] :: RemoveMessageReaction -> Maybe Int
 
--- | Type of the reaction to remove
+-- | Type of the reaction to remove. The paid reaction can't be removed
 [reaction_type] :: RemoveMessageReaction -> Maybe ReactionType
 defaultRemoveMessageReaction :: RemoveMessageReaction
 instance GHC.Show.Show TD.Query.RemoveMessageReaction.RemoveMessageReaction
@@ -30491,6 +30885,25 @@ instance GHC.Show.Show TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 instance GHC.Classes.Eq TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
+
+module TD.Query.RemovePendingPaidMessageReactions
+
+-- | Removes all pending paid reactions on a message. Can be called within
+--   5 seconds after the last addPaidMessageReaction call. Returns
+--   <a>Ok</a>
+data RemovePendingPaidMessageReactions
+RemovePendingPaidMessageReactions :: Maybe Int -> Maybe Int -> RemovePendingPaidMessageReactions
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: RemovePendingPaidMessageReactions -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: RemovePendingPaidMessageReactions -> Maybe Int
+defaultRemovePendingPaidMessageReactions :: RemovePendingPaidMessageReactions
+instance GHC.Show.Show TD.Query.RemovePendingPaidMessageReactions.RemovePendingPaidMessageReactions
+instance GHC.Classes.Eq TD.Query.RemovePendingPaidMessageReactions.RemovePendingPaidMessageReactions
+instance TD.Lib.Internal.ShortShow TD.Query.RemovePendingPaidMessageReactions.RemovePendingPaidMessageReactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemovePendingPaidMessageReactions.RemovePendingPaidMessageReactions
 
 module TD.Query.RemoveProxy
 
@@ -31195,6 +31608,20 @@ instance GHC.Show.Show TD.Query.ResetPassword.ResetPassword
 instance GHC.Classes.Eq TD.Query.ResetPassword.ResetPassword
 instance TD.Lib.Internal.ShortShow TD.Query.ResetPassword.ResetPassword
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResetPassword.ResetPassword
+
+module TD.Query.ReuseStarSubscription
+
+-- | Reuses an active subscription and joins the subscribed chat again.
+--   Returns <a>Ok</a>
+data ReuseStarSubscription
+ReuseStarSubscription :: Maybe Text -> ReuseStarSubscription
+
+-- | Identifier of the subscription
+[subscription_id] :: ReuseStarSubscription -> Maybe Text
+instance GHC.Show.Show TD.Query.ReuseStarSubscription.ReuseStarSubscription
+instance GHC.Classes.Eq TD.Query.ReuseStarSubscription.ReuseStarSubscription
+instance TD.Lib.Internal.ShortShow TD.Query.ReuseStarSubscription.ReuseStarSubscription
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReuseStarSubscription.ReuseStarSubscription
 
 module TD.Query.RevokeChatInviteLink
 
@@ -33622,7 +34049,8 @@ module TD.Query.SetDefaultReactionType
 data SetDefaultReactionType
 SetDefaultReactionType :: Maybe ReactionType -> SetDefaultReactionType
 
--- | New type of the default reaction
+-- | New type of the default reaction. The paid reaction can't be set as
+--   default
 [reaction_type] :: SetDefaultReactionType -> Maybe ReactionType
 instance GHC.Show.Show TD.Query.SetDefaultReactionType.SetDefaultReactionType
 instance GHC.Classes.Eq TD.Query.SetDefaultReactionType.SetDefaultReactionType
@@ -34505,9 +34933,9 @@ SetStoryReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -
 -- | The identifier of the story
 [story_id] :: SetStoryReaction -> Maybe Int
 
--- | Type of the reaction to set; pass null to remove the reaction.
---   <tt>reactionTypeCustomEmoji</tt> reactions can be used only by
---   Telegram Premium users
+-- | Type of the reaction to set; pass null to remove the reaction. Custom
+--   emoji reactions can be used only by Telegram Premium users. Paid
+--   reactions can't be set
 [reaction_type] :: SetStoryReaction -> Maybe ReactionType
 
 -- | Pass true if the reaction needs to be added to recent reactions
@@ -35622,6 +36050,29 @@ instance GHC.Classes.Eq TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSpon
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
 
+module TD.Query.TogglePaidMessageReactionIsAnonymous
+
+-- | Changes whether the paid message reaction of the user to a message is
+--   anonymous. The message must have paid reaction added by the user.
+--   Returns <a>Ok</a>
+data TogglePaidMessageReactionIsAnonymous
+TogglePaidMessageReactionIsAnonymous :: Maybe Int -> Maybe Int -> Maybe Bool -> TogglePaidMessageReactionIsAnonymous
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: TogglePaidMessageReactionIsAnonymous -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: TogglePaidMessageReactionIsAnonymous -> Maybe Int
+
+-- | Pass true to make paid reaction of the user on the message anonymous;
+--   pass false to make the user's profile visible among top reactors
+[is_anonymous] :: TogglePaidMessageReactionIsAnonymous -> Maybe Bool
+defaultTogglePaidMessageReactionIsAnonymous :: TogglePaidMessageReactionIsAnonymous
+instance GHC.Show.Show TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
+instance GHC.Classes.Eq TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
+instance TD.Lib.Internal.ShortShow TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
+
 module TD.Query.ToggleSavedMessagesTopicIsPinned
 
 -- | Changes the pinned state of a Saved Messages topic. There can be up to
@@ -35851,16 +36302,20 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupJoinToSendMessa
 
 module TD.Query.ToggleSupergroupSignMessages
 
--- | Toggles whether sender signature is added to sent messages in a
---   channel; requires can_change_info member right. Returns <a>Ok</a>
+-- | Toggles whether sender signature or link to the account is added to
+--   sent messages in a channel; requires can_change_info member right.
+--   Returns <a>Ok</a>
 data ToggleSupergroupSignMessages
-ToggleSupergroupSignMessages :: Maybe Int -> Maybe Bool -> ToggleSupergroupSignMessages
+ToggleSupergroupSignMessages :: Maybe Int -> Maybe Bool -> Maybe Bool -> ToggleSupergroupSignMessages
 
 -- | Identifier of the channel
 [supergroup_id] :: ToggleSupergroupSignMessages -> Maybe Int
 
 -- | New value of sign_messages
 [sign_messages] :: ToggleSupergroupSignMessages -> Maybe Bool
+
+-- | New value of show_message_sender
+[show_message_sender] :: ToggleSupergroupSignMessages -> Maybe Bool
 defaultToggleSupergroupSignMessages :: ToggleSupergroupSignMessages
 instance GHC.Show.Show TD.Query.ToggleSupergroupSignMessages.ToggleSupergroupSignMessages
 instance GHC.Classes.Eq TD.Query.ToggleSupergroupSignMessages.ToggleSupergroupSignMessages

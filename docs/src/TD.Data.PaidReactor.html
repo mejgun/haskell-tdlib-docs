@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.PaidReactor</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier">PaidReactor</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html"><span class="hs-identifier">TD.Data.MessageSender</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSender</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="PaidReactor"><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-var">PaidReactor</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="PaidReactor"><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-var">PaidReactor</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about a user that added paid reactions</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="sender_id"><span class="annot"><span class="annottext">PaidReactor -&gt; Maybe MessageSender
+</span><a href="TD.Data.PaidReactor.html#sender_id"><span class="hs-identifier hs-var hs-var">sender_id</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html#MessageSender"><span class="hs-identifier hs-type">MessageSender.MessageSender</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the user or chat that added the reactions; may be null for anonymous reactors that aren't the current user</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="star_count"><span class="annot"><span class="annottext">PaidReactor -&gt; Maybe Int
+</span><a href="TD.Data.PaidReactor.html#star_count"><span class="hs-identifier hs-var hs-var">star_count</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Number of Telegram Stars added</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_top"><span class="annot"><span class="annottext">PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_top"><span class="hs-identifier hs-var hs-var">is_top</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                        </span><span class="annot"><span class="hs-comment">-- ^ True, if the reactor is one of the most active reactors; can be false if the reactor is the current user</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_me"><span class="annot"><span class="annottext">PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_me"><span class="hs-identifier hs-var hs-var">is_me</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                        </span><span class="annot"><span class="hs-comment">-- ^ True, if the paid reaction was added by the current user</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_anonymous"><span class="annot"><span class="annottext">PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_anonymous"><span class="hs-identifier hs-var hs-var">is_anonymous</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                        </span><span class="annot"><span class="hs-comment">-- ^ True, if the reactor is anonymous</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679666457"><span id="local-6989586621679666468"><span class="annot"><span class="annottext">PaidReactor -&gt; PaidReactor -&gt; Bool
+(PaidReactor -&gt; PaidReactor -&gt; Bool)
+-&gt; (PaidReactor -&gt; PaidReactor -&gt; Bool) -&gt; Eq PaidReactor
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: PaidReactor -&gt; PaidReactor -&gt; Bool
+== :: PaidReactor -&gt; PaidReactor -&gt; Bool
+$c/= :: PaidReactor -&gt; PaidReactor -&gt; Bool
+/= :: PaidReactor -&gt; PaidReactor -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679666476"><span id="local-6989586621679666489"><span id="local-6989586621679666493"><span class="annot"><span class="annottext">Int -&gt; PaidReactor -&gt; ShowS
+[PaidReactor] -&gt; ShowS
+PaidReactor -&gt; String
+(Int -&gt; PaidReactor -&gt; ShowS)
+-&gt; (PaidReactor -&gt; String)
+-&gt; ([PaidReactor] -&gt; ShowS)
+-&gt; Show PaidReactor
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; PaidReactor -&gt; ShowS
+showsPrec :: Int -&gt; PaidReactor -&gt; ShowS
+$cshow :: PaidReactor -&gt; String
+show :: PaidReactor -&gt; String
+$cshowList :: [PaidReactor] -&gt; ShowS
+showList :: [PaidReactor] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-type">PaidReactor</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679666513"><span class="annot"><span class="annottext">shortShow :: PaidReactor -&gt; String
+</span><a href="#local-6989586621679666513"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-type">PaidReactor</span></a></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sender_id :: PaidReactor -&gt; Maybe MessageSender
+</span><a href="TD.Data.PaidReactor.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679666515"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679666515"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: PaidReactor -&gt; Maybe Int
+</span><a href="TD.Data.PaidReactor.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679666516"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679666516"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_top :: PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_top"><span class="hs-identifier hs-var">is_top</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679666517"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666517"><span class="hs-identifier hs-var">is_top_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_me :: PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_me"><span class="hs-identifier hs-var">is_me</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679666518"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666518"><span class="hs-identifier hs-var">is_me_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_anonymous :: PaidReactor -&gt; Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_anonymous"><span class="hs-identifier hs-var">is_anonymous</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679666519"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666519"><span class="hs-identifier hs-var">is_anonymous_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;PaidReactor&quot;</span></span><span>
+</span><span id="line-28"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSender -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679666515"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;star_count&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679666516"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_top&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666517"><span class="hs-identifier hs-var">is_top_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_me&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666518"><span class="hs-identifier hs-var">is_me_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_anonymous&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666519"><span class="hs-identifier hs-var">is_anonymous_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679666524"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-type">PaidReactor</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679666565"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser PaidReactor
+</span><a href="#local-6989586621679666565"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679666567"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679666567"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679666569"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666569"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-38"></span><span>    </span><span id="local-6989586621679666570"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679666570"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666569"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679666570"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;paidReactor&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser PaidReactor
+</span><a href="#local-6989586621679666572"><span class="hs-identifier hs-var">parsePaidReactor</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679666567"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser PaidReactor
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-43"></span><span>    </span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-45"></span><span>      </span><span class="annot"><a href="#local-6989586621679666572"><span class="hs-identifier hs-type">parsePaidReactor</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-type">PaidReactor</span></a></span><span>
+</span><span id="line-46"></span><span>      </span><span id="local-6989586621679666572"><span class="annot"><span class="annottext">parsePaidReactor :: Value -&gt; Parser PaidReactor
+</span><a href="#local-6989586621679666572"><span class="hs-identifier hs-var hs-var">parsePaidReactor</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser PaidReactor) -&gt; Value -&gt; Parser PaidReactor
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;PaidReactor&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser PaidReactor) -&gt; Value -&gt; Parser PaidReactor)
+-&gt; (Object -&gt; Parser PaidReactor) -&gt; Value -&gt; Parser PaidReactor
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679666574"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679666575"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679666575"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe MessageSender)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679666577"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679666577"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;star_count&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679666578"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666578"><span class="hs-identifier hs-var">is_top_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_top&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679666579"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666579"><span class="hs-identifier hs-var">is_me_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_me&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span id="local-6989586621679666580"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666580"><span class="hs-identifier hs-var">is_anonymous_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679666574"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_anonymous&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">PaidReactor -&gt; Parser PaidReactor
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(PaidReactor -&gt; Parser PaidReactor)
+-&gt; PaidReactor -&gt; Parser PaidReactor
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.PaidReactor.html#PaidReactor"><span class="hs-identifier hs-type">PaidReactor</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sender_id :: Maybe MessageSender
+</span><a href="TD.Data.PaidReactor.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679666575"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: Maybe Int
+</span><a href="TD.Data.PaidReactor.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679666577"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_top :: Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_top"><span class="hs-identifier hs-var">is_top</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666578"><span class="hs-identifier hs-var">is_top_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_me :: Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_me"><span class="hs-identifier hs-var">is_me</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666579"><span class="hs-identifier hs-var">is_me_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_anonymous :: Maybe Bool
+</span><a href="TD.Data.PaidReactor.html#is_anonymous"><span class="hs-identifier hs-var">is_anonymous</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679666580"><span class="hs-identifier hs-var">is_anonymous_</span></a></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-59"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser PaidReactor
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span></pre></body></html>
