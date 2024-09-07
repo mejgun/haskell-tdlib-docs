@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.42.0
+@version 2.0.43.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -477,7 +477,7 @@ module TD.Data.ThemeParameters
 data ThemeParameters
 
 -- | Contains parameters of the application theme
-ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ThemeParameters
+ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ThemeParameters
 
 -- | A color of the background in the RGB24 format
 [background_color] :: ThemeParameters -> Maybe Int
@@ -487,6 +487,9 @@ ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
 
 -- | A color of the header background in the RGB24 format
 [header_background_color] :: ThemeParameters -> Maybe Int
+
+-- | A color of the bottom bar background in the RGB24 format
+[bottom_bar_background_color] :: ThemeParameters -> Maybe Int
 
 -- | A color of the section background in the RGB24 format
 [section_background_color] :: ThemeParameters -> Maybe Int
@@ -1436,6 +1439,78 @@ instance GHC.Classes.Eq TD.Data.StarPaymentOptions.StarPaymentOptions
 instance TD.Lib.Internal.ShortShow TD.Data.StarPaymentOptions.StarPaymentOptions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarPaymentOptions.StarPaymentOptions
 
+module TD.Data.StarGiveawayWinnerOption
+data StarGiveawayWinnerOption
+
+-- | Describes an option for the number of winners of a Telegram Star
+--   giveaway
+StarGiveawayWinnerOption :: Maybe Int -> Maybe Int -> Maybe Bool -> StarGiveawayWinnerOption
+
+-- | The number of users that will be chosen as winners
+[winner_count] :: StarGiveawayWinnerOption -> Maybe Int
+
+-- | The number of Telegram Stars that will be won by the winners of the
+--   giveaway
+[won_star_count] :: StarGiveawayWinnerOption -> Maybe Int
+
+-- | True, if the option must be chosen by default
+[is_default] :: StarGiveawayWinnerOption -> Maybe Bool
+instance GHC.Show.Show TD.Data.StarGiveawayWinnerOption.StarGiveawayWinnerOption
+instance GHC.Classes.Eq TD.Data.StarGiveawayWinnerOption.StarGiveawayWinnerOption
+instance TD.Lib.Internal.ShortShow TD.Data.StarGiveawayWinnerOption.StarGiveawayWinnerOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayWinnerOption.StarGiveawayWinnerOption
+
+module TD.Data.StarGiveawayPaymentOption
+data StarGiveawayPaymentOption
+
+-- | Describes an option for creating Telegram Star giveaway. Use
+--   telegramPaymentPurposeStarGiveaway for out-of-store payments
+StarGiveawayPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe [StarGiveawayWinnerOption] -> Maybe Bool -> Maybe Bool -> StarGiveawayPaymentOption
+
+-- | ISO 4217 currency code for the payment
+[currency] :: StarGiveawayPaymentOption -> Maybe Text
+
+-- | The amount to pay, in the smallest units of the currency
+[amount] :: StarGiveawayPaymentOption -> Maybe Int
+
+-- | Number of Telegram Stars that will be distributed among winners
+[star_count] :: StarGiveawayPaymentOption -> Maybe Int
+
+-- | Identifier of the store product associated with the option; may be
+--   empty if none
+[store_product_id] :: StarGiveawayPaymentOption -> Maybe Text
+
+-- | Number of times the chat will be boosted for one year if the option is
+--   chosen
+[yearly_boost_count] :: StarGiveawayPaymentOption -> Maybe Int
+
+-- | Allowed options for the number of giveaway winners
+[winner_options] :: StarGiveawayPaymentOption -> Maybe [StarGiveawayWinnerOption]
+
+-- | True, if the option must be chosen by default
+[is_default] :: StarGiveawayPaymentOption -> Maybe Bool
+
+-- | True, if the option must be shown only in the full list of payment
+--   options
+[is_additional] :: StarGiveawayPaymentOption -> Maybe Bool
+instance GHC.Show.Show TD.Data.StarGiveawayPaymentOption.StarGiveawayPaymentOption
+instance GHC.Classes.Eq TD.Data.StarGiveawayPaymentOption.StarGiveawayPaymentOption
+instance TD.Lib.Internal.ShortShow TD.Data.StarGiveawayPaymentOption.StarGiveawayPaymentOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayPaymentOption.StarGiveawayPaymentOption
+
+module TD.Data.StarGiveawayPaymentOptions
+data StarGiveawayPaymentOptions
+
+-- | Contains a list of options for creating Telegram Star giveaway
+StarGiveawayPaymentOptions :: Maybe [StarGiveawayPaymentOption] -> StarGiveawayPaymentOptions
+
+-- | The list of options
+[options] :: StarGiveawayPaymentOptions -> Maybe [StarGiveawayPaymentOption]
+instance GHC.Show.Show TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+instance GHC.Classes.Eq TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+
 module TD.Data.SessionType
 
 -- | Represents the type of session
@@ -2368,30 +2443,6 @@ instance GHC.Classes.Eq TD.Data.ProfileAccentColor.ProfileAccentColor
 instance TD.Lib.Internal.ShortShow TD.Data.ProfileAccentColor.ProfileAccentColor
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProfileAccentColor.ProfileAccentColor
 
-module TD.Data.PrepaidPremiumGiveaway
-data PrepaidPremiumGiveaway
-
--- | Describes a prepaid Telegram Premium giveaway
-PrepaidPremiumGiveaway :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> PrepaidPremiumGiveaway
-
--- | Unique identifier of the prepaid giveaway
-[_id] :: PrepaidPremiumGiveaway -> Maybe Int
-
--- | Number of users which will receive Telegram Premium subscription gift
---   codes
-[winner_count] :: PrepaidPremiumGiveaway -> Maybe Int
-
--- | Number of months the Telegram Premium subscription will be active
---   after code activation
-[month_count] :: PrepaidPremiumGiveaway -> Maybe Int
-
--- | Point in time (Unix timestamp) when the giveaway was paid
-[payment_date] :: PrepaidPremiumGiveaway -> Maybe Int
-instance GHC.Show.Show TD.Data.PrepaidPremiumGiveaway.PrepaidPremiumGiveaway
-instance GHC.Classes.Eq TD.Data.PrepaidPremiumGiveaway.PrepaidPremiumGiveaway
-instance TD.Lib.Internal.ShortShow TD.Data.PrepaidPremiumGiveaway.PrepaidPremiumGiveaway
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PrepaidPremiumGiveaway.PrepaidPremiumGiveaway
-
 module TD.Data.PremiumStoryFeature
 
 -- | Describes a story feature available to Premium users
@@ -2513,315 +2564,12 @@ instance GHC.Classes.Eq TD.Data.PremiumLimit.PremiumLimit
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumLimit.PremiumLimit
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumLimit.PremiumLimit
 
-module TD.Data.PremiumGiveawayParticipantStatus
-
--- | Contains information about status of a user in a Telegram Premium
---   giveaway
-data PremiumGiveawayParticipantStatus
-
--- | The user is eligible for the giveaway
-PremiumGiveawayParticipantStatusEligible :: PremiumGiveawayParticipantStatus
-
--- | The user participates in the giveaway
-PremiumGiveawayParticipantStatusParticipating :: PremiumGiveawayParticipantStatus
-
--- | The user can't participate in the giveaway, because they have already
---   been member of the chat
-PremiumGiveawayParticipantStatusAlreadyWasMember :: Maybe Int -> PremiumGiveawayParticipantStatus
-
--- | Point in time (Unix timestamp) when the user joined the chat
-[joined_chat_date] :: PremiumGiveawayParticipantStatus -> Maybe Int
-
--- | The user can't participate in the giveaway, because they are an
---   administrator in one of the chats that created the giveaway
-PremiumGiveawayParticipantStatusAdministrator :: Maybe Int -> PremiumGiveawayParticipantStatus
-
--- | Identifier of the chat administered by the user
-[chat_id] :: PremiumGiveawayParticipantStatus -> Maybe Int
-
--- | The user can't participate in the giveaway, because they phone number
---   is from a disallowed country
-PremiumGiveawayParticipantStatusDisallowedCountry :: Maybe Text -> PremiumGiveawayParticipantStatus
-
--- | A two-letter ISO 3166-1 alpha-2 country code of the user's country
-[user_country_code] :: PremiumGiveawayParticipantStatus -> Maybe Text
-instance GHC.Show.Show TD.Data.PremiumGiveawayParticipantStatus.PremiumGiveawayParticipantStatus
-instance GHC.Classes.Eq TD.Data.PremiumGiveawayParticipantStatus.PremiumGiveawayParticipantStatus
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiveawayParticipantStatus.PremiumGiveawayParticipantStatus
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayParticipantStatus.PremiumGiveawayParticipantStatus
-
-module TD.Data.PremiumGiveawayParameters
-data PremiumGiveawayParameters
-
--- | Describes parameters of a Telegram Premium giveaway
-PremiumGiveawayParameters :: Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Text -> PremiumGiveawayParameters
-
--- | Identifier of the supergroup or channel chat, which will be
---   automatically boosted by the winners of the giveaway for duration of
---   the Premium subscription. If the chat is a channel, then
---   can_post_messages right is required in the channel, otherwise, the
---   user must be an administrator in the supergroup
-[boosted_chat_id] :: PremiumGiveawayParameters -> Maybe Int
-
--- | Identifiers of other supergroup or channel chats that must be
---   subscribed by the users to be eligible for the giveaway. There can be
---   up to getOption("giveaway_additional_chat_count_max") additional chats
-[additional_chat_ids] :: PremiumGiveawayParameters -> Maybe [Int]
-
--- | Point in time (Unix timestamp) when the giveaway is expected to be
---   performed; must be 60-getOption("giveaway_duration_max") seconds in
---   the future in scheduled giveaways
-[winners_selection_date] :: PremiumGiveawayParameters -> Maybe Int
-
--- | True, if only new members of the chats will be eligible for the
---   giveaway
-[only_new_members] :: PremiumGiveawayParameters -> Maybe Bool
-
--- | True, if the list of winners of the giveaway will be available to
---   everyone
-[has_public_winners] :: PremiumGiveawayParameters -> Maybe Bool
-
--- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
---   from which will be eligible for the giveaway. If empty, then all users
---   can participate in the giveaway. There can be up to
---   getOption("giveaway_country_count_max") chosen countries. Users with
---   phone number that was bought at <a>https://fragment.com</a> can
---   participate in any giveaway and the country code <a>FT</a> must not be
---   specified in the list
-[country_codes] :: PremiumGiveawayParameters -> Maybe [Text]
-
--- | Additional description of the giveaway prize; 0-128 characters
-[prize_description] :: PremiumGiveawayParameters -> Maybe Text
-defaultPremiumGiveawayParameters :: PremiumGiveawayParameters
-instance GHC.Show.Show TD.Data.PremiumGiveawayParameters.PremiumGiveawayParameters
-instance GHC.Classes.Eq TD.Data.PremiumGiveawayParameters.PremiumGiveawayParameters
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiveawayParameters.PremiumGiveawayParameters
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayParameters.PremiumGiveawayParameters
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumGiveawayParameters.PremiumGiveawayParameters
-
-module TD.Data.TelegramPaymentPurpose
-
--- | Describes a purpose of a payment toward Telegram
-data TelegramPaymentPurpose
-
--- | The user creating Telegram Premium gift codes for other users
-TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> TelegramPaymentPurpose
-
--- | Identifier of the supergroup or channel chat, which will be
---   automatically boosted by the users for duration of the Premium
---   subscription and which is administered by the user; 0 if none
-[boosted_chat_id] :: TelegramPaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: TelegramPaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: TelegramPaymentPurpose -> Maybe Int
-
--- | Identifiers of the users which can activate the gift codes
-[user_ids] :: TelegramPaymentPurpose -> Maybe [Int]
-
--- | Number of months the Telegram Premium subscription will be active for
---   the users
-[month_count] :: TelegramPaymentPurpose -> Maybe Int
-
--- | The user creating a Telegram Premium giveaway
-TelegramPaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
-
--- | Giveaway parameters
-[parameters] :: TelegramPaymentPurpose -> Maybe PremiumGiveawayParameters
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: TelegramPaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: TelegramPaymentPurpose -> Maybe Int
-
--- | Number of users which will be able to activate the gift codes
-[winner_count] :: TelegramPaymentPurpose -> Maybe Int
-
--- | Number of months the Telegram Premium subscription will be active for
---   the users
-[month_count] :: TelegramPaymentPurpose -> Maybe Int
-
--- | The user buying Telegram Stars
-TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: TelegramPaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: TelegramPaymentPurpose -> Maybe Int
-
--- | Number of bought Telegram Stars
-[star_count] :: TelegramPaymentPurpose -> Maybe Int
-
--- | The user buying Telegram Stars for other users
-TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
-
--- | Identifier of the user to which Telegram Stars are gifted
-[user_id] :: TelegramPaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: TelegramPaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: TelegramPaymentPurpose -> Maybe Int
-
--- | Number of bought Telegram Stars
-[star_count] :: TelegramPaymentPurpose -> Maybe Int
-
--- | The user joins a chat and subscribes to regular payments in Telegram
---   Stars
-TelegramPaymentPurposeJoinChat :: Maybe Text -> TelegramPaymentPurpose
-
--- | Invite link to use
-[invite_link] :: TelegramPaymentPurpose -> Maybe Text
-instance GHC.Show.Show TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
-instance GHC.Classes.Eq TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
-
-module TD.Data.StorePaymentPurpose
-
--- | Describes a purpose of an in-store payment
-data StorePaymentPurpose
-
--- | The user subscribing to Telegram Premium
-StorePaymentPurposePremiumSubscription :: Maybe Bool -> Maybe Bool -> StorePaymentPurpose
-
--- | Pass true if this is a restore of a Telegram Premium purchase; only
---   for App Store
-[is_restore] :: StorePaymentPurpose -> Maybe Bool
-
--- | Pass true if this is an upgrade from a monthly subscription to early
---   subscription; only for App Store
-[is_upgrade] :: StorePaymentPurpose -> Maybe Bool
-
--- | The user gifting Telegram Premium to another user
-StorePaymentPurposeGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> StorePaymentPurpose
-
--- | Identifier of the user to which Telegram Premium is gifted
-[user_id] :: StorePaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
--- | The user creating Telegram Premium gift codes for other users
-StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> StorePaymentPurpose
-
--- | Identifier of the supergroup or channel chat, which will be
---   automatically boosted by the users for duration of the Premium
---   subscription and which is administered by the user; 0 if none
-[boosted_chat_id] :: StorePaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
--- | Identifiers of the users which can activate the gift codes
-[user_ids] :: StorePaymentPurpose -> Maybe [Int]
-
--- | The user creating a Telegram Premium giveaway
-StorePaymentPurposePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Text -> Maybe Int -> StorePaymentPurpose
-
--- | Giveaway parameters
-[parameters] :: StorePaymentPurpose -> Maybe PremiumGiveawayParameters
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
--- | The user buying Telegram Stars
-StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
--- | Number of bought Telegram Stars
-[star_count] :: StorePaymentPurpose -> Maybe Int
-
--- | The user buying Telegram Stars for other users
-StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
-
--- | Identifier of the user to which Telegram Premium is gifted
-[user_id] :: StorePaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
--- | Number of bought Telegram Stars
-[star_count] :: StorePaymentPurpose -> Maybe Int
-instance GHC.Show.Show TD.Data.StorePaymentPurpose.StorePaymentPurpose
-instance GHC.Classes.Eq TD.Data.StorePaymentPurpose.StorePaymentPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.StorePaymentPurpose.StorePaymentPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StorePaymentPurpose.StorePaymentPurpose
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StorePaymentPurpose.StorePaymentPurpose
-
-module TD.Data.PremiumGiveawayInfo
-
--- | Contains information about Telegram Premium giveaway
-data PremiumGiveawayInfo
-
--- | Describes an ongoing giveaway
-PremiumGiveawayInfoOngoing :: Maybe Int -> Maybe PremiumGiveawayParticipantStatus -> Maybe Bool -> PremiumGiveawayInfo
-
--- | Point in time (Unix timestamp) when the giveaway was created
-[creation_date] :: PremiumGiveawayInfo -> Maybe Int
-
--- | Status of the current user in the giveaway
-[status] :: PremiumGiveawayInfo -> Maybe PremiumGiveawayParticipantStatus
-
--- | True, if the giveaway has ended and results are being prepared
-[is_ended] :: PremiumGiveawayInfo -> Maybe Bool
-
--- | Describes a completed giveaway
-PremiumGiveawayInfoCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Text -> PremiumGiveawayInfo
-
--- | Point in time (Unix timestamp) when the giveaway was created
-[creation_date] :: PremiumGiveawayInfo -> Maybe Int
-
--- | Point in time (Unix timestamp) when the winners were selected. May be
---   bigger than winners selection date specified in parameters of the
---   giveaway
-[actual_winners_selection_date] :: PremiumGiveawayInfo -> Maybe Int
-
--- | True, if the giveaway was canceled and was fully refunded
-[was_refunded] :: PremiumGiveawayInfo -> Maybe Bool
-
--- | Number of winners in the giveaway
-[winner_count] :: PremiumGiveawayInfo -> Maybe Int
-
--- | Number of winners, which activated their gift codes
-[activation_count] :: PremiumGiveawayInfo -> Maybe Int
-
--- | Telegram Premium gift code that was received by the current user;
---   empty if the user isn't a winner in the giveaway
-[gift_code] :: PremiumGiveawayInfo -> Maybe Text
-instance GHC.Show.Show TD.Data.PremiumGiveawayInfo.PremiumGiveawayInfo
-instance GHC.Classes.Eq TD.Data.PremiumGiveawayInfo.PremiumGiveawayInfo
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiveawayInfo.PremiumGiveawayInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayInfo.PremiumGiveawayInfo
-
 module TD.Data.PremiumGiftCodePaymentOption
 data PremiumGiftCodePaymentOption
 
--- | Describes an option for creating Telegram Premium gift codes. Use
---   telegramPaymentPurposePremiumGiftCodes for out-of-store payments
+-- | Describes an option for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
+--   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
 PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> PremiumGiftCodePaymentOption
 
 -- | ISO 4217 currency code for Telegram Premium gift code payment
@@ -2831,7 +2579,7 @@ PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe In
 [amount] :: PremiumGiftCodePaymentOption -> Maybe Int
 
 -- | Number of users which will be able to activate the gift codes
-[user_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
 [month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
@@ -2850,7 +2598,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption
 module TD.Data.PremiumGiftCodePaymentOptions
 data PremiumGiftCodePaymentOptions
 
--- | Contains a list of options for creating Telegram Premium gift codes
+-- | Contains a list of options for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway
 PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
 
 -- | The list of options
@@ -3908,7 +3657,11 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+
+-- | True, if content of the message can be copied to a secret chat using
+--   inputMessageForwarded or forwardMessages with copy options
+[can_be_copied_to_secret_chat] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be deleted only for the current user while
 --   other users will continue to see it using the method deleteMessages
@@ -5204,39 +4957,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputPaidMediaType.InputPaidMediaType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPaidMediaType.InputPaidMediaType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPaidMediaType.InputPaidMediaType
 
-module TD.Data.InputInvoice
-
--- | Describes an invoice to process
-data InputInvoice
-
--- | An invoice from a message of the type messageInvoice or paid media
---   purchase from messagePaidMedia
-InputInvoiceMessage :: Maybe Int -> Maybe Int -> InputInvoice
-
--- | Chat identifier of the message
-[chat_id] :: InputInvoice -> Maybe Int
-
--- | Message identifier
-[message_id] :: InputInvoice -> Maybe Int
-
--- | An invoice from a link of the type internalLinkTypeInvoice
-InputInvoiceName :: Maybe Text -> InputInvoice
-
--- | Name of the invoice
-[name] :: InputInvoice -> Maybe Text
-
--- | An invoice for a payment toward Telegram; must not be used in the
---   in-store apps
-InputInvoiceTelegram :: Maybe TelegramPaymentPurpose -> InputInvoice
-
--- | Transaction purpose
-[purpose] :: InputInvoice -> Maybe TelegramPaymentPurpose
-instance GHC.Show.Show TD.Data.InputInvoice.InputInvoice
-instance GHC.Classes.Eq TD.Data.InputInvoice.InputInvoice
-instance TD.Lib.Internal.ShortShow TD.Data.InputInvoice.InputInvoice
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputInvoice.InputInvoice
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputInvoice.InputInvoice
-
 module TD.Data.InputFile
 
 -- | Points to a file
@@ -5982,6 +5702,437 @@ instance GHC.Classes.Eq TD.Data.GroupCall.GroupCall
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCall.GroupCall
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCall.GroupCall
 
+module TD.Data.GiveawayPrize
+
+-- | Contains information about a giveaway prize
+data GiveawayPrize
+
+-- | The giveaway sends Telegram Premium subscriptions to the winners
+GiveawayPrizePremium :: Maybe Int -> GiveawayPrize
+
+-- | Number of months the Telegram Premium subscription will be active
+--   after code activation
+[month_count] :: GiveawayPrize -> Maybe Int
+
+-- | The giveaway sends Telegram Stars to the winners
+GiveawayPrizeStars :: Maybe Int -> GiveawayPrize
+
+-- | Number of Telegram Stars that will be shared by all winners
+[star_count] :: GiveawayPrize -> Maybe Int
+instance GHC.Show.Show TD.Data.GiveawayPrize.GiveawayPrize
+instance GHC.Classes.Eq TD.Data.GiveawayPrize.GiveawayPrize
+instance TD.Lib.Internal.ShortShow TD.Data.GiveawayPrize.GiveawayPrize
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiveawayPrize.GiveawayPrize
+
+module TD.Data.PrepaidGiveaway
+data PrepaidGiveaway
+
+-- | Describes a prepaid giveaway
+PrepaidGiveaway :: Maybe Int -> Maybe Int -> Maybe GiveawayPrize -> Maybe Int -> Maybe Int -> PrepaidGiveaway
+
+-- | Unique identifier of the prepaid giveaway
+[_id] :: PrepaidGiveaway -> Maybe Int
+
+-- | Number of users which will receive giveaway prize
+[winner_count] :: PrepaidGiveaway -> Maybe Int
+
+-- | Prize of the giveaway
+[prize] :: PrepaidGiveaway -> Maybe GiveawayPrize
+
+-- | The number of boosts received by the chat from the giveaway; for
+--   Telegram Star giveaways only
+[boost_count] :: PrepaidGiveaway -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the giveaway was paid
+[payment_date] :: PrepaidGiveaway -> Maybe Int
+instance GHC.Show.Show TD.Data.PrepaidGiveaway.PrepaidGiveaway
+instance GHC.Classes.Eq TD.Data.PrepaidGiveaway.PrepaidGiveaway
+instance TD.Lib.Internal.ShortShow TD.Data.PrepaidGiveaway.PrepaidGiveaway
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PrepaidGiveaway.PrepaidGiveaway
+
+module TD.Data.GiveawayParticipantStatus
+
+-- | Contains information about status of a user in a giveaway
+data GiveawayParticipantStatus
+
+-- | The user is eligible for the giveaway
+GiveawayParticipantStatusEligible :: GiveawayParticipantStatus
+
+-- | The user participates in the giveaway
+GiveawayParticipantStatusParticipating :: GiveawayParticipantStatus
+
+-- | The user can't participate in the giveaway, because they have already
+--   been member of the chat
+GiveawayParticipantStatusAlreadyWasMember :: Maybe Int -> GiveawayParticipantStatus
+
+-- | Point in time (Unix timestamp) when the user joined the chat
+[joined_chat_date] :: GiveawayParticipantStatus -> Maybe Int
+
+-- | The user can't participate in the giveaway, because they are an
+--   administrator in one of the chats that created the giveaway
+GiveawayParticipantStatusAdministrator :: Maybe Int -> GiveawayParticipantStatus
+
+-- | Identifier of the chat administered by the user
+[chat_id] :: GiveawayParticipantStatus -> Maybe Int
+
+-- | The user can't participate in the giveaway, because they phone number
+--   is from a disallowed country
+GiveawayParticipantStatusDisallowedCountry :: Maybe Text -> GiveawayParticipantStatus
+
+-- | A two-letter ISO 3166-1 alpha-2 country code of the user's country
+[user_country_code] :: GiveawayParticipantStatus -> Maybe Text
+instance GHC.Show.Show TD.Data.GiveawayParticipantStatus.GiveawayParticipantStatus
+instance GHC.Classes.Eq TD.Data.GiveawayParticipantStatus.GiveawayParticipantStatus
+instance TD.Lib.Internal.ShortShow TD.Data.GiveawayParticipantStatus.GiveawayParticipantStatus
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiveawayParticipantStatus.GiveawayParticipantStatus
+
+module TD.Data.GiveawayParameters
+data GiveawayParameters
+
+-- | Describes parameters of a giveaway
+GiveawayParameters :: Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Text -> GiveawayParameters
+
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the winners of the giveaway for duration of
+--   the Telegram Premium subscription, or for the specified time. If the
+--   chat is a channel, then can_post_messages right is required in the
+--   channel, otherwise, the user must be an administrator in the
+--   supergroup
+[boosted_chat_id] :: GiveawayParameters -> Maybe Int
+
+-- | Identifiers of other supergroup or channel chats that must be
+--   subscribed by the users to be eligible for the giveaway. There can be
+--   up to getOption("giveaway_additional_chat_count_max") additional chats
+[additional_chat_ids] :: GiveawayParameters -> Maybe [Int]
+
+-- | Point in time (Unix timestamp) when the giveaway is expected to be
+--   performed; must be 60-getOption("giveaway_duration_max") seconds in
+--   the future in scheduled giveaways
+[winners_selection_date] :: GiveawayParameters -> Maybe Int
+
+-- | True, if only new members of the chats will be eligible for the
+--   giveaway
+[only_new_members] :: GiveawayParameters -> Maybe Bool
+
+-- | True, if the list of winners of the giveaway will be available to
+--   everyone
+[has_public_winners] :: GiveawayParameters -> Maybe Bool
+
+-- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
+--   from which will be eligible for the giveaway. If empty, then all users
+--   can participate in the giveaway. There can be up to
+--   getOption("giveaway_country_count_max") chosen countries. Users with
+--   phone number that was bought at <a>https://fragment.com</a> can
+--   participate in any giveaway and the country code <a>FT</a> must not be
+--   specified in the list
+[country_codes] :: GiveawayParameters -> Maybe [Text]
+
+-- | Additional description of the giveaway prize; 0-128 characters
+[prize_description] :: GiveawayParameters -> Maybe Text
+defaultGiveawayParameters :: GiveawayParameters
+instance GHC.Show.Show TD.Data.GiveawayParameters.GiveawayParameters
+instance GHC.Classes.Eq TD.Data.GiveawayParameters.GiveawayParameters
+instance TD.Lib.Internal.ShortShow TD.Data.GiveawayParameters.GiveawayParameters
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiveawayParameters.GiveawayParameters
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GiveawayParameters.GiveawayParameters
+
+module TD.Data.TelegramPaymentPurpose
+
+-- | Describes a purpose of a payment toward Telegram
+data TelegramPaymentPurpose
+
+-- | The user creating Telegram Premium gift codes for other users
+TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> TelegramPaymentPurpose
+
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the users for duration of the Premium
+--   subscription and which is administered by the user; 0 if none
+[boosted_chat_id] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Identifiers of the users which can activate the gift codes
+[user_ids] :: TelegramPaymentPurpose -> Maybe [Int]
+
+-- | Number of months the Telegram Premium subscription will be active for
+--   the users
+[month_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user creating a Telegram Premium giveaway
+TelegramPaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
+
+-- | Giveaway parameters
+[parameters] :: TelegramPaymentPurpose -> Maybe GiveawayParameters
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of users which will be able to activate the gift codes
+[winner_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active for
+--   the users
+[month_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars
+TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of bought Telegram Stars
+[star_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars for other users
+TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
+
+-- | Identifier of the user to which Telegram Stars are gifted
+[user_id] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of bought Telegram Stars
+[star_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user creating a Telegram Star giveaway
+TelegramPaymentPurposeStarGiveaway :: Maybe GiveawayParameters -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
+
+-- | Giveaway parameters
+[parameters] :: TelegramPaymentPurpose -> Maybe GiveawayParameters
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of users which will be able to activate the gift codes
+[winner_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of bought Telegram Stars
+[star_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | The user joins a chat and subscribes to regular payments in Telegram
+--   Stars
+TelegramPaymentPurposeJoinChat :: Maybe Text -> TelegramPaymentPurpose
+
+-- | Invite link to use
+[invite_link] :: TelegramPaymentPurpose -> Maybe Text
+instance GHC.Show.Show TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
+instance GHC.Classes.Eq TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TelegramPaymentPurpose.TelegramPaymentPurpose
+
+module TD.Data.InputInvoice
+
+-- | Describes an invoice to process
+data InputInvoice
+
+-- | An invoice from a message of the type messageInvoice or paid media
+--   purchase from messagePaidMedia
+InputInvoiceMessage :: Maybe Int -> Maybe Int -> InputInvoice
+
+-- | Chat identifier of the message
+[chat_id] :: InputInvoice -> Maybe Int
+
+-- | Message identifier
+[message_id] :: InputInvoice -> Maybe Int
+
+-- | An invoice from a link of the type internalLinkTypeInvoice
+InputInvoiceName :: Maybe Text -> InputInvoice
+
+-- | Name of the invoice
+[name] :: InputInvoice -> Maybe Text
+
+-- | An invoice for a payment toward Telegram; must not be used in the
+--   in-store apps
+InputInvoiceTelegram :: Maybe TelegramPaymentPurpose -> InputInvoice
+
+-- | Transaction purpose
+[purpose] :: InputInvoice -> Maybe TelegramPaymentPurpose
+instance GHC.Show.Show TD.Data.InputInvoice.InputInvoice
+instance GHC.Classes.Eq TD.Data.InputInvoice.InputInvoice
+instance TD.Lib.Internal.ShortShow TD.Data.InputInvoice.InputInvoice
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputInvoice.InputInvoice
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputInvoice.InputInvoice
+
+module TD.Data.StorePaymentPurpose
+
+-- | Describes a purpose of an in-store payment
+data StorePaymentPurpose
+
+-- | The user subscribing to Telegram Premium
+StorePaymentPurposePremiumSubscription :: Maybe Bool -> Maybe Bool -> StorePaymentPurpose
+
+-- | Pass true if this is a restore of a Telegram Premium purchase; only
+--   for App Store
+[is_restore] :: StorePaymentPurpose -> Maybe Bool
+
+-- | Pass true if this is an upgrade from a monthly subscription to early
+--   subscription; only for App Store
+[is_upgrade] :: StorePaymentPurpose -> Maybe Bool
+
+-- | The user gifting Telegram Premium to another user
+StorePaymentPurposeGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> StorePaymentPurpose
+
+-- | Identifier of the user to which Telegram Premium is gifted
+[user_id] :: StorePaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | The user creating Telegram Premium gift codes for other users
+StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> StorePaymentPurpose
+
+-- | Identifier of the supergroup or channel chat, which will be
+--   automatically boosted by the users for duration of the Premium
+--   subscription and which is administered by the user; 0 if none
+[boosted_chat_id] :: StorePaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | Identifiers of the users which can activate the gift codes
+[user_ids] :: StorePaymentPurpose -> Maybe [Int]
+
+-- | The user creating a Telegram Premium giveaway
+StorePaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text -> Maybe Int -> StorePaymentPurpose
+
+-- | Giveaway parameters
+[parameters] :: StorePaymentPurpose -> Maybe GiveawayParameters
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | The user creating a Telegram Star giveaway
+StorePaymentPurposeStarGiveaway :: Maybe GiveawayParameters -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> StorePaymentPurpose
+
+-- | Giveaway parameters
+[parameters] :: StorePaymentPurpose -> Maybe GiveawayParameters
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | The number of users to receive Telegram Stars
+[winner_count] :: StorePaymentPurpose -> Maybe Int
+
+-- | The number of Telegram Stars to be distributed through the giveaway
+[star_count] :: StorePaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars
+StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | The number of Telegram Stars to be distributed through the giveaway
+[star_count] :: StorePaymentPurpose -> Maybe Int
+
+-- | The user buying Telegram Stars for other users
+StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
+
+-- | Identifier of the user to which Telegram Premium is gifted
+[user_id] :: StorePaymentPurpose -> Maybe Int
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | The number of Telegram Stars to be distributed through the giveaway
+[star_count] :: StorePaymentPurpose -> Maybe Int
+instance GHC.Show.Show TD.Data.StorePaymentPurpose.StorePaymentPurpose
+instance GHC.Classes.Eq TD.Data.StorePaymentPurpose.StorePaymentPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.StorePaymentPurpose.StorePaymentPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StorePaymentPurpose.StorePaymentPurpose
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StorePaymentPurpose.StorePaymentPurpose
+
+module TD.Data.GiveawayInfo
+
+-- | Contains information about a giveaway
+data GiveawayInfo
+
+-- | Describes an ongoing giveaway
+GiveawayInfoOngoing :: Maybe Int -> Maybe GiveawayParticipantStatus -> Maybe Bool -> GiveawayInfo
+
+-- | Point in time (Unix timestamp) when the giveaway was created
+[creation_date] :: GiveawayInfo -> Maybe Int
+
+-- | Status of the current user in the giveaway
+[status] :: GiveawayInfo -> Maybe GiveawayParticipantStatus
+
+-- | True, if the giveaway has ended and results are being prepared
+[is_ended] :: GiveawayInfo -> Maybe Bool
+
+-- | Describes a completed giveaway
+GiveawayInfoCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> GiveawayInfo
+
+-- | Point in time (Unix timestamp) when the giveaway was created
+[creation_date] :: GiveawayInfo -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the winners were selected. May be
+--   bigger than winners selection date specified in parameters of the
+--   giveaway
+[actual_winners_selection_date] :: GiveawayInfo -> Maybe Int
+
+-- | True, if the giveaway was canceled and was fully refunded
+[was_refunded] :: GiveawayInfo -> Maybe Bool
+
+-- | True, if the cuurent user is a winner of the giveaway
+[is_winner] :: GiveawayInfo -> Maybe Bool
+
+-- | Number of winners in the giveaway
+[winner_count] :: GiveawayInfo -> Maybe Int
+
+-- | Number of winners, which activated their gift codes; for Telegram
+--   Premium giveaways only
+[activation_count] :: GiveawayInfo -> Maybe Int
+
+-- | Telegram Premium gift code that was received by the current user;
+--   empty if the user isn't a winner in the giveaway or the giveaway isn't
+--   a Telegram Premium giveaway
+[gift_code] :: GiveawayInfo -> Maybe Text
+
+-- | The amount of Telegram Stars won by the current user; 0 if the user
+--   isn't a winner in the giveaway or the giveaway isn't a Telegram Star
+--   giveaway
+[won_star_count] :: GiveawayInfo -> Maybe Int
+instance GHC.Show.Show TD.Data.GiveawayInfo.GiveawayInfo
+instance GHC.Classes.Eq TD.Data.GiveawayInfo.GiveawayInfo
+instance TD.Lib.Internal.ShortShow TD.Data.GiveawayInfo.GiveawayInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiveawayInfo.GiveawayInfo
+
 module TD.Data.GameHighScore
 data GameHighScore
 
@@ -6361,8 +6512,8 @@ data MessageCopyOptions
 
 -- | Options to be used when a message content is copied without reference
 --   to the original sender. Service messages, messages with
---   messageInvoice, messagePaidMedia, messagePremiumGiveaway, or
---   messagePremiumGiveawayWinners content can't be copied
+--   messageInvoice, messagePaidMedia, messageGiveaway, or
+--   messageGiveawayWinners content can't be copied
 MessageCopyOptions :: Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Bool -> MessageCopyOptions
 
 -- | True, if content of the message needs to be copied without reference
@@ -8797,7 +8948,7 @@ InputMessageDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool ->
 
 -- | A message with paid media; can be used only in channel chats with
 --   supergroupFullInfo.has_paid_media_allowed
-InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedText -> Maybe Bool -> InputMessageContent
+InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedText -> Maybe Bool -> Maybe Text -> InputMessageContent
 
 -- | The number of Telegram Stars that must be paid to see the media;
 --   1-getOption("paid_media_message_star_count_max")
@@ -8814,6 +8965,9 @@ InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedT
 --   caption must be shown below the animation; not supported in secret
 --   chats
 [show_caption_above_media] :: InputMessageContent -> Maybe Bool
+
+-- | Bot-provided data for the paid media; bots only
+[payload] :: InputMessageContent -> Maybe Text
 
 -- | A photo message
 InputMessagePhoto :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
@@ -9023,7 +9177,7 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 [photo_height] :: InputMessageContent -> Maybe Int
 
 -- | The invoice payload
-[payload] :: InputMessageContent -> Maybe ByteString
+[_payload] :: InputMessageContent -> Maybe ByteString
 
 -- | Payment provider token; may be empty for payments in Telegram Stars
 [provider_token] :: InputMessageContent -> Maybe Text
@@ -9766,6 +9920,46 @@ instance GHC.Classes.Eq TD.Data.ChatType.ChatType
 instance TD.Lib.Internal.ShortShow TD.Data.ChatType.ChatType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatType.ChatType
 
+module TD.Data.ChatTransactionPurpose
+
+-- | Describes purpose of a transaction with a supergroup or a channel
+data ChatTransactionPurpose
+
+-- | Paid media were bought
+ChatTransactionPurposePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> ChatTransactionPurpose
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: ChatTransactionPurpose -> Maybe Int
+
+-- | The bought media if the trancastion wasn't refunded
+[media] :: ChatTransactionPurpose -> Maybe [PaidMedia]
+
+-- | User joined the channel and subscribed to regular payments in Telegram
+--   Stars
+ChatTransactionPurposeJoin :: Maybe Int -> ChatTransactionPurpose
+
+-- | The number of seconds between consecutive Telegram Star debiting
+[period] :: ChatTransactionPurpose -> Maybe Int
+
+-- | User paid for a reaction
+ChatTransactionPurposeReaction :: Maybe Int -> ChatTransactionPurpose
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: ChatTransactionPurpose -> Maybe Int
+
+-- | User received Telegram Stars from a giveaway
+ChatTransactionPurposeGiveaway :: Maybe Int -> ChatTransactionPurpose
+
+-- | Identifier of the message with giveaway; can be 0 or an identifier of
+--   a deleted message
+[giveaway_message_id] :: ChatTransactionPurpose -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
+instance GHC.Classes.Eq TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
+
 module TD.Data.ChatStatisticsObjectType
 
 -- | Describes type of object, for which statistics are provided
@@ -10102,7 +10296,7 @@ data ChatRevenueAmount
 
 -- | Contains information about revenue earned from sponsored messages in a
 --   chat
-ChatRevenueAmount :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> ChatRevenueAmount
+ChatRevenueAmount :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> ChatRevenueAmount
 
 -- | Cryptocurrency in which revenue is calculated
 [cryptocurrency] :: ChatRevenueAmount -> Maybe Text
@@ -10118,6 +10312,9 @@ ChatRevenueAmount :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> ChatRe
 -- | Amount of the cryptocurrency available for withdrawal, in the smallest
 --   units of the cryptocurrency
 [available_amount] :: ChatRevenueAmount -> Maybe Int
+
+-- | True, if Telegram Stars can be withdrawn now or later
+[withdrawal_enabled] :: ChatRevenueAmount -> Maybe Bool
 instance GHC.Show.Show TD.Data.ChatRevenueAmount.ChatRevenueAmount
 instance GHC.Classes.Eq TD.Data.ChatRevenueAmount.ChatRevenueAmount
 instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueAmount.ChatRevenueAmount
@@ -11067,7 +11264,7 @@ module TD.Data.ChatEventLogFilters
 data ChatEventLogFilters
 
 -- | Represents a set of filters used to obtain a chat event log
-ChatEventLogFilters :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatEventLogFilters
+ChatEventLogFilters :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatEventLogFilters
 
 -- | True, if message edits need to be returned
 [message_edits] :: ChatEventLogFilters -> Maybe Bool
@@ -11108,6 +11305,9 @@ ChatEventLogFilters :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> M
 
 -- | True, if forum-related actions need to be returned
 [forum_changes] :: ChatEventLogFilters -> Maybe Bool
+
+-- | True, if subscription extensions need to be returned
+[subscription_extensions] :: ChatEventLogFilters -> Maybe Bool
 defaultChatEventLogFilters :: ChatEventLogFilters
 instance GHC.Show.Show TD.Data.ChatEventLogFilters.ChatEventLogFilters
 instance GHC.Classes.Eq TD.Data.ChatEventLogFilters.ChatEventLogFilters
@@ -11119,7 +11319,7 @@ module TD.Data.ChatBoostStatus
 data ChatBoostStatus
 
 -- | Describes current boost status of a chat
-ChatBoostStatus :: Maybe Text -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe [PrepaidPremiumGiveaway] -> ChatBoostStatus
+ChatBoostStatus :: Maybe Text -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe [PrepaidGiveaway] -> ChatBoostStatus
 
 -- | An HTTP URL, which can be used to boost the chat
 [boost_url] :: ChatBoostStatus -> Maybe Text
@@ -11155,7 +11355,7 @@ ChatBoostStatus :: Maybe Text -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe 
 
 -- | The list of prepaid giveaways available for the chat; only for chat
 --   administrators
-[prepaid_giveaways] :: ChatBoostStatus -> Maybe [PrepaidPremiumGiveaway]
+[prepaid_giveaways] :: ChatBoostStatus -> Maybe [PrepaidGiveaway]
 instance GHC.Show.Show TD.Data.ChatBoostStatus.ChatBoostStatus
 instance GHC.Classes.Eq TD.Data.ChatBoostStatus.ChatBoostStatus
 instance TD.Lib.Internal.ShortShow TD.Data.ChatBoostStatus.ChatBoostStatus
@@ -11176,8 +11376,8 @@ ChatBoostSourceGiftCode :: Maybe Int -> Maybe Text -> ChatBoostSource
 --   a gift code for the current user, or it has already been claimed
 [gift_code] :: ChatBoostSource -> Maybe Text
 
--- | The chat created a Telegram Premium giveaway
-ChatBoostSourceGiveaway :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> ChatBoostSource
+-- | The chat created a giveaway
+ChatBoostSourceGiveaway :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> ChatBoostSource
 
 -- | Identifier of a user, for which the gift code was created
 [user_id] :: ChatBoostSource -> Maybe Int
@@ -11186,12 +11386,15 @@ ChatBoostSourceGiveaway :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool ->
 --   a gift code for the current user, or it has already been claimed
 [gift_code] :: ChatBoostSource -> Maybe Text
 
+-- | Number of Telegram Stars distributed among winners of the giveaway
+[star_count] :: ChatBoostSource -> Maybe Int
+
 -- | Identifier of the corresponding giveaway message; can be an identifier
 --   of a deleted message
 [giveaway_message_id] :: ChatBoostSource -> Maybe Int
 
--- | True, if the winner for the corresponding Telegram Premium
---   subscription wasn't chosen, because there were not enough participants
+-- | True, if the winner for the corresponding giveaway prize wasn't
+--   chosen, because there were not enough participants
 [is_unclaimed] :: ChatBoostSource -> Maybe Bool
 
 -- | A user with Telegram Premium subscription or gifted Telegram Premium
@@ -13111,39 +13314,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.ChatAction.ChatAction
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatAction.ChatAction
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatAction.ChatAction
 
-module TD.Data.ChannelTransactionPurpose
-
--- | Describes purpose of a transaction with a channel
-data ChannelTransactionPurpose
-
--- | Paid media were bought
-ChannelTransactionPurposePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> ChannelTransactionPurpose
-
--- | Identifier of the corresponding message with paid media; can be an
---   identifier of a deleted message
-[message_id] :: ChannelTransactionPurpose -> Maybe Int
-
--- | The bought media if the trancastion wasn't refunded
-[media] :: ChannelTransactionPurpose -> Maybe [PaidMedia]
-
--- | User joined the channel and subscribed to regular payments in Telegram
---   Stars
-ChannelTransactionPurposeJoin :: Maybe Int -> ChannelTransactionPurpose
-
--- | The number of seconds between consecutive Telegram Star debiting
-[period] :: ChannelTransactionPurpose -> Maybe Int
-
--- | User paid for a reaction
-ChannelTransactionPurposeReaction :: Maybe Int -> ChannelTransactionPurpose
-
--- | Identifier of the corresponding message with paid media; can be an
---   identifier of a deleted message
-[message_id] :: ChannelTransactionPurpose -> Maybe Int
-instance GHC.Show.Show TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
-instance GHC.Classes.Eq TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChannelTransactionPurpose.ChannelTransactionPurpose
-
 module TD.Data.CanTransferOwnershipResult
 
 -- | Represents result of checking whether the current session can be used
@@ -14010,10 +14180,13 @@ module TD.Data.BotTransactionPurpose
 data BotTransactionPurpose
 
 -- | Paid media were bought
-BotTransactionPurposePaidMedia :: Maybe [PaidMedia] -> BotTransactionPurpose
+BotTransactionPurposePaidMedia :: Maybe [PaidMedia] -> Maybe Text -> BotTransactionPurpose
 
 -- | The bought media if the trancastion wasn't refunded
 [media] :: BotTransactionPurpose -> Maybe [PaidMedia]
+
+-- | Bot-provided payload; for bots only
+[payload] :: BotTransactionPurpose -> Maybe Text
 
 -- | User bought a product from the bot
 BotTransactionPurposeInvoicePayment :: Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
@@ -14069,14 +14242,14 @@ StarTransactionPartnerBusiness :: Maybe Int -> Maybe [PaidMedia] -> StarTransact
 -- | The bought media if the trancastion wasn't refunded
 [media] :: StarTransactionPartner -> Maybe [PaidMedia]
 
--- | The transaction is a transaction with a channel chat
-StarTransactionPartnerChannel :: Maybe Int -> Maybe ChannelTransactionPurpose -> StarTransactionPartner
+-- | The transaction is a transaction with a supergroup or a channel chat
+StarTransactionPartnerChat :: Maybe Int -> Maybe ChatTransactionPurpose -> StarTransactionPartner
 
 -- | Identifier of the chat
 [chat_id] :: StarTransactionPartner -> Maybe Int
 
 -- | Purpose of the transaction
-[_purpose] :: StarTransactionPartner -> Maybe ChannelTransactionPurpose
+[_purpose] :: StarTransactionPartner -> Maybe ChatTransactionPurpose
 
 -- | The transaction is a gift of Telegram Stars from another user
 StarTransactionPartnerUser :: Maybe Int -> Maybe Sticker -> StarTransactionPartner
@@ -15497,16 +15670,15 @@ PushMessageContentPremiumGiftCode :: Maybe Int -> PushMessageContent
 --   after code activation
 [month_count] :: PushMessageContent -> Maybe Int
 
--- | A message with a Telegram Premium giveaway
-PushMessageContentPremiumGiveaway :: Maybe Int -> Maybe Int -> Maybe Bool -> PushMessageContent
+-- | A message with a giveaway
+PushMessageContentGiveaway :: Maybe Int -> Maybe GiveawayPrize -> Maybe Bool -> PushMessageContent
 
--- | Number of users which will receive Telegram Premium subscription gift
---   codes; 0 for pinned message
+-- | Number of users which will receive giveaway prizes; 0 for pinned
+--   message
 [winner_count] :: PushMessageContent -> Maybe Int
 
--- | Number of months the Telegram Premium subscription will be active
---   after code activation
-[month_count] :: PushMessageContent -> Maybe Int
+-- | Prize of the giveaway; may be null for pinned message
+[prize] :: PushMessageContent -> Maybe GiveawayPrize
 
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
@@ -16672,49 +16844,28 @@ LinkPreviewTypeAlbum :: Maybe [LinkPreviewAlbumMedia] -> Maybe Text -> LinkPrevi
 [caption] :: LinkPreviewType -> Maybe Text
 
 -- | The link is a link to an animation
-LinkPreviewTypeAnimation :: Maybe Animation -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeAnimation :: Maybe Animation -> LinkPreviewType
 
 -- | The animation
 [animation] :: LinkPreviewType -> Maybe Animation
 
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
-
 -- | The link is a link to an app at App Store or Google Play
-LinkPreviewTypeApp :: Maybe Photo -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeApp :: Maybe Photo -> LinkPreviewType
 
 -- | Photo for the app
 [photo] :: LinkPreviewType -> Maybe Photo
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | The link is a link to a web site
-LinkPreviewTypeArticle :: Maybe Photo -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeArticle :: Maybe Photo -> LinkPreviewType
 
 -- | Photo for the app
 [photo] :: LinkPreviewType -> Maybe Photo
 
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
-
 -- | The link is a link to an audio
-LinkPreviewTypeAudio :: Maybe Text -> Maybe Text -> Maybe Audio -> Maybe Int -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeAudio :: Maybe Audio -> LinkPreviewType
 
--- | URL of the audio; may be empty if none
-[url] :: LinkPreviewType -> Maybe Text
-
--- | MIME type of the audio file
-[mime_type] :: LinkPreviewType -> Maybe Text
-
--- | The audio description; may be null if unknown
+-- | The audio description
 [audio] :: LinkPreviewType -> Maybe Audio
-
--- | Duration of the audio, in seconds; 0 if unknown
-[duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | The link is a link to a background. Link preview title and description
 --   are available only for filled backgrounds
@@ -16745,28 +16896,22 @@ LinkPreviewTypeChat :: Maybe InviteLinkChatType -> Maybe ChatPhoto -> Maybe Bool
 [creates_join_request] :: LinkPreviewType -> Maybe Bool
 
 -- | The link is a link to a general file
-LinkPreviewTypeDocument :: Maybe Document -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeDocument :: Maybe Document -> LinkPreviewType
 
 -- | Document with the background; may be null for filled backgrounds
 [document] :: LinkPreviewType -> Maybe Document
 
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
-
 -- | The link is a link to an animation player
-LinkPreviewTypeEmbeddedAnimationPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+LinkPreviewTypeEmbeddedAnimationPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Int -> Maybe Int -> LinkPreviewType
 
--- | URL of the audio; may be empty if none
+-- | URL of the external animation player
 [url] :: LinkPreviewType -> Maybe Text
 
 -- | Thumbnail of the animation; may be null if unknown
 [thumbnail] :: LinkPreviewType -> Maybe Photo
 
--- | Duration of the audio, in seconds; 0 if unknown
+-- | Duration of the animation, in seconds
 [duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | Expected width of the embedded player
 [width] :: LinkPreviewType -> Maybe Int
@@ -16775,19 +16920,16 @@ LinkPreviewTypeEmbeddedAnimationPlayer :: Maybe Text -> Maybe Photo -> Maybe Int
 [height] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to an audio player
-LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Int -> Maybe Int -> LinkPreviewType
 
--- | URL of the audio; may be empty if none
+-- | URL of the external animation player
 [url] :: LinkPreviewType -> Maybe Text
 
 -- | Thumbnail of the animation; may be null if unknown
 [thumbnail] :: LinkPreviewType -> Maybe Photo
 
--- | Duration of the audio, in seconds; 0 if unknown
+-- | Duration of the animation, in seconds
 [duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | Expected width of the embedded player
 [width] :: LinkPreviewType -> Maybe Int
@@ -16796,25 +16938,52 @@ LinkPreviewTypeEmbeddedAudioPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> 
 [height] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to a video player
-LinkPreviewTypeEmbeddedVideoPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> LinkPreviewType
+LinkPreviewTypeEmbeddedVideoPlayer :: Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Int -> Maybe Int -> LinkPreviewType
 
--- | URL of the audio; may be empty if none
+-- | URL of the external animation player
 [url] :: LinkPreviewType -> Maybe Text
 
 -- | Thumbnail of the animation; may be null if unknown
 [thumbnail] :: LinkPreviewType -> Maybe Photo
 
--- | Duration of the audio, in seconds; 0 if unknown
+-- | Duration of the animation, in seconds
 [duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | Expected width of the embedded player
 [width] :: LinkPreviewType -> Maybe Int
 
 -- | Expected height of the embedded player
 [height] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to an audio file
+LinkPreviewTypeExternalAudio :: Maybe Text -> Maybe Text -> Maybe Int -> LinkPreviewType
+
+-- | URL of the external animation player
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | MIME type of the audio file
+[mime_type] :: LinkPreviewType -> Maybe Text
+
+-- | Duration of the animation, in seconds
+[duration] :: LinkPreviewType -> Maybe Int
+
+-- | The link is a link to a video file
+LinkPreviewTypeExternalVideo :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | URL of the external animation player
+[url] :: LinkPreviewType -> Maybe Text
+
+-- | MIME type of the audio file
+[mime_type] :: LinkPreviewType -> Maybe Text
+
+-- | Expected width of the embedded player
+[width] :: LinkPreviewType -> Maybe Int
+
+-- | Expected height of the embedded player
+[height] :: LinkPreviewType -> Maybe Int
+
+-- | Duration of the animation, in seconds
+[duration] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to an invoice
 LinkPreviewTypeInvoice :: LinkPreviewType
@@ -16823,13 +16992,10 @@ LinkPreviewTypeInvoice :: LinkPreviewType
 LinkPreviewTypeMessage :: LinkPreviewType
 
 -- | The link is a link to a photo
-LinkPreviewTypePhoto :: Maybe Photo -> Maybe Text -> LinkPreviewType
+LinkPreviewTypePhoto :: Maybe Photo -> LinkPreviewType
 
 -- | Photo for the app
 [photo] :: LinkPreviewType -> Maybe Photo
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | The link is a link to a Telegram Premium gift code
 LinkPreviewTypePremiumGiftCode :: LinkPreviewType
@@ -16887,28 +17053,10 @@ LinkPreviewTypeUser :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
 [is_bot] :: LinkPreviewType -> Maybe Bool
 
 -- | The link is a link to a video
-LinkPreviewTypeVideo :: Maybe Text -> Maybe Text -> Maybe Video -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> LinkPreviewType
+LinkPreviewTypeVideo :: Maybe Video -> LinkPreviewType
 
--- | URL of the audio; may be empty if none
-[url] :: LinkPreviewType -> Maybe Text
-
--- | MIME type of the audio file
-[mime_type] :: LinkPreviewType -> Maybe Text
-
--- | The video description; may be null if unknown
+-- | The video description
 [video] :: LinkPreviewType -> Maybe Video
-
--- | Expected width of the embedded player
-[width] :: LinkPreviewType -> Maybe Int
-
--- | Expected height of the embedded player
-[height] :: LinkPreviewType -> Maybe Int
-
--- | Duration of the audio, in seconds; 0 if unknown
-[duration] :: LinkPreviewType -> Maybe Int
-
--- | Author of the animation
-[author] :: LinkPreviewType -> Maybe Text
 
 -- | The link is a link to a video chat
 LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
@@ -16946,7 +17094,7 @@ module TD.Data.LinkPreview
 data LinkPreview
 
 -- | Describes a link preview
-LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe LinkPreviewType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> LinkPreview
+LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe Text -> Maybe LinkPreviewType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> LinkPreview
 
 -- | Original URL of the link
 [url] :: LinkPreview -> Maybe Text
@@ -16962,6 +17110,9 @@ LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe For
 
 -- | Description of the content
 [description] :: LinkPreview -> Maybe FormattedText
+
+-- | Author of the content
+[author] :: LinkPreview -> Maybe Text
 
 -- | Type of the link preview
 [_type] :: LinkPreview -> Maybe LinkPreviewType
@@ -17997,30 +18148,35 @@ MessagePremiumGiftCode :: Maybe MessageSender -> Maybe Bool -> Maybe Bool -> May
 -- | The gift code
 [code] :: MessageContent -> Maybe Text
 
--- | A Telegram Premium giveaway was created for the chat. Use
---   telegramPaymentPurposePremiumGiveaway or
---   storePaymentPurposePremiumGiveaway to create a giveaway
-MessagePremiumGiveawayCreated :: MessageContent
+-- | A giveaway was created for the chat. Use
+--   telegramPaymentPurposePremiumGiveaway,
+--   storePaymentPurposePremiumGiveaway,
+--   telegramPaymentPurposeStarGiveaway, or storePaymentPurposeStarGiveaway
+--   to create a giveaway
+MessageGiveawayCreated :: Maybe Int -> MessageContent
 
--- | A Telegram Premium giveaway
-MessagePremiumGiveaway :: Maybe PremiumGiveawayParameters -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message
+[star_count] :: MessageContent -> Maybe Int
+
+-- | A giveaway
+MessageGiveaway :: Maybe GiveawayParameters -> Maybe Int -> Maybe GiveawayPrize -> Maybe Sticker -> MessageContent
 
 -- | Giveaway parameters
-[parameters] :: MessageContent -> Maybe PremiumGiveawayParameters
+[parameters] :: MessageContent -> Maybe GiveawayParameters
 
 -- | Number of users which will receive Telegram Premium subscription gift
 --   codes
 [winner_count] :: MessageContent -> Maybe Int
 
--- | Number of months the Telegram Premium subscription will be active
-[month_count] :: MessageContent -> Maybe Int
+-- | Prize of the giveaway
+[prize] :: MessageContent -> Maybe GiveawayPrize
 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
--- | A Telegram Premium giveaway without public winners has been completed
---   for the chat
-MessagePremiumGiveawayCompleted :: Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+-- | A giveaway without public winners has been completed for the chat
+MessageGiveawayCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> MessageContent
 
 -- | Identifier of the message with the giveaway; can be 0 if the message
 --   was deleted
@@ -18030,15 +18186,17 @@ MessagePremiumGiveawayCompleted :: Maybe Int -> Maybe Int -> Maybe Int -> Messag
 --   codes
 [winner_count] :: MessageContent -> Maybe Int
 
--- | Number of undistributed prizes
+-- | True, if the giveaway is a Telegram Star giveaway
+[is_star_giveaway] :: MessageContent -> Maybe Bool
+
+-- | Number of undistributed prizes; for Telegram Premium giveaways only
 [unclaimed_prize_count] :: MessageContent -> Maybe Int
 
--- | A Telegram Premium giveaway with public winners has been completed for
---   the chat
-MessagePremiumGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> MessageContent
+-- | A giveaway with public winners has been completed for the chat
+MessageGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe GiveawayPrize -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> MessageContent
 
--- | Identifier of the channel chat, which was automatically boosted by the
---   winners of the giveaway for duration of the Premium subscription
+-- | Identifier of the supergroup or channel chat, which was automatically
+--   boosted by the winners of the giveaway
 [boosted_chat_id] :: MessageContent -> Maybe Int
 
 -- | Identifier of the message with the giveaway; can be 0 if the message
@@ -18059,8 +18217,8 @@ MessagePremiumGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe In
 -- | True, if the giveaway was canceled and was fully refunded
 [was_refunded] :: MessageContent -> Maybe Bool
 
--- | Number of months the Telegram Premium subscription will be active
-[month_count] :: MessageContent -> Maybe Int
+-- | Prize of the giveaway
+[prize] :: MessageContent -> Maybe GiveawayPrize
 
 -- | Additional description of the giveaway prize
 [prize_description] :: MessageContent -> Maybe Text
@@ -18072,7 +18230,7 @@ MessagePremiumGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe In
 -- | Up to 100 user identifiers of the winners of the giveaway
 [winner_user_ids] :: MessageContent -> Maybe [Int]
 
--- | Number of undistributed prizes
+-- | Number of undistributed prizes; for Telegram Premium giveaways only
 [unclaimed_prize_count] :: MessageContent -> Maybe Int
 
 -- | Telegram Stars were gifted to a user
@@ -18106,6 +18264,32 @@ MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe
 -- | Identifier of the transaction for Telegram Stars purchase; for
 --   receiver only
 [transaction_id] :: MessageContent -> Maybe Text
+
+-- | The sticker description
+[sticker] :: MessageContent -> Maybe Sticker
+
+-- | A Telegram Stars were received by the cuurent user from a giveaway
+MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Sticker -> MessageContent
+
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message
+[star_count] :: MessageContent -> Maybe Int
+
+-- | Identifier of the transaction for Telegram Stars purchase; for
+--   receiver only
+[transaction_id] :: MessageContent -> Maybe Text
+
+-- | Identifier of the supergroup or channel chat, which was automatically
+--   boosted by the winners of the giveaway
+[boosted_chat_id] :: MessageContent -> Maybe Int
+
+-- | Identifier of the message with the giveaway; can be 0 if the message
+--   was deleted
+[giveaway_message_id] :: MessageContent -> Maybe Int
+
+-- | True, if the winner for the corresponding Telegram Premium
+--   subscription wasn't chosen
+[is_unclaimed] :: MessageContent -> Maybe Bool
 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
@@ -18358,11 +18542,11 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Mess
 --   topic; may be null for messages from the same chat and messages
 --   without media. Can be only one of the following types:
 --   messageAnimation, messageAudio, messageContact, messageDice,
---   messageDocument, messageGame, messageInvoice, messageLocation,
---   messagePaidMedia, messagePhoto, messagePoll, messagePremiumGiveaway,
---   messagePremiumGiveawayWinners, messageSticker, messageStory,
---   messageText (for link preview), messageVenue, messageVideo,
---   messageVideoNote, or messageVoiceNote
+--   messageDocument, messageGame, messageGiveaway, messageGiveawayWinners,
+--   messageInvoice, messageLocation, messagePaidMedia, messagePhoto,
+--   messagePoll, messageSticker, messageStory, messageText (for link
+--   preview), messageVenue, messageVideo, messageVideoNote, or
+--   messageVoiceNote
 [content] :: MessageReplyTo -> Maybe MessageContent
 
 -- | Describes a story replied by a given message
@@ -19128,6 +19312,18 @@ ChatEventMemberRestricted :: Maybe MessageSender -> Maybe ChatMemberStatus -> Ma
 -- | New status of the chat member
 [new_status] :: ChatEventAction -> Maybe ChatMemberStatus
 
+-- | A chat member extended their subscription to the chat
+ChatEventMemberSubscriptionExtended :: Maybe Int -> Maybe ChatMemberStatus -> Maybe ChatMemberStatus -> ChatEventAction
+
+-- | New member user identifier
+[user_id] :: ChatEventAction -> Maybe Int
+
+-- | Previous status of the chat member
+[old_status] :: ChatEventAction -> Maybe ChatMemberStatus
+
+-- | New status of the chat member
+[new_status] :: ChatEventAction -> Maybe ChatMemberStatus
+
 -- | The chat available reactions were changed
 ChatEventAvailableReactionsChanged :: Maybe ChatAvailableReactions -> Maybe ChatAvailableReactions -> ChatEventAction
 
@@ -19813,7 +20009,7 @@ data AccountTtl
 AccountTtl :: Maybe Int -> AccountTtl
 
 -- | Number of days of inactivity before the account will be flagged for
---   deletion; 30-366 days
+--   deletion; 30-730 days
 [days] :: AccountTtl -> Maybe Int
 defaultAccountTtl :: AccountTtl
 instance GHC.Show.Show TD.Data.AccountTtl.AccountTtl
@@ -21482,6 +21678,15 @@ UpdateMessageReactions :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe [MessageR
 
 -- | The list of reactions added to the message
 [reactions] :: Update -> Maybe [MessageReaction]
+
+-- | Paid media were purchased by a user; for bots only
+UpdatePaidMediaPurchased :: Maybe Int -> Maybe Text -> Update
+
+-- | User identifier
+[user_id] :: Update -> Maybe Int
+
+-- | Bot-specified payload for the paid media
+[_payload] :: Update -> Maybe Text
 instance GHC.Show.Show TD.Data.Update.Update
 instance GHC.Classes.Eq TD.Data.Update.Update
 instance TD.Lib.Internal.ShortShow TD.Data.Update.Update
@@ -21604,6 +21809,7 @@ FoundStories :: FoundStories -> GeneralResult
 FoundUsers :: FoundUsers -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
+GiveawayInfo :: GiveawayInfo -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
 GroupCallStreams :: GroupCallStreams -> GeneralResult
@@ -21657,7 +21863,6 @@ PhoneNumberInfo :: PhoneNumberInfo -> GeneralResult
 PremiumFeatures :: PremiumFeatures -> GeneralResult
 PremiumGiftCodeInfo :: PremiumGiftCodeInfo -> GeneralResult
 PremiumGiftCodePaymentOptions :: PremiumGiftCodePaymentOptions -> GeneralResult
-PremiumGiveawayInfo :: PremiumGiveawayInfo -> GeneralResult
 PremiumLimit :: PremiumLimit -> GeneralResult
 PremiumState :: PremiumState -> GeneralResult
 Proxies :: Proxies -> GeneralResult
@@ -21680,6 +21885,7 @@ SentWebAppMessage :: SentWebAppMessage -> GeneralResult
 Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
+StarGiveawayPaymentOptions :: StarGiveawayPaymentOptions -> GeneralResult
 StarPaymentOptions :: StarPaymentOptions -> GeneralResult
 StarRevenueStatistics :: StarRevenueStatistics -> GeneralResult
 StarSubscriptions :: StarSubscriptions -> GeneralResult
@@ -22045,8 +22251,8 @@ AddMessageReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool
 -- | Identifier of the message
 [message_id] :: AddMessageReaction -> Maybe Int
 
--- | Type of the reaction to add. Use addPaidMessageReaction instead to add
---   the paid reaction
+-- | Type of the reaction to add. Use addPendingPaidMessageReaction instead
+--   to add the paid reaction
 [reaction_type] :: AddMessageReaction -> Maybe ReactionType
 
 -- | Pass true if the reaction is added with a big animation
@@ -22075,32 +22281,38 @@ instance GHC.Classes.Eq TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance TD.Lib.Internal.ShortShow TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddNetworkStatistics.AddNetworkStatistics
 
-module TD.Query.AddPaidMessageReaction
+module TD.Query.AddPendingPaidMessageReaction
 
 -- | Adds the paid message reaction to a message. Use
---   getMessageAvailableReactions to receive the list of available
---   reactions for the message. Returns <a>Ok</a>
-data AddPaidMessageReaction
-AddPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> AddPaidMessageReaction
+--   getMessageAvailableReactions to check whether the reaction is
+--   available for the message. Returns <a>Ok</a>
+data AddPendingPaidMessageReaction
+AddPendingPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> AddPendingPaidMessageReaction
 
 -- | Identifier of the chat to which the message belongs
-[chat_id] :: AddPaidMessageReaction -> Maybe Int
+[chat_id] :: AddPendingPaidMessageReaction -> Maybe Int
 
 -- | Identifier of the message
-[message_id] :: AddPaidMessageReaction -> Maybe Int
+[message_id] :: AddPendingPaidMessageReaction -> Maybe Int
 
--- | Number of Telegram Stars to be used for the reaction;
---   1-getOption("paid_reaction_star_count_max")
-[star_count] :: AddPaidMessageReaction -> Maybe Int
+-- | Number of Telegram Stars to be used for the reaction. The total number
+--   of pending paid reactions must not exceed
+--   getOption("paid_reaction_star_count_max")
+[star_count] :: AddPendingPaidMessageReaction -> Maybe Int
+
+-- | Pass true if the user didn't choose anonymity explicitly, for example,
+--   the reaction is set from the message bubble
+[use_default_is_anonymous] :: AddPendingPaidMessageReaction -> Maybe Bool
 
 -- | Pass true to make paid reaction of the user on the message anonymous;
---   pass false to make the user's profile visible among top reactors
-[is_anonymous] :: AddPaidMessageReaction -> Maybe Bool
-defaultAddPaidMessageReaction :: AddPaidMessageReaction
-instance GHC.Show.Show TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
-instance GHC.Classes.Eq TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
-instance TD.Lib.Internal.ShortShow TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddPaidMessageReaction.AddPaidMessageReaction
+--   pass false to make the user's profile visible among top reactors.
+--   Ignored if use_default_is_anonymous == true
+[is_anonymous] :: AddPendingPaidMessageReaction -> Maybe Bool
+defaultAddPendingPaidMessageReaction :: AddPendingPaidMessageReaction
+instance GHC.Show.Show TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
+instance GHC.Classes.Eq TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
+instance TD.Lib.Internal.ShortShow TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
 
 module TD.Query.AddProxy
 
@@ -23241,6 +23453,23 @@ instance GHC.Show.Show TD.Query.CloseWebApp.CloseWebApp
 instance GHC.Classes.Eq TD.Query.CloseWebApp.CloseWebApp
 instance TD.Lib.Internal.ShortShow TD.Query.CloseWebApp.CloseWebApp
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CloseWebApp.CloseWebApp
+
+module TD.Query.CommitPendingPaidMessageReactions
+
+-- | Applies all pending paid reactions on a message. Returns <a>Ok</a>
+data CommitPendingPaidMessageReactions
+CommitPendingPaidMessageReactions :: Maybe Int -> Maybe Int -> CommitPendingPaidMessageReactions
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: CommitPendingPaidMessageReactions -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: CommitPendingPaidMessageReactions -> Maybe Int
+defaultCommitPendingPaidMessageReactions :: CommitPendingPaidMessageReactions
+instance GHC.Show.Show TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
+instance GHC.Classes.Eq TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
+instance TD.Lib.Internal.ShortShow TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
 
 module TD.Query.ConfirmQrCodeAuthentication
 
@@ -27218,6 +27447,23 @@ instance GHC.Classes.Eq TD.Query.GetGameHighScores.GetGameHighScores
 instance TD.Lib.Internal.ShortShow TD.Query.GetGameHighScores.GetGameHighScores
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGameHighScores.GetGameHighScores
 
+module TD.Query.GetGiveawayInfo
+
+-- | Returns information about a giveaway. Returns <a>GiveawayInfo</a>
+data GetGiveawayInfo
+GetGiveawayInfo :: Maybe Int -> Maybe Int -> GetGiveawayInfo
+
+-- | Identifier of the channel chat which started the giveaway
+[chat_id] :: GetGiveawayInfo -> Maybe Int
+
+-- | Identifier of the giveaway or a giveaway winners message in the chat
+[message_id] :: GetGiveawayInfo -> Maybe Int
+defaultGetGiveawayInfo :: GetGiveawayInfo
+instance GHC.Show.Show TD.Query.GetGiveawayInfo.GetGiveawayInfo
+instance GHC.Classes.Eq TD.Query.GetGiveawayInfo.GetGiveawayInfo
+instance TD.Lib.Internal.ShortShow TD.Query.GetGiveawayInfo.GetGiveawayInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGiveawayInfo.GetGiveawayInfo
+
 module TD.Query.GetGreetingStickers
 
 -- | Returns greeting stickers from regular sticker sets that can be used
@@ -27228,6 +27474,24 @@ instance GHC.Show.Show TD.Query.GetGreetingStickers.GetGreetingStickers
 instance GHC.Classes.Eq TD.Query.GetGreetingStickers.GetGreetingStickers
 instance TD.Lib.Internal.ShortShow TD.Query.GetGreetingStickers.GetGreetingStickers
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGreetingStickers.GetGreetingStickers
+
+module TD.Query.GetGrossingWebAppBots
+
+-- | Returns the most grossing Web App bots. Returns <a>FoundUsers</a>
+data GetGrossingWebAppBots
+GetGrossingWebAppBots :: Maybe Text -> Maybe Int -> GetGrossingWebAppBots
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetGrossingWebAppBots -> Maybe Text
+
+-- | The maximum number of bots to be returned; up to 100
+[limit] :: GetGrossingWebAppBots -> Maybe Int
+defaultGetGrossingWebAppBots :: GetGrossingWebAppBots
+instance GHC.Show.Show TD.Query.GetGrossingWebAppBots.GetGrossingWebAppBots
+instance GHC.Classes.Eq TD.Query.GetGrossingWebAppBots.GetGrossingWebAppBots
+instance TD.Lib.Internal.ShortShow TD.Query.GetGrossingWebAppBots.GetGrossingWebAppBots
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGrossingWebAppBots.GetGrossingWebAppBots
 
 module TD.Query.GetGroupCall
 
@@ -28437,24 +28701,6 @@ instance GHC.Classes.Eq TD.Query.GetPollVoters.GetPollVoters
 instance TD.Lib.Internal.ShortShow TD.Query.GetPollVoters.GetPollVoters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPollVoters.GetPollVoters
 
-module TD.Query.GetPopularWebAppBots
-
--- | Returns popular Web App bots. Returns <a>FoundUsers</a>
-data GetPopularWebAppBots
-GetPopularWebAppBots :: Maybe Text -> Maybe Int -> GetPopularWebAppBots
-
--- | Offset of the first entry to return as received from the previous
---   request; use empty string to get the first chunk of results
-[offset] :: GetPopularWebAppBots -> Maybe Text
-
--- | The maximum number of bots to be returned; up to 100
-[limit] :: GetPopularWebAppBots -> Maybe Int
-defaultGetPopularWebAppBots :: GetPopularWebAppBots
-instance GHC.Show.Show TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
-instance GHC.Classes.Eq TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
-instance TD.Lib.Internal.ShortShow TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPopularWebAppBots.GetPopularWebAppBots
-
 module TD.Query.GetPreferredCountryLanguage
 
 -- | Returns an IETF language tag of the language preferred in the country,
@@ -28487,8 +28733,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumFeatures.GetPremiumFe
 
 module TD.Query.GetPremiumGiftCodePaymentOptions
 
--- | Returns available options for Telegram Premium gift code or giveaway
---   creation. Returns <a>PremiumGiftCodePaymentOptions</a>
+-- | Returns available options for Telegram Premium gift code or Telegram
+--   Premium giveaway creation. Returns
+--   <a>PremiumGiftCodePaymentOptions</a>
 data GetPremiumGiftCodePaymentOptions
 GetPremiumGiftCodePaymentOptions :: Maybe Int -> GetPremiumGiftCodePaymentOptions
 
@@ -28500,24 +28747,6 @@ instance GHC.Show.Show TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftC
 instance GHC.Classes.Eq TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
 instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
-
-module TD.Query.GetPremiumGiveawayInfo
-
--- | Returns information about a Telegram Premium giveaway. Returns
---   <a>PremiumGiveawayInfo</a>
-data GetPremiumGiveawayInfo
-GetPremiumGiveawayInfo :: Maybe Int -> Maybe Int -> GetPremiumGiveawayInfo
-
--- | Identifier of the channel chat which started the giveaway
-[chat_id] :: GetPremiumGiveawayInfo -> Maybe Int
-
--- | Identifier of the giveaway or a giveaway winners message in the chat
-[message_id] :: GetPremiumGiveawayInfo -> Maybe Int
-defaultGetPremiumGiveawayInfo :: GetPremiumGiveawayInfo
-instance GHC.Show.Show TD.Query.GetPremiumGiveawayInfo.GetPremiumGiveawayInfo
-instance GHC.Classes.Eq TD.Query.GetPremiumGiveawayInfo.GetPremiumGiveawayInfo
-instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiveawayInfo.GetPremiumGiveawayInfo
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiveawayInfo.GetPremiumGiveawayInfo
 
 module TD.Query.GetPremiumLimit
 
@@ -28756,7 +28985,7 @@ module TD.Query.GetRepliedMessage
 --   the giveaway message, and the topic creation message for messages of
 --   the types messagePinMessage, messageGameScore,
 --   messagePaymentSuccessful, messageChatSetBackground,
---   messagePremiumGiveawayCompleted and topic messages without non-bundled
+--   messageGiveawayCompleted and topic messages without non-bundled
 --   replied message respectively. Returns <a>Message</a>
 data GetRepliedMessage
 GetRepliedMessage :: Maybe Int -> Maybe Int -> GetRepliedMessage
@@ -28963,6 +29192,17 @@ instance GHC.Classes.Eq TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOpt
 instance TD.Lib.Internal.ShortShow TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarGiftPaymentOptions.GetStarGiftPaymentOptions
 
+module TD.Query.GetStarGiveawayPaymentOptions
+
+-- | Returns available options for Telegram Star giveaway creation. Returns
+--   <a>StarGiveawayPaymentOptions</a>
+data GetStarGiveawayPaymentOptions
+GetStarGiveawayPaymentOptions :: GetStarGiveawayPaymentOptions
+instance GHC.Show.Show TD.Query.GetStarGiveawayPaymentOptions.GetStarGiveawayPaymentOptions
+instance GHC.Classes.Eq TD.Query.GetStarGiveawayPaymentOptions.GetStarGiveawayPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Query.GetStarGiveawayPaymentOptions.GetStarGiveawayPaymentOptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStarGiveawayPaymentOptions.GetStarGiveawayPaymentOptions
+
 module TD.Query.GetStarPaymentOptions
 
 -- | Returns available options for Telegram Stars purchase. Returns
@@ -29118,6 +29358,19 @@ instance GHC.Show.Show TD.Query.GetStickerSet.GetStickerSet
 instance GHC.Classes.Eq TD.Query.GetStickerSet.GetStickerSet
 instance TD.Lib.Internal.ShortShow TD.Query.GetStickerSet.GetStickerSet
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStickerSet.GetStickerSet
+
+module TD.Query.GetStickerSetName
+
+-- | Returns name of a sticker set by its identifier. Returns <a>Text</a>
+data GetStickerSetName
+GetStickerSetName :: Maybe Int -> GetStickerSetName
+
+-- | Identifier of the sticker set
+[set_id] :: GetStickerSetName -> Maybe Int
+instance GHC.Show.Show TD.Query.GetStickerSetName.GetStickerSetName
+instance GHC.Classes.Eq TD.Query.GetStickerSetName.GetStickerSetName
+instance TD.Lib.Internal.ShortShow TD.Query.GetStickerSetName.GetStickerSetName
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStickerSetName.GetStickerSetName
 
 module TD.Query.GetStickers
 
@@ -29933,22 +30186,29 @@ instance GHC.Classes.Eq TD.Query.JoinGroupCall.JoinGroupCall
 instance TD.Lib.Internal.ShortShow TD.Query.JoinGroupCall.JoinGroupCall
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinGroupCall.JoinGroupCall
 
-module TD.Query.LaunchPrepaidPremiumGiveaway
+module TD.Query.LaunchPrepaidGiveaway
 
--- | Launches a prepaid Telegram Premium giveaway. Returns <a>Ok</a>
-data LaunchPrepaidPremiumGiveaway
-LaunchPrepaidPremiumGiveaway :: Maybe Int -> Maybe PremiumGiveawayParameters -> LaunchPrepaidPremiumGiveaway
+-- | Launches a prepaid giveaway. Returns <a>Ok</a>
+data LaunchPrepaidGiveaway
+LaunchPrepaidGiveaway :: Maybe Int -> Maybe GiveawayParameters -> Maybe Int -> Maybe Int -> LaunchPrepaidGiveaway
 
 -- | Unique identifier of the prepaid giveaway
-[giveaway_id] :: LaunchPrepaidPremiumGiveaway -> Maybe Int
+[giveaway_id] :: LaunchPrepaidGiveaway -> Maybe Int
 
 -- | Giveaway parameters
-[parameters] :: LaunchPrepaidPremiumGiveaway -> Maybe PremiumGiveawayParameters
-defaultLaunchPrepaidPremiumGiveaway :: LaunchPrepaidPremiumGiveaway
-instance GHC.Show.Show TD.Query.LaunchPrepaidPremiumGiveaway.LaunchPrepaidPremiumGiveaway
-instance GHC.Classes.Eq TD.Query.LaunchPrepaidPremiumGiveaway.LaunchPrepaidPremiumGiveaway
-instance TD.Lib.Internal.ShortShow TD.Query.LaunchPrepaidPremiumGiveaway.LaunchPrepaidPremiumGiveaway
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LaunchPrepaidPremiumGiveaway.LaunchPrepaidPremiumGiveaway
+[parameters] :: LaunchPrepaidGiveaway -> Maybe GiveawayParameters
+
+-- | The number of users to receive giveaway prize
+[winner_count] :: LaunchPrepaidGiveaway -> Maybe Int
+
+-- | The number of Telegram Stars to be distributed through the giveaway;
+--   pass 0 for Telegram Premium giveaways
+[star_count] :: LaunchPrepaidGiveaway -> Maybe Int
+defaultLaunchPrepaidGiveaway :: LaunchPrepaidGiveaway
+instance GHC.Show.Show TD.Query.LaunchPrepaidGiveaway.LaunchPrepaidGiveaway
+instance GHC.Classes.Eq TD.Query.LaunchPrepaidGiveaway.LaunchPrepaidGiveaway
+instance TD.Lib.Internal.ShortShow TD.Query.LaunchPrepaidGiveaway.LaunchPrepaidGiveaway
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LaunchPrepaidGiveaway.LaunchPrepaidGiveaway
 
 module TD.Query.LeaveChat
 
@@ -30056,8 +30316,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadQuickReplyShortcutMessages.
 module TD.Query.LoadQuickReplyShortcuts
 
 -- | Loads quick reply shortcuts created by the current user. The loaded
---   topics will be sent through updateQuickReplyShortcuts. Returns
---   <a>Ok</a>
+--   data will be sent through updateQuickReplyShortcut and
+--   updateQuickReplyShortcuts. Returns <a>Ok</a>
 data LoadQuickReplyShortcuts
 LoadQuickReplyShortcuts :: LoadQuickReplyShortcuts
 instance GHC.Show.Show TD.Query.LoadQuickReplyShortcuts.LoadQuickReplyShortcuts
@@ -30888,9 +31148,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveNotificationGroup.RemoveN
 
 module TD.Query.RemovePendingPaidMessageReactions
 
--- | Removes all pending paid reactions on a message. Can be called within
---   5 seconds after the last addPaidMessageReaction call. Returns
---   <a>Ok</a>
+-- | Removes all pending paid reactions on a message. Returns <a>Ok</a>
 data RemovePendingPaidMessageReactions
 RemovePendingPaidMessageReactions :: Maybe Int -> Maybe Int -> RemovePendingPaidMessageReactions
 

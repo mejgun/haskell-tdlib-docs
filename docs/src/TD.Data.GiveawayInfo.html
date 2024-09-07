@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.GiveawayInfo</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier">GiveawayInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.GiveawayParticipantStatus.html"><span class="hs-identifier">TD.Data.GiveawayParticipantStatus</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">GiveawayParticipantStatus</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Contains information about a giveaway</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="GiveawayInfo"><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier hs-var">GiveawayInfo</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GiveawayInfoOngoing"><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoOngoing"><span class="hs-identifier hs-var">GiveawayInfoOngoing</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes an ongoing giveaway</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="creation_date"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var hs-var">creation_date</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                 </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the giveaway was created</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="status"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe GiveawayParticipantStatus
+</span><a href="TD.Data.GiveawayInfo.html#status"><span class="hs-identifier hs-var hs-var">status</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayParticipantStatus.html#GiveawayParticipantStatus"><span class="hs-identifier hs-type">GiveawayParticipantStatus.GiveawayParticipantStatus</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Status of the current user in the giveaway</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_ended"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_ended"><span class="hs-identifier hs-var hs-var">is_ended</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                                </span><span class="annot"><span class="hs-comment">-- ^ True, if the giveaway has ended and results are being prepared</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="GiveawayInfoCompleted"><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoCompleted"><span class="hs-identifier hs-var">GiveawayInfoCompleted</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes a completed giveaway</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="creation_date"><span class="annot"><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the giveaway was created</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="actual_winners_selection_date"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#actual_winners_selection_date"><span class="hs-identifier hs-var hs-var">actual_winners_selection_date</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the winners were selected. May be bigger than winners selection date specified in parameters of the giveaway</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="was_refunded"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#was_refunded"><span class="hs-identifier hs-var hs-var">was_refunded</span></a></span></span><span>                  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ True, if the giveaway was canceled and was fully refunded</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_winner"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_winner"><span class="hs-identifier hs-var hs-var">is_winner</span></a></span></span><span>                     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ True, if the cuurent user is a winner of the giveaway</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="winner_count"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#winner_count"><span class="hs-identifier hs-var hs-var">winner_count</span></a></span></span><span>                  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Number of winners in the giveaway</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="activation_count"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#activation_count"><span class="hs-identifier hs-var hs-var">activation_count</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Number of winners, which activated their gift codes; for Telegram Premium giveaways only</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="gift_code"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Text
+</span><a href="TD.Data.GiveawayInfo.html#gift_code"><span class="hs-identifier hs-var hs-var">gift_code</span></a></span></span><span>                     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Telegram Premium gift code that was received by the current user; empty if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Premium giveaway</span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="won_star_count"><span class="annot"><span class="annottext">GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#won_star_count"><span class="hs-identifier hs-var hs-var">won_star_count</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ The amount of Telegram Stars won by the current user; 0 if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Star giveaway</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679686293"><span id="local-6989586621679686311"><span class="annot"><span class="annottext">GiveawayInfo -&gt; GiveawayInfo -&gt; Bool
+(GiveawayInfo -&gt; GiveawayInfo -&gt; Bool)
+-&gt; (GiveawayInfo -&gt; GiveawayInfo -&gt; Bool) -&gt; Eq GiveawayInfo
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: GiveawayInfo -&gt; GiveawayInfo -&gt; Bool
+== :: GiveawayInfo -&gt; GiveawayInfo -&gt; Bool
+$c/= :: GiveawayInfo -&gt; GiveawayInfo -&gt; Bool
+/= :: GiveawayInfo -&gt; GiveawayInfo -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679686320"><span id="local-6989586621679686341"><span id="local-6989586621679686345"><span class="annot"><span class="annottext">Int -&gt; GiveawayInfo -&gt; ShowS
+[GiveawayInfo] -&gt; ShowS
+GiveawayInfo -&gt; String
+(Int -&gt; GiveawayInfo -&gt; ShowS)
+-&gt; (GiveawayInfo -&gt; String)
+-&gt; ([GiveawayInfo] -&gt; ShowS)
+-&gt; Show GiveawayInfo
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; GiveawayInfo -&gt; ShowS
+showsPrec :: Int -&gt; GiveawayInfo -&gt; ShowS
+$cshow :: GiveawayInfo -&gt; String
+show :: GiveawayInfo -&gt; String
+$cshowList :: [GiveawayInfo] -&gt; ShowS
+showList :: [GiveawayInfo] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier hs-type">GiveawayInfo</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-30"></span><span>  </span><span id="local-6989586621679686374"><span class="annot"><span class="annottext">shortShow :: GiveawayInfo -&gt; String
+</span><a href="#local-6989586621679686374"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoOngoing"><span class="hs-identifier hs-type">GiveawayInfoOngoing</span></a></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">creation_date :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686376"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686376"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">status :: GiveawayInfo -&gt; Maybe GiveawayParticipantStatus
+</span><a href="TD.Data.GiveawayInfo.html#status"><span class="hs-identifier hs-var">status</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686377"><span class="annot"><span class="annottext">Maybe GiveawayParticipantStatus
+</span><a href="#local-6989586621679686377"><span class="hs-identifier hs-var">status_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_ended :: GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_ended"><span class="hs-identifier hs-var">is_ended</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686378"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686378"><span class="hs-identifier hs-var">is_ended_</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiveawayInfoOngoing&quot;</span></span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686376"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;status&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe GiveawayParticipantStatus -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe GiveawayParticipantStatus
+</span><a href="#local-6989586621679686377"><span class="hs-identifier hs-var">status_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_ended&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686378"><span class="hs-identifier hs-var">is_ended_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-41"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoCompleted"><span class="hs-identifier hs-type">GiveawayInfoCompleted</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">creation_date :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686381"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686381"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">actual_winners_selection_date :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#actual_winners_selection_date"><span class="hs-identifier hs-var">actual_winners_selection_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686382"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686382"><span class="hs-identifier hs-var">actual_winners_selection_date_</span></a></span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">was_refunded :: GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#was_refunded"><span class="hs-identifier hs-var">was_refunded</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686383"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686383"><span class="hs-identifier hs-var">was_refunded_</span></a></span></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_winner :: GiveawayInfo -&gt; Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_winner"><span class="hs-identifier hs-var">is_winner</span></a></span><span>                     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686384"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686384"><span class="hs-identifier hs-var">is_winner_</span></a></span></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">winner_count :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#winner_count"><span class="hs-identifier hs-var">winner_count</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686385"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686385"><span class="hs-identifier hs-var">winner_count_</span></a></span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">activation_count :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#activation_count"><span class="hs-identifier hs-var">activation_count</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686386"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686386"><span class="hs-identifier hs-var">activation_count_</span></a></span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_code :: GiveawayInfo -&gt; Maybe Text
+</span><a href="TD.Data.GiveawayInfo.html#gift_code"><span class="hs-identifier hs-var">gift_code</span></a></span><span>                     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686387"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679686387"><span class="hs-identifier hs-var">gift_code_</span></a></span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">won_star_count :: GiveawayInfo -&gt; Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#won_star_count"><span class="hs-identifier hs-var">won_star_count</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679686388"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686388"><span class="hs-identifier hs-var">won_star_count_</span></a></span></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-51"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiveawayInfoCompleted&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-53"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686381"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-54"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;actual_winners_selection_date&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686382"><span class="hs-identifier hs-var">actual_winners_selection_date_</span></a></span><span>
+</span><span id="line-55"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;was_refunded&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686383"><span class="hs-identifier hs-var">was_refunded_</span></a></span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_winner&quot;</span></span><span>                     </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686384"><span class="hs-identifier hs-var">is_winner_</span></a></span><span>
+</span><span id="line-57"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;winner_count&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686385"><span class="hs-identifier hs-var">winner_count_</span></a></span><span>
+</span><span id="line-58"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;activation_count&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686386"><span class="hs-identifier hs-var">activation_count_</span></a></span><span>
+</span><span id="line-59"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift_code&quot;</span></span><span>                     </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679686387"><span class="hs-identifier hs-var">gift_code_</span></a></span><span>
+</span><span id="line-60"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;won_star_count&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686388"><span class="hs-identifier hs-var">won_star_count_</span></a></span><span>
+</span><span id="line-61"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679686391"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier hs-type">GiveawayInfo</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-64"></span><span>  </span><span id="local-6989586621679686454"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser GiveawayInfo
+</span><a href="#local-6989586621679686454"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679686456"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679686456"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679686458"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686458"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-65"></span><span>    </span><span id="local-6989586621679686459"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679686459"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686458"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-66"></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679686459"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-68"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;giveawayInfoOngoing&quot;</span></span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser GiveawayInfo
+</span><a href="#local-6989586621679686461"><span class="hs-identifier hs-var">parseGiveawayInfoOngoing</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679686456"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-69"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;giveawayInfoCompleted&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser GiveawayInfo
+</span><a href="#local-6989586621679686462"><span class="hs-identifier hs-var">parseGiveawayInfoCompleted</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679686456"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-70"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                       </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser GiveawayInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-71"></span><span>    </span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-73"></span><span>      </span><span class="annot"><a href="#local-6989586621679686461"><span class="hs-identifier hs-type">parseGiveawayInfoOngoing</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier hs-type">GiveawayInfo</span></a></span><span>
+</span><span id="line-74"></span><span>      </span><span id="local-6989586621679686461"><span class="annot"><span class="annottext">parseGiveawayInfoOngoing :: Value -&gt; Parser GiveawayInfo
+</span><a href="#local-6989586621679686461"><span class="hs-identifier hs-var hs-var">parseGiveawayInfoOngoing</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiveawayInfoOngoing&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo)
+-&gt; (Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679686464"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686464"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-75"></span><span>        </span><span id="local-6989586621679686465"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686465"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686464"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span>
+</span><span id="line-76"></span><span>        </span><span id="local-6989586621679686467"><span class="annot"><span class="annottext">Maybe GiveawayParticipantStatus
+</span><a href="#local-6989586621679686467"><span class="hs-identifier hs-var">status_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686464"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe GiveawayParticipantStatus)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;status&quot;</span></span><span>
+</span><span id="line-77"></span><span>        </span><span id="local-6989586621679686468"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686468"><span class="hs-identifier hs-var">is_ended_</span></a></span></span><span>      </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686464"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_ended&quot;</span></span><span>
+</span><span id="line-78"></span><span>        </span><span class="annot"><span class="annottext">GiveawayInfo -&gt; Parser GiveawayInfo
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(GiveawayInfo -&gt; Parser GiveawayInfo)
+-&gt; GiveawayInfo -&gt; Parser GiveawayInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoOngoing"><span class="hs-identifier hs-type">GiveawayInfoOngoing</span></a></span><span>
+</span><span id="line-79"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">creation_date :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686465"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-80"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">status :: Maybe GiveawayParticipantStatus
+</span><a href="TD.Data.GiveawayInfo.html#status"><span class="hs-identifier hs-var">status</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe GiveawayParticipantStatus
+</span><a href="#local-6989586621679686467"><span class="hs-identifier hs-var">status_</span></a></span><span>
+</span><span id="line-81"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_ended :: Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_ended"><span class="hs-identifier hs-var">is_ended</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686468"><span class="hs-identifier hs-var">is_ended_</span></a></span><span>
+</span><span id="line-82"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-83"></span><span>      </span><span class="annot"><a href="#local-6989586621679686462"><span class="hs-identifier hs-type">parseGiveawayInfoCompleted</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfo"><span class="hs-identifier hs-type">GiveawayInfo</span></a></span><span>
+</span><span id="line-84"></span><span>      </span><span id="local-6989586621679686462"><span class="annot"><span class="annottext">parseGiveawayInfoCompleted :: Value -&gt; Parser GiveawayInfo
+</span><a href="#local-6989586621679686462"><span class="hs-identifier hs-var hs-var">parseGiveawayInfoCompleted</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiveawayInfoCompleted&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo)
+-&gt; (Object -&gt; Parser GiveawayInfo) -&gt; Value -&gt; Parser GiveawayInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679686469"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-85"></span><span>        </span><span id="local-6989586621679686470"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686470"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span>                 </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span>
+</span><span id="line-86"></span><span>        </span><span id="local-6989586621679686471"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686471"><span class="hs-identifier hs-var">actual_winners_selection_date_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;actual_winners_selection_date&quot;</span></span><span>
+</span><span id="line-87"></span><span>        </span><span id="local-6989586621679686472"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686472"><span class="hs-identifier hs-var">was_refunded_</span></a></span></span><span>                  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;was_refunded&quot;</span></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679686473"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686473"><span class="hs-identifier hs-var">is_winner_</span></a></span></span><span>                     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_winner&quot;</span></span><span>
+</span><span id="line-89"></span><span>        </span><span id="local-6989586621679686474"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686474"><span class="hs-identifier hs-var">winner_count_</span></a></span></span><span>                  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;winner_count&quot;</span></span><span>
+</span><span id="line-90"></span><span>        </span><span id="local-6989586621679686475"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686475"><span class="hs-identifier hs-var">activation_count_</span></a></span></span><span>              </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;activation_count&quot;</span></span><span>
+</span><span id="line-91"></span><span>        </span><span id="local-6989586621679686476"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679686476"><span class="hs-identifier hs-var">gift_code_</span></a></span></span><span>                     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift_code&quot;</span></span><span>
+</span><span id="line-92"></span><span>        </span><span id="local-6989586621679686477"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686477"><span class="hs-identifier hs-var">won_star_count_</span></a></span></span><span>                </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679686469"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;won_star_count&quot;</span></span><span>
+</span><span id="line-93"></span><span>        </span><span class="annot"><span class="annottext">GiveawayInfo -&gt; Parser GiveawayInfo
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(GiveawayInfo -&gt; Parser GiveawayInfo)
+-&gt; GiveawayInfo -&gt; Parser GiveawayInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.GiveawayInfo.html#GiveawayInfoCompleted"><span class="hs-identifier hs-type">GiveawayInfoCompleted</span></a></span><span>
+</span><span id="line-94"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">creation_date :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686470"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-95"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">actual_winners_selection_date :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#actual_winners_selection_date"><span class="hs-identifier hs-var">actual_winners_selection_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686471"><span class="hs-identifier hs-var">actual_winners_selection_date_</span></a></span><span>
+</span><span id="line-96"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">was_refunded :: Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#was_refunded"><span class="hs-identifier hs-var">was_refunded</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686472"><span class="hs-identifier hs-var">was_refunded_</span></a></span><span>
+</span><span id="line-97"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_winner :: Maybe Bool
+</span><a href="TD.Data.GiveawayInfo.html#is_winner"><span class="hs-identifier hs-var">is_winner</span></a></span><span>                     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679686473"><span class="hs-identifier hs-var">is_winner_</span></a></span><span>
+</span><span id="line-98"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">winner_count :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#winner_count"><span class="hs-identifier hs-var">winner_count</span></a></span><span>                  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686474"><span class="hs-identifier hs-var">winner_count_</span></a></span><span>
+</span><span id="line-99"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">activation_count :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#activation_count"><span class="hs-identifier hs-var">activation_count</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686475"><span class="hs-identifier hs-var">activation_count_</span></a></span><span>
+</span><span id="line-100"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_code :: Maybe Text
+</span><a href="TD.Data.GiveawayInfo.html#gift_code"><span class="hs-identifier hs-var">gift_code</span></a></span><span>                     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679686476"><span class="hs-identifier hs-var">gift_code_</span></a></span><span>
+</span><span id="line-101"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">won_star_count :: Maybe Int
+</span><a href="TD.Data.GiveawayInfo.html#won_star_count"><span class="hs-identifier hs-var">won_star_count</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679686477"><span class="hs-identifier hs-var">won_star_count_</span></a></span><span>
+</span><span id="line-102"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-103"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser GiveawayInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-104"></span><span>
+</span><span id="line-105"></span></pre></body></html>
