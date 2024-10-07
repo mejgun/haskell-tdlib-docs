@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.UserTransactionPurpose</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier">UserTransactionPurpose</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Sticker.html"><span class="hs-identifier">TD.Data.Sticker</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Sticker</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Gift.html"><span class="hs-identifier">TD.Data.Gift</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Gift</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Describes purpose of a transaction with a user</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="UserTransactionPurpose"><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-var">UserTransactionPurpose</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="UserTransactionPurposeGiftedStars"><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftedStars"><span class="hs-identifier hs-var">UserTransactionPurposeGiftedStars</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A user gifted Telegram Stars</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="sticker"><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; Maybe Sticker
+</span><a href="TD.Data.UserTransactionPurpose.html#sticker"><span class="hs-identifier hs-var hs-var">sticker</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Sticker.html#Sticker"><span class="hs-identifier hs-type">Sticker.Sticker</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A sticker to be shown in the transaction information; may be null if unknown</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="UserTransactionPurposeGiftSell"><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSell"><span class="hs-identifier hs-var">UserTransactionPurposeGiftSell</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The current user sold a gift received from another user</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="gift"><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; Maybe Gift
+</span><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var hs-var">gift</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Gift.html#Gift"><span class="hs-identifier hs-type">Gift.Gift</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The gift</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="UserTransactionPurposeGiftSend"><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSend"><span class="hs-identifier hs-var">UserTransactionPurposeGiftSend</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The current user sent a gift to another user</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="gift"><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var">gift</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Gift.html#Gift"><span class="hs-identifier hs-type">Gift.Gift</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The gift</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679714904"><span id="local-6989586621679714912"><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool
+(UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool)
+-&gt; (UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool)
+-&gt; Eq UserTransactionPurpose
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool
+== :: UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool
+$c/= :: UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool
+/= :: UserTransactionPurpose -&gt; UserTransactionPurpose -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679714919"><span id="local-6989586621679714931"><span id="local-6989586621679714935"><span class="annot"><span class="annottext">Int -&gt; UserTransactionPurpose -&gt; ShowS
+[UserTransactionPurpose] -&gt; ShowS
+UserTransactionPurpose -&gt; String
+(Int -&gt; UserTransactionPurpose -&gt; ShowS)
+-&gt; (UserTransactionPurpose -&gt; String)
+-&gt; ([UserTransactionPurpose] -&gt; ShowS)
+-&gt; Show UserTransactionPurpose
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; UserTransactionPurpose -&gt; ShowS
+showsPrec :: Int -&gt; UserTransactionPurpose -&gt; ShowS
+$cshow :: UserTransactionPurpose -&gt; String
+show :: UserTransactionPurpose -&gt; String
+$cshowList :: [UserTransactionPurpose] -&gt; ShowS
+showList :: [UserTransactionPurpose] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-type">UserTransactionPurpose</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679714953"><span class="annot"><span class="annottext">shortShow :: UserTransactionPurpose -&gt; String
+</span><a href="#local-6989586621679714953"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftedStars"><span class="hs-identifier hs-type">UserTransactionPurposeGiftedStars</span></a></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sticker :: UserTransactionPurpose -&gt; Maybe Sticker
+</span><a href="TD.Data.UserTransactionPurpose.html#sticker"><span class="hs-identifier hs-var">sticker</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679714955"><span class="annot"><span class="annottext">Maybe Sticker
+</span><a href="#local-6989586621679714955"><span class="hs-identifier hs-var">sticker_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftedStars&quot;</span></span><span>
+</span><span id="line-28"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sticker&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Sticker -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Sticker
+</span><a href="#local-6989586621679714955"><span class="hs-identifier hs-var">sticker_</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSell"><span class="hs-identifier hs-type">UserTransactionPurposeGiftSell</span></a></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: UserTransactionPurpose -&gt; Maybe Gift
+</span><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679714958"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679714958"><span class="hs-identifier hs-var">gift_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftSell&quot;</span></span><span>
+</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Gift -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679714958"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-38"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSend"><span class="hs-identifier hs-type">UserTransactionPurposeGiftSend</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: UserTransactionPurpose -&gt; Maybe Gift
+</span><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679714959"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679714959"><span class="hs-identifier hs-var">gift_</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftSend&quot;</span></span><span>
+</span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Gift -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679714959"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679714962"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-type">UserTransactionPurpose</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-47"></span><span>  </span><span id="local-6989586621679715002"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715002"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679715004"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679715004"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679715006"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715006"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>    </span><span id="local-6989586621679715007"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679715007"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715006"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679715007"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;userTransactionPurposeGiftedStars&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715009"><span class="hs-identifier hs-var">parseUserTransactionPurposeGiftedStars</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679715004"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;userTransactionPurposeGiftSell&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715010"><span class="hs-identifier hs-var">parseUserTransactionPurposeGiftSell</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679715004"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;userTransactionPurposeGiftSend&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715011"><span class="hs-identifier hs-var">parseUserTransactionPurposeGiftSend</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679715004"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser UserTransactionPurpose
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-55"></span><span>    </span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><a href="#local-6989586621679715009"><span class="hs-identifier hs-type">parseUserTransactionPurposeGiftedStars</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-type">UserTransactionPurpose</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span id="local-6989586621679715009"><span class="annot"><span class="annottext">parseUserTransactionPurposeGiftedStars :: Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715009"><span class="hs-identifier hs-var hs-var">parseUserTransactionPurposeGiftedStars</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftedStars&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser UserTransactionPurpose)
+ -&gt; Value -&gt; Parser UserTransactionPurpose)
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679715013"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715013"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679715014"><span class="annot"><span class="annottext">Maybe Sticker
+</span><a href="#local-6989586621679715014"><span class="hs-identifier hs-var">sticker_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715013"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Sticker)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sticker&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(UserTransactionPurpose -&gt; Parser UserTransactionPurpose)
+-&gt; UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftedStars"><span class="hs-identifier hs-type">UserTransactionPurposeGiftedStars</span></a></span><span>
+</span><span id="line-61"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sticker :: Maybe Sticker
+</span><a href="TD.Data.UserTransactionPurpose.html#sticker"><span class="hs-identifier hs-var">sticker</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Sticker
+</span><a href="#local-6989586621679715014"><span class="hs-identifier hs-var">sticker_</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-63"></span><span>      </span><span class="annot"><a href="#local-6989586621679715010"><span class="hs-identifier hs-type">parseUserTransactionPurposeGiftSell</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-type">UserTransactionPurpose</span></a></span><span>
+</span><span id="line-64"></span><span>      </span><span id="local-6989586621679715010"><span class="annot"><span class="annottext">parseUserTransactionPurposeGiftSell :: Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715010"><span class="hs-identifier hs-var hs-var">parseUserTransactionPurposeGiftSell</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftSell&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser UserTransactionPurpose)
+ -&gt; Value -&gt; Parser UserTransactionPurpose)
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679715016"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715016"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-65"></span><span>        </span><span id="local-6989586621679715017"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679715017"><span class="hs-identifier hs-var">gift_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715016"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Gift)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>
+</span><span id="line-66"></span><span>        </span><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(UserTransactionPurpose -&gt; Parser UserTransactionPurpose)
+-&gt; UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSell"><span class="hs-identifier hs-type">UserTransactionPurposeGiftSell</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: Maybe Gift
+</span><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679715017"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-69"></span><span>      </span><span class="annot"><a href="#local-6989586621679715011"><span class="hs-identifier hs-type">parseUserTransactionPurposeGiftSend</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurpose"><span class="hs-identifier hs-type">UserTransactionPurpose</span></a></span><span>
+</span><span id="line-70"></span><span>      </span><span id="local-6989586621679715011"><span class="annot"><span class="annottext">parseUserTransactionPurposeGiftSend :: Value -&gt; Parser UserTransactionPurpose
+</span><a href="#local-6989586621679715011"><span class="hs-identifier hs-var hs-var">parseUserTransactionPurposeGiftSend</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserTransactionPurposeGiftSend&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser UserTransactionPurpose)
+ -&gt; Value -&gt; Parser UserTransactionPurpose)
+-&gt; (Object -&gt; Parser UserTransactionPurpose)
+-&gt; Value
+-&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679715018"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715018"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-71"></span><span>        </span><span id="local-6989586621679715019"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679715019"><span class="hs-identifier hs-var">gift_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679715018"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Gift)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>
+</span><span id="line-72"></span><span>        </span><span class="annot"><span class="annottext">UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(UserTransactionPurpose -&gt; Parser UserTransactionPurpose)
+-&gt; UserTransactionPurpose -&gt; Parser UserTransactionPurpose
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.UserTransactionPurpose.html#UserTransactionPurposeGiftSend"><span class="hs-identifier hs-type">UserTransactionPurposeGiftSend</span></a></span><span>
+</span><span id="line-73"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: Maybe Gift
+</span><a href="TD.Data.UserTransactionPurpose.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679715019"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-75"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser UserTransactionPurpose
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span></pre></body></html>

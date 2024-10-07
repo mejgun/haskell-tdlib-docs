@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.44.0
+@version 2.0.45.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2042,21 +2042,52 @@ instance TD.Lib.Internal.ShortShow TD.Data.ReportReason.ReportReason
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportReason.ReportReason
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ReportReason.ReportReason
 
-module TD.Data.ReportChatSponsoredMessageOption
-data ReportChatSponsoredMessageOption
+module TD.Data.ReportOption
+data ReportOption
 
--- | Describes an option to report a sponsored message
-ReportChatSponsoredMessageOption :: Maybe ByteString -> Maybe Text -> ReportChatSponsoredMessageOption
+-- | Describes an option to report an entity to Telegram
+ReportOption :: Maybe ByteString -> Maybe Text -> ReportOption
 
 -- | Unique identifier of the option
-[_id] :: ReportChatSponsoredMessageOption -> Maybe ByteString
+[_id] :: ReportOption -> Maybe ByteString
 
 -- | Text of the option
-[text] :: ReportChatSponsoredMessageOption -> Maybe Text
-instance GHC.Show.Show TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
-instance GHC.Classes.Eq TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
-instance TD.Lib.Internal.ShortShow TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatSponsoredMessageOption.ReportChatSponsoredMessageOption
+[text] :: ReportOption -> Maybe Text
+instance GHC.Show.Show TD.Data.ReportOption.ReportOption
+instance GHC.Classes.Eq TD.Data.ReportOption.ReportOption
+instance TD.Lib.Internal.ShortShow TD.Data.ReportOption.ReportOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportOption.ReportOption
+
+module TD.Data.ReportStoryResult
+
+-- | Describes result of story report
+data ReportStoryResult
+
+-- | The story was reported successfully
+ReportStoryResultOk :: ReportStoryResult
+
+-- | The user must choose an option to report the story and repeat request
+--   with the chosen option
+ReportStoryResultOptionRequired :: Maybe Text -> Maybe [ReportOption] -> ReportStoryResult
+
+-- | Title for the option choice
+[title] :: ReportStoryResult -> Maybe Text
+
+-- | List of available options
+[options] :: ReportStoryResult -> Maybe [ReportOption]
+
+-- | The user must add additional text details to the report
+ReportStoryResultTextRequired :: Maybe ByteString -> Maybe Bool -> ReportStoryResult
+
+-- | Option identifier for the next reportStory request
+[option_id] :: ReportStoryResult -> Maybe ByteString
+
+-- | True, if the user can skip text adding
+[is_optional] :: ReportStoryResult -> Maybe Bool
+instance GHC.Show.Show TD.Data.ReportStoryResult.ReportStoryResult
+instance GHC.Classes.Eq TD.Data.ReportStoryResult.ReportStoryResult
+instance TD.Lib.Internal.ShortShow TD.Data.ReportStoryResult.ReportStoryResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportStoryResult.ReportStoryResult
 
 module TD.Data.ReportChatSponsoredMessageResult
 
@@ -2071,13 +2102,13 @@ ReportChatSponsoredMessageResultFailed :: ReportChatSponsoredMessageResult
 
 -- | The user must choose an option to report the message and repeat
 --   request with the chosen option
-ReportChatSponsoredMessageResultOptionRequired :: Maybe Text -> Maybe [ReportChatSponsoredMessageOption] -> ReportChatSponsoredMessageResult
+ReportChatSponsoredMessageResultOptionRequired :: Maybe Text -> Maybe [ReportOption] -> ReportChatSponsoredMessageResult
 
 -- | Title for the option choice
 [title] :: ReportChatSponsoredMessageResult -> Maybe Text
 
 -- | List of available options
-[options] :: ReportChatSponsoredMessageResult -> Maybe [ReportChatSponsoredMessageOption]
+[options] :: ReportChatSponsoredMessageResult -> Maybe [ReportOption]
 
 -- | Sponsored messages were hidden for the user in all chats
 ReportChatSponsoredMessageResultAdsHidden :: ReportChatSponsoredMessageResult
@@ -2089,6 +2120,41 @@ instance GHC.Show.Show TD.Data.ReportChatSponsoredMessageResult.ReportChatSponso
 instance GHC.Classes.Eq TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
 instance TD.Lib.Internal.ShortShow TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+
+module TD.Data.ReportChatResult
+
+-- | Describes result of chat report
+data ReportChatResult
+
+-- | The chat was reported successfully
+ReportChatResultOk :: ReportChatResult
+
+-- | The user must choose an option to report the chat and repeat request
+--   with the chosen option
+ReportChatResultOptionRequired :: Maybe Text -> Maybe [ReportOption] -> ReportChatResult
+
+-- | Title for the option choice
+[title] :: ReportChatResult -> Maybe Text
+
+-- | List of available options
+[options] :: ReportChatResult -> Maybe [ReportOption]
+
+-- | The user must add additional text details to the report
+ReportChatResultTextRequired :: Maybe ByteString -> Maybe Bool -> ReportChatResult
+
+-- | Option identifier for the next reportChat request
+[option_id] :: ReportChatResult -> Maybe ByteString
+
+-- | True, if the user can skip text adding
+[is_optional] :: ReportChatResult -> Maybe Bool
+
+-- | The user must choose messages to report and repeat the reportChat
+--   request with the chosen messages
+ReportChatResultMessagesRequired :: ReportChatResult
+instance GHC.Show.Show TD.Data.ReportChatResult.ReportChatResult
+instance GHC.Classes.Eq TD.Data.ReportChatResult.ReportChatResult
+instance TD.Lib.Internal.ShortShow TD.Data.ReportChatResult.ReportChatResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatResult.ReportChatResult
 
 module TD.Data.RemoteFile
 data RemoteFile
@@ -3425,7 +3491,7 @@ PaidReactor :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> M
 -- | Number of Telegram Stars added
 [star_count] :: PaidReactor -> Maybe Int
 
--- | True, if the reactor is one of the most active reactors; can be false
+-- | True, if the reactor is one of the most active reactors; may be false
 --   if the reactor is the current user
 [is_top] :: PaidReactor -> Maybe Bool
 
@@ -4949,7 +5015,7 @@ InputPaidMediaTypeVideo :: Maybe Int -> Maybe Bool -> InputPaidMediaType
 -- | Duration of the video, in seconds
 [duration] :: InputPaidMediaType -> Maybe Int
 
--- | True, if the video is supposed to be streamed
+-- | True, if the video is expected to be streamed
 [supports_streaming] :: InputPaidMediaType -> Maybe Bool
 instance GHC.Show.Show TD.Data.InputPaidMediaType.InputPaidMediaType
 instance GHC.Classes.Eq TD.Data.InputPaidMediaType.InputPaidMediaType
@@ -4985,11 +5051,14 @@ InputFileLocal :: Maybe Text -> InputFile
 -- | Local path to the file
 [path] :: InputFile -> Maybe Text
 
--- | A file generated by the application
+-- | A file generated by the application. The application must handle
+--   updates updateFileGenerationStart and updateFileGenerationStop to
+--   generate the file when asked by TDLib
 InputFileGenerated :: Maybe Text -> Maybe Text -> Maybe Int -> InputFile
 
--- | Local path to a file from which the file is generated; may be empty if
---   there is no such file
+-- | Local path to a file from which the file is generated. The path
+--   doesn't have to be a valid path and is used by TDLib only to detect
+--   name and MIME type of the generated file
 [original_path] :: InputFile -> Maybe Text
 
 -- | String specifying the conversion applied to the original file; must be
@@ -4997,7 +5066,7 @@ InputFileGenerated :: Maybe Text -> Maybe Text -> Maybe Int -> InputFile
 --   <tt>#</tt> are reserved for internal TDLib usage
 [conversion] :: InputFile -> Maybe Text
 
--- | Expected size of the generated file, in bytes; 0 if unknown
+-- | Expected size of the generated file, in bytes; pass 0 if unknown
 [expected_size] :: InputFile -> Maybe Int
 instance GHC.Show.Show TD.Data.InputFile.InputFile
 instance GHC.Classes.Eq TD.Data.InputFile.InputFile
@@ -5047,7 +5116,7 @@ InputStoryContentPhoto :: Maybe InputFile -> Maybe [Int] -> InputStoryContent
 InputStoryContentVideo :: Maybe InputFile -> Maybe [Int] -> Maybe Double -> Maybe Double -> Maybe Bool -> InputStoryContent
 
 -- | Video to be sent. The video size must be 720x1280. The video must be
---   streamable and stored in MPEG4 format, after encoding with x265 codec
+--   streamable and stored in MPEG4 format, after encoding with H.265 codec
 --   and key frames added each second
 [video] :: InputStoryContent -> Maybe InputFile
 
@@ -5361,6 +5430,12 @@ InlineKeyboardButtonTypeUser :: Maybe Int -> InlineKeyboardButtonType
 
 -- | User identifier
 [user_id] :: InlineKeyboardButtonType -> Maybe Int
+
+-- | A button that copies specified text to clipboard
+InlineKeyboardButtonTypeCopyText :: Maybe Text -> InlineKeyboardButtonType
+
+-- | The text to copy to clipboard
+[text] :: InlineKeyboardButtonType -> Maybe Text
 instance GHC.Show.Show TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
 instance GHC.Classes.Eq TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
 instance TD.Lib.Internal.ShortShow TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
@@ -5634,7 +5709,7 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool ->
 -- | Group call title
 [title] :: GroupCall -> Maybe Text
 
--- | Point in time (Unix timestamp) when the group call is supposed to be
+-- | Point in time (Unix timestamp) when the group call is expected to be
 --   started by an administrator; 0 if it is already active or was ended
 [scheduled_start_date] :: GroupCall -> Maybe Int
 
@@ -6109,7 +6184,7 @@ GiveawayInfoCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> M
 -- | True, if the giveaway was canceled and was fully refunded
 [was_refunded] :: GiveawayInfo -> Maybe Bool
 
--- | True, if the cuurent user is a winner of the giveaway
+-- | True, if the current user is a winner of the giveaway
 [is_winner] :: GiveawayInfo -> Maybe Bool
 
 -- | Number of winners in the giveaway
@@ -6529,9 +6604,9 @@ MessageCopyOptions :: Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe B
 --   Ignored if replace_caption is false
 [new_caption] :: MessageCopyOptions -> Maybe FormattedText
 
--- | True, if new caption must be shown above the animation; otherwise, new
---   caption must be shown below the animation; not supported in secret
---   chats. Ignored if replace_caption is false
+-- | True, if new caption must be shown above the media; otherwise, new
+--   caption must be shown below the media; not supported in secret chats.
+--   Ignored if replace_caption is false
 [new_show_caption_above_media] :: MessageCopyOptions -> Maybe Bool
 defaultMessageCopyOptions :: MessageCopyOptions
 instance GHC.Show.Show TD.Data.MessageCopyOptions.MessageCopyOptions
@@ -7011,7 +7086,7 @@ Video :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Mayb
 --   sticker sets can be received using getAttachedStickerSets
 [has_stickers] :: Video -> Maybe Bool
 
--- | True, if the video is supposed to be streamed
+-- | True, if the video is expected to be streamed
 [supports_streaming] :: Video -> Maybe Bool
 
 -- | Video minithumbnail; may be null
@@ -7056,7 +7131,7 @@ StoryVideo :: Maybe Double -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool
 -- | Video thumbnail in JPEG or MPEG4 format; may be null
 [thumbnail] :: StoryVideo -> Maybe Thumbnail
 
--- | Size of file prefix, which is supposed to be preloaded, in bytes
+-- | Size of file prefix, which is expected to be preloaded, in bytes
 [preload_prefix_size] :: StoryVideo -> Maybe Int
 
 -- | Timestamp of the frame used as video thumbnail
@@ -7198,7 +7273,7 @@ StoryContentVideo :: Maybe StoryVideo -> Maybe StoryVideo -> StoryContent
 -- | The video in MPEG4 format
 [video] :: StoryContent -> Maybe StoryVideo
 
--- | Alternative version of the video in MPEG4 format, encoded by x264
+-- | Alternative version of the video in MPEG4 format, encoded with H.264
 --   codec; may be null
 [alternative_video] :: StoryContent -> Maybe StoryVideo
 
@@ -9026,7 +9101,8 @@ InputMessageSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> M
 -- | A video message
 InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
 
--- | Video to be sent
+-- | Video to be sent. The video is expected to be reencoded to MPEG4
+--   format with H.264 codec by the sender
 [video] :: InputMessageContent -> Maybe InputFile
 
 -- | Animation thumbnail; pass null to skip thumbnail uploading
@@ -9044,7 +9120,7 @@ InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> M
 -- | Height of the animation; may be replaced by the server
 [height] :: InputMessageContent -> Maybe Int
 
--- | True, if the video is supposed to be streamed
+-- | True, if the video is expected to be streamed
 [supports_streaming] :: InputMessageContent -> Maybe Bool
 
 -- | Animation caption; pass null to use an empty caption;
@@ -9305,7 +9381,7 @@ ConnectionStateConnectingToProxy :: ConnectionState
 -- | Establishing a connection to the Telegram servers
 ConnectionStateConnecting :: ConnectionState
 
--- | Downloading data supposed to be received while the application was
+-- | Downloading data expected to be received while the application was
 --   offline
 ConnectionStateUpdating :: ConnectionState
 
@@ -9702,6 +9778,138 @@ instance GHC.Show.Show TD.Data.MessageEffect.MessageEffect
 instance GHC.Classes.Eq TD.Data.MessageEffect.MessageEffect
 instance TD.Lib.Internal.ShortShow TD.Data.MessageEffect.MessageEffect
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageEffect.MessageEffect
+
+module TD.Data.Gift
+data Gift
+
+-- | Describes a gift that can be sent to another user
+Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
+
+-- | Unique identifier of the gift
+[_id] :: Gift -> Maybe Int
+
+-- | The sticker representing the gift
+[sticker] :: Gift -> Maybe Sticker
+
+-- | Number of Telegram Stars that must be paid for the gift
+[star_count] :: Gift -> Maybe Int
+
+-- | Number of Telegram Stars that can be claimed by the receiver instead
+--   of the gift by default. If the gift was paid with just bought Telegram
+--   Stars, then full value can be claimed
+[default_sell_star_count] :: Gift -> Maybe Int
+
+-- | Number of remaining times the gift can be purchased by all users; 0 if
+--   not limited
+[remaining_count] :: Gift -> Maybe Int
+
+-- | Number of total times the gift can be purchased by all users; 0 if not
+--   limited
+[total_count] :: Gift -> Maybe Int
+instance GHC.Show.Show TD.Data.Gift.Gift
+instance GHC.Classes.Eq TD.Data.Gift.Gift
+instance TD.Lib.Internal.ShortShow TD.Data.Gift.Gift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gift.Gift
+
+module TD.Data.UserTransactionPurpose
+
+-- | Describes purpose of a transaction with a user
+data UserTransactionPurpose
+
+-- | A user gifted Telegram Stars
+UserTransactionPurposeGiftedStars :: Maybe Sticker -> UserTransactionPurpose
+
+-- | A sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: UserTransactionPurpose -> Maybe Sticker
+
+-- | The current user sold a gift received from another user
+UserTransactionPurposeGiftSell :: Maybe Gift -> UserTransactionPurpose
+
+-- | The gift
+[gift] :: UserTransactionPurpose -> Maybe Gift
+
+-- | The current user sent a gift to another user
+UserTransactionPurposeGiftSend :: Maybe Gift -> UserTransactionPurpose
+
+-- | The gift
+[gift] :: UserTransactionPurpose -> Maybe Gift
+instance GHC.Show.Show TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance GHC.Classes.Eq TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTransactionPurpose.UserTransactionPurpose
+
+module TD.Data.UserGift
+data UserGift
+
+-- | Represents a gift received by a user
+UserGift :: Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Gift -> Maybe Int -> Maybe Int -> UserGift
+
+-- | Identifier of the user that sent the gift; 0 if unknown
+[sender_user_id] :: UserGift -> Maybe Int
+
+-- | Message added to the gift
+[text] :: UserGift -> Maybe FormattedText
+
+-- | True, if the sender and gift text are shown only to the gift receiver;
+--   otherwise, everyone are able to see them
+[is_private] :: UserGift -> Maybe Bool
+
+-- | True, if the gift is displayed on the user's profile page; may be
+--   false only for the receiver of the gift
+[is_saved] :: UserGift -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the gift was sent
+[date] :: UserGift -> Maybe Int
+
+-- | The gift
+[gift] :: UserGift -> Maybe Gift
+
+-- | Identifier of the message with the gift in the chat with the sender of
+--   the gift; can be 0 or an identifier of a deleted message; only for the
+--   gift receiver
+[message_id] :: UserGift -> Maybe Int
+
+-- | Number of Telegram Stars that can be claimed by the receiver instead
+--   of the gift; only for the gift receiver
+[sell_star_count] :: UserGift -> Maybe Int
+instance GHC.Show.Show TD.Data.UserGift.UserGift
+instance GHC.Classes.Eq TD.Data.UserGift.UserGift
+instance TD.Lib.Internal.ShortShow TD.Data.UserGift.UserGift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGift.UserGift
+
+module TD.Data.UserGifts
+data UserGifts
+
+-- | Represents a list of gifts received by a user
+UserGifts :: Maybe Int -> Maybe [UserGift] -> Maybe Text -> UserGifts
+
+-- | The total number of received gifts
+[total_count] :: UserGifts -> Maybe Int
+
+-- | The list of gifts
+[gifts] :: UserGifts -> Maybe [UserGift]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: UserGifts -> Maybe Text
+instance GHC.Show.Show TD.Data.UserGifts.UserGifts
+instance GHC.Classes.Eq TD.Data.UserGifts.UserGifts
+instance TD.Lib.Internal.ShortShow TD.Data.UserGifts.UserGifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGifts.UserGifts
+
+module TD.Data.Gifts
+data Gifts
+
+-- | Contains a list of gifts that can be sent to another user
+Gifts :: Maybe [Gift] -> Gifts
+
+-- | The list of gifts
+[gifts] :: Gifts -> Maybe [Gift]
+instance GHC.Show.Show TD.Data.Gifts.Gifts
+instance GHC.Classes.Eq TD.Data.Gifts.Gifts
+instance TD.Lib.Internal.ShortShow TD.Data.Gifts.Gifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gifts.Gifts
 
 module TD.Data.EmojiReaction
 data EmojiReaction
@@ -11897,7 +12105,7 @@ ReplyMarkupShowKeyboard :: Maybe [[KeyboardButton]] -> Maybe Bool -> Maybe Bool 
 -- | A list of rows of bot keyboard buttons
 [rows] :: ReplyMarkup -> Maybe [[KeyboardButton]]
 
--- | True, if the keyboard is supposed to always be shown when the ordinary
+-- | True, if the keyboard is expected to always be shown when the ordinary
 --   keyboard is hidden
 [is_persistent] :: ReplyMarkup -> Maybe Bool
 
@@ -12357,7 +12565,7 @@ InternalLinkTypeBackground :: Maybe Text -> InternalLinkType
 -- | Name of the background
 [background_name] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to a Telegram bot, which is supposed to be added to
+-- | The link is a link to a Telegram bot, which is expected to be added to
 --   a channel chat as an administrator. Call searchPublicChat with the
 --   given bot username and check that the user is a bot, ask the current
 --   user to select a channel chat to add the bot to as an administrator.
@@ -12392,7 +12600,7 @@ InternalLinkTypeBotStart :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLi
 --   showing the START button
 [autostart] :: InternalLinkType -> Maybe Bool
 
--- | The link is a link to a Telegram bot, which is supposed to be added to
+-- | The link is a link to a Telegram bot, which is expected to be added to
 --   a group chat. Call searchPublicChat with the given bot username, check
 --   that the user is a bot and can be added to groups, ask the current
 --   user to select a basic group or a supergroup chat to add the bot to,
@@ -12812,7 +13020,9 @@ PremiumPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> May
 -- | The discount associated with this option, as a percentage
 [discount_percentage] :: PremiumPaymentOption -> Maybe Int
 
--- | Number of months the Telegram Premium subscription will be active
+-- | Number of months the Telegram Premium subscription will be active. Use
+--   getPremiumInfoSticker to get the sticker to be used as representation
+--   of the Telegram Premium subscription
 [month_count] :: PremiumPaymentOption -> Maybe Int
 
 -- | Identifier of the store product associated with the option
@@ -14251,15 +14461,14 @@ StarTransactionPartnerChat :: Maybe Int -> Maybe ChatTransactionPurpose -> StarT
 -- | Purpose of the transaction
 [_purpose] :: StarTransactionPartner -> Maybe ChatTransactionPurpose
 
--- | The transaction is a gift of Telegram Stars from another user
-StarTransactionPartnerUser :: Maybe Int -> Maybe Sticker -> StarTransactionPartner
+-- | The transaction is a transcation with another user
+StarTransactionPartnerUser :: Maybe Int -> Maybe UserTransactionPurpose -> StarTransactionPartner
 
 -- | Identifier of the bot
 [user_id] :: StarTransactionPartner -> Maybe Int
 
--- | A sticker to be shown in the transaction information; may be null if
---   unknown
-[sticker] :: StarTransactionPartner -> Maybe Sticker
+-- | Purpose of the transaction
+[__purpose] :: StarTransactionPartner -> Maybe UserTransactionPurpose
 
 -- | The transaction is a transaction with unknown partner
 StarTransactionPartnerUnsupported :: StarTransactionPartner
@@ -14989,15 +15198,15 @@ data AutoDownloadSettingsPresets
 -- | Contains auto-download settings presets for the current user
 AutoDownloadSettingsPresets :: Maybe AutoDownloadSettings -> Maybe AutoDownloadSettings -> Maybe AutoDownloadSettings -> AutoDownloadSettingsPresets
 
--- | Preset with lowest settings; supposed to be used by default when
+-- | Preset with lowest settings; expected to be used by default when
 --   roaming
 [low] :: AutoDownloadSettingsPresets -> Maybe AutoDownloadSettings
 
--- | Preset with medium settings; supposed to be used by default when using
+-- | Preset with medium settings; expected to be used by default when using
 --   mobile data
 [medium] :: AutoDownloadSettingsPresets -> Maybe AutoDownloadSettings
 
--- | Preset with highest settings; supposed to be used by default when
+-- | Preset with highest settings; expected to be used by default when
 --   connected on Wi-Fi
 [high] :: AutoDownloadSettingsPresets -> Maybe AutoDownloadSettings
 instance GHC.Show.Show TD.Data.AutoDownloadSettingsPresets.AutoDownloadSettingsPresets
@@ -15097,7 +15306,7 @@ AuthenticationCodeTypeFirebaseIos :: Maybe Text -> Maybe Int -> Maybe Int -> Aut
 --   receipt from push notification
 [receipt] :: AuthenticationCodeType -> Maybe Text
 
--- | Time after the next authentication method is supposed to be used if
+-- | Time after the next authentication method is expected to be used if
 --   verification push notification isn't received, in seconds
 [push_timeout] :: AuthenticationCodeType -> Maybe Int
 
@@ -15263,7 +15472,7 @@ Audio :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Ma
 [album_cover_minithumbnail] :: Audio -> Maybe Minithumbnail
 
 -- | The thumbnail of the album cover in JPEG format; as defined by the
---   sender. The full size thumbnail is supposed to be extracted from the
+--   sender. The full size thumbnail is expected to be extracted from the
 --   downloaded audio file; may be null
 [album_cover_thumbnail] :: Audio -> Maybe Thumbnail
 
@@ -15682,6 +15891,13 @@ PushMessageContentGiveaway :: Maybe Int -> Maybe GiveawayPrize -> Maybe Bool -> 
 
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
+
+-- | A message with a gift
+PushMessageContentGift :: Maybe Int -> PushMessageContent
+
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message; 0 for pinned message
+[star_count] :: PushMessageContent -> Maybe Int
 
 -- | A screenshot of a message in the chat has been taken
 PushMessageContentScreenshotTaken :: PushMessageContent
@@ -16610,7 +16826,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -16678,6 +16894,9 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 
 -- | The list of available options for gifting Telegram Premium to the user
 [premium_gift_options] :: UserFullInfo -> Maybe [PremiumPaymentOption]
+
+-- | Number of gifts saved to profile by the user
+[gift_count] :: UserFullInfo -> Maybe Int
 
 -- | Number of group chats where both the other user and the current user
 --   are a member; 0 for the current user
@@ -17202,6 +17421,32 @@ instance GHC.Classes.Eq TD.Data.BasicGroupFullInfo.BasicGroupFullInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BasicGroupFullInfo.BasicGroupFullInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BasicGroupFullInfo.BasicGroupFullInfo
 
+module TD.Data.AlternativeVideo
+data AlternativeVideo
+
+-- | Describes an alternative reencoded quality of a video file
+AlternativeVideo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe File -> Maybe File -> AlternativeVideo
+
+-- | Video width
+[width] :: AlternativeVideo -> Maybe Int
+
+-- | Video height
+[height] :: AlternativeVideo -> Maybe Int
+
+-- | Codec used for video file encoding, for example, "h264", "h265", or
+--   "av1"
+[codec] :: AlternativeVideo -> Maybe Text
+
+-- | HLS file describing the video
+[hls_file] :: AlternativeVideo -> Maybe File
+
+-- | File containing the video
+[video] :: AlternativeVideo -> Maybe File
+instance GHC.Show.Show TD.Data.AlternativeVideo.AlternativeVideo
+instance GHC.Classes.Eq TD.Data.AlternativeVideo.AlternativeVideo
+instance TD.Lib.Internal.ShortShow TD.Data.AlternativeVideo.AlternativeVideo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AlternativeVideo.AlternativeVideo
+
 module TD.Data.Address
 data Address
 
@@ -17605,10 +17850,13 @@ MessageSticker :: Maybe Sticker -> Maybe Bool -> MessageContent
 [is_premium] :: MessageContent -> Maybe Bool
 
 -- | A video message
-MessageVideo :: Maybe Video -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
+MessageVideo :: Maybe Video -> Maybe [AlternativeVideo] -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
 
 -- | The video description
 [video] :: MessageContent -> Maybe Video
+
+-- | Alternative qualities of the video
+[alternative_videos] :: MessageContent -> Maybe [AlternativeVideo]
 
 -- | Animation caption
 [caption] :: MessageContent -> Maybe FormattedText
@@ -17806,7 +18054,7 @@ MessageVideoChatScheduled :: Maybe Int -> Maybe Int -> MessageContent
 --   the method getGroupCall
 [group_call_id] :: MessageContent -> Maybe Int
 
--- | Point in time (Unix timestamp) when the group call is supposed to be
+-- | Point in time (Unix timestamp) when the group call is expected to be
 --   started by an administrator
 [start_date] :: MessageContent -> Maybe Int
 
@@ -18268,7 +18516,7 @@ MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
--- | A Telegram Stars were received by the cuurent user from a giveaway
+-- | A Telegram Stars were received by the current user from a giveaway
 MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Sticker -> MessageContent
 
 -- | Number of Telegram Stars needed to buy access to the media in the
@@ -18293,6 +18541,31 @@ MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -
 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
+
+-- | A gift was received or sent by the current user
+MessageGift :: Maybe Gift -> Maybe FormattedText -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
+
+-- | The gift
+[gift] :: MessageContent -> Maybe Gift
+
+-- | Text of the message
+[text] :: MessageContent -> Maybe FormattedText
+
+-- | Number of Telegram Stars that can be claimed by the receiver instead
+--   of the gift
+[sell_star_count] :: MessageContent -> Maybe Int
+
+-- | True, if the sender and gift text are shown only to the gift receiver;
+--   otherwise, everyone will be able to see them
+[is_private] :: MessageContent -> Maybe Bool
+
+-- | True, if the gift is displayed on the user's profile page; only for
+--   the receiver of the gift
+[is_saved] :: MessageContent -> Maybe Bool
+
+-- | True, if the gift was converted to Telegram Stars; only for the
+--   receiver of the gift
+[was_converted] :: MessageContent -> Maybe Bool
 
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
@@ -18390,7 +18663,8 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageConten
 [can_be_reported] :: SponsoredMessage -> Maybe Bool
 
 -- | Content of the message. Currently, can be only of the types
---   messageText, messageAnimation, messagePhoto, or messageVideo
+--   messageText, messageAnimation, messagePhoto, or messageVideo. Video
+--   messages can be viewed fullscreen
 [content] :: SponsoredMessage -> Maybe MessageContent
 
 -- | Information about the sponsor of the message
@@ -18595,7 +18869,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   message sender, for example, as away, or greeting service message
 [is_from_offline] :: Message -> Maybe Bool
 
--- | True, if content of the message can be saved locally or copied
+-- | True, if content of the message can be saved locally or copied using
+--   inputMessageForwarded or forwardMessages with copy options
 [can_be_saved] :: Message -> Maybe Bool
 
 -- | True, if media timestamp entities refers to a media in this message as
@@ -20203,7 +20478,7 @@ UpdateMessageFactCheck :: Maybe Int -> Maybe Int -> Maybe FactCheck -> Update
 [fact_check] :: Update -> Maybe FactCheck
 
 -- | A message with a live location was viewed. When the update is
---   received, the application is supposed to update the live location
+--   received, the application is expected to update the live location
 UpdateMessageLiveLocationViewed :: Maybe Int -> Maybe Int -> Update
 
 -- | The chat identifier of the sent message
@@ -20817,22 +21092,25 @@ UpdateFile :: Maybe File -> Update
 -- | New data about the file
 [file] :: Update -> Maybe File
 
--- | The file generation process needs to be started by the application
+-- | The file generation process needs to be started by the application.
+--   Use setFileGenerationProgress and finishFileGeneration to generate the
+--   file
 UpdateFileGenerationStart :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Update
 
 -- | Unique identifier for the generation process
 [generation_id] :: Update -> Maybe Int
 
--- | The path to a file from which a new file is generated; may be empty
+-- | The original path specified by the application in inputFileGenerated
 [original_path] :: Update -> Maybe Text
 
--- | The path to a file that must be created and where the new file is
---   generated
+-- | The path to a file that must be created and where the new file must be
+--   generated by the application. If the application has no access to the
+--   path, it can use writeGeneratedFilePart to generate the file
 [destination_path] :: Update -> Maybe Text
 
--- | String specifying the conversion applied to the original file. If
---   conversion is "" than original_path contains an HTTP/HTTPS URL of a
---   file, which must be downloaded by the application
+-- | If the conversion is "" than original_path contains an HTTP/HTTPS URL
+--   of a file that must be downloaded by the application. Otherwise, this
+--   is the conversion specified by the application in inputFileGenerated
 [conversion] :: Update -> Maybe Text
 
 -- | File generation is no longer needed
@@ -21809,6 +22087,7 @@ FoundStories :: FoundStories -> GeneralResult
 FoundUsers :: FoundUsers -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
+Gifts :: Gifts -> GeneralResult
 GiveawayInfo :: GiveawayInfo -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
@@ -21874,7 +22153,9 @@ QuickReplyMessages :: QuickReplyMessages -> GeneralResult
 ReadDatePrivacySettings :: ReadDatePrivacySettings -> GeneralResult
 RecommendedChatFolders :: RecommendedChatFolders -> GeneralResult
 RecoveryEmailAddress :: RecoveryEmailAddress -> GeneralResult
+ReportChatResult :: ReportChatResult -> GeneralResult
 ReportChatSponsoredMessageResult :: ReportChatSponsoredMessageResult -> GeneralResult
+ReportStoryResult :: ReportStoryResult -> GeneralResult
 ResetPasswordResult :: ResetPasswordResult -> GeneralResult
 RtmpUrl :: RtmpUrl -> GeneralResult
 SavedMessagesTags :: SavedMessagesTags -> GeneralResult
@@ -21920,6 +22201,7 @@ Update :: Update -> GeneralResult
 Updates :: Updates -> GeneralResult
 User :: User -> GeneralResult
 UserFullInfo :: UserFullInfo -> GeneralResult
+UserGifts :: UserGifts -> GeneralResult
 UserLink :: UserLink -> GeneralResult
 UserPrivacySettingRules :: UserPrivacySettingRules -> GeneralResult
 UserSupportInfo :: UserSupportInfo -> GeneralResult
@@ -22907,8 +23189,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CancelPasswordReset.CancelPassw
 module TD.Query.CancelPreliminaryUploadFile
 
 -- | Stops the preliminary uploading of a file. Supported only for files
---   uploaded by using preliminaryUploadFile. For other files the behavior
---   is undefined. Returns <a>Ok</a>
+--   uploaded by using preliminaryUploadFile. Returns <a>Ok</a>
 data CancelPreliminaryUploadFile
 CancelPreliminaryUploadFile :: Maybe Int -> CancelPreliminaryUploadFile
 
@@ -23223,9 +23504,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckStickerSetName.CheckSticke
 
 module TD.Query.CleanFileName
 
--- | Removes potentially dangerous characters from the name of a file. The
---   encoding of the file name is supposed to be UTF-8. Returns an empty
---   string on failure. Can be called synchronously. Returns <a>Text</a>
+-- | Removes potentially dangerous characters from the name of a file.
+--   Returns an empty string on failure. Can be called synchronously.
+--   Returns <a>Text</a>
 data CleanFileName
 CleanFileName :: Maybe Text -> CleanFileName
 
@@ -23354,16 +23635,23 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ClickAnimatedEmojiMessage.Click
 module TD.Query.ClickChatSponsoredMessage
 
 -- | Informs TDLib that the user opened the sponsored chat via the button,
---   the name, the photo, or a mention in the sponsored message. Returns
---   <a>Ok</a>
+--   the name, the chat photo, a mention in the sponsored message text, or
+--   the media in the sponsored message. Returns <a>Ok</a>
 data ClickChatSponsoredMessage
-ClickChatSponsoredMessage :: Maybe Int -> Maybe Int -> ClickChatSponsoredMessage
+ClickChatSponsoredMessage :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> ClickChatSponsoredMessage
 
 -- | Chat identifier of the sponsored message
 [chat_id] :: ClickChatSponsoredMessage -> Maybe Int
 
 -- | Identifier of the sponsored message
 [message_id] :: ClickChatSponsoredMessage -> Maybe Int
+
+-- | Pass true if the media was clicked in the sponsored message
+[is_media_click] :: ClickChatSponsoredMessage -> Maybe Bool
+
+-- | Pass true if the user expanded the video from the sponsored message
+--   fullscreen before the click
+[from_fullscreen] :: ClickChatSponsoredMessage -> Maybe Bool
 defaultClickChatSponsoredMessage :: ClickChatSponsoredMessage
 instance GHC.Show.Show TD.Query.ClickChatSponsoredMessage.ClickChatSponsoredMessage
 instance GHC.Classes.Eq TD.Query.ClickChatSponsoredMessage.ClickChatSponsoredMessage
@@ -23893,7 +24181,7 @@ CreateVideoChat :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> CreateV
 -- | Group call title; if empty, chat title will be used
 [title] :: CreateVideoChat -> Maybe Text
 
--- | Point in time (Unix timestamp) when the group call is supposed to be
+-- | Point in time (Unix timestamp) when the group call is expected to be
 --   started by an administrator; 0 to start the video chat immediately.
 --   The date must be at least 10 seconds and at most 8 days in the future
 [start_date] :: CreateVideoChat -> Maybe Int
@@ -24638,7 +24926,7 @@ EditBusinessMessageCaption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Repl
 [caption] :: EditBusinessMessageCaption -> Maybe FormattedText
 
 -- | Pass true to show the caption above the media; otherwise, the caption
---   will be shown below the media. Can be true only for animation, photo,
+--   will be shown below the media. May be true only for animation, photo,
 --   and video messages
 [show_caption_above_media] :: EditBusinessMessageCaption -> Maybe Bool
 defaultEditBusinessMessageCaption :: EditBusinessMessageCaption
@@ -24944,7 +25232,7 @@ EditInlineMessageCaption :: Maybe Text -> Maybe ReplyMarkup -> Maybe FormattedTe
 [caption] :: EditInlineMessageCaption -> Maybe FormattedText
 
 -- | Pass true to show the caption above the media; otherwise, the caption
---   will be shown below the media. Can be true only for animation, photo,
+--   will be shown below the media. May be true only for animation, photo,
 --   and video messages
 [show_caption_above_media] :: EditInlineMessageCaption -> Maybe Bool
 defaultEditInlineMessageCaption :: EditInlineMessageCaption
@@ -25075,7 +25363,7 @@ EditMessageCaption :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Forma
 [caption] :: EditMessageCaption -> Maybe FormattedText
 
 -- | Pass true to show the caption above the media; otherwise, the caption
---   will be shown below the media. Can be true only for animation, photo,
+--   will be shown below the media. May be true only for animation, photo,
 --   and video messages
 [show_caption_above_media] :: EditMessageCaption -> Maybe Bool
 defaultEditMessageCaption :: EditMessageCaption
@@ -25679,6 +25967,16 @@ instance GHC.Show.Show TD.Query.GetAvailableChatBoostSlots.GetAvailableChatBoost
 instance GHC.Classes.Eq TD.Query.GetAvailableChatBoostSlots.GetAvailableChatBoostSlots
 instance TD.Lib.Internal.ShortShow TD.Query.GetAvailableChatBoostSlots.GetAvailableChatBoostSlots
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAvailableChatBoostSlots.GetAvailableChatBoostSlots
+
+module TD.Query.GetAvailableGifts
+
+-- | Returns gifts that can be sent to other users. Returns <a>Gifts</a>
+data GetAvailableGifts
+GetAvailableGifts :: GetAvailableGifts
+instance GHC.Show.Show TD.Query.GetAvailableGifts.GetAvailableGifts
+instance GHC.Classes.Eq TD.Query.GetAvailableGifts.GetAvailableGifts
+instance TD.Lib.Internal.ShortShow TD.Query.GetAvailableGifts.GetAvailableGifts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAvailableGifts.GetAvailableGifts
 
 module TD.Query.GetBackgroundUrl
 
@@ -26480,7 +26778,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatMember.GetChatMember
 module TD.Query.GetChatMessageByDate
 
 -- | Returns the last message sent in a chat no later than the specified
---   date. Returns <a>Message</a>
+--   date. Returns a 404 error if such message doesn't exist. Returns
+--   <a>Message</a>
 data GetChatMessageByDate
 GetChatMessageByDate :: Maybe Int -> Maybe Int -> GetChatMessageByDate
 
@@ -26611,7 +26910,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatNotificationSettingsExce
 module TD.Query.GetChatPinnedMessage
 
 -- | Returns information about a newest pinned message in the chat. Returns
---   <a>Message</a>
+--   a 404 error if the message doesn't exist. Returns <a>Message</a>
 data GetChatPinnedMessage
 GetChatPinnedMessage :: Maybe Int -> GetChatPinnedMessage
 
@@ -28071,7 +28370,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMenuButton.GetMenuButton
 
 module TD.Query.GetMessage
 
--- | Returns information about a message. Returns <a>Message</a>
+-- | Returns information about a message. Returns a 404 error if the
+--   message doesn't exist. Returns <a>Message</a>
 data GetMessage
 GetMessage :: Maybe Int -> Maybe Int -> GetMessage
 
@@ -28258,8 +28558,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageLinkInfo.GetMessageLi
 module TD.Query.GetMessageLocally
 
 -- | Returns information about a message, if it is available without
---   sending network request. This is an offline request. Returns
---   <a>Message</a>
+--   sending network request. Returns a 404 error if message isn't
+--   available locally. This is an offline request. Returns <a>Message</a>
 data GetMessageLocally
 GetMessageLocally :: Maybe Int -> Maybe Int -> GetMessageLocally
 
@@ -28748,6 +29048,20 @@ instance GHC.Classes.Eq TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGift
 instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
 
+module TD.Query.GetPremiumInfoSticker
+
+-- | Returns the sticker to be used as representation of the Telegram
+--   Premium subscription. Returns <a>Sticker</a>
+data GetPremiumInfoSticker
+GetPremiumInfoSticker :: Maybe Int -> GetPremiumInfoSticker
+
+-- | Number of months the Telegram Premium subscription will be active
+[month_count] :: GetPremiumInfoSticker -> Maybe Int
+instance GHC.Show.Show TD.Query.GetPremiumInfoSticker.GetPremiumInfoSticker
+instance GHC.Classes.Eq TD.Query.GetPremiumInfoSticker.GetPremiumInfoSticker
+instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumInfoSticker.GetPremiumInfoSticker
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumInfoSticker.GetPremiumInfoSticker
+
 module TD.Query.GetPremiumLimit
 
 -- | Returns information about a limit, increased for Premium users.
@@ -28986,7 +29300,8 @@ module TD.Query.GetRepliedMessage
 --   the types messagePinMessage, messageGameScore,
 --   messagePaymentSuccessful, messageChatSetBackground,
 --   messageGiveawayCompleted and topic messages without non-bundled
---   replied message respectively. Returns <a>Message</a>
+--   replied message respectively. Returns a 404 error if the message
+--   doesn't exist. Returns <a>Message</a>
 data GetRepliedMessage
 GetRepliedMessage :: Maybe Int -> Maybe Int -> GetRepliedMessage
 
@@ -29577,7 +29892,7 @@ GetSuggestedFileName :: Maybe Int -> Maybe Text -> GetSuggestedFileName
 -- | Identifier of the file
 [file_id] :: GetSuggestedFileName -> Maybe Int
 
--- | Directory in which the file is supposed to be saved
+-- | Directory in which the file is expected to be saved
 [directory] :: GetSuggestedFileName -> Maybe Text
 defaultGetSuggestedFileName :: GetSuggestedFileName
 instance GHC.Show.Show TD.Query.GetSuggestedFileName.GetSuggestedFileName
@@ -29865,6 +30180,30 @@ instance GHC.Show.Show TD.Query.GetUserFullInfo.GetUserFullInfo
 instance GHC.Classes.Eq TD.Query.GetUserFullInfo.GetUserFullInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetUserFullInfo.GetUserFullInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUserFullInfo.GetUserFullInfo
+
+module TD.Query.GetUserGifts
+
+-- | Returns gifts saved to profile by the given user. Returns
+--   <a>UserGifts</a>
+data GetUserGifts
+GetUserGifts :: Maybe Int -> Maybe Text -> Maybe Int -> GetUserGifts
+
+-- | Identifier of the user
+[user_id] :: GetUserGifts -> Maybe Int
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetUserGifts -> Maybe Text
+
+-- | The maximum number of gifts to be returned; must be positive and can't
+--   be greater than 100. For optimal performance, the number of returned
+--   objects is chosen by TDLib and can be smaller than the specified limit
+[limit] :: GetUserGifts -> Maybe Int
+defaultGetUserGifts :: GetUserGifts
+instance GHC.Show.Show TD.Query.GetUserGifts.GetUserGifts
+instance GHC.Classes.Eq TD.Query.GetUserGifts.GetUserGifts
+instance TD.Lib.Internal.ShortShow TD.Query.GetUserGifts.GetUserGifts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUserGifts.GetUserGifts
 
 module TD.Query.GetUserLink
 
@@ -30925,7 +31264,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RecoverPassword.RecoverPassword
 
 module TD.Query.RefundStarPayment
 
--- | Refunds a previously done payment in Telegram Stars. Returns <a>Ok</a>
+-- | Refunds a previously done payment in Telegram Stars; for bots only.
+--   Returns <a>Ok</a>
 data RefundStarPayment
 RefundStarPayment :: Maybe Int -> Maybe Text -> RefundStarPayment
 
@@ -31496,22 +31836,24 @@ module TD.Query.ReportChat
 
 -- | Reports a chat to the Telegram moderators. A chat can be reported only
 --   from the chat action bar, or if chat.can_be_reported. Returns
---   <a>Ok</a>
+--   <a>ReportChatResult</a>
 data ReportChat
-ReportChat :: Maybe Int -> Maybe [Int] -> Maybe ReportReason -> Maybe Text -> ReportChat
+ReportChat :: Maybe Int -> Maybe ByteString -> Maybe [Int] -> Maybe Text -> ReportChat
 
 -- | Chat identifier
 [chat_id] :: ReportChat -> Maybe Int
 
--- | Identifiers of reported messages; may be empty to report the whole
---   chat. Use messageProperties.can_be_reported to check whether the
---   message can be reported
+-- | Option identifier chosen by the user; leave empty for the initial
+--   request
+[option_id] :: ReportChat -> Maybe ByteString
+
+-- | Identifiers of reported messages. Use
+--   messageProperties.can_report_chat to check whether the message can be
+--   reported
 [message_ids] :: ReportChat -> Maybe [Int]
 
--- | The reason for reporting the chat
-[reason] :: ReportChat -> Maybe ReportReason
-
--- | Additional report details; 0-1024 characters
+-- | Additional report details if asked by the server; 0-1024 characters;
+--   leave empty for the initial request
 [text] :: ReportChat -> Maybe Text
 defaultReportChat :: ReportChat
 instance GHC.Show.Show TD.Query.ReportChat.ReportChat
@@ -31605,9 +31947,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportPhoneNumberCodeMissing.Re
 
 module TD.Query.ReportStory
 
--- | Reports a story to the Telegram moderators. Returns <a>Ok</a>
+-- | Reports a story to the Telegram moderators. Returns
+--   <a>ReportStoryResult</a>
 data ReportStory
-ReportStory :: Maybe Int -> Maybe Int -> Maybe ReportReason -> Maybe Text -> ReportStory
+ReportStory :: Maybe Int -> Maybe Int -> Maybe ByteString -> Maybe Text -> ReportStory
 
 -- | The identifier of the sender of the story to report
 [story_sender_chat_id] :: ReportStory -> Maybe Int
@@ -31615,10 +31958,12 @@ ReportStory :: Maybe Int -> Maybe Int -> Maybe ReportReason -> Maybe Text -> Rep
 -- | The identifier of the story to report
 [story_id] :: ReportStory -> Maybe Int
 
--- | The reason for reporting the story
-[reason] :: ReportStory -> Maybe ReportReason
+-- | Option identifier chosen by the user; leave empty for the initial
+--   request
+[option_id] :: ReportStory -> Maybe ByteString
 
--- | Additional report details; 0-1024 characters
+-- | Additional report details; 0-1024 characters; leave empty for the
+--   initial request
 [text] :: ReportStory -> Maybe Text
 defaultReportStory :: ReportStory
 instance GHC.Show.Show TD.Query.ReportStory.ReportStory
@@ -31658,8 +32003,8 @@ ReportSupergroupSpam :: Maybe Int -> Maybe [Int] -> ReportSupergroupSpam
 [supergroup_id] :: ReportSupergroupSpam -> Maybe Int
 
 -- | Identifiers of messages to report. Use
---   messageProperties.can_be_reported to check whether the message can be
---   reported
+--   messageProperties.can_report_supergroup_spam to check whether the
+--   message can be reported
 [message_ids] :: ReportSupergroupSpam -> Maybe [Int]
 defaultReportSupergroupSpam :: ReportSupergroupSpam
 instance GHC.Show.Show TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
@@ -32103,9 +32448,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchChats.SearchChats
 module TD.Query.SearchChatsNearby
 
 -- | Returns a list of users and location-based supergroups nearby. The
---   list of users nearby will be updated for 60 seconds after the request
---   by the updates updateUsersNearby. The request must be sent again every
---   25 seconds with adjusted location to not miss new chats. Returns
+--   method was disabled and returns an empty list of chats now. Returns
 --   <a>ChatsNearby</a>
 data SearchChatsNearby
 SearchChatsNearby :: Maybe Location -> SearchChatsNearby
@@ -32687,6 +33030,24 @@ instance GHC.Classes.Eq TD.Query.SearchWebApp.SearchWebApp
 instance TD.Lib.Internal.ShortShow TD.Query.SearchWebApp.SearchWebApp
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchWebApp.SearchWebApp
 
+module TD.Query.SellGift
+
+-- | Sells a gift received by the current user for Telegram Stars. Returns
+--   <a>Ok</a>
+data SellGift
+SellGift :: Maybe Int -> Maybe Int -> SellGift
+
+-- | Identifier of the user that sent the gift
+[sender_user_id] :: SellGift -> Maybe Int
+
+-- | Identifier of the message with the gift in the chat with the user
+[message_id] :: SellGift -> Maybe Int
+defaultSellGift :: SellGift
+instance GHC.Show.Show TD.Query.SellGift.SellGift
+instance GHC.Classes.Eq TD.Query.SellGift.SellGift
+instance TD.Lib.Internal.ShortShow TD.Query.SellGift.SellGift
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SellGift.SellGift
+
 module TD.Query.SendAuthenticationFirebaseSms
 
 -- | Sends Firebase Authentication SMS to the phone number of the user.
@@ -32942,6 +33303,32 @@ instance GHC.Show.Show TD.Query.SendEmailAddressVerificationCode.SendEmailAddres
 instance GHC.Classes.Eq TD.Query.SendEmailAddressVerificationCode.SendEmailAddressVerificationCode
 instance TD.Lib.Internal.ShortShow TD.Query.SendEmailAddressVerificationCode.SendEmailAddressVerificationCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendEmailAddressVerificationCode.SendEmailAddressVerificationCode
+
+module TD.Query.SendGift
+
+-- | Send a gift to another user. Returns <a>Ok</a>
+data SendGift
+SendGift :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> SendGift
+
+-- | Identifier of the gift to send
+[gift_id] :: SendGift -> Maybe Int
+
+-- | Identifier of the user that will receive the gift
+[user_id] :: SendGift -> Maybe Int
+
+-- | Text to show along with the gift; 0-getOption("gift_text_length_max")
+--   characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, and
+--   CustomEmoji entities are allowed
+[text] :: SendGift -> Maybe FormattedText
+
+-- | Pass true to show the current user as sender and gift text only to the
+--   gift receiver; otherwise, everyone will be able to see them
+[is_private] :: SendGift -> Maybe Bool
+defaultSendGift :: SendGift
+instance GHC.Show.Show TD.Query.SendGift.SendGift
+instance GHC.Classes.Eq TD.Query.SendGift.SendGift
+instance TD.Lib.Internal.ShortShow TD.Query.SendGift.SendGift
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendGift.SendGift
 
 module TD.Query.SendInlineQueryResultMessage
 
@@ -36157,6 +36544,28 @@ instance GHC.Show.Show TD.Query.ToggleGeneralForumTopicIsHidden.ToggleGeneralFor
 instance GHC.Classes.Eq TD.Query.ToggleGeneralForumTopicIsHidden.ToggleGeneralForumTopicIsHidden
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGeneralForumTopicIsHidden.ToggleGeneralForumTopicIsHidden
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGeneralForumTopicIsHidden.ToggleGeneralForumTopicIsHidden
+
+module TD.Query.ToggleGiftIsSaved
+
+-- | Toggles whether a gift is shown on the current user's profile page.
+--   Returns <a>Ok</a>
+data ToggleGiftIsSaved
+ToggleGiftIsSaved :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleGiftIsSaved
+
+-- | Identifier of the user that sent the gift
+[sender_user_id] :: ToggleGiftIsSaved -> Maybe Int
+
+-- | Identifier of the message with the gift in the chat with the user
+[message_id] :: ToggleGiftIsSaved -> Maybe Int
+
+-- | Pass true to display the gift on the user's profile page; pass false
+--   to remove it from the profile page
+[is_saved] :: ToggleGiftIsSaved -> Maybe Bool
+defaultToggleGiftIsSaved :: ToggleGiftIsSaved
+instance GHC.Show.Show TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
+instance GHC.Classes.Eq TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 
 module TD.Query.ToggleGroupCallEnabledStartNotification
 
