@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.45.0
+@version 2.0.46.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -9800,7 +9800,7 @@ Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> May
 [default_sell_star_count] :: Gift -> Maybe Int
 
 -- | Number of remaining times the gift can be purchased by all users; 0 if
---   not limited
+--   not limited or the gift was sold out
 [remaining_count] :: Gift -> Maybe Int
 
 -- | Number of total times the gift can be purchased by all users; 0 if not
@@ -33306,7 +33306,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendEmailAddressVerificationCod
 
 module TD.Query.SendGift
 
--- | Send a gift to another user. Returns <a>Ok</a>
+-- | Sends a gift to another user. May return an error with a message
+--   <a>STARGIFT_USAGE_LIMITED</a> if the gift was sold out. Returns
+--   <a>Ok</a>
 data SendGift
 SendGift :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> SendGift
 
