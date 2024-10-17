@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.46.0
+@version 2.0.47.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -479,49 +479,49 @@ data ThemeParameters
 -- | Contains parameters of the application theme
 ThemeParameters :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ThemeParameters
 
--- | A color of the background in the RGB24 format
+-- | A color of the background in the RGB format
 [background_color] :: ThemeParameters -> Maybe Int
 
--- | A secondary color for the background in the RGB24 format
+-- | A secondary color for the background in the RGB format
 [secondary_background_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the header background in the RGB24 format
+-- | A color of the header background in the RGB format
 [header_background_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the bottom bar background in the RGB24 format
+-- | A color of the bottom bar background in the RGB format
 [bottom_bar_background_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the section background in the RGB24 format
+-- | A color of the section background in the RGB format
 [section_background_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the section separator in the RGB24 format
+-- | A color of the section separator in the RGB format
 [section_separator_color] :: ThemeParameters -> Maybe Int
 
--- | A color of text in the RGB24 format
+-- | A color of text in the RGB format
 [text_color] :: ThemeParameters -> Maybe Int
 
--- | An accent color of the text in the RGB24 format
+-- | An accent color of the text in the RGB format
 [accent_text_color] :: ThemeParameters -> Maybe Int
 
--- | A color of text on the section headers in the RGB24 format
+-- | A color of text on the section headers in the RGB format
 [section_header_text_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the subtitle text in the RGB24 format
+-- | A color of the subtitle text in the RGB format
 [subtitle_text_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the text for destructive actions in the RGB24 format
+-- | A color of the text for destructive actions in the RGB format
 [destructive_text_color] :: ThemeParameters -> Maybe Int
 
--- | A color of hints in the RGB24 format
+-- | A color of hints in the RGB format
 [hint_color] :: ThemeParameters -> Maybe Int
 
--- | A color of links in the RGB24 format
+-- | A color of links in the RGB format
 [link_color] :: ThemeParameters -> Maybe Int
 
--- | A color of the buttons in the RGB24 format
+-- | A color of the buttons in the RGB format
 [button_color] :: ThemeParameters -> Maybe Int
 
--- | A color of text on the buttons in the RGB24 format
+-- | A color of text on the buttons in the RGB format
 [button_text_color] :: ThemeParameters -> Maybe Int
 defaultThemeParameters :: ThemeParameters
 instance GHC.Show.Show TD.Data.ThemeParameters.ThemeParameters
@@ -13385,10 +13385,10 @@ module TD.Data.ChatActionBar
 --   bar
 data ChatActionBar
 
--- | The chat can be reported as spam using the method reportChat with the
---   reason reportReasonSpam. If the chat is a private chat with a user
---   with an emoji status, then a notice about emoji status usage must be
---   shown
+-- | The chat can be reported as spam using the method reportChat with an
+--   empty option_id and message_ids. If the chat is a private chat with a
+--   user with an emoji status, then a notice about emoji status usage must
+--   be shown
 ChatActionBarReportSpam :: Maybe Bool -> ChatActionBar
 
 -- | If true, the chat was automatically archived and can be moved back to
@@ -13397,9 +13397,8 @@ ChatActionBarReportSpam :: Maybe Bool -> ChatActionBar
 --   setChatNotificationSettings
 [can_unarchive] :: ChatActionBar -> Maybe Bool
 
--- | The chat is a location-based supergroup, which can be reported as
---   having unrelated location using the method reportChat with the reason
---   reportReasonUnrelatedLocation
+-- | The chat is a location-based supergroup, which can't be reported
+--   anymore
 ChatActionBarReportUnrelatedLocation :: ChatActionBar
 
 -- | The chat is a recently created group chat to which new members can be
@@ -14790,16 +14789,16 @@ data BackgroundFill
 -- | Describes a solid fill of a background
 BackgroundFillSolid :: Maybe Int -> BackgroundFill
 
--- | A color of the background in the RGB24 format
+-- | A color of the background in the RGB format
 [color] :: BackgroundFill -> Maybe Int
 
 -- | Describes a gradient fill of a background
 BackgroundFillGradient :: Maybe Int -> Maybe Int -> Maybe Int -> BackgroundFill
 
--- | A top color of the background in the RGB24 format
+-- | A top color of the background in the RGB format
 [top_color] :: BackgroundFill -> Maybe Int
 
--- | A bottom color of the background in the RGB24 format
+-- | A bottom color of the background in the RGB format
 [bottom_color] :: BackgroundFill -> Maybe Int
 
 -- | Clockwise rotation angle of the gradient, in degrees; 0-359. Must
@@ -14809,7 +14808,7 @@ BackgroundFillGradient :: Maybe Int -> Maybe Int -> Maybe Int -> BackgroundFill
 -- | Describes a freeform gradient fill of a background
 BackgroundFillFreeformGradient :: Maybe [Int] -> BackgroundFill
 
--- | A list of 3 or 4 colors of the freeform gradient in the RGB24 format
+-- | A list of 3 or 4 colors of the freeform gradient in the RGB format
 [colors] :: BackgroundFill -> Maybe [Int]
 instance GHC.Show.Show TD.Data.BackgroundFill.BackgroundFill
 instance GHC.Classes.Eq TD.Data.BackgroundFill.BackgroundFill
@@ -15493,10 +15492,10 @@ data AttachmentMenuBotColor
 -- | Describes a color to highlight a bot added to attachment menu
 AttachmentMenuBotColor :: Maybe Int -> Maybe Int -> AttachmentMenuBotColor
 
--- | Color in the RGB24 format for light themes
+-- | Color in the RGB format for light themes
 [light_color] :: AttachmentMenuBotColor -> Maybe Int
 
--- | Color in the RGB24 format for dark themes
+-- | Color in the RGB format for dark themes
 [dark_color] :: AttachmentMenuBotColor -> Maybe Int
 instance GHC.Show.Show TD.Data.AttachmentMenuBotColor.AttachmentMenuBotColor
 instance GHC.Classes.Eq TD.Data.AttachmentMenuBotColor.AttachmentMenuBotColor
@@ -17256,7 +17255,7 @@ LinkPreviewTypeTheme :: Maybe [Document] -> Maybe ThemeSettings -> LinkPreviewTy
 -- | The list of files with theme description
 [documents] :: LinkPreviewType -> Maybe [Document]
 
--- | Settings for the cloud theme
+-- | Settings for the cloud theme; may be null if unknown
 [settings] :: LinkPreviewType -> Maybe ThemeSettings
 
 -- | The link preview type is unsupported yet
