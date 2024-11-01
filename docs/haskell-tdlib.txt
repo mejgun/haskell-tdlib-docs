@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.48.0
+@version 2.0.49.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2632,51 +2632,6 @@ instance GHC.Classes.Eq TD.Data.PremiumLimit.PremiumLimit
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumLimit.PremiumLimit
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumLimit.PremiumLimit
 
-module TD.Data.PremiumGiftCodePaymentOption
-data PremiumGiftCodePaymentOption
-
--- | Describes an option for creating Telegram Premium gift codes or
---   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
---   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
-PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> PremiumGiftCodePaymentOption
-
--- | ISO 4217 currency code for Telegram Premium gift code payment
-[currency] :: PremiumGiftCodePaymentOption -> Maybe Text
-
--- | The amount to pay, in the smallest units of the currency
-[amount] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Number of users which will be able to activate the gift codes
-[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Number of months the Telegram Premium subscription will be active
-[month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Identifier of the store product associated with the option; may be
---   empty if none
-[store_product_id] :: PremiumGiftCodePaymentOption -> Maybe Text
-
--- | Number of times the store product must be paid
-[store_product_quantity] :: PremiumGiftCodePaymentOption -> Maybe Int
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-
-module TD.Data.PremiumGiftCodePaymentOptions
-data PremiumGiftCodePaymentOptions
-
--- | Contains a list of options for creating Telegram Premium gift codes or
---   Telegram Premium giveaway
-PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
-
--- | The list of options
-[options] :: PremiumGiftCodePaymentOptions -> Maybe [PremiumGiftCodePaymentOption]
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-
 module TD.Data.PremiumFeature
 
 -- | Describes a feature available to Premium users
@@ -3562,6 +3517,14 @@ MessageSchedulingStateSendAtDate :: Maybe Int -> MessageSchedulingState
 --   private chats only and when the exact online status of the other user
 --   is known
 MessageSchedulingStateSendWhenOnline :: MessageSchedulingState
+
+-- | The message will be sent when the video in the message is converted
+--   and optimized; can be used only by the server
+MessageSchedulingStateSendWhenVideoProcessed :: Maybe Int -> MessageSchedulingState
+
+-- | Point in time (Unix timestamp) when the message will be sent. The date
+--   must be within 367 days in the future
+[send_date] :: MessageSchedulingState -> Maybe Int
 instance GHC.Show.Show TD.Data.MessageSchedulingState.MessageSchedulingState
 instance GHC.Classes.Eq TD.Data.MessageSchedulingState.MessageSchedulingState
 instance TD.Lib.Internal.ShortShow TD.Data.MessageSchedulingState.MessageSchedulingState
@@ -3572,7 +3535,7 @@ module TD.Data.MessageSendOptions
 data MessageSendOptions
 
 -- | Options to be used when a message is sent
-MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
+MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
 
 -- | Pass true to disable notification for the message
 [disable_notification] :: MessageSendOptions -> Maybe Bool
@@ -3583,6 +3546,10 @@ MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Ma
 -- | Pass true if the content of the message must be protected from
 --   forwarding and saving; for bots only
 [protect_content] :: MessageSendOptions -> Maybe Bool
+
+-- | Pass true to allow the message to ignore regular broadcast limits for
+--   a small fee; for bots only
+[allow_paid_broadcast] :: MessageSendOptions -> Maybe Bool
 
 -- | Pass true if the user explicitly chosen a sticker or a custom emoji
 --   from an installed sticker set; applicable only to sendMessage and
@@ -3725,7 +3692,7 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
 
 -- | True, if content of the message can be copied to a secret chat using
 --   inputMessageForwarded or forwardMessages with copy options
@@ -3741,9 +3708,9 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 [can_be_deleted_for_all_users] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be edited using the methods editMessageText,
---   editMessageMedia, editMessageCaption, or editMessageReplyMarkup. For
---   live location and poll messages this fields shows whether
---   editMessageLiveLocation or stopPoll can be used with this message
+--   editMessageCaption, or editMessageReplyMarkup. For live location and
+--   poll messages this fields shows whether editMessageLiveLocation or
+--   stopPoll can be used with this message
 [can_be_edited] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be forwarded using inputMessageForwarded or
@@ -3772,6 +3739,9 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 -- | True, if the message can be shared in a story using
 --   inputStoryAreaTypeMessage
 [can_be_shared_in_story] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message can be edited using the method editMessageMedia
+[can_edit_media] :: MessageProperties -> Maybe Bool
 
 -- | True, if scheduling state of the message can be edited
 [can_edit_scheduling_state] :: MessageProperties -> Maybe Bool
@@ -6403,18 +6373,6 @@ StorePaymentPurposePremiumSubscription :: Maybe Bool -> Maybe Bool -> StorePayme
 --   subscription; only for App Store
 [is_upgrade] :: StorePaymentPurpose -> Maybe Bool
 
--- | The user gifting Telegram Premium to another user
-StorePaymentPurposeGiftedPremium :: Maybe Int -> Maybe Text -> Maybe Int -> StorePaymentPurpose
-
--- | Identifier of the user to which Telegram Premium is gifted
-[user_id] :: StorePaymentPurpose -> Maybe Int
-
--- | ISO 4217 currency code of the payment currency
-[currency] :: StorePaymentPurpose -> Maybe Text
-
--- | Paid amount, in the smallest units of the currency
-[amount] :: StorePaymentPurpose -> Maybe Int
-
 -- | The user creating Telegram Premium gift codes for other users
 StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe FormattedText -> StorePaymentPurpose
 
@@ -6483,7 +6441,7 @@ StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePayment
 -- | The user buying Telegram Stars for other users
 StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
 
--- | Identifier of the user to which Telegram Premium is gifted
+-- | Identifier of the user to which Telegram Stars are gifted
 [user_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -9159,7 +9117,8 @@ InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> M
 -- | A video note message
 InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> InputMessageContent
 
--- | Video note to be sent
+-- | Video note to be sent. The video is expected to be encoded to MPEG4
+--   format with H.264 codec and have no data outside of the visible circle
 [video_note] :: InputMessageContent -> Maybe InputFile
 
 -- | Animation thumbnail; pass null to skip thumbnail uploading
@@ -9745,6 +9704,57 @@ instance GHC.Classes.Eq TD.Data.StickerSet.StickerSet
 instance TD.Lib.Internal.ShortShow TD.Data.StickerSet.StickerSet
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
 
+module TD.Data.PremiumGiftCodePaymentOption
+data PremiumGiftCodePaymentOption
+
+-- | Describes an option for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
+--   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
+PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Sticker -> PremiumGiftCodePaymentOption
+
+-- | ISO 4217 currency code for Telegram Premium gift code payment
+[currency] :: PremiumGiftCodePaymentOption -> Maybe Text
+
+-- | The amount to pay, in the smallest units of the currency
+[amount] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | The discount associated with this option, as a percentage
+[discount_percentage] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Number of users which will be able to activate the gift codes
+[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active
+[month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Identifier of the store product associated with the option; may be
+--   empty if none
+[store_product_id] :: PremiumGiftCodePaymentOption -> Maybe Text
+
+-- | Number of times the store product must be paid
+[store_product_quantity] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | A sticker to be shown along with the gift code; may be null if unknown
+[sticker] :: PremiumGiftCodePaymentOption -> Maybe Sticker
+instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+
+module TD.Data.PremiumGiftCodePaymentOptions
+data PremiumGiftCodePaymentOptions
+
+-- | Contains a list of options for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway
+PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
+
+-- | The list of options
+[options] :: PremiumGiftCodePaymentOptions -> Maybe [PremiumGiftCodePaymentOption]
+instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+
 module TD.Data.MessageEffectType
 
 -- | Describes type of emoji effect
@@ -9800,7 +9810,7 @@ module TD.Data.Gift
 data Gift
 
 -- | Describes a gift that can be sent to another user
-Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
+Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
 
 -- | Unique identifier of the gift
 [_id] :: Gift -> Maybe Int
@@ -9823,6 +9833,14 @@ Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> May
 -- | Number of total times the gift can be purchased by all users; 0 if not
 --   limited
 [total_count] :: Gift -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift was send for the first
+--   time; for sold out gifts only
+[first_send_date] :: Gift -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift was send for the last
+--   time; for sold out gifts only
+[last_send_date] :: Gift -> Maybe Int
 instance GHC.Show.Show TD.Data.Gift.Gift
 instance GHC.Classes.Eq TD.Data.Gift.Gift
 instance TD.Lib.Internal.ShortShow TD.Data.Gift.Gift
@@ -12812,8 +12830,8 @@ InternalLinkTypePremiumFeatures :: Maybe Text -> InternalLinkType
 [referrer] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to the screen for gifting Telegram Premium
---   subscriptions to friends via inputInvoiceTelegram payments or in-store
---   purchases
+--   subscriptions to friends via inputInvoiceTelegram with
+--   telegramPaymentPurposePremiumGiftCodes payments or in-store purchases
 InternalLinkTypePremiumGift :: Maybe Text -> InternalLinkType
 
 -- | Referrer specified in the link
@@ -14404,11 +14422,18 @@ StarTransactionPartnerGooglePlay :: StarTransactionPartner
 -- | The transaction is a transaction with Fragment
 StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
 
--- | State of the withdrawal; may be null for refunds from Fragment
+-- | State of the withdrawal; may be null for refunds from Fragment or for
+--   Telegram Stars bought on Fragment
 [withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
 
 -- | The transaction is a transaction with Telegram Ad platform
 StarTransactionPartnerTelegramAds :: StarTransactionPartner
+
+-- | The transaction is a transaction with Telegram for API usage
+StarTransactionPartnerTelegramApi :: Maybe Int -> StarTransactionPartner
+
+-- | The number of billed requests
+[request_count] :: StarTransactionPartner -> Maybe Int
 
 -- | The transaction is a transaction with a bot
 StarTransactionPartnerBot :: Maybe Int -> Maybe BotTransactionPurpose -> StarTransactionPartner
@@ -16645,7 +16670,7 @@ module TD.Data.BotInfo
 data BotInfo
 
 -- | Contains information about a bot
-BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
+BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
 
 -- | The text that is shown on the bot's profile page and is sent together
 --   with the link when users share the bot
@@ -16681,6 +16706,9 @@ BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe B
 -- | Default administrator rights for adding the bot to channels; may be
 --   null
 [default_channel_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
+
+-- | True, if the bot's revenue statistics are available
+[can_get_revenue_statistics] :: BotInfo -> Maybe Bool
 
 -- | True, if the bot has media previews
 [has_media_previews] :: BotInfo -> Maybe Bool
@@ -16802,7 +16830,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe [PremiumPaymentOption] -> Maybe Int -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -16867,9 +16895,6 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 
 -- | Identifier of the personal chat of the user; 0 if none
 [personal_chat_id] :: UserFullInfo -> Maybe Int
-
--- | The list of available options for gifting Telegram Premium to the user
-[premium_gift_options] :: UserFullInfo -> Maybe [PremiumPaymentOption]
 
 -- | Number of gifts saved to profile by the user
 [gift_count] :: UserFullInfo -> Maybe Int
@@ -18869,10 +18894,12 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | True, if the message contains an unread mention for the current user
 [contains_unread_mention] :: Message -> Maybe Bool
 
--- | Point in time (Unix timestamp) when the message was sent
+-- | Point in time (Unix timestamp) when the message was sent; 0 for
+--   scheduled messages
 [date] :: Message -> Maybe Int
 
--- | Point in time (Unix timestamp) when the message was last edited
+-- | Point in time (Unix timestamp) when the message was last edited; 0 for
+--   scheduled messages
 [edit_date] :: Message -> Maybe Int
 
 -- | Information about the initial message sender; may be null if none or
@@ -20462,6 +20489,16 @@ UpdateMessageFactCheck :: Maybe Int -> Maybe Int -> Maybe FactCheck -> Update
 -- | A message with a live location was viewed. When the update is
 --   received, the application is expected to update the live location
 UpdateMessageLiveLocationViewed :: Maybe Int -> Maybe Int -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | A temporary message identifier
+[message_id] :: Update -> Maybe Int
+
+-- | An automatically scheduled message with video has been successfully
+--   sent after conversion
+UpdateVideoPublished :: Maybe Int -> Maybe Int -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -24955,9 +24992,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessMessageLiveLocation
 
 module TD.Query.EditBusinessMessageMedia
 
--- | Edits the content of a message with an animation, an audio, a
---   document, a photo or a video in a message sent on behalf of a business
---   account; for bots only. Returns <a>BusinessMessage</a>
+-- | Edits the media content of a message with a text, an animation, an
+--   audio, a document, a photo or a video in a message sent on behalf of a
+--   business account; for bots only. Returns <a>BusinessMessage</a>
 data EditBusinessMessageMedia
 EditBusinessMessageMedia :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditBusinessMessageMedia
 
@@ -25254,9 +25291,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditInlineMessageLiveLocation.E
 
 module TD.Query.EditInlineMessageMedia
 
--- | Edits the content of a message with an animation, an audio, a
---   document, a photo or a video in an inline message sent via a bot; for
---   bots only. Returns <a>Ok</a>
+-- | Edits the media content of a message with a text, an animation, an
+--   audio, a document, a photo or a video in an inline message sent via a
+--   bot; for bots only. Returns <a>Ok</a>
 data EditInlineMessageMedia
 EditInlineMessageMedia :: Maybe Text -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditInlineMessageMedia
 
@@ -25391,21 +25428,19 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageLiveLocation.EditMes
 
 module TD.Query.EditMessageMedia
 
--- | Edits the content of a message with an animation, an audio, a
---   document, a photo or a video, including message caption. If only the
---   caption needs to be edited, use editMessageCaption instead. The media
---   can't be edited if the message was set to self-destruct or to a
---   self-destructing media. The type of message content in an album can't
---   be changed with exception of replacing a photo with a video or vice
---   versa. Returns the edited message after the edit is completed on the
---   server side. Returns <a>Message</a>
+-- | Edits the media content of a message, including message caption. If
+--   only the caption needs to be edited, use editMessageCaption instead.
+--   The type of message content in an album can't be changed with
+--   exception of replacing a photo with a video or vice versa. Returns the
+--   edited message after the edit is completed on the server side. Returns
+--   <a>Message</a>
 data EditMessageMedia
 EditMessageMedia :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditMessageMedia
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageMedia -> Maybe Int
 
--- | Identifier of the message. Use messageProperties.can_be_edited to
+-- | Identifier of the message. Use messageProperties.can_edit_media to
 --   check whether the message can be edited
 [message_id] :: EditMessageMedia -> Maybe Int
 
@@ -25462,7 +25497,8 @@ EditMessageSchedulingState :: Maybe Int -> Maybe Int -> Maybe MessageSchedulingS
 [message_id] :: EditMessageSchedulingState -> Maybe Int
 
 -- | The new message scheduling state; pass null to send the message
---   immediately
+--   immediately. Must be null for messages in the state
+--   messageSchedulingStateSendWhenVideoProcessed
 [scheduling_state] :: EditMessageSchedulingState -> Maybe MessageSchedulingState
 defaultEditMessageSchedulingState :: EditMessageSchedulingState
 instance GHC.Show.Show TD.Query.EditMessageSchedulingState.EditMessageSchedulingState
@@ -25527,7 +25563,7 @@ module TD.Query.EditQuickReplyMessage
 
 -- | Asynchronously edits the text, media or caption of a quick reply
 --   message. Use quickReplyMessage.can_be_edited to check whether a
---   message can be edited. Text message can be edited only to a text
+--   message can be edited. Media message can be edited only to a media
 --   message. The type of message content in an album can't be changed with
 --   exception of replacing a photo with a video or vice versa. Returns
 --   <a>Ok</a>
@@ -26928,7 +26964,8 @@ module TD.Query.GetChatRevenueStatistics
 
 -- | Returns detailed revenue statistics about a chat. Currently, this
 --   method can be used only for channels if
---   supergroupFullInfo.can_get_revenue_statistics == true. Returns
+--   supergroupFullInfo.can_get_revenue_statistics == true or bots if
+--   userFullInfo.bot_info.can_get_revenue_statistics == true. Returns
 --   <a>ChatRevenueStatistics</a>
 data GetChatRevenueStatistics
 GetChatRevenueStatistics :: Maybe Int -> Maybe Bool -> GetChatRevenueStatistics
@@ -26948,7 +26985,8 @@ module TD.Query.GetChatRevenueTransactions
 
 -- | Returns the list of revenue transactions for a chat. Currently, this
 --   method can be used only for channels if
---   supergroupFullInfo.can_get_revenue_statistics == true. Returns
+--   supergroupFullInfo.can_get_revenue_statistics == true or bots if
+--   userFullInfo.bot_info.can_get_revenue_statistics == true. Returns
 --   <a>ChatRevenueTransactions</a>
 data GetChatRevenueTransactions
 GetChatRevenueTransactions :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatRevenueTransactions
@@ -26970,9 +27008,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueTransactions.GetC
 module TD.Query.GetChatRevenueWithdrawalUrl
 
 -- | Returns a URL for chat revenue withdrawal; requires owner privileges
---   in the chat. Currently, this method can be used only for channels if
---   supergroupFullInfo.can_get_revenue_statistics == true and
---   getOption("can_withdraw_chat_revenue"). Returns <a>HttpUrl</a>
+--   in the channel chat or the bot. Currently, this method can be used
+--   only if getOption("can_withdraw_chat_revenue") for channels with
+--   supergroupFullInfo.can_get_revenue_statistics == true or bots with
+--   userFullInfo.bot_info.can_get_revenue_statistics == true. Returns
+--   <a>HttpUrl</a>
 data GetChatRevenueWithdrawalUrl
 GetChatRevenueWithdrawalUrl :: Maybe Int -> Maybe Text -> GetChatRevenueWithdrawalUrl
 
@@ -27077,7 +27117,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatSparseMessagePositions.G
 module TD.Query.GetChatSponsoredMessages
 
 -- | Returns sponsored messages to be shown in a chat; for channel chats
---   only. Returns <a>SponsoredMessages</a>
+--   and chats with bots only. Returns <a>SponsoredMessages</a>
 data GetChatSponsoredMessages
 GetChatSponsoredMessages :: Maybe Int -> GetChatSponsoredMessages
 
@@ -32702,7 +32742,11 @@ module TD.Query.SearchPublicStoriesByTag
 --   TDLib and can be smaller than the specified limit. Returns
 --   <a>FoundStories</a>
 data SearchPublicStoriesByTag
-SearchPublicStoriesByTag :: Maybe Text -> Maybe Text -> Maybe Int -> SearchPublicStoriesByTag
+SearchPublicStoriesByTag :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> SearchPublicStoriesByTag
+
+-- | Identifier of the chat that posted the stories to search for; pass 0
+--   to search stories in all chats
+[story_sender_chat_id] :: SearchPublicStoriesByTag -> Maybe Int
 
 -- | Hashtag or cashtag to search for
 [tag] :: SearchPublicStoriesByTag -> Maybe Text
