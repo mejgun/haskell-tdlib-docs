@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EditUserStarSubscription</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier">EditUserStarSubscription</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#defaultEditUserStarSubscription"><span class="hs-identifier">defaultEditUserStarSubscription</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Cancels or re-enables Telegram Star subscription for a user; for bots only. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="EditUserStarSubscription"><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-var">EditUserStarSubscription</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EditUserStarSubscription"><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-var">EditUserStarSubscription</span></a></span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="user_id"><span class="annot"><span class="annottext">EditUserStarSubscription -&gt; Maybe Int
+</span><a href="TD.Query.EditUserStarSubscription.html#user_id"><span class="hs-identifier hs-var hs-var">user_id</span></a></span></span><span>                    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ User identifier</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="telegram_payment_charge_id"><span class="annot"><span class="annottext">EditUserStarSubscription -&gt; Maybe Text
+</span><a href="TD.Query.EditUserStarSubscription.html#telegram_payment_charge_id"><span class="hs-identifier hs-var hs-var">telegram_payment_charge_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Telegram payment identifier of the subscription</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_canceled"><span class="annot"><span class="annottext">EditUserStarSubscription -&gt; Maybe Bool
+</span><a href="TD.Query.EditUserStarSubscription.html#is_canceled"><span class="hs-identifier hs-var hs-var">is_canceled</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ Pass true to cancel the subscription; pass false to allow the user to enable it</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679804409"><span id="local-6989586621679804418"><span class="annot"><span class="annottext">EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool
+(EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool)
+-&gt; (EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool)
+-&gt; Eq EditUserStarSubscription
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool
+== :: EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool
+$c/= :: EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool
+/= :: EditUserStarSubscription -&gt; EditUserStarSubscription -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679804426"><span id="local-6989586621679804437"><span id="local-6989586621679804441"><span class="annot"><span class="annottext">Int -&gt; EditUserStarSubscription -&gt; ShowS
+[EditUserStarSubscription] -&gt; ShowS
+EditUserStarSubscription -&gt; String
+(Int -&gt; EditUserStarSubscription -&gt; ShowS)
+-&gt; (EditUserStarSubscription -&gt; String)
+-&gt; ([EditUserStarSubscription] -&gt; ShowS)
+-&gt; Show EditUserStarSubscription
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; EditUserStarSubscription -&gt; ShowS
+showsPrec :: Int -&gt; EditUserStarSubscription -&gt; ShowS
+$cshow :: EditUserStarSubscription -&gt; String
+show :: EditUserStarSubscription -&gt; String
+$cshowList :: [EditUserStarSubscription] -&gt; ShowS
+showList :: [EditUserStarSubscription] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679804459"><span class="annot"><span class="annottext">shortShow :: EditUserStarSubscription -&gt; String
+</span><a href="#local-6989586621679804459"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">user_id :: EditUserStarSubscription -&gt; Maybe Int
+</span><a href="TD.Query.EditUserStarSubscription.html#user_id"><span class="hs-identifier hs-var">user_id</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804461"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679804461"><span class="hs-identifier hs-var">user_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">telegram_payment_charge_id :: EditUserStarSubscription -&gt; Maybe Text
+</span><a href="TD.Query.EditUserStarSubscription.html#telegram_payment_charge_id"><span class="hs-identifier hs-var">telegram_payment_charge_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804462"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679804462"><span class="hs-identifier hs-var">telegram_payment_charge_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_canceled :: EditUserStarSubscription -&gt; Maybe Bool
+</span><a href="TD.Query.EditUserStarSubscription.html#is_canceled"><span class="hs-identifier hs-var">is_canceled</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804463"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679804463"><span class="hs-identifier hs-var">is_canceled_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EditUserStarSubscription&quot;</span></span><span>
+</span><span id="line-28"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;user_id&quot;</span></span><span>                    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679804461"><span class="hs-identifier hs-var">user_id_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;telegram_payment_charge_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679804462"><span class="hs-identifier hs-var">telegram_payment_charge_id_</span></a></span><span>
+</span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_canceled&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679804463"><span class="hs-identifier hs-var">is_canceled_</span></a></span><span>
+</span><span id="line-32"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679804468"><span id="local-6989586621679804472"><span id="local-6989586621679804475"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-35"></span><span>  </span><span id="local-6989586621679804504"><span class="annot"><span class="annottext">toJSON :: EditUserStarSubscription -&gt; Value
+</span><a href="#local-6989586621679804504"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">user_id :: EditUserStarSubscription -&gt; Maybe Int
+</span><a href="TD.Query.EditUserStarSubscription.html#user_id"><span class="hs-identifier hs-var">user_id</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804506"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679804506"><span class="hs-identifier hs-var">user_id_</span></a></span></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">telegram_payment_charge_id :: EditUserStarSubscription -&gt; Maybe Text
+</span><a href="TD.Query.EditUserStarSubscription.html#telegram_payment_charge_id"><span class="hs-identifier hs-var">telegram_payment_charge_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804507"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679804507"><span class="hs-identifier hs-var">telegram_payment_charge_id_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_canceled :: EditUserStarSubscription -&gt; Maybe Bool
+</span><a href="TD.Query.EditUserStarSubscription.html#is_canceled"><span class="hs-identifier hs-var">is_canceled</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679804508"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679804508"><span class="hs-identifier hs-var">is_canceled_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                      </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;editUserStarSubscription&quot;</span></span><span>
+</span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;user_id&quot;</span></span><span>                    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679804506"><span class="hs-identifier hs-var">user_id_</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;telegram_payment_charge_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679804507"><span class="hs-identifier hs-var">telegram_payment_charge_id_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_canceled&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679804508"><span class="hs-identifier hs-var">is_canceled_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#defaultEditUserStarSubscription"><span class="hs-identifier hs-type">defaultEditUserStarSubscription</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span><span>
+</span><span id="line-49"></span><span id="defaultEditUserStarSubscription"><span class="annot"><span class="annottext">defaultEditUserStarSubscription :: EditUserStarSubscription
+</span><a href="TD.Query.EditUserStarSubscription.html#defaultEditUserStarSubscription"><span class="hs-identifier hs-var hs-var">defaultEditUserStarSubscription</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-50"></span><span>  </span><span class="annot"><a href="TD.Query.EditUserStarSubscription.html#EditUserStarSubscription"><span class="hs-identifier hs-type">EditUserStarSubscription</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">user_id :: Maybe Int
+</span><a href="TD.Query.EditUserStarSubscription.html#user_id"><span class="hs-identifier hs-var">user_id</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">telegram_payment_charge_id :: Maybe Text
+</span><a href="TD.Query.EditUserStarSubscription.html#telegram_payment_charge_id"><span class="hs-identifier hs-var">telegram_payment_charge_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_canceled :: Maybe Bool
+</span><a href="TD.Query.EditUserStarSubscription.html#is_canceled"><span class="hs-identifier hs-var">is_canceled</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span></pre></body></html>

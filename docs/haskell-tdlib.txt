@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.49.0
+@version 2.0.50.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -31,6 +31,25 @@ instance TD.Lib.Internal.ShortShow Data.ByteString.Internal.Type.ByteString
 instance TD.Lib.Internal.ShortShow a => TD.Lib.Internal.ShortShow [a]
 instance Data.Hashable.Class.Hashable TD.Lib.Internal.Extra
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Lib.Internal.Extra
+
+module TD.Data.WebAppOpenMode
+
+-- | Describes mode in which a Web App is opened
+data WebAppOpenMode
+
+-- | The Web App is opened in the compact mode
+WebAppOpenModeCompact :: WebAppOpenMode
+
+-- | The Web App is opened in the full-size mode
+WebAppOpenModeFullSize :: WebAppOpenMode
+
+-- | The Web App is opened in the full-screen mode
+WebAppOpenModeFullScreen :: WebAppOpenMode
+instance GHC.Show.Show TD.Data.WebAppOpenMode.WebAppOpenMode
+instance GHC.Classes.Eq TD.Data.WebAppOpenMode.WebAppOpenMode
+instance TD.Lib.Internal.ShortShow TD.Data.WebAppOpenMode.WebAppOpenMode
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppOpenMode.WebAppOpenMode
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.WebAppOpenMode.WebAppOpenMode
 
 module TD.Data.WebAppInfo
 data WebAppInfo
@@ -214,6 +233,9 @@ UserPrivacySettingRuleAllowAll :: UserPrivacySettingRule
 -- | A rule to allow all contacts of the user to do something
 UserPrivacySettingRuleAllowContacts :: UserPrivacySettingRule
 
+-- | A rule to allow all bots to do something
+UserPrivacySettingRuleAllowBots :: UserPrivacySettingRule
+
 -- | A rule to allow all Premium Users to do something; currently, allowed
 --   only for userPrivacySettingAllowChatInvites
 UserPrivacySettingRuleAllowPremiumUsers :: UserPrivacySettingRule
@@ -238,6 +260,9 @@ UserPrivacySettingRuleRestrictAll :: UserPrivacySettingRule
 
 -- | A rule to restrict all contacts of the user from doing something
 UserPrivacySettingRuleRestrictContacts :: UserPrivacySettingRule
+
+-- | A rule to restrict all bots from doing something
+UserPrivacySettingRuleRestrictBots :: UserPrivacySettingRule
 
 -- | A rule to restrict all specified users from doing something
 UserPrivacySettingRuleRestrictUsers :: Maybe [Int] -> UserPrivacySettingRule
@@ -322,6 +347,10 @@ UserPrivacySettingAllowFindingByPhoneNumber :: UserPrivacySetting
 -- | A privacy setting for managing whether the user can receive voice and
 --   video messages in private chats; for Telegram Premium users only
 UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages :: UserPrivacySetting
+
+-- | A privacy setting for managing whether received gifts are
+--   automatically shown on the user's profile page
+UserPrivacySettingAutosaveGifts :: UserPrivacySetting
 instance GHC.Show.Show TD.Data.UserPrivacySetting.UserPrivacySetting
 instance GHC.Classes.Eq TD.Data.UserPrivacySetting.UserPrivacySetting
 instance TD.Lib.Internal.ShortShow TD.Data.UserPrivacySetting.UserPrivacySetting
@@ -529,6 +558,29 @@ instance GHC.Classes.Eq TD.Data.ThemeParameters.ThemeParameters
 instance TD.Lib.Internal.ShortShow TD.Data.ThemeParameters.ThemeParameters
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ThemeParameters.ThemeParameters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ThemeParameters.ThemeParameters
+
+module TD.Data.WebAppOpenParameters
+data WebAppOpenParameters
+
+-- | Options to be used when a Web App is opened
+WebAppOpenParameters :: Maybe ThemeParameters -> Maybe Text -> Maybe WebAppOpenMode -> WebAppOpenParameters
+
+-- | Preferred Web App theme; pass null to use the default theme
+[theme] :: WebAppOpenParameters -> Maybe ThemeParameters
+
+-- | Short name of the current application; 0-64 English letters, digits,
+--   and underscores
+[application_name] :: WebAppOpenParameters -> Maybe Text
+
+-- | The mode in which the Web App is opened; pass null to open in
+--   webAppOpenModeFullSize
+[mode] :: WebAppOpenParameters -> Maybe WebAppOpenMode
+defaultWebAppOpenParameters :: WebAppOpenParameters
+instance GHC.Show.Show TD.Data.WebAppOpenParameters.WebAppOpenParameters
+instance GHC.Classes.Eq TD.Data.WebAppOpenParameters.WebAppOpenParameters
+instance TD.Lib.Internal.ShortShow TD.Data.WebAppOpenParameters.WebAppOpenParameters
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppOpenParameters.WebAppOpenParameters
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.WebAppOpenParameters.WebAppOpenParameters
 
 module TD.Data.TextParseMode
 
@@ -815,6 +867,30 @@ instance GHC.Show.Show TD.Data.TemporaryPasswordState.TemporaryPasswordState
 instance GHC.Classes.Eq TD.Data.TemporaryPasswordState.TemporaryPasswordState
 instance TD.Lib.Internal.ShortShow TD.Data.TemporaryPasswordState.TemporaryPasswordState
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TemporaryPasswordState.TemporaryPasswordState
+
+module TD.Data.TargetChatTypes
+data TargetChatTypes
+
+-- | Describes allowed types for the target chat
+TargetChatTypes :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> TargetChatTypes
+
+-- | True, if private chats with ordinary users are allowed
+[allow_user_chats] :: TargetChatTypes -> Maybe Bool
+
+-- | True, if private chats with other bots are allowed
+[allow_bot_chats] :: TargetChatTypes -> Maybe Bool
+
+-- | True, if basic group and supergroup chats are allowed
+[allow_group_chats] :: TargetChatTypes -> Maybe Bool
+
+-- | True, if channel chats are allowed
+[allow_channel_chats] :: TargetChatTypes -> Maybe Bool
+defaultTargetChatTypes :: TargetChatTypes
+instance GHC.Show.Show TD.Data.TargetChatTypes.TargetChatTypes
+instance GHC.Classes.Eq TD.Data.TargetChatTypes.TargetChatTypes
+instance TD.Lib.Internal.ShortShow TD.Data.TargetChatTypes.TargetChatTypes
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TargetChatTypes.TargetChatTypes
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TargetChatTypes.TargetChatTypes
 
 module TD.Data.SupergroupMembersFilter
 
@@ -1291,69 +1367,6 @@ instance GHC.Classes.Eq TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
 instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
-
-module TD.Data.StarSubscription
-data StarSubscription
-
--- | Contains information about subscription to a channel chat paid in
---   Telegram Stars
-StarSubscription :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe StarSubscriptionPricing -> StarSubscription
-
--- | Unique identifier of the subscription
-[_id] :: StarSubscription -> Maybe Text
-
--- | Identifier of the channel chat that is subscribed
-[chat_id] :: StarSubscription -> Maybe Int
-
--- | Point in time (Unix timestamp) when the subscription will expire or
---   expired
-[expiration_date] :: StarSubscription -> Maybe Int
-
--- | True, if the subscription is active and the user can use the method
---   reuseStarSubscription to join the subscribed chat again
-[can_reuse] :: StarSubscription -> Maybe Bool
-
--- | True, if the subscription was canceled
-[is_canceled] :: StarSubscription -> Maybe Bool
-
--- | True, if the subscription expires soon and there are no enough
---   Telegram Stars on the user's balance to extend it
-[is_expiring] :: StarSubscription -> Maybe Bool
-
--- | The invite link that can be used to renew the subscription if it has
---   been expired; may be empty, if the link isn't available anymore
-[invite_link] :: StarSubscription -> Maybe Text
-
--- | The subscription plan
-[pricing] :: StarSubscription -> Maybe StarSubscriptionPricing
-instance GHC.Show.Show TD.Data.StarSubscription.StarSubscription
-instance GHC.Classes.Eq TD.Data.StarSubscription.StarSubscription
-instance TD.Lib.Internal.ShortShow TD.Data.StarSubscription.StarSubscription
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscription.StarSubscription
-
-module TD.Data.StarSubscriptions
-data StarSubscriptions
-
--- | Represents a list of Telegram Star subscriptions
-StarSubscriptions :: Maybe Int -> Maybe [StarSubscription] -> Maybe Int -> Maybe Text -> StarSubscriptions
-
--- | The amount of owned Telegram Stars
-[star_count] :: StarSubscriptions -> Maybe Int
-
--- | List of subscriptions for Telegram Stars
-[subscriptions] :: StarSubscriptions -> Maybe [StarSubscription]
-
--- | The number of Telegram Stars required to buy to extend subscriptions
---   expiring soon
-[required_star_count] :: StarSubscriptions -> Maybe Int
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: StarSubscriptions -> Maybe Text
-instance GHC.Show.Show TD.Data.StarSubscriptions.StarSubscriptions
-instance GHC.Classes.Eq TD.Data.StarSubscriptions.StarSubscriptions
-instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptions.StarSubscriptions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptions.StarSubscriptions
 
 module TD.Data.StarRevenueStatus
 data StarRevenueStatus
@@ -2510,6 +2523,22 @@ instance GHC.Show.Show TD.Data.ProfileAccentColor.ProfileAccentColor
 instance GHC.Classes.Eq TD.Data.ProfileAccentColor.ProfileAccentColor
 instance TD.Lib.Internal.ShortShow TD.Data.ProfileAccentColor.ProfileAccentColor
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProfileAccentColor.ProfileAccentColor
+
+module TD.Data.PreparedInlineMessageId
+data PreparedInlineMessageId
+
+-- | Represents an inline message that can be sent via the bot
+PreparedInlineMessageId :: Maybe Text -> Maybe Int -> PreparedInlineMessageId
+
+-- | Unique identifier for the message
+[_id] :: PreparedInlineMessageId -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the message can't be used anymore
+[expiration_date] :: PreparedInlineMessageId -> Maybe Int
+instance GHC.Show.Show TD.Data.PreparedInlineMessageId.PreparedInlineMessageId
+instance GHC.Classes.Eq TD.Data.PreparedInlineMessageId.PreparedInlineMessageId
+instance TD.Lib.Internal.ShortShow TD.Data.PreparedInlineMessageId.PreparedInlineMessageId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PreparedInlineMessageId.PreparedInlineMessageId
 
 module TD.Data.PremiumStoryFeature
 
@@ -4034,14 +4063,13 @@ module TD.Data.MainWebApp
 data MainWebApp
 
 -- | Contains information about the main Web App of a bot
-MainWebApp :: Maybe Text -> Maybe Bool -> MainWebApp
+MainWebApp :: Maybe Text -> Maybe WebAppOpenMode -> MainWebApp
 
 -- | URL of the Web App to open
 [url] :: MainWebApp -> Maybe Text
 
--- | True, if the Web App must always be opened in the compact mode instead
---   of the full-size mode
-[is_compact] :: MainWebApp -> Maybe Bool
+-- | The mode in which the Web App must be opened
+[mode] :: MainWebApp -> Maybe WebAppOpenMode
 instance GHC.Show.Show TD.Data.MainWebApp.MainWebApp
 instance GHC.Classes.Eq TD.Data.MainWebApp.MainWebApp
 instance TD.Lib.Internal.ShortShow TD.Data.MainWebApp.MainWebApp
@@ -4640,13 +4668,17 @@ module TD.Data.Invoice
 data Invoice
 
 -- | Product invoice
-Invoice :: Maybe Text -> Maybe [LabeledPricePart] -> Maybe Int -> Maybe [Int] -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Invoice
+Invoice :: Maybe Text -> Maybe [LabeledPricePart] -> Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Invoice
 
 -- | ISO 4217 currency code
 [currency] :: Invoice -> Maybe Text
 
 -- | A list of objects used to calculate the total price of the product
 [price_parts] :: Invoice -> Maybe [LabeledPricePart]
+
+-- | The number of seconds between consecutive Telegram Star debiting for
+--   subscription invoices; 0 if the invoice doesn't create subscription
+[subscription_period] :: Invoice -> Maybe Int
 
 -- | The maximum allowed amount of tip in the smallest units of the
 --   currency
@@ -4723,19 +4755,10 @@ TargetChatCurrent :: TargetChat
 
 -- | The chat needs to be chosen by the user among chats of the specified
 --   types
-TargetChatChosen :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> TargetChat
+TargetChatChosen :: Maybe TargetChatTypes -> TargetChat
 
--- | True, if private chats with ordinary users are allowed
-[allow_user_chats] :: TargetChat -> Maybe Bool
-
--- | True, if private chats with other bots are allowed
-[allow_bot_chats] :: TargetChat -> Maybe Bool
-
--- | True, if basic group and supergroup chats are allowed
-[allow_group_chats] :: TargetChat -> Maybe Bool
-
--- | True, if channel chats are allowed
-[allow_channel_chats] :: TargetChat -> Maybe Bool
+-- | Allowed types for the chat
+[types] :: TargetChat -> Maybe TargetChatTypes
 
 -- | The chat needs to be open with the provided internal link
 TargetChatInternalLink :: Maybe InternalLinkType -> TargetChat
@@ -7153,6 +7176,301 @@ instance GHC.Classes.Eq TD.Data.StickerFullType.StickerFullType
 instance TD.Lib.Internal.ShortShow TD.Data.StickerFullType.StickerFullType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerFullType.StickerFullType
 
+module TD.Data.Sticker
+data Sticker
+
+-- | Describes a sticker
+Sticker :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe StickerFormat -> Maybe StickerFullType -> Maybe Thumbnail -> Maybe File -> Sticker
+
+-- | Unique sticker identifier within the set; 0 if none
+[_id] :: Sticker -> Maybe Int
+
+-- | Identifier of the sticker set to which the sticker belongs; 0 if none
+[set_id] :: Sticker -> Maybe Int
+
+-- | Sticker width; as defined by the sender
+[width] :: Sticker -> Maybe Int
+
+-- | Sticker height; as defined by the sender
+[height] :: Sticker -> Maybe Int
+
+-- | Emoji corresponding to the sticker
+[emoji] :: Sticker -> Maybe Text
+
+-- | Sticker format
+[format] :: Sticker -> Maybe StickerFormat
+
+-- | Sticker's full type
+[full_type] :: Sticker -> Maybe StickerFullType
+
+-- | Sticker thumbnail in WEBP or JPEG format; may be null
+[thumbnail] :: Sticker -> Maybe Thumbnail
+
+-- | File containing the sticker
+[sticker] :: Sticker -> Maybe File
+instance GHC.Show.Show TD.Data.Sticker.Sticker
+instance GHC.Classes.Eq TD.Data.Sticker.Sticker
+instance TD.Lib.Internal.ShortShow TD.Data.Sticker.Sticker
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Sticker.Sticker
+
+module TD.Data.Stickers
+data Stickers
+
+-- | Represents a list of stickers
+Stickers :: Maybe [Sticker] -> Stickers
+
+-- | List of stickers
+[stickers] :: Stickers -> Maybe [Sticker]
+instance GHC.Show.Show TD.Data.Stickers.Stickers
+instance GHC.Classes.Eq TD.Data.Stickers.Stickers
+instance TD.Lib.Internal.ShortShow TD.Data.Stickers.Stickers
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Stickers.Stickers
+
+module TD.Data.PremiumGiftCodePaymentOption
+data PremiumGiftCodePaymentOption
+
+-- | Describes an option for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
+--   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
+PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Sticker -> PremiumGiftCodePaymentOption
+
+-- | ISO 4217 currency code for Telegram Premium gift code payment
+[currency] :: PremiumGiftCodePaymentOption -> Maybe Text
+
+-- | The amount to pay, in the smallest units of the currency
+[amount] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | The discount associated with this option, as a percentage
+[discount_percentage] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Number of users which will be able to activate the gift codes
+[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active
+[month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | Identifier of the store product associated with the option; may be
+--   empty if none
+[store_product_id] :: PremiumGiftCodePaymentOption -> Maybe Text
+
+-- | Number of times the store product must be paid
+[store_product_quantity] :: PremiumGiftCodePaymentOption -> Maybe Int
+
+-- | A sticker to be shown along with the gift code; may be null if unknown
+[sticker] :: PremiumGiftCodePaymentOption -> Maybe Sticker
+instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+
+module TD.Data.PremiumGiftCodePaymentOptions
+data PremiumGiftCodePaymentOptions
+
+-- | Contains a list of options for creating Telegram Premium gift codes or
+--   Telegram Premium giveaway
+PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
+
+-- | The list of options
+[options] :: PremiumGiftCodePaymentOptions -> Maybe [PremiumGiftCodePaymentOption]
+instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+
+module TD.Data.MessageEffectType
+
+-- | Describes type of emoji effect
+data MessageEffectType
+
+-- | An effect from an emoji reaction
+MessageEffectTypeEmojiReaction :: Maybe Sticker -> Maybe Sticker -> MessageEffectType
+
+-- | Select animation for the effect in TGS format
+[select_animation] :: MessageEffectType -> Maybe Sticker
+
+-- | Effect animation for the effect in TGS format
+[effect_animation] :: MessageEffectType -> Maybe Sticker
+
+-- | An effect from a premium sticker
+MessageEffectTypePremiumSticker :: Maybe Sticker -> MessageEffectType
+
+-- | The premium sticker. The effect can be found at
+--   sticker.full_type.premium_animation
+[sticker] :: MessageEffectType -> Maybe Sticker
+instance GHC.Show.Show TD.Data.MessageEffectType.MessageEffectType
+instance GHC.Classes.Eq TD.Data.MessageEffectType.MessageEffectType
+instance TD.Lib.Internal.ShortShow TD.Data.MessageEffectType.MessageEffectType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageEffectType.MessageEffectType
+
+module TD.Data.MessageEffect
+data MessageEffect
+
+-- | Contains information about an effect added to a message
+MessageEffect :: Maybe Int -> Maybe Sticker -> Maybe Text -> Maybe Bool -> Maybe MessageEffectType -> MessageEffect
+
+-- | Unique identifier of the effect
+[_id] :: MessageEffect -> Maybe Int
+
+-- | Static icon for the effect in WEBP format; may be null if none
+[static_icon] :: MessageEffect -> Maybe Sticker
+
+-- | Emoji corresponding to the effect that can be used if static icon
+--   isn't available
+[emoji] :: MessageEffect -> Maybe Text
+
+-- | True, if Telegram Premium subscription is required to use the effect
+[is_premium] :: MessageEffect -> Maybe Bool
+
+-- | Type of the effect
+[_type] :: MessageEffect -> Maybe MessageEffectType
+instance GHC.Show.Show TD.Data.MessageEffect.MessageEffect
+instance GHC.Classes.Eq TD.Data.MessageEffect.MessageEffect
+instance TD.Lib.Internal.ShortShow TD.Data.MessageEffect.MessageEffect
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageEffect.MessageEffect
+
+module TD.Data.Gift
+data Gift
+
+-- | Describes a gift that can be sent to another user
+Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
+
+-- | Unique identifier of the gift
+[_id] :: Gift -> Maybe Int
+
+-- | The sticker representing the gift
+[sticker] :: Gift -> Maybe Sticker
+
+-- | Number of Telegram Stars that must be paid for the gift
+[star_count] :: Gift -> Maybe Int
+
+-- | Number of Telegram Stars that can be claimed by the receiver instead
+--   of the gift by default. If the gift was paid with just bought Telegram
+--   Stars, then full value can be claimed
+[default_sell_star_count] :: Gift -> Maybe Int
+
+-- | True, if the gift is a birthday gift
+[is_for_birthday] :: Gift -> Maybe Bool
+
+-- | Number of remaining times the gift can be purchased by all users; 0 if
+--   not limited or the gift was sold out
+[remaining_count] :: Gift -> Maybe Int
+
+-- | Number of total times the gift can be purchased by all users; 0 if not
+--   limited
+[total_count] :: Gift -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift was send for the first
+--   time; for sold out gifts only
+[first_send_date] :: Gift -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift was send for the last
+--   time; for sold out gifts only
+[last_send_date] :: Gift -> Maybe Int
+instance GHC.Show.Show TD.Data.Gift.Gift
+instance GHC.Classes.Eq TD.Data.Gift.Gift
+instance TD.Lib.Internal.ShortShow TD.Data.Gift.Gift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gift.Gift
+
+module TD.Data.UserTransactionPurpose
+
+-- | Describes purpose of a transaction with a user
+data UserTransactionPurpose
+
+-- | A user gifted Telegram Stars
+UserTransactionPurposeGiftedStars :: Maybe Sticker -> UserTransactionPurpose
+
+-- | A sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: UserTransactionPurpose -> Maybe Sticker
+
+-- | The user sold a gift received from another user or bot
+UserTransactionPurposeGiftSell :: Maybe Gift -> UserTransactionPurpose
+
+-- | The gift
+[gift] :: UserTransactionPurpose -> Maybe Gift
+
+-- | The user or the bot sent a gift to a user
+UserTransactionPurposeGiftSend :: Maybe Gift -> UserTransactionPurpose
+
+-- | The gift
+[gift] :: UserTransactionPurpose -> Maybe Gift
+instance GHC.Show.Show TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance GHC.Classes.Eq TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance TD.Lib.Internal.ShortShow TD.Data.UserTransactionPurpose.UserTransactionPurpose
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTransactionPurpose.UserTransactionPurpose
+
+module TD.Data.UserGift
+data UserGift
+
+-- | Represents a gift received by a user
+UserGift :: Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Gift -> Maybe Int -> Maybe Int -> UserGift
+
+-- | Identifier of the user that sent the gift; 0 if unknown
+[sender_user_id] :: UserGift -> Maybe Int
+
+-- | Message added to the gift
+[text] :: UserGift -> Maybe FormattedText
+
+-- | True, if the sender and gift text are shown only to the gift receiver;
+--   otherwise, everyone are able to see them
+[is_private] :: UserGift -> Maybe Bool
+
+-- | True, if the gift is displayed on the user's profile page; may be
+--   false only for the receiver of the gift
+[is_saved] :: UserGift -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the gift was sent
+[date] :: UserGift -> Maybe Int
+
+-- | The gift
+[gift] :: UserGift -> Maybe Gift
+
+-- | Identifier of the message with the gift in the chat with the sender of
+--   the gift; can be 0 or an identifier of a deleted message; only for the
+--   gift receiver
+[message_id] :: UserGift -> Maybe Int
+
+-- | Number of Telegram Stars that can be claimed by the receiver instead
+--   of the gift; 0 if the gift can't be sold by the current user
+[sell_star_count] :: UserGift -> Maybe Int
+instance GHC.Show.Show TD.Data.UserGift.UserGift
+instance GHC.Classes.Eq TD.Data.UserGift.UserGift
+instance TD.Lib.Internal.ShortShow TD.Data.UserGift.UserGift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGift.UserGift
+
+module TD.Data.UserGifts
+data UserGifts
+
+-- | Represents a list of gifts received by a user
+UserGifts :: Maybe Int -> Maybe [UserGift] -> Maybe Text -> UserGifts
+
+-- | The total number of received gifts
+[total_count] :: UserGifts -> Maybe Int
+
+-- | The list of gifts
+[gifts] :: UserGifts -> Maybe [UserGift]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: UserGifts -> Maybe Text
+instance GHC.Show.Show TD.Data.UserGifts.UserGifts
+instance GHC.Classes.Eq TD.Data.UserGifts.UserGifts
+instance TD.Lib.Internal.ShortShow TD.Data.UserGifts.UserGifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGifts.UserGifts
+
+module TD.Data.Gifts
+data Gifts
+
+-- | Contains a list of gifts that can be sent to another user
+Gifts :: Maybe [Gift] -> Gifts
+
+-- | The list of gifts
+[gifts] :: Gifts -> Maybe [Gift]
+instance GHC.Show.Show TD.Data.Gifts.Gifts
+instance GHC.Classes.Eq TD.Data.Gifts.Gifts
+instance TD.Lib.Internal.ShortShow TD.Data.Gifts.Gifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gifts.Gifts
+
 module TD.Data.ProfilePhoto
 data ProfilePhoto
 
@@ -7389,6 +7707,100 @@ instance GHC.Show.Show TD.Data.FoundStories.FoundStories
 instance GHC.Classes.Eq TD.Data.FoundStories.FoundStories
 instance TD.Lib.Internal.ShortShow TD.Data.FoundStories.FoundStories
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundStories.FoundStories
+
+module TD.Data.StarSubscriptionType
+
+-- | Describes type of subscription paid in Telegram Stars
+data StarSubscriptionType
+
+-- | Describes a subscription to a channel chat
+StarSubscriptionTypeChannel :: Maybe Bool -> Maybe Text -> StarSubscriptionType
+
+-- | True, if the subscription is active and the user can use the method
+--   reuseStarSubscription to join the subscribed chat again
+[can_reuse] :: StarSubscriptionType -> Maybe Bool
+
+-- | The invite link that can be used to renew the subscription if it has
+--   been expired; may be empty, if the link isn't available anymore
+[invite_link] :: StarSubscriptionType -> Maybe Text
+
+-- | Describes a subscription in a bot or a business account
+StarSubscriptionTypeBot :: Maybe Bool -> Maybe Text -> Maybe Photo -> Maybe Text -> StarSubscriptionType
+
+-- | True, if the subscription was canceled by the bot and can't be
+--   extended
+[is_canceled_by_bot] :: StarSubscriptionType -> Maybe Bool
+
+-- | Subscription invoice title
+[title] :: StarSubscriptionType -> Maybe Text
+
+-- | Subscription invoice photo
+[photo] :: StarSubscriptionType -> Maybe Photo
+
+-- | The link to the subscription invoice
+[invoice_link] :: StarSubscriptionType -> Maybe Text
+instance GHC.Show.Show TD.Data.StarSubscriptionType.StarSubscriptionType
+instance GHC.Classes.Eq TD.Data.StarSubscriptionType.StarSubscriptionType
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptionType.StarSubscriptionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptionType.StarSubscriptionType
+
+module TD.Data.StarSubscription
+data StarSubscription
+
+-- | Contains information about subscription to a channel chat, a bot, or a
+--   business account that was paid in Telegram Stars
+StarSubscription :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe StarSubscriptionPricing -> Maybe StarSubscriptionType -> StarSubscription
+
+-- | Unique identifier of the subscription
+[_id] :: StarSubscription -> Maybe Text
+
+-- | Identifier of the chat that is subscribed
+[chat_id] :: StarSubscription -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the subscription will expire or
+--   expired
+[expiration_date] :: StarSubscription -> Maybe Int
+
+-- | True, if the subscription was canceled
+[is_canceled] :: StarSubscription -> Maybe Bool
+
+-- | True, if the subscription expires soon and there are no enough
+--   Telegram Stars on the user's balance to extend it
+[is_expiring] :: StarSubscription -> Maybe Bool
+
+-- | The subscription plan
+[pricing] :: StarSubscription -> Maybe StarSubscriptionPricing
+
+-- | Type of the subscription
+[_type] :: StarSubscription -> Maybe StarSubscriptionType
+instance GHC.Show.Show TD.Data.StarSubscription.StarSubscription
+instance GHC.Classes.Eq TD.Data.StarSubscription.StarSubscription
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscription.StarSubscription
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscription.StarSubscription
+
+module TD.Data.StarSubscriptions
+data StarSubscriptions
+
+-- | Represents a list of Telegram Star subscriptions
+StarSubscriptions :: Maybe Int -> Maybe [StarSubscription] -> Maybe Int -> Maybe Text -> StarSubscriptions
+
+-- | The amount of owned Telegram Stars
+[star_count] :: StarSubscriptions -> Maybe Int
+
+-- | List of subscriptions for Telegram Stars
+[subscriptions] :: StarSubscriptions -> Maybe [StarSubscription]
+
+-- | The number of Telegram Stars required to buy to extend subscriptions
+--   expiring soon
+[required_star_count] :: StarSubscriptions -> Maybe Int
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StarSubscriptions -> Maybe Text
+instance GHC.Show.Show TD.Data.StarSubscriptions.StarSubscriptions
+instance GHC.Classes.Eq TD.Data.StarSubscriptions.StarSubscriptions
+instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptions.StarSubscriptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptions.StarSubscriptions
 
 module TD.Data.SharedUser
 data SharedUser
@@ -7983,6 +8395,47 @@ instance GHC.Classes.Eq TD.Data.User.User
 instance TD.Lib.Internal.ShortShow TD.Data.User.User
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.User.User
 
+module TD.Data.EmojiReaction
+data EmojiReaction
+
+-- | Contains information about an emoji reaction
+EmojiReaction :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> EmojiReaction
+
+-- | Text representation of the reaction
+[emoji] :: EmojiReaction -> Maybe Text
+
+-- | Reaction title
+[title] :: EmojiReaction -> Maybe Text
+
+-- | True, if the reaction can be added to new messages and enabled in
+--   chats
+[is_active] :: EmojiReaction -> Maybe Bool
+
+-- | Static icon for the reaction
+[static_icon] :: EmojiReaction -> Maybe Sticker
+
+-- | Appear animation for the reaction
+[appear_animation] :: EmojiReaction -> Maybe Sticker
+
+-- | Select animation for the reaction
+[select_animation] :: EmojiReaction -> Maybe Sticker
+
+-- | Activate animation for the reaction
+[activate_animation] :: EmojiReaction -> Maybe Sticker
+
+-- | Effect animation for the reaction
+[effect_animation] :: EmojiReaction -> Maybe Sticker
+
+-- | Around animation for the reaction; may be null
+[around_animation] :: EmojiReaction -> Maybe Sticker
+
+-- | Center animation for the reaction; may be null
+[center_animation] :: EmojiReaction -> Maybe Sticker
+instance GHC.Show.Show TD.Data.EmojiReaction.EmojiReaction
+instance GHC.Classes.Eq TD.Data.EmojiReaction.EmojiReaction
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiReaction.EmojiReaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiReaction.EmojiReaction
+
 module TD.Data.EmojiKeyword
 data EmojiKeyword
 
@@ -8056,6 +8509,42 @@ instance GHC.Show.Show TD.Data.EmojiCategorySource.EmojiCategorySource
 instance GHC.Classes.Eq TD.Data.EmojiCategorySource.EmojiCategorySource
 instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategorySource.EmojiCategorySource
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategorySource.EmojiCategorySource
+
+module TD.Data.EmojiCategory
+data EmojiCategory
+
+-- | Describes an emoji category
+EmojiCategory :: Maybe Text -> Maybe Sticker -> Maybe EmojiCategorySource -> Maybe Bool -> EmojiCategory
+
+-- | Name of the category
+[name] :: EmojiCategory -> Maybe Text
+
+-- | Custom emoji sticker, which represents icon of the category
+[icon] :: EmojiCategory -> Maybe Sticker
+
+-- | Source of stickers for the emoji category
+[source] :: EmojiCategory -> Maybe EmojiCategorySource
+
+-- | True, if the category must be shown first when choosing a sticker for
+--   the start page
+[is_greeting] :: EmojiCategory -> Maybe Bool
+instance GHC.Show.Show TD.Data.EmojiCategory.EmojiCategory
+instance GHC.Classes.Eq TD.Data.EmojiCategory.EmojiCategory
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategory.EmojiCategory
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategory.EmojiCategory
+
+module TD.Data.EmojiCategories
+data EmojiCategories
+
+-- | Represents a list of emoji categories
+EmojiCategories :: Maybe [EmojiCategory] -> EmojiCategories
+
+-- | List of categories
+[categories] :: EmojiCategories -> Maybe [EmojiCategory]
+instance GHC.Show.Show TD.Data.EmojiCategories.EmojiCategories
+instance GHC.Classes.Eq TD.Data.EmojiCategories.EmojiCategories
+instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategories.EmojiCategories
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategories.EmojiCategories
 
 module TD.Data.EmailAddressResetState
 
@@ -8396,6 +8885,42 @@ instance GHC.Show.Show TD.Data.PageBlockCaption.PageBlockCaption
 instance GHC.Classes.Eq TD.Data.PageBlockCaption.PageBlockCaption
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockCaption.PageBlockCaption
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockCaption.PageBlockCaption
+
+module TD.Data.DiceStickers
+
+-- | Contains animated stickers which must be used for dice animation
+--   rendering
+data DiceStickers
+
+-- | A regular animated sticker
+DiceStickersRegular :: Maybe Sticker -> DiceStickers
+
+-- | The animated sticker with the dice animation
+[sticker] :: DiceStickers -> Maybe Sticker
+
+-- | Animated stickers to be combined into a slot machine
+DiceStickersSlotMachine :: Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> DiceStickers
+
+-- | The animated sticker with the slot machine background. The background
+--   animation must start playing after all reel animations finish
+[background] :: DiceStickers -> Maybe Sticker
+
+-- | The animated sticker with the lever animation. The lever animation
+--   must play once in the initial dice state
+[lever] :: DiceStickers -> Maybe Sticker
+
+-- | The animated sticker with the left reel
+[left_reel] :: DiceStickers -> Maybe Sticker
+
+-- | The animated sticker with the center reel
+[center_reel] :: DiceStickers -> Maybe Sticker
+
+-- | The animated sticker with the right reel
+[right_reel] :: DiceStickers -> Maybe Sticker
+instance GHC.Show.Show TD.Data.DiceStickers.DiceStickers
+instance GHC.Classes.Eq TD.Data.DiceStickers.DiceStickers
+instance TD.Lib.Internal.ShortShow TD.Data.DiceStickers.DiceStickers
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DiceStickers.DiceStickers
 
 module TD.Data.DeviceToken
 
@@ -9076,7 +9601,7 @@ InputMessageSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> M
 -- | A video message
 InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
 
--- | Video to be sent. The video is expected to be reencoded to MPEG4
+-- | Video to be sent. The video is expected to be re-encoded to MPEG4
 --   format with H.264 codec by the sender
 [video] :: InputMessageContent -> Maybe InputFile
 
@@ -9477,7 +10002,8 @@ module TD.Data.ClosedVectorPath
 data ClosedVectorPath
 
 -- | Represents a closed vector path. The path begins at the end point of
---   the last command
+--   the last command. The coordinate system origin is in the upper-left
+--   corner
 ClosedVectorPath :: Maybe [VectorPathCommand] -> ClosedVectorPath
 
 -- | List of vector path commands
@@ -9487,65 +10013,24 @@ instance GHC.Classes.Eq TD.Data.ClosedVectorPath.ClosedVectorPath
 instance TD.Lib.Internal.ShortShow TD.Data.ClosedVectorPath.ClosedVectorPath
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ClosedVectorPath.ClosedVectorPath
 
-module TD.Data.Sticker
-data Sticker
+module TD.Data.Outline
+data Outline
 
--- | Describes a sticker
-Sticker :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe StickerFormat -> Maybe StickerFullType -> Maybe [ClosedVectorPath] -> Maybe Thumbnail -> Maybe File -> Sticker
+-- | Represents outline of an image
+Outline :: Maybe [ClosedVectorPath] -> Outline
 
--- | Unique sticker identifier within the set; 0 if none
-[_id] :: Sticker -> Maybe Int
-
--- | Identifier of the sticker set to which the sticker belongs; 0 if none
-[set_id] :: Sticker -> Maybe Int
-
--- | Sticker width; as defined by the sender
-[width] :: Sticker -> Maybe Int
-
--- | Sticker height; as defined by the sender
-[height] :: Sticker -> Maybe Int
-
--- | Emoji corresponding to the sticker
-[emoji] :: Sticker -> Maybe Text
-
--- | Sticker format
-[format] :: Sticker -> Maybe StickerFormat
-
--- | Sticker's full type
-[full_type] :: Sticker -> Maybe StickerFullType
-
--- | Sticker's outline represented as a list of closed vector paths; may be
---   empty. The coordinate system origin is in the upper-left corner
-[outline] :: Sticker -> Maybe [ClosedVectorPath]
-
--- | Sticker thumbnail in WEBP or JPEG format; may be null
-[thumbnail] :: Sticker -> Maybe Thumbnail
-
--- | File containing the sticker
-[sticker] :: Sticker -> Maybe File
-instance GHC.Show.Show TD.Data.Sticker.Sticker
-instance GHC.Classes.Eq TD.Data.Sticker.Sticker
-instance TD.Lib.Internal.ShortShow TD.Data.Sticker.Sticker
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Sticker.Sticker
-
-module TD.Data.Stickers
-data Stickers
-
--- | Represents a list of stickers
-Stickers :: Maybe [Sticker] -> Stickers
-
--- | List of stickers
-[stickers] :: Stickers -> Maybe [Sticker]
-instance GHC.Show.Show TD.Data.Stickers.Stickers
-instance GHC.Classes.Eq TD.Data.Stickers.Stickers
-instance TD.Lib.Internal.ShortShow TD.Data.Stickers.Stickers
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Stickers.Stickers
+-- | The list of closed vector paths
+[paths] :: Outline -> Maybe [ClosedVectorPath]
+instance GHC.Show.Show TD.Data.Outline.Outline
+instance GHC.Classes.Eq TD.Data.Outline.Outline
+instance TD.Lib.Internal.ShortShow TD.Data.Outline.Outline
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Outline.Outline
 
 module TD.Data.StickerSetInfo
 data StickerSetInfo
 
 -- | Represents short information about a sticker set
-StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [Sticker] -> StickerSetInfo
+StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe Outline -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [Sticker] -> StickerSetInfo
 
 -- | Identifier of the sticker set
 [_id] :: StickerSetInfo -> Maybe Int
@@ -9561,10 +10046,8 @@ StickerSetInfo :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Ma
 --   thumbnail is changed
 [thumbnail] :: StickerSetInfo -> Maybe Thumbnail
 
--- | Sticker set thumbnail's outline represented as a list of closed vector
---   paths; may be empty. The coordinate system origin is in the upper-left
---   corner
-[thumbnail_outline] :: StickerSetInfo -> Maybe [ClosedVectorPath]
+-- | Sticker set thumbnail's outline; may be null if unknown
+[thumbnail_outline] :: StickerSetInfo -> Maybe Outline
 
 -- | True, if the sticker set is owned by the current user
 [is_owned] :: StickerSetInfo -> Maybe Bool
@@ -9644,7 +10127,7 @@ module TD.Data.StickerSet
 data StickerSet
 
 -- | Represents a sticker set
-StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe [ClosedVectorPath] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Sticker] -> Maybe [Emojis] -> StickerSet
+StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe Outline -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StickerType -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Sticker] -> Maybe [Emojis] -> StickerSet
 
 -- | Identifier of the sticker set
 [_id] :: StickerSet -> Maybe Int
@@ -9660,10 +10143,8 @@ StickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Thumbnail -> Maybe 
 --   thumbnail is changed
 [thumbnail] :: StickerSet -> Maybe Thumbnail
 
--- | Sticker set thumbnail's outline represented as a list of closed vector
---   paths; may be empty. The coordinate system origin is in the upper-left
---   corner
-[thumbnail_outline] :: StickerSet -> Maybe [ClosedVectorPath]
+-- | Sticker set thumbnail's outline; may be null if unknown
+[thumbnail_outline] :: StickerSet -> Maybe Outline
 
 -- | True, if the sticker set is owned by the current user
 [is_owned] :: StickerSet -> Maybe Bool
@@ -9703,361 +10184,6 @@ instance GHC.Show.Show TD.Data.StickerSet.StickerSet
 instance GHC.Classes.Eq TD.Data.StickerSet.StickerSet
 instance TD.Lib.Internal.ShortShow TD.Data.StickerSet.StickerSet
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
-
-module TD.Data.PremiumGiftCodePaymentOption
-data PremiumGiftCodePaymentOption
-
--- | Describes an option for creating Telegram Premium gift codes or
---   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
---   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
-PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Sticker -> PremiumGiftCodePaymentOption
-
--- | ISO 4217 currency code for Telegram Premium gift code payment
-[currency] :: PremiumGiftCodePaymentOption -> Maybe Text
-
--- | The amount to pay, in the smallest units of the currency
-[amount] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | The discount associated with this option, as a percentage
-[discount_percentage] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Number of users which will be able to activate the gift codes
-[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Number of months the Telegram Premium subscription will be active
-[month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Identifier of the store product associated with the option; may be
---   empty if none
-[store_product_id] :: PremiumGiftCodePaymentOption -> Maybe Text
-
--- | Number of times the store product must be paid
-[store_product_quantity] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | A sticker to be shown along with the gift code; may be null if unknown
-[sticker] :: PremiumGiftCodePaymentOption -> Maybe Sticker
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-
-module TD.Data.PremiumGiftCodePaymentOptions
-data PremiumGiftCodePaymentOptions
-
--- | Contains a list of options for creating Telegram Premium gift codes or
---   Telegram Premium giveaway
-PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
-
--- | The list of options
-[options] :: PremiumGiftCodePaymentOptions -> Maybe [PremiumGiftCodePaymentOption]
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-
-module TD.Data.MessageEffectType
-
--- | Describes type of emoji effect
-data MessageEffectType
-
--- | An effect from an emoji reaction
-MessageEffectTypeEmojiReaction :: Maybe Sticker -> Maybe Sticker -> MessageEffectType
-
--- | Select animation for the effect in TGS format
-[select_animation] :: MessageEffectType -> Maybe Sticker
-
--- | Effect animation for the effect in TGS format
-[effect_animation] :: MessageEffectType -> Maybe Sticker
-
--- | An effect from a premium sticker
-MessageEffectTypePremiumSticker :: Maybe Sticker -> MessageEffectType
-
--- | The premium sticker. The effect can be found at
---   sticker.full_type.premium_animation
-[sticker] :: MessageEffectType -> Maybe Sticker
-instance GHC.Show.Show TD.Data.MessageEffectType.MessageEffectType
-instance GHC.Classes.Eq TD.Data.MessageEffectType.MessageEffectType
-instance TD.Lib.Internal.ShortShow TD.Data.MessageEffectType.MessageEffectType
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageEffectType.MessageEffectType
-
-module TD.Data.MessageEffect
-data MessageEffect
-
--- | Contains information about an effect added to a message
-MessageEffect :: Maybe Int -> Maybe Sticker -> Maybe Text -> Maybe Bool -> Maybe MessageEffectType -> MessageEffect
-
--- | Unique identifier of the effect
-[_id] :: MessageEffect -> Maybe Int
-
--- | Static icon for the effect in WEBP format; may be null if none
-[static_icon] :: MessageEffect -> Maybe Sticker
-
--- | Emoji corresponding to the effect that can be used if static icon
---   isn't available
-[emoji] :: MessageEffect -> Maybe Text
-
--- | True, if Telegram Premium subscription is required to use the effect
-[is_premium] :: MessageEffect -> Maybe Bool
-
--- | Type of the effect
-[_type] :: MessageEffect -> Maybe MessageEffectType
-instance GHC.Show.Show TD.Data.MessageEffect.MessageEffect
-instance GHC.Classes.Eq TD.Data.MessageEffect.MessageEffect
-instance TD.Lib.Internal.ShortShow TD.Data.MessageEffect.MessageEffect
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageEffect.MessageEffect
-
-module TD.Data.Gift
-data Gift
-
--- | Describes a gift that can be sent to another user
-Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
-
--- | Unique identifier of the gift
-[_id] :: Gift -> Maybe Int
-
--- | The sticker representing the gift
-[sticker] :: Gift -> Maybe Sticker
-
--- | Number of Telegram Stars that must be paid for the gift
-[star_count] :: Gift -> Maybe Int
-
--- | Number of Telegram Stars that can be claimed by the receiver instead
---   of the gift by default. If the gift was paid with just bought Telegram
---   Stars, then full value can be claimed
-[default_sell_star_count] :: Gift -> Maybe Int
-
--- | Number of remaining times the gift can be purchased by all users; 0 if
---   not limited or the gift was sold out
-[remaining_count] :: Gift -> Maybe Int
-
--- | Number of total times the gift can be purchased by all users; 0 if not
---   limited
-[total_count] :: Gift -> Maybe Int
-
--- | Point in time (Unix timestamp) when the gift was send for the first
---   time; for sold out gifts only
-[first_send_date] :: Gift -> Maybe Int
-
--- | Point in time (Unix timestamp) when the gift was send for the last
---   time; for sold out gifts only
-[last_send_date] :: Gift -> Maybe Int
-instance GHC.Show.Show TD.Data.Gift.Gift
-instance GHC.Classes.Eq TD.Data.Gift.Gift
-instance TD.Lib.Internal.ShortShow TD.Data.Gift.Gift
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gift.Gift
-
-module TD.Data.UserTransactionPurpose
-
--- | Describes purpose of a transaction with a user
-data UserTransactionPurpose
-
--- | A user gifted Telegram Stars
-UserTransactionPurposeGiftedStars :: Maybe Sticker -> UserTransactionPurpose
-
--- | A sticker to be shown in the transaction information; may be null if
---   unknown
-[sticker] :: UserTransactionPurpose -> Maybe Sticker
-
--- | The current user sold a gift received from another user
-UserTransactionPurposeGiftSell :: Maybe Gift -> UserTransactionPurpose
-
--- | The gift
-[gift] :: UserTransactionPurpose -> Maybe Gift
-
--- | The current user sent a gift to another user
-UserTransactionPurposeGiftSend :: Maybe Gift -> UserTransactionPurpose
-
--- | The gift
-[gift] :: UserTransactionPurpose -> Maybe Gift
-instance GHC.Show.Show TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance GHC.Classes.Eq TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTransactionPurpose.UserTransactionPurpose
-
-module TD.Data.UserGift
-data UserGift
-
--- | Represents a gift received by a user
-UserGift :: Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Gift -> Maybe Int -> Maybe Int -> UserGift
-
--- | Identifier of the user that sent the gift; 0 if unknown
-[sender_user_id] :: UserGift -> Maybe Int
-
--- | Message added to the gift
-[text] :: UserGift -> Maybe FormattedText
-
--- | True, if the sender and gift text are shown only to the gift receiver;
---   otherwise, everyone are able to see them
-[is_private] :: UserGift -> Maybe Bool
-
--- | True, if the gift is displayed on the user's profile page; may be
---   false only for the receiver of the gift
-[is_saved] :: UserGift -> Maybe Bool
-
--- | Point in time (Unix timestamp) when the gift was sent
-[date] :: UserGift -> Maybe Int
-
--- | The gift
-[gift] :: UserGift -> Maybe Gift
-
--- | Identifier of the message with the gift in the chat with the sender of
---   the gift; can be 0 or an identifier of a deleted message; only for the
---   gift receiver
-[message_id] :: UserGift -> Maybe Int
-
--- | Number of Telegram Stars that can be claimed by the receiver instead
---   of the gift; only for the gift receiver
-[sell_star_count] :: UserGift -> Maybe Int
-instance GHC.Show.Show TD.Data.UserGift.UserGift
-instance GHC.Classes.Eq TD.Data.UserGift.UserGift
-instance TD.Lib.Internal.ShortShow TD.Data.UserGift.UserGift
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGift.UserGift
-
-module TD.Data.UserGifts
-data UserGifts
-
--- | Represents a list of gifts received by a user
-UserGifts :: Maybe Int -> Maybe [UserGift] -> Maybe Text -> UserGifts
-
--- | The total number of received gifts
-[total_count] :: UserGifts -> Maybe Int
-
--- | The list of gifts
-[gifts] :: UserGifts -> Maybe [UserGift]
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: UserGifts -> Maybe Text
-instance GHC.Show.Show TD.Data.UserGifts.UserGifts
-instance GHC.Classes.Eq TD.Data.UserGifts.UserGifts
-instance TD.Lib.Internal.ShortShow TD.Data.UserGifts.UserGifts
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserGifts.UserGifts
-
-module TD.Data.Gifts
-data Gifts
-
--- | Contains a list of gifts that can be sent to another user
-Gifts :: Maybe [Gift] -> Gifts
-
--- | The list of gifts
-[gifts] :: Gifts -> Maybe [Gift]
-instance GHC.Show.Show TD.Data.Gifts.Gifts
-instance GHC.Classes.Eq TD.Data.Gifts.Gifts
-instance TD.Lib.Internal.ShortShow TD.Data.Gifts.Gifts
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gifts.Gifts
-
-module TD.Data.EmojiReaction
-data EmojiReaction
-
--- | Contains information about an emoji reaction
-EmojiReaction :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> EmojiReaction
-
--- | Text representation of the reaction
-[emoji] :: EmojiReaction -> Maybe Text
-
--- | Reaction title
-[title] :: EmojiReaction -> Maybe Text
-
--- | True, if the reaction can be added to new messages and enabled in
---   chats
-[is_active] :: EmojiReaction -> Maybe Bool
-
--- | Static icon for the reaction
-[static_icon] :: EmojiReaction -> Maybe Sticker
-
--- | Appear animation for the reaction
-[appear_animation] :: EmojiReaction -> Maybe Sticker
-
--- | Select animation for the reaction
-[select_animation] :: EmojiReaction -> Maybe Sticker
-
--- | Activate animation for the reaction
-[activate_animation] :: EmojiReaction -> Maybe Sticker
-
--- | Effect animation for the reaction
-[effect_animation] :: EmojiReaction -> Maybe Sticker
-
--- | Around animation for the reaction; may be null
-[around_animation] :: EmojiReaction -> Maybe Sticker
-
--- | Center animation for the reaction; may be null
-[center_animation] :: EmojiReaction -> Maybe Sticker
-instance GHC.Show.Show TD.Data.EmojiReaction.EmojiReaction
-instance GHC.Classes.Eq TD.Data.EmojiReaction.EmojiReaction
-instance TD.Lib.Internal.ShortShow TD.Data.EmojiReaction.EmojiReaction
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiReaction.EmojiReaction
-
-module TD.Data.EmojiCategory
-data EmojiCategory
-
--- | Describes an emoji category
-EmojiCategory :: Maybe Text -> Maybe Sticker -> Maybe EmojiCategorySource -> Maybe Bool -> EmojiCategory
-
--- | Name of the category
-[name] :: EmojiCategory -> Maybe Text
-
--- | Custom emoji sticker, which represents icon of the category
-[icon] :: EmojiCategory -> Maybe Sticker
-
--- | Source of stickers for the emoji category
-[source] :: EmojiCategory -> Maybe EmojiCategorySource
-
--- | True, if the category must be shown first when choosing a sticker for
---   the start page
-[is_greeting] :: EmojiCategory -> Maybe Bool
-instance GHC.Show.Show TD.Data.EmojiCategory.EmojiCategory
-instance GHC.Classes.Eq TD.Data.EmojiCategory.EmojiCategory
-instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategory.EmojiCategory
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategory.EmojiCategory
-
-module TD.Data.EmojiCategories
-data EmojiCategories
-
--- | Represents a list of emoji categories
-EmojiCategories :: Maybe [EmojiCategory] -> EmojiCategories
-
--- | List of categories
-[categories] :: EmojiCategories -> Maybe [EmojiCategory]
-instance GHC.Show.Show TD.Data.EmojiCategories.EmojiCategories
-instance GHC.Classes.Eq TD.Data.EmojiCategories.EmojiCategories
-instance TD.Lib.Internal.ShortShow TD.Data.EmojiCategories.EmojiCategories
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiCategories.EmojiCategories
-
-module TD.Data.DiceStickers
-
--- | Contains animated stickers which must be used for dice animation
---   rendering
-data DiceStickers
-
--- | A regular animated sticker
-DiceStickersRegular :: Maybe Sticker -> DiceStickers
-
--- | The animated sticker with the dice animation
-[sticker] :: DiceStickers -> Maybe Sticker
-
--- | Animated stickers to be combined into a slot machine
-DiceStickersSlotMachine :: Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> Maybe Sticker -> DiceStickers
-
--- | The animated sticker with the slot machine background. The background
---   animation must start playing after all reel animations finish
-[background] :: DiceStickers -> Maybe Sticker
-
--- | The animated sticker with the lever animation. The lever animation
---   must play once in the initial dice state
-[lever] :: DiceStickers -> Maybe Sticker
-
--- | The animated sticker with the left reel
-[left_reel] :: DiceStickers -> Maybe Sticker
-
--- | The animated sticker with the center reel
-[center_reel] :: DiceStickers -> Maybe Sticker
-
--- | The animated sticker with the right reel
-[right_reel] :: DiceStickers -> Maybe Sticker
-instance GHC.Show.Show TD.Data.DiceStickers.DiceStickers
-instance GHC.Classes.Eq TD.Data.DiceStickers.DiceStickers
-instance TD.Lib.Internal.ShortShow TD.Data.DiceStickers.DiceStickers
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DiceStickers.DiceStickers
 
 module TD.Data.CheckStickerSetNameResult
 
@@ -12746,9 +12872,9 @@ InternalLinkTypeLanguageSettings :: InternalLinkType
 --   service and confirm adding the bot to side and attachment menu, then
 --   if the user accepts the terms and confirms adding, use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, use
---   getMainWebApp with the given start parameter and open the returned URL
---   as a Web App
-InternalLinkTypeMainWebApp :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
+--   getMainWebApp with the given start parameter and mode and open the
+--   returned URL as a Web App
+InternalLinkTypeMainWebApp :: Maybe Text -> Maybe Text -> Maybe WebAppOpenMode -> InternalLinkType
 
 -- | Username of the bot
 [bot_username] :: InternalLinkType -> Maybe Text
@@ -12756,9 +12882,8 @@ InternalLinkTypeMainWebApp :: Maybe Text -> Maybe Text -> Maybe Bool -> Internal
 -- | The parameter to be passed to sendBotStartMessage
 [start_parameter] :: InternalLinkType -> Maybe Text
 
--- | True, if the Web App must be opened in the compact mode instead of the
---   full-size mode
-[is_compact] :: InternalLinkType -> Maybe Bool
+-- | The mode to be passed to getMainWebApp
+[mode] :: InternalLinkType -> Maybe WebAppOpenMode
 
 -- | The link is a link to a Telegram message or a forum topic. Call
 --   getMessageLinkInfo with the given URL to process the link, and then
@@ -12988,7 +13113,7 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 --   service. If the user accept the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
-InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
+InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe WebAppOpenMode -> InternalLinkType
 
 -- | Username of the bot
 [bot_username] :: InternalLinkType -> Maybe Text
@@ -12999,9 +13124,8 @@ InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -
 -- | The parameter to be passed to sendBotStartMessage
 [start_parameter] :: InternalLinkType -> Maybe Text
 
--- | True, if the Web App must be opened in the compact mode instead of the
---   full-size mode
-[is_compact] :: InternalLinkType -> Maybe Bool
+-- | The mode to be passed to getMainWebApp
+[mode] :: InternalLinkType -> Maybe WebAppOpenMode
 instance GHC.Show.Show TD.Data.InternalLinkType.InternalLinkType
 instance GHC.Classes.Eq TD.Data.InternalLinkType.InternalLinkType
 instance TD.Lib.Internal.ShortShow TD.Data.InternalLinkType.InternalLinkType
@@ -14394,6 +14518,18 @@ BotTransactionPurposePaidMedia :: Maybe [PaidMedia] -> Maybe Text -> BotTransact
 
 -- | User bought a product from the bot
 BotTransactionPurposeInvoicePayment :: Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
+
+-- | Information about the bought product; may be null if not applicable
+[product_info] :: BotTransactionPurpose -> Maybe ProductInfo
+
+-- | Invoice payload; for bots only
+[invoice_payload] :: BotTransactionPurpose -> Maybe ByteString
+
+-- | User bought a subscription in a bot or a business account
+BotTransactionPurposeSubscription :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
+
+-- | The number of seconds between consecutive Telegram Star debiting
+[period] :: BotTransactionPurpose -> Maybe Int
 
 -- | Information about the bought product; may be null if not applicable
 [product_info] :: BotTransactionPurpose -> Maybe ProductInfo
@@ -16602,6 +16738,27 @@ instance GHC.Classes.Eq TD.Data.InlineQueryResult.InlineQueryResult
 instance TD.Lib.Internal.ShortShow TD.Data.InlineQueryResult.InlineQueryResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InlineQueryResult.InlineQueryResult
 
+module TD.Data.PreparedInlineMessage
+data PreparedInlineMessage
+
+-- | Represents a ready to send inline message. Use
+--   sendInlineQueryResultMessage to send the message
+PreparedInlineMessage :: Maybe Int -> Maybe InlineQueryResult -> Maybe TargetChatTypes -> PreparedInlineMessage
+
+-- | Unique identifier of the inline query to pass to
+--   sendInlineQueryResultMessage
+[inline_query_id] :: PreparedInlineMessage -> Maybe Int
+
+-- | Resulted inline message of the query
+[result] :: PreparedInlineMessage -> Maybe InlineQueryResult
+
+-- | Types of the chats to which the message can be sent
+[chat_types] :: PreparedInlineMessage -> Maybe TargetChatTypes
+instance GHC.Show.Show TD.Data.PreparedInlineMessage.PreparedInlineMessage
+instance GHC.Classes.Eq TD.Data.PreparedInlineMessage.PreparedInlineMessage
+instance TD.Lib.Internal.ShortShow TD.Data.PreparedInlineMessage.PreparedInlineMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PreparedInlineMessage.PreparedInlineMessage
+
 module TD.Data.InlineQueryResults
 data InlineQueryResults
 
@@ -16670,7 +16827,7 @@ module TD.Data.BotInfo
 data BotInfo
 
 -- | Contains information about a bot
-BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
+BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
 
 -- | The text that is shown on the bot's profile page and is sent together
 --   with the link when users share the bot
@@ -16707,8 +16864,24 @@ BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe B
 --   null
 [default_channel_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
 
--- | True, if the bot's revenue statistics are available
+-- | Default light background color for bot Web Apps; -1 if not specified
+[web_app_background_light_color] :: BotInfo -> Maybe Int
+
+-- | Default dark background color for bot Web Apps; -1 if not specified
+[web_app_background_dark_color] :: BotInfo -> Maybe Int
+
+-- | Default light header color for bot Web Apps; -1 if not specified
+[web_app_header_light_color] :: BotInfo -> Maybe Int
+
+-- | Default dark header color for bot Web Apps; -1 if not specified
+[web_app_header_dark_color] :: BotInfo -> Maybe Int
+
+-- | True, if the bot's revenue statistics are available to the current
+--   user
 [can_get_revenue_statistics] :: BotInfo -> Maybe Bool
+
+-- | True, if the bot can manage emoji status of the current user
+[can_manage_emoji_status] :: BotInfo -> Maybe Bool
 
 -- | True, if the bot has media previews
 [has_media_previews] :: BotInfo -> Maybe Bool
@@ -17425,7 +17598,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BasicGroupFullInfo.BasicGrou
 module TD.Data.AlternativeVideo
 data AlternativeVideo
 
--- | Describes an alternative reencoded quality of a video file
+-- | Describes an alternative re-encoded quality of a video file
 AlternativeVideo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe File -> Maybe File -> AlternativeVideo
 
 -- | Video width
@@ -17721,6 +17894,12 @@ PaymentFormTypeStars :: Maybe Int -> PaymentFormType
 
 -- | Number of Telegram Stars that will be paid
 [star_count] :: PaymentFormType -> Maybe Int
+
+-- | The payment form is for a payment in Telegram Stars for subscription
+PaymentFormTypeStarSubscription :: Maybe StarSubscriptionPricing -> PaymentFormType
+
+-- | Information about subscription plan
+[pricing] :: PaymentFormType -> Maybe StarSubscriptionPricing
 instance GHC.Show.Show TD.Data.PaymentFormType.PaymentFormType
 instance GHC.Classes.Eq TD.Data.PaymentFormType.PaymentFormType
 instance TD.Lib.Internal.ShortShow TD.Data.PaymentFormType.PaymentFormType
@@ -18253,8 +18432,8 @@ MessageGameScore :: Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 -- | New score
 [score] :: MessageContent -> Maybe Int
 
--- | A payment has been completed
-MessagePaymentSuccessful :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Text -> MessageContent
+-- | A payment has been sent to a bot or a business account
+MessagePaymentSuccessful :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Text -> MessageContent
 
 -- | Identifier of the chat, containing the corresponding invoice message
 [invoice_chat_id] :: MessageContent -> Maybe Int
@@ -18269,6 +18448,10 @@ MessagePaymentSuccessful :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int ->
 -- | Product total price in the smallest units of the currency
 [total_amount] :: MessageContent -> Maybe Int
 
+-- | Point in time (Unix timestamp) when the subscription will expire; 0 if
+--   unknown or the payment isn't recurring
+[subscription_until_date] :: MessageContent -> Maybe Int
+
 -- | True, if this is a recurring payment
 [is_recurring] :: MessageContent -> Maybe Bool
 
@@ -18278,14 +18461,18 @@ MessagePaymentSuccessful :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int ->
 -- | Name of the invoice; may be empty if unknown
 [invoice_name] :: MessageContent -> Maybe Text
 
--- | A payment has been completed; for bots only
-MessagePaymentSuccessfulBot :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe ByteString -> Maybe Text -> Maybe OrderInfo -> Maybe Text -> Maybe Text -> MessageContent
+-- | A payment has been received by the bot or the business account
+MessagePaymentSuccessfulBot :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe ByteString -> Maybe Text -> Maybe OrderInfo -> Maybe Text -> Maybe Text -> MessageContent
 
 -- | Currency for the product price
 [currency] :: MessageContent -> Maybe Text
 
 -- | Product total price in the smallest units of the currency
 [total_amount] :: MessageContent -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the subscription will expire; 0 if
+--   unknown or the payment isn't recurring
+[subscription_until_date] :: MessageContent -> Maybe Int
 
 -- | True, if this is a recurring payment
 [is_recurring] :: MessageContent -> Maybe Bool
@@ -18297,10 +18484,10 @@ MessagePaymentSuccessfulBot :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bo
 [invoice_payload] :: MessageContent -> Maybe ByteString
 
 -- | Identifier of the shipping option chosen by the user; may be empty if
---   not applicable
+--   not applicable; for bots only
 [shipping_option_id] :: MessageContent -> Maybe Text
 
--- | Information about the order; may be null
+-- | Information about the order; may be null; for bots only
 [order_info] :: MessageContent -> Maybe OrderInfo
 
 -- | Telegram payment identifier
@@ -18559,7 +18746,7 @@ MessageGift :: Maybe Gift -> Maybe FormattedText -> Maybe Int -> Maybe Bool -> M
 [text] :: MessageContent -> Maybe FormattedText
 
 -- | Number of Telegram Stars that can be claimed by the receiver instead
---   of the gift
+--   of the gift; 0 if the gift can't be sold by the receiver
 [sell_star_count] :: MessageContent -> Maybe Int
 
 -- | True, if the sender and gift text are shown only to the gift receiver;
@@ -22141,6 +22328,7 @@ NotificationSounds :: NotificationSounds -> GeneralResult
 Ok :: Ok -> GeneralResult
 OptionValue :: OptionValue -> GeneralResult
 OrderInfo :: OrderInfo -> GeneralResult
+Outline :: Outline -> GeneralResult
 PassportAuthorizationForm :: PassportAuthorizationForm -> GeneralResult
 PassportElement :: PassportElement -> GeneralResult
 PassportElements :: PassportElements -> GeneralResult
@@ -22155,6 +22343,8 @@ PremiumGiftCodeInfo :: PremiumGiftCodeInfo -> GeneralResult
 PremiumGiftCodePaymentOptions :: PremiumGiftCodePaymentOptions -> GeneralResult
 PremiumLimit :: PremiumLimit -> GeneralResult
 PremiumState :: PremiumState -> GeneralResult
+PreparedInlineMessage :: PreparedInlineMessage -> GeneralResult
+PreparedInlineMessageId :: PreparedInlineMessageId -> GeneralResult
 Proxies :: Proxies -> GeneralResult
 Proxy :: Proxy -> GeneralResult
 PublicForwards :: PublicForwards -> GeneralResult
@@ -23513,6 +23703,27 @@ instance GHC.Classes.Eq TD.Query.CheckStickerSetName.CheckStickerSetName
 instance TD.Lib.Internal.ShortShow TD.Query.CheckStickerSetName.CheckStickerSetName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckStickerSetName.CheckStickerSetName
 
+module TD.Query.CheckWebAppFileDownload
+
+-- | Checks whether a file can be downloaded and saved locally by Web App
+--   request. Returns <a>Ok</a>
+data CheckWebAppFileDownload
+CheckWebAppFileDownload :: Maybe Int -> Maybe Text -> Maybe Text -> CheckWebAppFileDownload
+
+-- | Identifier of the bot, providing the Web App
+[bot_user_id] :: CheckWebAppFileDownload -> Maybe Int
+
+-- | Name of the file
+[file_name] :: CheckWebAppFileDownload -> Maybe Text
+
+-- | URL of the file
+[url] :: CheckWebAppFileDownload -> Maybe Text
+defaultCheckWebAppFileDownload :: CheckWebAppFileDownload
+instance GHC.Show.Show TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
+instance GHC.Classes.Eq TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
+instance TD.Lib.Internal.ShortShow TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
+
 module TD.Query.CleanFileName
 
 -- | Removes potentially dangerous characters from the name of a file.
@@ -23979,10 +24190,15 @@ module TD.Query.CreateInvoiceLink
 -- | Creates a link for the given invoice; for bots only. Returns
 --   <a>HttpUrl</a>
 data CreateInvoiceLink
-CreateInvoiceLink :: Maybe InputMessageContent -> CreateInvoiceLink
+CreateInvoiceLink :: Maybe Text -> Maybe InputMessageContent -> CreateInvoiceLink
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request
+[business_connection_id] :: CreateInvoiceLink -> Maybe Text
 
 -- | Information about the invoice of the type inputMessageInvoice
 [invoice] :: CreateInvoiceLink -> Maybe InputMessageContent
+defaultCreateInvoiceLink :: CreateInvoiceLink
 instance GHC.Show.Show TD.Query.CreateInvoiceLink.CreateInvoiceLink
 instance GHC.Classes.Eq TD.Query.CreateInvoiceLink.CreateInvoiceLink
 instance TD.Lib.Internal.ShortShow TD.Query.CreateInvoiceLink.CreateInvoiceLink
@@ -25588,8 +25804,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditQuickReplyMessage.EditQuick
 
 module TD.Query.EditStarSubscription
 
--- | Cancels or reenables Telegram Star subscription to a channel. Returns
---   <a>Ok</a>
+-- | Cancels or re-enables Telegram Star subscription. Returns <a>Ok</a>
 data EditStarSubscription
 EditStarSubscription :: Maybe Text -> Maybe Bool -> EditStarSubscription
 
@@ -25654,6 +25869,28 @@ instance GHC.Show.Show TD.Query.EditStoryCover.EditStoryCover
 instance GHC.Classes.Eq TD.Query.EditStoryCover.EditStoryCover
 instance TD.Lib.Internal.ShortShow TD.Query.EditStoryCover.EditStoryCover
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStoryCover.EditStoryCover
+
+module TD.Query.EditUserStarSubscription
+
+-- | Cancels or re-enables Telegram Star subscription for a user; for bots
+--   only. Returns <a>Ok</a>
+data EditUserStarSubscription
+EditUserStarSubscription :: Maybe Int -> Maybe Text -> Maybe Bool -> EditUserStarSubscription
+
+-- | User identifier
+[user_id] :: EditUserStarSubscription -> Maybe Int
+
+-- | Telegram payment identifier of the subscription
+[telegram_payment_charge_id] :: EditUserStarSubscription -> Maybe Text
+
+-- | Pass true to cancel the subscription; pass false to allow the user to
+--   enable it
+[is_canceled] :: EditUserStarSubscription -> Maybe Bool
+defaultEditUserStarSubscription :: EditUserStarSubscription
+instance GHC.Show.Show TD.Query.EditUserStarSubscription.EditUserStarSubscription
+instance GHC.Classes.Eq TD.Query.EditUserStarSubscription.EditUserStarSubscription
+instance TD.Lib.Internal.ShortShow TD.Query.EditUserStarSubscription.EditUserStarSubscription
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditUserStarSubscription.EditUserStarSubscription
 
 module TD.Query.EnableProxy
 
@@ -28289,7 +28526,7 @@ module TD.Query.GetMainWebApp
 -- | Returns information needed to open the main Web App of a bot. Returns
 --   <a>MainWebApp</a>
 data GetMainWebApp
-GetMainWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> GetMainWebApp
+GetMainWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe WebAppOpenParameters -> GetMainWebApp
 
 -- | Identifier of the chat in which the Web App is opened; pass 0 if none
 [chat_id] :: GetMainWebApp -> Maybe Int
@@ -28300,12 +28537,8 @@ GetMainWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -
 -- | Start parameter from internalLinkTypeMainWebApp
 [start_parameter] :: GetMainWebApp -> Maybe Text
 
--- | Preferred Web App theme; pass null to use the default theme
-[theme] :: GetMainWebApp -> Maybe ThemeParameters
-
--- | Short name of the current application; 0-64 English letters, digits,
---   and underscores
-[application_name] :: GetMainWebApp -> Maybe Text
+-- | Parameters to use to open the Web App
+[parameters] :: GetMainWebApp -> Maybe WebAppOpenParameters
 defaultGetMainWebApp :: GetMainWebApp
 instance GHC.Show.Show TD.Query.GetMainWebApp.GetMainWebApp
 instance GHC.Classes.Eq TD.Query.GetMainWebApp.GetMainWebApp
@@ -29129,6 +29362,24 @@ instance GHC.Classes.Eq TD.Query.GetPremiumStickers.GetPremiumStickers
 instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumStickers.GetPremiumStickers
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumStickers.GetPremiumStickers
 
+module TD.Query.GetPreparedInlineMessage
+
+-- | Saves an inline message to be sent by the given user; for bots only.
+--   Returns <a>PreparedInlineMessage</a>
+data GetPreparedInlineMessage
+GetPreparedInlineMessage :: Maybe Int -> Maybe Text -> GetPreparedInlineMessage
+
+-- | Identifier of the bot that created the message
+[bot_user_id] :: GetPreparedInlineMessage -> Maybe Int
+
+-- | Identifier of the prepared message
+[prepared_message_id] :: GetPreparedInlineMessage -> Maybe Text
+defaultGetPreparedInlineMessage :: GetPreparedInlineMessage
+instance GHC.Show.Show TD.Query.GetPreparedInlineMessage.GetPreparedInlineMessage
+instance GHC.Classes.Eq TD.Query.GetPreparedInlineMessage.GetPreparedInlineMessage
+instance TD.Lib.Internal.ShortShow TD.Query.GetPreparedInlineMessage.GetPreparedInlineMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPreparedInlineMessage.GetPreparedInlineMessage
+
 module TD.Query.GetProxies
 
 -- | Returns the list of proxies that are currently set up. Can be called
@@ -29675,6 +29926,27 @@ instance GHC.Show.Show TD.Query.GetStickerEmojis.GetStickerEmojis
 instance GHC.Classes.Eq TD.Query.GetStickerEmojis.GetStickerEmojis
 instance TD.Lib.Internal.ShortShow TD.Query.GetStickerEmojis.GetStickerEmojis
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStickerEmojis.GetStickerEmojis
+
+module TD.Query.GetStickerOutline
+
+-- | Returns outline of a sticker; this is an offline request. Returns a
+--   404 error if the outline isn't known. Returns <a>Outline</a>
+data GetStickerOutline
+GetStickerOutline :: Maybe Int -> Maybe Bool -> Maybe Bool -> GetStickerOutline
+
+-- | File identifier of the sticker
+[sticker_file_id] :: GetStickerOutline -> Maybe Int
+
+-- | Pass true to get the outline scaled for animated emoji
+[for_animated_emoji] :: GetStickerOutline -> Maybe Bool
+
+-- | Pass true to get the outline scaled for clicked animated emoji message
+[for_clicked_animated_emoji_message] :: GetStickerOutline -> Maybe Bool
+defaultGetStickerOutline :: GetStickerOutline
+instance GHC.Show.Show TD.Query.GetStickerOutline.GetStickerOutline
+instance GHC.Classes.Eq TD.Query.GetStickerOutline.GetStickerOutline
+instance TD.Lib.Internal.ShortShow TD.Query.GetStickerOutline.GetStickerOutline
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStickerOutline.GetStickerOutline
 
 module TD.Query.GetStickerSet
 
@@ -30297,8 +30569,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatAvailableParticipan
 
 module TD.Query.GetVideoChatRtmpUrl
 
--- | Returns RTMP URL for streaming to the chat; requires owner privileges.
---   Returns <a>RtmpUrl</a>
+-- | Returns RTMP URL for streaming to the chat; requires
+--   can_manage_video_chats administrator right. Returns <a>RtmpUrl</a>
 data GetVideoChatRtmpUrl
 GetVideoChatRtmpUrl :: Maybe Int -> GetVideoChatRtmpUrl
 
@@ -30314,7 +30586,7 @@ module TD.Query.GetWebAppLinkUrl
 -- | Returns an HTTPS URL of a Web App to open after a link of the type
 --   internalLinkTypeWebApp is clicked. Returns <a>HttpUrl</a>
 data GetWebAppLinkUrl
-GetWebAppLinkUrl :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> Maybe Bool -> GetWebAppLinkUrl
+GetWebAppLinkUrl :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe WebAppOpenParameters -> GetWebAppLinkUrl
 
 -- | Identifier of the chat in which the link was clicked; pass 0 if none
 [chat_id] :: GetWebAppLinkUrl -> Maybe Int
@@ -30328,20 +30600,31 @@ GetWebAppLinkUrl :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe 
 -- | Start parameter from internalLinkTypeWebApp
 [start_parameter] :: GetWebAppLinkUrl -> Maybe Text
 
--- | Preferred Web App theme; pass null to use the default theme
-[theme] :: GetWebAppLinkUrl -> Maybe ThemeParameters
-
--- | Short name of the current application; 0-64 English letters, digits,
---   and underscores
-[application_name] :: GetWebAppLinkUrl -> Maybe Text
-
 -- | Pass true if the current user allowed the bot to send them messages
 [allow_write_access] :: GetWebAppLinkUrl -> Maybe Bool
+
+-- | Parameters to use to open the Web App
+[parameters] :: GetWebAppLinkUrl -> Maybe WebAppOpenParameters
 defaultGetWebAppLinkUrl :: GetWebAppLinkUrl
 instance GHC.Show.Show TD.Query.GetWebAppLinkUrl.GetWebAppLinkUrl
 instance GHC.Classes.Eq TD.Query.GetWebAppLinkUrl.GetWebAppLinkUrl
 instance TD.Lib.Internal.ShortShow TD.Query.GetWebAppLinkUrl.GetWebAppLinkUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebAppLinkUrl.GetWebAppLinkUrl
+
+module TD.Query.GetWebAppPlaceholder
+
+-- | Returns a default placeholder for Web Apps of a bot; this is an
+--   offline request. Returns a 404 error if the placeholder isn't known.
+--   Returns <a>Outline</a>
+data GetWebAppPlaceholder
+GetWebAppPlaceholder :: Maybe Int -> GetWebAppPlaceholder
+
+-- | Identifier of the target bot
+[bot_user_id] :: GetWebAppPlaceholder -> Maybe Int
+instance GHC.Show.Show TD.Query.GetWebAppPlaceholder.GetWebAppPlaceholder
+instance GHC.Classes.Eq TD.Query.GetWebAppPlaceholder.GetWebAppPlaceholder
+instance TD.Lib.Internal.ShortShow TD.Query.GetWebAppPlaceholder.GetWebAppPlaceholder
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebAppPlaceholder.GetWebAppPlaceholder
 
 module TD.Query.GetWebAppUrl
 
@@ -30349,7 +30632,7 @@ module TD.Query.GetWebAppUrl
 --   keyboardButtonTypeWebApp button, or an
 --   inlineQueryResultsButtonTypeWebApp button. Returns <a>HttpUrl</a>
 data GetWebAppUrl
-GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> GetWebAppUrl
+GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe WebAppOpenParameters -> GetWebAppUrl
 
 -- | Identifier of the target bot
 [bot_user_id] :: GetWebAppUrl -> Maybe Int
@@ -30359,12 +30642,8 @@ GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -
 --   bot is opened from the side menu
 [url] :: GetWebAppUrl -> Maybe Text
 
--- | Preferred Web App theme; pass null to use the default theme
-[theme] :: GetWebAppUrl -> Maybe ThemeParameters
-
--- | Short name of the current application; 0-64 English letters, digits,
---   and underscores
-[application_name] :: GetWebAppUrl -> Maybe Text
+-- | Parameters to use to open the Web App
+[parameters] :: GetWebAppUrl -> Maybe WebAppOpenParameters
 defaultGetWebAppUrl :: GetWebAppUrl
 instance GHC.Show.Show TD.Query.GetWebAppUrl.GetWebAppUrl
 instance GHC.Classes.Eq TD.Query.GetWebAppUrl.GetWebAppUrl
@@ -30793,7 +31072,7 @@ module TD.Query.OpenWebApp
 --   alert about data sent to the bot must be shown once. Returns
 --   <a>WebAppInfo</a>
 data OpenWebApp
-OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> Maybe Text -> Maybe Int -> Maybe InputMessageReplyTo -> OpenWebApp
+OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe WebAppOpenParameters -> OpenWebApp
 
 -- | Identifier of the chat in which the Web App is opened. The Web App
 --   can't be opened in secret chats
@@ -30807,13 +31086,6 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> M
 --   otherwise
 [url] :: OpenWebApp -> Maybe Text
 
--- | Preferred Web App theme; pass null to use the default theme
-[theme] :: OpenWebApp -> Maybe ThemeParameters
-
--- | Short name of the current application; 0-64 English letters, digits,
---   and underscores
-[application_name] :: OpenWebApp -> Maybe Text
-
 -- | If not 0, the message thread identifier in which the message will be
 --   sent
 [message_thread_id] :: OpenWebApp -> Maybe Int
@@ -30821,6 +31093,9 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ThemeParameters -> M
 -- | Information about the message or story to be replied in the message
 --   sent by the Web App; pass null if none
 [reply_to] :: OpenWebApp -> Maybe InputMessageReplyTo
+
+-- | Parameters to use to open the Web App
+[parameters] :: OpenWebApp -> Maybe WebAppOpenParameters
 defaultOpenWebApp :: OpenWebApp
 instance GHC.Show.Show TD.Query.OpenWebApp.OpenWebApp
 instance GHC.Classes.Eq TD.Query.OpenWebApp.OpenWebApp
@@ -32230,8 +32505,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResetPassword.ResetPassword
 
 module TD.Query.ReuseStarSubscription
 
--- | Reuses an active subscription and joins the subscribed chat again.
---   Returns <a>Ok</a>
+-- | Reuses an active Telegram Star subscription to a channel chat and
+--   joins the chat again. Returns <a>Ok</a>
 data ReuseStarSubscription
 ReuseStarSubscription :: Maybe Text -> ReuseStarSubscription
 
@@ -32298,6 +32573,27 @@ instance GHC.Show.Show TD.Query.SaveApplicationLogEvent.SaveApplicationLogEvent
 instance GHC.Classes.Eq TD.Query.SaveApplicationLogEvent.SaveApplicationLogEvent
 instance TD.Lib.Internal.ShortShow TD.Query.SaveApplicationLogEvent.SaveApplicationLogEvent
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SaveApplicationLogEvent.SaveApplicationLogEvent
+
+module TD.Query.SavePreparedInlineMessage
+
+-- | Saves an inline message to be sent by the given user; for bots only.
+--   Returns <a>PreparedInlineMessageId</a>
+data SavePreparedInlineMessage
+SavePreparedInlineMessage :: Maybe Int -> Maybe InputInlineQueryResult -> Maybe TargetChatTypes -> SavePreparedInlineMessage
+
+-- | Identifier of the user
+[user_id] :: SavePreparedInlineMessage -> Maybe Int
+
+-- | The description of the message
+[result] :: SavePreparedInlineMessage -> Maybe InputInlineQueryResult
+
+-- | Types of the chats to which the message can be sent
+[chat_types] :: SavePreparedInlineMessage -> Maybe TargetChatTypes
+defaultSavePreparedInlineMessage :: SavePreparedInlineMessage
+instance GHC.Show.Show TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
+instance GHC.Classes.Eq TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
+instance TD.Lib.Internal.ShortShow TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
 
 module TD.Query.SearchBackground
 
@@ -35735,6 +36031,23 @@ instance GHC.Classes.Eq TD.Query.SetTdlibParameters.SetTdlibParameters
 instance TD.Lib.Internal.ShortShow TD.Query.SetTdlibParameters.SetTdlibParameters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetTdlibParameters.SetTdlibParameters
 
+module TD.Query.SetUserEmojiStatus
+
+-- | Changes the emoji status of a user; for bots only. Returns <a>Ok</a>
+data SetUserEmojiStatus
+SetUserEmojiStatus :: Maybe Int -> Maybe EmojiStatus -> SetUserEmojiStatus
+
+-- | Identifier of the user
+[user_id] :: SetUserEmojiStatus -> Maybe Int
+
+-- | New emoji status; pass null to switch to the default badge
+[emoji_status] :: SetUserEmojiStatus -> Maybe EmojiStatus
+defaultSetUserEmojiStatus :: SetUserEmojiStatus
+instance GHC.Show.Show TD.Query.SetUserEmojiStatus.SetUserEmojiStatus
+instance GHC.Classes.Eq TD.Query.SetUserEmojiStatus.SetUserEmojiStatus
+instance TD.Lib.Internal.ShortShow TD.Query.SetUserEmojiStatus.SetUserEmojiStatus
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetUserEmojiStatus.SetUserEmojiStatus
+
 module TD.Query.SetUserPersonalProfilePhoto
 
 -- | Changes a personal profile photo of a contact user. Returns <a>Ok</a>
@@ -36267,6 +36580,25 @@ instance GHC.Show.Show TD.Query.ToggleAllDownloadsArePaused.ToggleAllDownloadsAr
 instance GHC.Classes.Eq TD.Query.ToggleAllDownloadsArePaused.ToggleAllDownloadsArePaused
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleAllDownloadsArePaused.ToggleAllDownloadsArePaused
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleAllDownloadsArePaused.ToggleAllDownloadsArePaused
+
+module TD.Query.ToggleBotCanManageEmojiStatus
+
+-- | Toggles whether the bot can manage emoji status of the current user.
+--   Returns <a>Ok</a>
+data ToggleBotCanManageEmojiStatus
+ToggleBotCanManageEmojiStatus :: Maybe Int -> Maybe Bool -> ToggleBotCanManageEmojiStatus
+
+-- | User identifier of the bot
+[bot_user_id] :: ToggleBotCanManageEmojiStatus -> Maybe Int
+
+-- | Pass true if the bot is allowed to change emoji status of the user;
+--   pass false otherwise
+[can_manage_emoji_status] :: ToggleBotCanManageEmojiStatus -> Maybe Bool
+defaultToggleBotCanManageEmojiStatus :: ToggleBotCanManageEmojiStatus
+instance GHC.Show.Show TD.Query.ToggleBotCanManageEmojiStatus.ToggleBotCanManageEmojiStatus
+instance GHC.Classes.Eq TD.Query.ToggleBotCanManageEmojiStatus.ToggleBotCanManageEmojiStatus
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleBotCanManageEmojiStatus.ToggleBotCanManageEmojiStatus
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleBotCanManageEmojiStatus.ToggleBotCanManageEmojiStatus
 
 module TD.Query.ToggleBotIsAddedToAttachmentMenu
 
