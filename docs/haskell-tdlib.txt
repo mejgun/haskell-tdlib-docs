@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.50.0
+@version 2.0.51.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -1368,51 +1368,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.StarSubscriptionPricing.StarSubscript
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
 
-module TD.Data.StarRevenueStatus
-data StarRevenueStatus
-
--- | Contains information about Telegram Stars earned by a bot or a chat
-StarRevenueStatus :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> StarRevenueStatus
-
--- | Total number of Telegram Stars earned
-[total_count] :: StarRevenueStatus -> Maybe Int
-
--- | The number of Telegram Stars that aren't withdrawn yet
-[current_count] :: StarRevenueStatus -> Maybe Int
-
--- | The number of Telegram Stars that are available for withdrawal
-[available_count] :: StarRevenueStatus -> Maybe Int
-
--- | True, if Telegram Stars can be withdrawn now or later
-[withdrawal_enabled] :: StarRevenueStatus -> Maybe Bool
-
--- | Time left before the next withdrawal can be started, in seconds; 0 if
---   withdrawal can be started now
-[next_withdrawal_in] :: StarRevenueStatus -> Maybe Int
-instance GHC.Show.Show TD.Data.StarRevenueStatus.StarRevenueStatus
-instance GHC.Classes.Eq TD.Data.StarRevenueStatus.StarRevenueStatus
-instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatus.StarRevenueStatus
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatus.StarRevenueStatus
-
-module TD.Data.StarRevenueStatistics
-data StarRevenueStatistics
-
--- | A detailed statistics about Telegram Stars earned by a bot or a chat
-StarRevenueStatistics :: Maybe StatisticalGraph -> Maybe StarRevenueStatus -> Maybe Double -> StarRevenueStatistics
-
--- | A graph containing amount of revenue in a given day
-[revenue_by_day_graph] :: StarRevenueStatistics -> Maybe StatisticalGraph
-
--- | Telegram Star revenue status
-[status] :: StarRevenueStatistics -> Maybe StarRevenueStatus
-
--- | Current conversion rate of a Telegram Star to USD
-[usd_rate] :: StarRevenueStatistics -> Maybe Double
-instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
-instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
-instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatistics.StarRevenueStatistics
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRevenueStatistics
-
 module TD.Data.StarPaymentOption
 data StarPaymentOption
 
@@ -1525,6 +1480,68 @@ instance GHC.Show.Show TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOpt
 instance GHC.Classes.Eq TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
 instance TD.Lib.Internal.ShortShow TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+
+module TD.Data.StarAmount
+data StarAmount
+
+-- | Describes a possibly non-integer amount of Telegram Stars
+StarAmount :: Maybe Int -> Maybe Int -> StarAmount
+
+-- | The integer amount of Telegram Stars rounded to 0
+[star_count] :: StarAmount -> Maybe Int
+
+-- | The number of 1/1000000000 shares of Telegram Stars; from -999999999
+--   to 999999999
+[nanostar_count] :: StarAmount -> Maybe Int
+instance GHC.Show.Show TD.Data.StarAmount.StarAmount
+instance GHC.Classes.Eq TD.Data.StarAmount.StarAmount
+instance TD.Lib.Internal.ShortShow TD.Data.StarAmount.StarAmount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarAmount.StarAmount
+
+module TD.Data.StarRevenueStatus
+data StarRevenueStatus
+
+-- | Contains information about Telegram Stars earned by a bot or a chat
+StarRevenueStatus :: Maybe StarAmount -> Maybe StarAmount -> Maybe StarAmount -> Maybe Bool -> Maybe Int -> StarRevenueStatus
+
+-- | Total amount of Telegram Stars earned
+[total_amount] :: StarRevenueStatus -> Maybe StarAmount
+
+-- | The amount of Telegram Stars that aren't withdrawn yet
+[current_amount] :: StarRevenueStatus -> Maybe StarAmount
+
+-- | The amount of Telegram Stars that are available for withdrawal
+[available_amount] :: StarRevenueStatus -> Maybe StarAmount
+
+-- | True, if Telegram Stars can be withdrawn now or later
+[withdrawal_enabled] :: StarRevenueStatus -> Maybe Bool
+
+-- | Time left before the next withdrawal can be started, in seconds; 0 if
+--   withdrawal can be started now
+[next_withdrawal_in] :: StarRevenueStatus -> Maybe Int
+instance GHC.Show.Show TD.Data.StarRevenueStatus.StarRevenueStatus
+instance GHC.Classes.Eq TD.Data.StarRevenueStatus.StarRevenueStatus
+instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatus.StarRevenueStatus
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatus.StarRevenueStatus
+
+module TD.Data.StarRevenueStatistics
+data StarRevenueStatistics
+
+-- | A detailed statistics about Telegram Stars earned by a bot or a chat
+StarRevenueStatistics :: Maybe StatisticalGraph -> Maybe StarRevenueStatus -> Maybe Double -> StarRevenueStatistics
+
+-- | A graph containing amount of revenue in a given day
+[revenue_by_day_graph] :: StarRevenueStatistics -> Maybe StatisticalGraph
+
+-- | Telegram Star revenue status
+[status] :: StarRevenueStatistics -> Maybe StarRevenueStatus
+
+-- | Current conversion rate of a Telegram Star to USD
+[usd_rate] :: StarRevenueStatistics -> Maybe Double
+instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
+instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
+instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatistics.StarRevenueStatistics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRevenueStatistics
 
 module TD.Data.SessionType
 
@@ -4750,7 +4767,7 @@ module TD.Data.TargetChat
 -- | Describes the target chat to be opened
 data TargetChat
 
--- | The currently opened chat needs to be kept
+-- | The currently opened chat and forum topic must be kept
 TargetChatCurrent :: TargetChat
 
 -- | The chat needs to be chosen by the user among chats of the specified
@@ -6834,6 +6851,18 @@ FileTypeSecretThumbnail :: FileType
 --   Passport files
 FileTypeSecure :: FileType
 
+-- | The file is a self-destructing photo in a private chat
+FileTypeSelfDestructingPhoto :: FileType
+
+-- | The file is a self-destructing video in a private chat
+FileTypeSelfDestructingVideo :: FileType
+
+-- | The file is a self-destructing video note in a private chat
+FileTypeSelfDestructingVideoNote :: FileType
+
+-- | The file is a self-destructing voice note in a private chat
+FileTypeSelfDestructingVoiceNote :: FileType
+
 -- | The file is a sticker
 FileTypeSticker :: FileType
 
@@ -7371,34 +7400,6 @@ instance GHC.Classes.Eq TD.Data.Gift.Gift
 instance TD.Lib.Internal.ShortShow TD.Data.Gift.Gift
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gift.Gift
 
-module TD.Data.UserTransactionPurpose
-
--- | Describes purpose of a transaction with a user
-data UserTransactionPurpose
-
--- | A user gifted Telegram Stars
-UserTransactionPurposeGiftedStars :: Maybe Sticker -> UserTransactionPurpose
-
--- | A sticker to be shown in the transaction information; may be null if
---   unknown
-[sticker] :: UserTransactionPurpose -> Maybe Sticker
-
--- | The user sold a gift received from another user or bot
-UserTransactionPurposeGiftSell :: Maybe Gift -> UserTransactionPurpose
-
--- | The gift
-[gift] :: UserTransactionPurpose -> Maybe Gift
-
--- | The user or the bot sent a gift to a user
-UserTransactionPurposeGiftSend :: Maybe Gift -> UserTransactionPurpose
-
--- | The gift
-[gift] :: UserTransactionPurpose -> Maybe Gift
-instance GHC.Show.Show TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance GHC.Classes.Eq TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.UserTransactionPurpose.UserTransactionPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTransactionPurpose.UserTransactionPurpose
-
 module TD.Data.UserGift
 data UserGift
 
@@ -7782,10 +7783,10 @@ module TD.Data.StarSubscriptions
 data StarSubscriptions
 
 -- | Represents a list of Telegram Star subscriptions
-StarSubscriptions :: Maybe Int -> Maybe [StarSubscription] -> Maybe Int -> Maybe Text -> StarSubscriptions
+StarSubscriptions :: Maybe StarAmount -> Maybe [StarSubscription] -> Maybe Int -> Maybe Text -> StarSubscriptions
 
 -- | The amount of owned Telegram Stars
-[star_count] :: StarSubscriptions -> Maybe Int
+[star_amount] :: StarSubscriptions -> Maybe StarAmount
 
 -- | List of subscriptions for Telegram Stars
 [subscriptions] :: StarSubscriptions -> Maybe [StarSubscription]
@@ -10289,46 +10290,6 @@ instance GHC.Classes.Eq TD.Data.ChatType.ChatType
 instance TD.Lib.Internal.ShortShow TD.Data.ChatType.ChatType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatType.ChatType
 
-module TD.Data.ChatTransactionPurpose
-
--- | Describes purpose of a transaction with a supergroup or a channel
-data ChatTransactionPurpose
-
--- | Paid media were bought
-ChatTransactionPurposePaidMedia :: Maybe Int -> Maybe [PaidMedia] -> ChatTransactionPurpose
-
--- | Identifier of the corresponding message with paid media; can be 0 or
---   an identifier of a deleted message
-[message_id] :: ChatTransactionPurpose -> Maybe Int
-
--- | The bought media if the transaction wasn't refunded
-[media] :: ChatTransactionPurpose -> Maybe [PaidMedia]
-
--- | User joined the channel and subscribed to regular payments in Telegram
---   Stars
-ChatTransactionPurposeJoin :: Maybe Int -> ChatTransactionPurpose
-
--- | The number of seconds between consecutive Telegram Star debiting
-[period] :: ChatTransactionPurpose -> Maybe Int
-
--- | User paid for a reaction
-ChatTransactionPurposeReaction :: Maybe Int -> ChatTransactionPurpose
-
--- | Identifier of the corresponding message with paid media; can be 0 or
---   an identifier of a deleted message
-[message_id] :: ChatTransactionPurpose -> Maybe Int
-
--- | User received Telegram Stars from a giveaway
-ChatTransactionPurposeGiveaway :: Maybe Int -> ChatTransactionPurpose
-
--- | Identifier of the message with giveaway; can be 0 or an identifier of
---   a deleted message
-[giveaway_message_id] :: ChatTransactionPurpose -> Maybe Int
-instance GHC.Show.Show TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
-instance GHC.Classes.Eq TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatTransactionPurpose.ChatTransactionPurpose
-
 module TD.Data.ChatStatisticsObjectType
 
 -- | Describes type of object, for which statistics are provided
@@ -12782,6 +12743,16 @@ InternalLinkTypeBuyStars :: Maybe Int -> Maybe Text -> InternalLinkType
 --   application
 InternalLinkTypeChangePhoneNumber :: InternalLinkType
 
+-- | The link is an affiliate program link. Call searchChatAffiliateProgram
+--   with the given username and referrer to process the link
+InternalLinkTypeChatAffiliateProgram :: Maybe Text -> Maybe Text -> InternalLinkType
+
+-- | Username to be passed to searchChatAffiliateProgram
+[username] :: InternalLinkType -> Maybe Text
+
+-- | Referrer to be passed to searchChatAffiliateProgram
+[referrer] :: InternalLinkType -> Maybe Text
+
 -- | The link is a link to boost a Telegram chat. Call getChatBoostLinkInfo
 --   with the given URL to process the link. If the chat is found, then
 --   call getChatBoostStatus and getAvailableChatBoostSlots to get the
@@ -12951,7 +12922,7 @@ InternalLinkTypePhoneNumberConfirmation :: Maybe Text -> Maybe Text -> InternalL
 --   getPremiumFeatures with the given referrer to process the link
 InternalLinkTypePremiumFeatures :: Maybe Text -> InternalLinkType
 
--- | Referrer specified in the link
+-- | Referrer to be passed to searchChatAffiliateProgram
 [referrer] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to the screen for gifting Telegram Premium
@@ -12959,7 +12930,7 @@ InternalLinkTypePremiumFeatures :: Maybe Text -> InternalLinkType
 --   telegramPaymentPurposePremiumGiftCodes payments or in-store purchases
 InternalLinkTypePremiumGift :: Maybe Text -> InternalLinkType
 
--- | Referrer specified in the link
+-- | Referrer to be passed to searchChatAffiliateProgram
 [referrer] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link with a Telegram Premium gift code. Call
@@ -14501,165 +14472,6 @@ instance GHC.Show.Show TD.Data.BusinessInfo.BusinessInfo
 instance GHC.Classes.Eq TD.Data.BusinessInfo.BusinessInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessInfo.BusinessInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessInfo.BusinessInfo
-
-module TD.Data.BotTransactionPurpose
-
--- | Describes purpose of a transaction with a bot
-data BotTransactionPurpose
-
--- | Paid media were bought
-BotTransactionPurposePaidMedia :: Maybe [PaidMedia] -> Maybe Text -> BotTransactionPurpose
-
--- | The bought media if the transaction wasn't refunded
-[media] :: BotTransactionPurpose -> Maybe [PaidMedia]
-
--- | Bot-provided payload; for bots only
-[payload] :: BotTransactionPurpose -> Maybe Text
-
--- | User bought a product from the bot
-BotTransactionPurposeInvoicePayment :: Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
-
--- | Information about the bought product; may be null if not applicable
-[product_info] :: BotTransactionPurpose -> Maybe ProductInfo
-
--- | Invoice payload; for bots only
-[invoice_payload] :: BotTransactionPurpose -> Maybe ByteString
-
--- | User bought a subscription in a bot or a business account
-BotTransactionPurposeSubscription :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> BotTransactionPurpose
-
--- | The number of seconds between consecutive Telegram Star debiting
-[period] :: BotTransactionPurpose -> Maybe Int
-
--- | Information about the bought product; may be null if not applicable
-[product_info] :: BotTransactionPurpose -> Maybe ProductInfo
-
--- | Invoice payload; for bots only
-[invoice_payload] :: BotTransactionPurpose -> Maybe ByteString
-instance GHC.Show.Show TD.Data.BotTransactionPurpose.BotTransactionPurpose
-instance GHC.Classes.Eq TD.Data.BotTransactionPurpose.BotTransactionPurpose
-instance TD.Lib.Internal.ShortShow TD.Data.BotTransactionPurpose.BotTransactionPurpose
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotTransactionPurpose.BotTransactionPurpose
-
-module TD.Data.StarTransactionPartner
-
--- | Describes source or recipient of a transaction with Telegram Stars
-data StarTransactionPartner
-
--- | The transaction is a transaction with Telegram through a bot
-StarTransactionPartnerTelegram :: StarTransactionPartner
-
--- | The transaction is a transaction with App Store
-StarTransactionPartnerAppStore :: StarTransactionPartner
-
--- | The transaction is a transaction with Google Play
-StarTransactionPartnerGooglePlay :: StarTransactionPartner
-
--- | The transaction is a transaction with Fragment
-StarTransactionPartnerFragment :: Maybe RevenueWithdrawalState -> StarTransactionPartner
-
--- | State of the withdrawal; may be null for refunds from Fragment or for
---   Telegram Stars bought on Fragment
-[withdrawal_state] :: StarTransactionPartner -> Maybe RevenueWithdrawalState
-
--- | The transaction is a transaction with Telegram Ad platform
-StarTransactionPartnerTelegramAds :: StarTransactionPartner
-
--- | The transaction is a transaction with Telegram for API usage
-StarTransactionPartnerTelegramApi :: Maybe Int -> StarTransactionPartner
-
--- | The number of billed requests
-[request_count] :: StarTransactionPartner -> Maybe Int
-
--- | The transaction is a transaction with a bot
-StarTransactionPartnerBot :: Maybe Int -> Maybe BotTransactionPurpose -> StarTransactionPartner
-
--- | Identifier of the bot
-[user_id] :: StarTransactionPartner -> Maybe Int
-
--- | Purpose of the transaction
-[purpose] :: StarTransactionPartner -> Maybe BotTransactionPurpose
-
--- | The transaction is a transaction with a business account
-StarTransactionPartnerBusiness :: Maybe Int -> Maybe [PaidMedia] -> StarTransactionPartner
-
--- | Identifier of the bot
-[user_id] :: StarTransactionPartner -> Maybe Int
-
--- | The bought media if the transaction wasn't refunded
-[media] :: StarTransactionPartner -> Maybe [PaidMedia]
-
--- | The transaction is a transaction with a supergroup or a channel chat
-StarTransactionPartnerChat :: Maybe Int -> Maybe ChatTransactionPurpose -> StarTransactionPartner
-
--- | Identifier of the chat
-[chat_id] :: StarTransactionPartner -> Maybe Int
-
--- | Purpose of the transaction
-[_purpose] :: StarTransactionPartner -> Maybe ChatTransactionPurpose
-
--- | The transaction is a transaction with another user
-StarTransactionPartnerUser :: Maybe Int -> Maybe UserTransactionPurpose -> StarTransactionPartner
-
--- | Identifier of the bot
-[user_id] :: StarTransactionPartner -> Maybe Int
-
--- | Purpose of the transaction
-[__purpose] :: StarTransactionPartner -> Maybe UserTransactionPurpose
-
--- | The transaction is a transaction with unknown partner
-StarTransactionPartnerUnsupported :: StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransactionPartner.StarTransactionPartner
-instance GHC.Classes.Eq TD.Data.StarTransactionPartner.StarTransactionPartner
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionPartner.StarTransactionPartner
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionPartner.StarTransactionPartner
-
-module TD.Data.StarTransaction
-data StarTransaction
-
--- | Represents a transaction changing the amount of owned Telegram Stars
-StarTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe StarTransactionPartner -> StarTransaction
-
--- | Unique identifier of the transaction
-[_id] :: StarTransaction -> Maybe Text
-
--- | The amount of added owned Telegram Stars; negative for outgoing
---   transactions
-[star_count] :: StarTransaction -> Maybe Int
-
--- | True, if the transaction is a refund of a previous transaction
-[is_refund] :: StarTransaction -> Maybe Bool
-
--- | Point in time (Unix timestamp) when the transaction was completed
-[date] :: StarTransaction -> Maybe Int
-
--- | Source of the incoming transaction, or its recipient for outgoing
---   transactions
-[partner] :: StarTransaction -> Maybe StarTransactionPartner
-instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
-instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
-
-module TD.Data.StarTransactions
-data StarTransactions
-
--- | Represents a list of Telegram Star transactions
-StarTransactions :: Maybe Int -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
-
--- | The amount of owned Telegram Stars
-[star_count] :: StarTransactions -> Maybe Int
-
--- | List of transactions with Telegram Stars
-[transactions] :: StarTransactions -> Maybe [StarTransaction]
-
--- | The offset for the next request. If empty, then there are no more
---   results
-[next_offset] :: StarTransactions -> Maybe Text
-instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
-instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
 
 module TD.Data.BotMenuButton
 data BotMenuButton
@@ -16823,87 +16635,6 @@ instance GHC.Classes.Eq TD.Data.PremiumState.PremiumState
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumState.PremiumState
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumState.PremiumState
 
-module TD.Data.BotInfo
-data BotInfo
-
--- | Contains information about a bot
-BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
-
--- | The text that is shown on the bot's profile page and is sent together
---   with the link when users share the bot
-[short_description] :: BotInfo -> Maybe Text
-
--- | The text shown in the chat with the bot if the chat is empty
-[description] :: BotInfo -> Maybe Text
-
--- | Photo shown in the chat with the bot if the chat is empty; may be null
-[photo] :: BotInfo -> Maybe Photo
-
--- | Animation shown in the chat with the bot if the chat is empty; may be
---   null
-[animation] :: BotInfo -> Maybe Animation
-
--- | Information about a button to show instead of the bot commands menu
---   button; may be null if ordinary bot commands menu must be shown
-[menu_button] :: BotInfo -> Maybe BotMenuButton
-
--- | List of the bot commands
-[commands] :: BotInfo -> Maybe [BotCommand]
-
--- | The HTTP link to the privacy policy of the bot. If empty, then
---   <i>privacy command must be used if supported by the bot. If the
---   command isn't supported, then https:</i><i>telegram.org</i>privacy-tpa
---   must be opened
-[privacy_policy_url] :: BotInfo -> Maybe Text
-
--- | Default administrator rights for adding the bot to basic group and
---   supergroup chats; may be null
-[default_group_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
-
--- | Default administrator rights for adding the bot to channels; may be
---   null
-[default_channel_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
-
--- | Default light background color for bot Web Apps; -1 if not specified
-[web_app_background_light_color] :: BotInfo -> Maybe Int
-
--- | Default dark background color for bot Web Apps; -1 if not specified
-[web_app_background_dark_color] :: BotInfo -> Maybe Int
-
--- | Default light header color for bot Web Apps; -1 if not specified
-[web_app_header_light_color] :: BotInfo -> Maybe Int
-
--- | Default dark header color for bot Web Apps; -1 if not specified
-[web_app_header_dark_color] :: BotInfo -> Maybe Int
-
--- | True, if the bot's revenue statistics are available to the current
---   user
-[can_get_revenue_statistics] :: BotInfo -> Maybe Bool
-
--- | True, if the bot can manage emoji status of the current user
-[can_manage_emoji_status] :: BotInfo -> Maybe Bool
-
--- | True, if the bot has media previews
-[has_media_previews] :: BotInfo -> Maybe Bool
-
--- | The internal link, which can be used to edit bot commands; may be null
-[edit_commands_link] :: BotInfo -> Maybe InternalLinkType
-
--- | The internal link, which can be used to edit bot description; may be
---   null
-[edit_description_link] :: BotInfo -> Maybe InternalLinkType
-
--- | The internal link, which can be used to edit the photo or animation
---   shown in the chat with the bot if the chat is empty; may be null
-[edit_description_media_link] :: BotInfo -> Maybe InternalLinkType
-
--- | The internal link, which can be used to edit bot settings; may be null
-[edit_settings_link] :: BotInfo -> Maybe InternalLinkType
-instance GHC.Show.Show TD.Data.BotInfo.BotInfo
-instance GHC.Classes.Eq TD.Data.BotInfo.BotInfo
-instance TD.Lib.Internal.ShortShow TD.Data.BotInfo.BotInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotInfo.BotInfo
-
 module TD.Data.Animations
 data Animations
 
@@ -16998,95 +16729,6 @@ instance GHC.Show.Show TD.Data.ChatPhoto.ChatPhoto
 instance GHC.Classes.Eq TD.Data.ChatPhoto.ChatPhoto
 instance TD.Lib.Internal.ShortShow TD.Data.ChatPhoto.ChatPhoto
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatPhoto.ChatPhoto
-
-module TD.Data.UserFullInfo
-data UserFullInfo
-
--- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
-
--- | User profile photo set by the current user for the contact; may be
---   null. If null and user.profile_photo is null, then the photo is empty;
---   otherwise, it is unknown. If non-null, then it is the same photo as in
---   user.profile_photo and chat.photo. This photo isn't returned in the
---   list of user photos
-[personal_photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | User profile photo; may be null. If null and user.profile_photo is
---   null, then the photo is empty; otherwise, it is unknown. If non-null
---   and personal_photo is null, then it is the same photo as in
---   user.profile_photo and chat.photo
-[photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | User profile photo visible if the main photo is hidden by privacy
---   settings; may be null. If null and user.profile_photo is null, then
---   the photo is empty; otherwise, it is unknown. If non-null and both
---   photo and personal_photo are null, then it is the same photo as in
---   user.profile_photo and chat.photo. This photo isn't returned in the
---   list of user photos
-[public_photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | Block list to which the user is added; may be null if none
-[block_list] :: UserFullInfo -> Maybe BlockList
-
--- | True, if the user can be called
-[can_be_called] :: UserFullInfo -> Maybe Bool
-
--- | True, if a video call can be created with the user
-[supports_video_calls] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user can't be called due to their privacy settings
-[has_private_calls] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user can't be linked in forwarded messages due to their
---   privacy settings
-[has_private_forwards] :: UserFullInfo -> Maybe Bool
-
--- | True, if voice and video notes can't be sent or forwarded to the user
-[has_restricted_voice_and_video_note_messages] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user has posted to profile stories
-[has_posted_to_profile_stories] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user always enabled sponsored messages; known only for
---   the current user
-[has_sponsored_messages_enabled] :: UserFullInfo -> Maybe Bool
-
--- | True, if the current user needs to explicitly allow to share their
---   phone number with the user when the method addContact is used
-[need_phone_number_privacy_exception] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user set chat background for both chat users and it
---   wasn't reverted yet
-[set_chat_background] :: UserFullInfo -> Maybe Bool
-
--- | A short user bio; may be null for bots
-[bio] :: UserFullInfo -> Maybe FormattedText
-
--- | Birthdate of the user; may be null if unknown
-[birthdate] :: UserFullInfo -> Maybe Birthdate
-
--- | Identifier of the personal chat of the user; 0 if none
-[personal_chat_id] :: UserFullInfo -> Maybe Int
-
--- | Number of gifts saved to profile by the user
-[gift_count] :: UserFullInfo -> Maybe Int
-
--- | Number of group chats where both the other user and the current user
---   are a member; 0 for the current user
-[group_in_common_count] :: UserFullInfo -> Maybe Int
-
--- | Information about business settings for Telegram Business accounts;
---   may be null if none
-[business_info] :: UserFullInfo -> Maybe BusinessInfo
-
--- | For bots, information about the bot; may be null if the user isn't a
---   bot
-[bot_info] :: UserFullInfo -> Maybe BotInfo
-instance GHC.Show.Show TD.Data.UserFullInfo.UserFullInfo
-instance GHC.Classes.Eq TD.Data.UserFullInfo.UserFullInfo
-instance TD.Lib.Internal.ShortShow TD.Data.UserFullInfo.UserFullInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserFullInfo.UserFullInfo
 
 module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
@@ -17620,6 +17262,667 @@ instance GHC.Show.Show TD.Data.AlternativeVideo.AlternativeVideo
 instance GHC.Classes.Eq TD.Data.AlternativeVideo.AlternativeVideo
 instance TD.Lib.Internal.ShortShow TD.Data.AlternativeVideo.AlternativeVideo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AlternativeVideo.AlternativeVideo
+
+module TD.Data.AffiliateProgramSortOrder
+
+-- | Describes the order of the found affiliate programs
+data AffiliateProgramSortOrder
+
+-- | The affiliate programs must be sorted by the profitability
+AffiliateProgramSortOrderProfitability :: AffiliateProgramSortOrder
+
+-- | The affiliate programs must be sorted by creation date
+AffiliateProgramSortOrderCreationDate :: AffiliateProgramSortOrder
+
+-- | The affiliate programs must be sorted by the expected revenue
+AffiliateProgramSortOrderRevenue :: AffiliateProgramSortOrder
+instance GHC.Show.Show TD.Data.AffiliateProgramSortOrder.AffiliateProgramSortOrder
+instance GHC.Classes.Eq TD.Data.AffiliateProgramSortOrder.AffiliateProgramSortOrder
+instance TD.Lib.Internal.ShortShow TD.Data.AffiliateProgramSortOrder.AffiliateProgramSortOrder
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AffiliateProgramSortOrder.AffiliateProgramSortOrder
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.AffiliateProgramSortOrder.AffiliateProgramSortOrder
+
+module TD.Data.AffiliateProgramParameters
+data AffiliateProgramParameters
+
+-- | Describes parameters of an affiliate program
+AffiliateProgramParameters :: Maybe Int -> Maybe Int -> AffiliateProgramParameters
+
+-- | The number of Telegram Stars received by the affiliate for each 1000
+--   Telegram Stars received by the program owner;
+--   getOption("affiliate_program_commission_per_mille_min")-getOption("affiliate_program_commission_per_mille_max")
+[commission_per_mille] :: AffiliateProgramParameters -> Maybe Int
+
+-- | Number of months the program will be active; 0-36. If 0, then the
+--   program is eternal
+[month_count] :: AffiliateProgramParameters -> Maybe Int
+defaultAffiliateProgramParameters :: AffiliateProgramParameters
+instance GHC.Show.Show TD.Data.AffiliateProgramParameters.AffiliateProgramParameters
+instance GHC.Classes.Eq TD.Data.AffiliateProgramParameters.AffiliateProgramParameters
+instance TD.Lib.Internal.ShortShow TD.Data.AffiliateProgramParameters.AffiliateProgramParameters
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AffiliateProgramParameters.AffiliateProgramParameters
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.AffiliateProgramParameters.AffiliateProgramParameters
+
+module TD.Data.ChatAffiliateProgram
+data ChatAffiliateProgram
+
+-- | Describes an affiliate program that was connected to a chat
+ChatAffiliateProgram :: Maybe Text -> Maybe Int -> Maybe AffiliateProgramParameters -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> ChatAffiliateProgram
+
+-- | The link that can be used to refer users if the program is still
+--   active
+[url] :: ChatAffiliateProgram -> Maybe Text
+
+-- | User identifier of the bot created the program
+[bot_user_id] :: ChatAffiliateProgram -> Maybe Int
+
+-- | The parameters of the affiliate program
+[parameters] :: ChatAffiliateProgram -> Maybe AffiliateProgramParameters
+
+-- | Point in time (Unix timestamp) when the affiliate program was
+--   connected
+[connection_date] :: ChatAffiliateProgram -> Maybe Int
+
+-- | True, if the program was canceled by the bot, or disconnected by the
+--   chat owner and isn't available anymore
+[is_disconnected] :: ChatAffiliateProgram -> Maybe Bool
+
+-- | The number of users that used the affiliate program
+[user_count] :: ChatAffiliateProgram -> Maybe Int
+
+-- | The number of Telegram Stars that were earned by the affiliate program
+[revenue_star_count] :: ChatAffiliateProgram -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatAffiliateProgram.ChatAffiliateProgram
+instance GHC.Classes.Eq TD.Data.ChatAffiliateProgram.ChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Data.ChatAffiliateProgram.ChatAffiliateProgram
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatAffiliateProgram.ChatAffiliateProgram
+
+module TD.Data.ChatAffiliatePrograms
+data ChatAffiliatePrograms
+
+-- | Represents a list of affiliate programs that were connected to a chat
+ChatAffiliatePrograms :: Maybe Int -> Maybe [ChatAffiliateProgram] -> Maybe Text -> ChatAffiliatePrograms
+
+-- | The total number of affiliate programs that were connected to the chat
+[total_count] :: ChatAffiliatePrograms -> Maybe Int
+
+-- | The list of connected affiliate programs
+[programs] :: ChatAffiliatePrograms -> Maybe [ChatAffiliateProgram]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: ChatAffiliatePrograms -> Maybe Text
+instance GHC.Show.Show TD.Data.ChatAffiliatePrograms.ChatAffiliatePrograms
+instance GHC.Classes.Eq TD.Data.ChatAffiliatePrograms.ChatAffiliatePrograms
+instance TD.Lib.Internal.ShortShow TD.Data.ChatAffiliatePrograms.ChatAffiliatePrograms
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatAffiliatePrograms.ChatAffiliatePrograms
+
+module TD.Data.AffiliateProgramInfo
+data AffiliateProgramInfo
+
+-- | Contains information about an active affiliate program
+AffiliateProgramInfo :: Maybe AffiliateProgramParameters -> Maybe Int -> Maybe StarAmount -> AffiliateProgramInfo
+
+-- | Parameters of the affiliate program
+[parameters] :: AffiliateProgramInfo -> Maybe AffiliateProgramParameters
+
+-- | Point in time (Unix timestamp) when the affiliate program will be
+--   closed; 0 if the affiliate program isn't scheduled to be closed. If
+--   positive, then the program can't be connected using
+--   connectChatAffiliateProgram, but active connections will work until
+--   the date
+[end_date] :: AffiliateProgramInfo -> Maybe Int
+
+-- | The amount of daily revenue per user in Telegram Stars of the bot that
+--   created the affiliate program
+[daily_revenue_per_user_amount] :: AffiliateProgramInfo -> Maybe StarAmount
+instance GHC.Show.Show TD.Data.AffiliateProgramInfo.AffiliateProgramInfo
+instance GHC.Classes.Eq TD.Data.AffiliateProgramInfo.AffiliateProgramInfo
+instance TD.Lib.Internal.ShortShow TD.Data.AffiliateProgramInfo.AffiliateProgramInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AffiliateProgramInfo.AffiliateProgramInfo
+
+module TD.Data.FoundAffiliateProgram
+data FoundAffiliateProgram
+
+-- | Describes a found affiliate program
+FoundAffiliateProgram :: Maybe Int -> Maybe AffiliateProgramInfo -> FoundAffiliateProgram
+
+-- | User identifier of the bot created the program
+[bot_user_id] :: FoundAffiliateProgram -> Maybe Int
+
+-- | Information about the affiliate program
+[parameters] :: FoundAffiliateProgram -> Maybe AffiliateProgramInfo
+instance GHC.Show.Show TD.Data.FoundAffiliateProgram.FoundAffiliateProgram
+instance GHC.Classes.Eq TD.Data.FoundAffiliateProgram.FoundAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Data.FoundAffiliateProgram.FoundAffiliateProgram
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundAffiliateProgram.FoundAffiliateProgram
+
+module TD.Data.FoundAffiliatePrograms
+data FoundAffiliatePrograms
+
+-- | Represents a list of found affiliate programs
+FoundAffiliatePrograms :: Maybe Int -> Maybe [FoundAffiliateProgram] -> Maybe Text -> FoundAffiliatePrograms
+
+-- | The total number of found affiliate programs
+[total_count] :: FoundAffiliatePrograms -> Maybe Int
+
+-- | The list of affiliate programs
+[programs] :: FoundAffiliatePrograms -> Maybe [FoundAffiliateProgram]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: FoundAffiliatePrograms -> Maybe Text
+instance GHC.Show.Show TD.Data.FoundAffiliatePrograms.FoundAffiliatePrograms
+instance GHC.Classes.Eq TD.Data.FoundAffiliatePrograms.FoundAffiliatePrograms
+instance TD.Lib.Internal.ShortShow TD.Data.FoundAffiliatePrograms.FoundAffiliatePrograms
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundAffiliatePrograms.FoundAffiliatePrograms
+
+module TD.Data.BotInfo
+data BotInfo
+
+-- | Contains information about a bot
+BotInfo :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Animation -> Maybe BotMenuButton -> Maybe [BotCommand] -> Maybe Text -> Maybe ChatAdministratorRights -> Maybe ChatAdministratorRights -> Maybe AffiliateProgramInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> Maybe InternalLinkType -> BotInfo
+
+-- | The text that is shown on the bot's profile page and is sent together
+--   with the link when users share the bot
+[short_description] :: BotInfo -> Maybe Text
+
+-- | The text shown in the chat with the bot if the chat is empty
+[description] :: BotInfo -> Maybe Text
+
+-- | Photo shown in the chat with the bot if the chat is empty; may be null
+[photo] :: BotInfo -> Maybe Photo
+
+-- | Animation shown in the chat with the bot if the chat is empty; may be
+--   null
+[animation] :: BotInfo -> Maybe Animation
+
+-- | Information about a button to show instead of the bot commands menu
+--   button; may be null if ordinary bot commands menu must be shown
+[menu_button] :: BotInfo -> Maybe BotMenuButton
+
+-- | List of the bot commands
+[commands] :: BotInfo -> Maybe [BotCommand]
+
+-- | The HTTP link to the privacy policy of the bot. If empty, then
+--   <i>privacy command must be used if supported by the bot. If the
+--   command isn't supported, then https:</i><i>telegram.org</i>privacy-tpa
+--   must be opened
+[privacy_policy_url] :: BotInfo -> Maybe Text
+
+-- | Default administrator rights for adding the bot to basic group and
+--   supergroup chats; may be null
+[default_group_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
+
+-- | Default administrator rights for adding the bot to channels; may be
+--   null
+[default_channel_administrator_rights] :: BotInfo -> Maybe ChatAdministratorRights
+
+-- | Information about the affiliate program of the bot; may be null if
+--   none
+[affiliate_program] :: BotInfo -> Maybe AffiliateProgramInfo
+
+-- | Default light background color for bot Web Apps; -1 if not specified
+[web_app_background_light_color] :: BotInfo -> Maybe Int
+
+-- | Default dark background color for bot Web Apps; -1 if not specified
+[web_app_background_dark_color] :: BotInfo -> Maybe Int
+
+-- | Default light header color for bot Web Apps; -1 if not specified
+[web_app_header_light_color] :: BotInfo -> Maybe Int
+
+-- | Default dark header color for bot Web Apps; -1 if not specified
+[web_app_header_dark_color] :: BotInfo -> Maybe Int
+
+-- | True, if the bot's revenue statistics are available to the current
+--   user
+[can_get_revenue_statistics] :: BotInfo -> Maybe Bool
+
+-- | True, if the bot can manage emoji status of the current user
+[can_manage_emoji_status] :: BotInfo -> Maybe Bool
+
+-- | True, if the bot has media previews
+[has_media_previews] :: BotInfo -> Maybe Bool
+
+-- | The internal link, which can be used to edit bot commands; may be null
+[edit_commands_link] :: BotInfo -> Maybe InternalLinkType
+
+-- | The internal link, which can be used to edit bot description; may be
+--   null
+[edit_description_link] :: BotInfo -> Maybe InternalLinkType
+
+-- | The internal link, which can be used to edit the photo or animation
+--   shown in the chat with the bot if the chat is empty; may be null
+[edit_description_media_link] :: BotInfo -> Maybe InternalLinkType
+
+-- | The internal link, which can be used to edit bot settings; may be null
+[edit_settings_link] :: BotInfo -> Maybe InternalLinkType
+instance GHC.Show.Show TD.Data.BotInfo.BotInfo
+instance GHC.Classes.Eq TD.Data.BotInfo.BotInfo
+instance TD.Lib.Internal.ShortShow TD.Data.BotInfo.BotInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotInfo.BotInfo
+
+module TD.Data.UserFullInfo
+data UserFullInfo
+
+-- | Contains full information about a user
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+
+-- | User profile photo set by the current user for the contact; may be
+--   null. If null and user.profile_photo is null, then the photo is empty;
+--   otherwise, it is unknown. If non-null, then it is the same photo as in
+--   user.profile_photo and chat.photo. This photo isn't returned in the
+--   list of user photos
+[personal_photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | User profile photo; may be null. If null and user.profile_photo is
+--   null, then the photo is empty; otherwise, it is unknown. If non-null
+--   and personal_photo is null, then it is the same photo as in
+--   user.profile_photo and chat.photo
+[photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | User profile photo visible if the main photo is hidden by privacy
+--   settings; may be null. If null and user.profile_photo is null, then
+--   the photo is empty; otherwise, it is unknown. If non-null and both
+--   photo and personal_photo are null, then it is the same photo as in
+--   user.profile_photo and chat.photo. This photo isn't returned in the
+--   list of user photos
+[public_photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | Block list to which the user is added; may be null if none
+[block_list] :: UserFullInfo -> Maybe BlockList
+
+-- | True, if the user can be called
+[can_be_called] :: UserFullInfo -> Maybe Bool
+
+-- | True, if a video call can be created with the user
+[supports_video_calls] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user can't be called due to their privacy settings
+[has_private_calls] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user can't be linked in forwarded messages due to their
+--   privacy settings
+[has_private_forwards] :: UserFullInfo -> Maybe Bool
+
+-- | True, if voice and video notes can't be sent or forwarded to the user
+[has_restricted_voice_and_video_note_messages] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user has posted to profile stories
+[has_posted_to_profile_stories] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user always enabled sponsored messages; known only for
+--   the current user
+[has_sponsored_messages_enabled] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the current user needs to explicitly allow to share their
+--   phone number with the user when the method addContact is used
+[need_phone_number_privacy_exception] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user set chat background for both chat users and it
+--   wasn't reverted yet
+[set_chat_background] :: UserFullInfo -> Maybe Bool
+
+-- | A short user bio; may be null for bots
+[bio] :: UserFullInfo -> Maybe FormattedText
+
+-- | Birthdate of the user; may be null if unknown
+[birthdate] :: UserFullInfo -> Maybe Birthdate
+
+-- | Identifier of the personal chat of the user; 0 if none
+[personal_chat_id] :: UserFullInfo -> Maybe Int
+
+-- | Number of gifts saved to profile by the user
+[gift_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of group chats where both the other user and the current user
+--   are a member; 0 for the current user
+[group_in_common_count] :: UserFullInfo -> Maybe Int
+
+-- | Information about business settings for Telegram Business accounts;
+--   may be null if none
+[business_info] :: UserFullInfo -> Maybe BusinessInfo
+
+-- | For bots, information about the bot; may be null if the user isn't a
+--   bot
+[bot_info] :: UserFullInfo -> Maybe BotInfo
+instance GHC.Show.Show TD.Data.UserFullInfo.UserFullInfo
+instance GHC.Classes.Eq TD.Data.UserFullInfo.UserFullInfo
+instance TD.Lib.Internal.ShortShow TD.Data.UserFullInfo.UserFullInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserFullInfo.UserFullInfo
+
+module TD.Data.AffiliateInfo
+data AffiliateInfo
+
+-- | Contains information about an affiliate that received commission from
+--   a Telegram Star transaction
+AffiliateInfo :: Maybe Int -> Maybe Int -> Maybe StarAmount -> AffiliateInfo
+
+-- | The number of Telegram Stars received by the affiliate for each 1000
+--   Telegram Stars received by the program owner
+[commission_per_mille] :: AffiliateInfo -> Maybe Int
+
+-- | Identifier of the chat which received the commission
+[affiliate_chat_id] :: AffiliateInfo -> Maybe Int
+
+-- | The amount of Telegram Stars that were received by the affiliate; can
+--   be negative for refunds
+[star_amount] :: AffiliateInfo -> Maybe StarAmount
+instance GHC.Show.Show TD.Data.AffiliateInfo.AffiliateInfo
+instance GHC.Classes.Eq TD.Data.AffiliateInfo.AffiliateInfo
+instance TD.Lib.Internal.ShortShow TD.Data.AffiliateInfo.AffiliateInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AffiliateInfo.AffiliateInfo
+
+module TD.Data.StarTransactionType
+
+-- | Describes type of transaction with Telegram Stars
+data StarTransactionType
+
+-- | The transaction is a deposit of Telegram Stars from the Premium bot;
+--   for regular users only
+StarTransactionTypePremiumBotDeposit :: StarTransactionType
+
+-- | The transaction is a deposit of Telegram Stars from App Store; for
+--   regular users only
+StarTransactionTypeAppStoreDeposit :: StarTransactionType
+
+-- | The transaction is a deposit of Telegram Stars from Google Play; for
+--   regular users only
+StarTransactionTypeGooglePlayDeposit :: StarTransactionType
+
+-- | The transaction is a deposit of Telegram Stars from Fragment; for
+--   regular users and bots only
+StarTransactionTypeFragmentDeposit :: StarTransactionType
+
+-- | The transaction is a deposit of Telegram Stars by another user; for
+--   regular users only
+StarTransactionTypeUserDeposit :: Maybe Int -> Maybe Sticker -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: StarTransactionType -> Maybe Sticker
+
+-- | The transaction is a deposit of Telegram Stars from a giveaway; for
+--   regular users only
+StarTransactionTypeGiveawayDeposit :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | Identifier of the message with the giveaway; can be 0 or an identifier
+--   of a deleted message
+[giveaway_message_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a withdrawal of earned Telegram Stars to Fragment;
+--   for bots and channel chats only
+StarTransactionTypeFragmentWithdrawal :: Maybe RevenueWithdrawalState -> StarTransactionType
+
+-- | State of the withdrawal; may be null for refunds from Fragment
+[withdrawal_state] :: StarTransactionType -> Maybe RevenueWithdrawalState
+
+-- | The transaction is a withdrawal of earned Telegram Stars to Telegram
+--   Ad platform; for bots and channel chats only
+StarTransactionTypeTelegramAdsWithdrawal :: StarTransactionType
+
+-- | The transaction is a payment for Telegram API usage; for bots only
+StarTransactionTypeTelegramApiUsage :: Maybe Int -> StarTransactionType
+
+-- | The number of billed requests
+[request_count] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a purchase of paid media from a bot or a business
+--   account by the current user; for regular users only
+StarTransactionTypeBotPaidMediaPurchase :: Maybe Int -> Maybe [PaidMedia] -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The bought media if the transaction wasn't refunded
+[media] :: StarTransactionType -> Maybe [PaidMedia]
+
+-- | The transaction is a sale of paid media by the bot or a business
+--   account managed by the bot; for bots only
+StarTransactionTypeBotPaidMediaSale :: Maybe Int -> Maybe [PaidMedia] -> Maybe Text -> Maybe AffiliateInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The bought media if the transaction wasn't refunded
+[media] :: StarTransactionType -> Maybe [PaidMedia]
+
+-- | Bot-provided payload
+[payload] :: StarTransactionType -> Maybe Text
+
+-- | Information about the affiliate which received commission from the
+--   transaction; may be null if none
+[affiliate] :: StarTransactionType -> Maybe AffiliateInfo
+
+-- | The transaction is a purchase of paid media from a channel by the
+--   current user; for regular users only
+StarTransactionTypeChannelPaidMediaPurchase :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: StarTransactionType -> Maybe Int
+
+-- | The bought media if the transaction wasn't refunded
+[media] :: StarTransactionType -> Maybe [PaidMedia]
+
+-- | The transaction is a sale of paid media by the channel chat; for
+--   channel chats only
+StarTransactionTypeChannelPaidMediaSale :: Maybe Int -> Maybe Int -> Maybe [PaidMedia] -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: StarTransactionType -> Maybe Int
+
+-- | The bought media if the transaction wasn't refunded
+[media] :: StarTransactionType -> Maybe [PaidMedia]
+
+-- | The transaction is a purchase of a product from a bot or a business
+--   account by the current user; for regular users only
+StarTransactionTypeBotInvoicePurchase :: Maybe Int -> Maybe ProductInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | Information about the bought product
+[product_info] :: StarTransactionType -> Maybe ProductInfo
+
+-- | The transaction is a sale of a product by the bot; for bots only
+StarTransactionTypeBotInvoiceSale :: Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> Maybe AffiliateInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | Information about the bought product
+[product_info] :: StarTransactionType -> Maybe ProductInfo
+
+-- | Invoice payload
+[invoice_payload] :: StarTransactionType -> Maybe ByteString
+
+-- | Information about the affiliate which received commission from the
+--   transaction; may be null if none
+[affiliate] :: StarTransactionType -> Maybe AffiliateInfo
+
+-- | The transaction is a purchase of a subscription from a bot or a
+--   business account by the current user; for regular users only
+StarTransactionTypeBotSubscriptionPurchase :: Maybe Int -> Maybe Int -> Maybe ProductInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The number of seconds between consecutive Telegram Star debitings
+[subscription_period] :: StarTransactionType -> Maybe Int
+
+-- | Information about the bought product
+[product_info] :: StarTransactionType -> Maybe ProductInfo
+
+-- | The transaction is a sale of a subscription by the bot; for bots only
+StarTransactionTypeBotSubscriptionSale :: Maybe Int -> Maybe Int -> Maybe ProductInfo -> Maybe ByteString -> Maybe AffiliateInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The number of seconds between consecutive Telegram Star debitings
+[subscription_period] :: StarTransactionType -> Maybe Int
+
+-- | Information about the bought product
+[product_info] :: StarTransactionType -> Maybe ProductInfo
+
+-- | Invoice payload
+[invoice_payload] :: StarTransactionType -> Maybe ByteString
+
+-- | Information about the affiliate which received commission from the
+--   transaction; may be null if none
+[affiliate] :: StarTransactionType -> Maybe AffiliateInfo
+
+-- | The transaction is a purchase of a subscription to a channel chat by
+--   the current user; for regular users only
+StarTransactionTypeChannelSubscriptionPurchase :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | The number of seconds between consecutive Telegram Star debitings
+[subscription_period] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a sale of a subscription by the channel chat; for
+--   channel chats only
+StarTransactionTypeChannelSubscriptionSale :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The number of seconds between consecutive Telegram Star debitings
+[subscription_period] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a purchase of a gift to another user; for regular
+--   users and bots only
+StarTransactionTypeGiftPurchase :: Maybe Int -> Maybe Gift -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The gift
+[gift] :: StarTransactionType -> Maybe Gift
+
+-- | The transaction is a sale of a gift received from another user or bot;
+--   for regular users only
+StarTransactionTypeGiftSale :: Maybe Int -> Maybe Gift -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The gift
+[gift] :: StarTransactionType -> Maybe Gift
+
+-- | The transaction is a sending of a paid reaction to a message in a
+--   channel chat by the current user; for regular users only
+StarTransactionTypeChannelPaidReactionSend :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a paid reaction to a message by the
+--   channel chat; for channel chats only
+StarTransactionTypeChannelPaidReactionReceive :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | Identifier of the corresponding message with paid media; can be 0 or
+--   an identifier of a deleted message
+[message_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a commission from an affiliate
+--   program; for regular users, bots and channel chats only
+StarTransactionTypeAffiliateProgramCommission :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | The number of Telegram Stars received by the affiliate for each 1000
+--   Telegram Stars received by the program owner
+[commission_per_mille] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a transaction of an unsupported type
+StarTransactionTypeUnsupported :: StarTransactionType
+instance GHC.Show.Show TD.Data.StarTransactionType.StarTransactionType
+instance GHC.Classes.Eq TD.Data.StarTransactionType.StarTransactionType
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionType.StarTransactionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionType.StarTransactionType
+
+module TD.Data.StarTransaction
+data StarTransaction
+
+-- | Represents a transaction changing the amount of owned Telegram Stars
+StarTransaction :: Maybe Text -> Maybe StarAmount -> Maybe Bool -> Maybe Int -> Maybe StarTransactionType -> StarTransaction
+
+-- | Unique identifier of the transaction
+[_id] :: StarTransaction -> Maybe Text
+
+-- | The amount of added owned Telegram Stars; negative for outgoing
+--   transactions
+[star_amount] :: StarTransaction -> Maybe StarAmount
+
+-- | True, if the transaction is a refund of a previous transaction
+[is_refund] :: StarTransaction -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the transaction was completed
+[date] :: StarTransaction -> Maybe Int
+
+-- | Type of the transaction
+[_type] :: StarTransaction -> Maybe StarTransactionType
+instance GHC.Show.Show TD.Data.StarTransaction.StarTransaction
+instance GHC.Classes.Eq TD.Data.StarTransaction.StarTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransaction.StarTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransaction.StarTransaction
+
+module TD.Data.StarTransactions
+data StarTransactions
+
+-- | Represents a list of Telegram Star transactions
+StarTransactions :: Maybe StarAmount -> Maybe [StarTransaction] -> Maybe Text -> StarTransactions
+
+-- | The amount of owned Telegram Stars
+[star_amount] :: StarTransactions -> Maybe StarAmount
+
+-- | List of transactions with Telegram Stars
+[transactions] :: StarTransactions -> Maybe [StarTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: StarTransactions -> Maybe Text
+instance GHC.Show.Show TD.Data.StarTransactions.StarTransactions
+instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
 
 module TD.Data.Address
 data Address
@@ -21626,7 +21929,7 @@ UpdateAccentColors :: Maybe [AccentColor] -> Maybe [Int] -> Update
 
 -- | The list of accent color identifiers, which can be set through
 --   setAccentColor and setChatAccentColor. The colors must be shown in the
---   specififed order
+--   specified order
 [available_accent_color_ids] :: Update -> Maybe [Int]
 
 -- | The list of supported accent colors for user profiles has changed
@@ -21637,7 +21940,7 @@ UpdateProfileAccentColors :: Maybe [ProfileAccentColor] -> Maybe [Int] -> Update
 
 -- | The list of accent color identifiers, which can be set through
 --   setAccentColor and setChatAccentColor. The colors must be shown in the
---   specififed order
+--   specified order
 [available_accent_color_ids] :: Update -> Maybe [Int]
 
 -- | Some language pack strings have been updated
@@ -21731,10 +22034,10 @@ UpdateActiveLiveLocationMessages :: Maybe [Message] -> Update
 [_messages] :: Update -> Maybe [Message]
 
 -- | The number of Telegram Stars owned by the current user has changed
-UpdateOwnedStarCount :: Maybe Int -> Update
+UpdateOwnedStarCount :: Maybe StarAmount -> Update
 
--- | The new number of Telegram Stars owned
-[star_count] :: Update -> Maybe Int
+-- | The new amount of owned Telegram Stars
+[star_amount] :: Update -> Maybe StarAmount
 
 -- | The revenue earned from sponsored messages in a chat has changed. If
 --   chat revenue screen is opened, then getChatRevenueTransactions may be
@@ -22221,6 +22524,8 @@ CanTransferOwnershipResult :: CanTransferOwnershipResult -> GeneralResult
 Chat :: Chat -> GeneralResult
 ChatActiveStories :: ChatActiveStories -> GeneralResult
 ChatAdministrators :: ChatAdministrators -> GeneralResult
+ChatAffiliateProgram :: ChatAffiliateProgram -> GeneralResult
+ChatAffiliatePrograms :: ChatAffiliatePrograms -> GeneralResult
 ChatBoostFeatures :: ChatBoostFeatures -> GeneralResult
 ChatBoostLevelFeatures :: ChatBoostLevelFeatures -> GeneralResult
 ChatBoostLink :: ChatBoostLink -> GeneralResult
@@ -22275,6 +22580,7 @@ FormattedText :: FormattedText -> GeneralResult
 ForumTopic :: ForumTopic -> GeneralResult
 ForumTopicInfo :: ForumTopicInfo -> GeneralResult
 ForumTopics :: ForumTopics -> GeneralResult
+FoundAffiliatePrograms :: FoundAffiliatePrograms -> GeneralResult
 FoundChatBoosts :: FoundChatBoosts -> GeneralResult
 FoundChatMessages :: FoundChatMessages -> GeneralResult
 FoundFileDownloads :: FoundFileDownloads -> GeneralResult
@@ -24009,6 +24315,28 @@ instance GHC.Classes.Eq TD.Query.ConfirmSession.ConfirmSession
 instance TD.Lib.Internal.ShortShow TD.Query.ConfirmSession.ConfirmSession
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ConfirmSession.ConfirmSession
 
+module TD.Query.ConnectChatAffiliateProgram
+
+-- | Connects an affiliate program to the given chat. Returns information
+--   about the connected affiliate program. Returns
+--   <a>ChatAffiliateProgram</a>
+data ConnectChatAffiliateProgram
+ConnectChatAffiliateProgram :: Maybe Int -> Maybe Int -> ConnectChatAffiliateProgram
+
+-- | Identifier of the chat to which the affiliate program will be
+--   connected. Can be an identifier of the Saved Messages chat, of a chat
+--   with an owned bot, or of a channel chat with can_post_messages
+--   administrator right
+[chat_id] :: ConnectChatAffiliateProgram -> Maybe Int
+
+-- | Identifier of the bot, which affiliate program is connected
+[bot_user_id] :: ConnectChatAffiliateProgram -> Maybe Int
+defaultConnectChatAffiliateProgram :: ConnectChatAffiliateProgram
+instance GHC.Show.Show TD.Query.ConnectChatAffiliateProgram.ConnectChatAffiliateProgram
+instance GHC.Classes.Eq TD.Query.ConnectChatAffiliateProgram.ConnectChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Query.ConnectChatAffiliateProgram.ConnectChatAffiliateProgram
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ConnectChatAffiliateProgram.ConnectChatAffiliateProgram
+
 module TD.Query.CreateBasicGroupChat
 
 -- | Returns an existing chat corresponding to a known basic group. Returns
@@ -24413,8 +24741,7 @@ CreateVideoChat :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> CreateV
 --   The date must be at least 10 seconds and at most 8 days in the future
 [start_date] :: CreateVideoChat -> Maybe Int
 
--- | Pass true to create an RTMP stream instead of an ordinary video chat;
---   requires owner privileges
+-- | Pass true to create an RTMP stream instead of an ordinary video chat
 [is_rtmp_stream] :: CreateVideoChat -> Maybe Bool
 defaultCreateVideoChat :: CreateVideoChat
 instance GHC.Show.Show TD.Query.CreateVideoChat.CreateVideoChat
@@ -25031,6 +25358,25 @@ instance GHC.Show.Show TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 instance GHC.Classes.Eq TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 instance TD.Lib.Internal.ShortShow TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
+
+module TD.Query.DisconnectChatAffiliateProgram
+
+-- | Disconnects an affiliate program from the given chat and immediately
+--   deactivates its referral link. Returns updated information about the
+--   disconnected affiliate program. Returns <a>ChatAffiliateProgram</a>
+data DisconnectChatAffiliateProgram
+DisconnectChatAffiliateProgram :: Maybe Int -> Maybe Text -> DisconnectChatAffiliateProgram
+
+-- | Identifier of the chat for which the affiliate program is connected
+[chat_id] :: DisconnectChatAffiliateProgram -> Maybe Int
+
+-- | The referral link of the affiliate program
+[url] :: DisconnectChatAffiliateProgram -> Maybe Text
+defaultDisconnectChatAffiliateProgram :: DisconnectChatAffiliateProgram
+instance GHC.Show.Show TD.Query.DisconnectChatAffiliateProgram.DisconnectChatAffiliateProgram
+instance GHC.Classes.Eq TD.Query.DisconnectChatAffiliateProgram.DisconnectChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Query.DisconnectChatAffiliateProgram.DisconnectChatAffiliateProgram
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisconnectChatAffiliateProgram.DisconnectChatAffiliateProgram
 
 module TD.Query.DisconnectWebsite
 
@@ -26550,6 +26896,53 @@ instance GHC.Show.Show TD.Query.GetChatAdministrators.GetChatAdministrators
 instance GHC.Classes.Eq TD.Query.GetChatAdministrators.GetChatAdministrators
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatAdministrators.GetChatAdministrators
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAdministrators.GetChatAdministrators
+
+module TD.Query.GetChatAffiliateProgram
+
+-- | Returns an affiliate program that were connected to the given chat by
+--   identifier of the bot that created the program. Returns
+--   <a>ChatAffiliateProgram</a>
+data GetChatAffiliateProgram
+GetChatAffiliateProgram :: Maybe Int -> Maybe Int -> GetChatAffiliateProgram
+
+-- | Identifier of the chat for which the affiliate program was connected.
+--   Can be an identifier of the Saved Messages chat, of a chat with an
+--   owned bot, or of a channel chat with can_post_messages administrator
+--   right
+[chat_id] :: GetChatAffiliateProgram -> Maybe Int
+
+-- | Identifier of the bot that created the program
+[bot_user_id] :: GetChatAffiliateProgram -> Maybe Int
+defaultGetChatAffiliateProgram :: GetChatAffiliateProgram
+instance GHC.Show.Show TD.Query.GetChatAffiliateProgram.GetChatAffiliateProgram
+instance GHC.Classes.Eq TD.Query.GetChatAffiliateProgram.GetChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatAffiliateProgram.GetChatAffiliateProgram
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAffiliateProgram.GetChatAffiliateProgram
+
+module TD.Query.GetChatAffiliatePrograms
+
+-- | Returns affiliate programs that were connected to the given chat.
+--   Returns <a>ChatAffiliatePrograms</a>
+data GetChatAffiliatePrograms
+GetChatAffiliatePrograms :: Maybe Int -> Maybe Text -> Maybe Int -> GetChatAffiliatePrograms
+
+-- | Identifier of the chat for which the affiliate programs were
+--   connected. Can be an identifier of the Saved Messages chat, of a chat
+--   with an owned bot, or of a channel chat with can_post_messages
+--   administrator right
+[chat_id] :: GetChatAffiliatePrograms -> Maybe Int
+
+-- | Offset of the first affiliate program to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: GetChatAffiliatePrograms -> Maybe Text
+
+-- | The maximum number of affiliate programs to return
+[limit] :: GetChatAffiliatePrograms -> Maybe Int
+defaultGetChatAffiliatePrograms :: GetChatAffiliatePrograms
+instance GHC.Show.Show TD.Query.GetChatAffiliatePrograms.GetChatAffiliatePrograms
+instance GHC.Classes.Eq TD.Query.GetChatAffiliatePrograms.GetChatAffiliatePrograms
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatAffiliatePrograms.GetChatAffiliatePrograms
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAffiliatePrograms.GetChatAffiliatePrograms
 
 module TD.Query.GetChatArchivedStories
 
@@ -29050,6 +29443,17 @@ instance GHC.Classes.Eq TD.Query.GetOption.GetOption
 instance TD.Lib.Internal.ShortShow TD.Query.GetOption.GetOption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOption.GetOption
 
+module TD.Query.GetOwnedBots
+
+-- | Returns the list of bots owned by the current user. Returns
+--   <a>Users</a>
+data GetOwnedBots
+GetOwnedBots :: GetOwnedBots
+instance GHC.Show.Show TD.Query.GetOwnedBots.GetOwnedBots
+instance GHC.Classes.Eq TD.Query.GetOwnedBots.GetOwnedBots
+instance TD.Lib.Internal.ShortShow TD.Query.GetOwnedBots.GetOwnedBots
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOwnedBots.GetOwnedBots
+
 module TD.Query.GetOwnedStickerSets
 
 -- | Returns sticker sets owned by the current user. Returns
@@ -29364,8 +29768,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumStickers.GetPremiumSt
 
 module TD.Query.GetPreparedInlineMessage
 
--- | Saves an inline message to be sent by the given user; for bots only.
---   Returns <a>PreparedInlineMessage</a>
+-- | Saves an inline message to be sent by the given user. Returns
+--   <a>PreparedInlineMessage</a>
 data GetPreparedInlineMessage
 GetPreparedInlineMessage :: Maybe Int -> Maybe Text -> GetPreparedInlineMessage
 
@@ -32595,6 +32999,34 @@ instance GHC.Classes.Eq TD.Query.SavePreparedInlineMessage.SavePreparedInlineMes
 instance TD.Lib.Internal.ShortShow TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SavePreparedInlineMessage.SavePreparedInlineMessage
 
+module TD.Query.SearchAffiliatePrograms
+
+-- | Searches affiliate programs that can be applied to the given chat.
+--   Returns <a>FoundAffiliatePrograms</a>
+data SearchAffiliatePrograms
+SearchAffiliatePrograms :: Maybe Int -> Maybe AffiliateProgramSortOrder -> Maybe Text -> Maybe Int -> SearchAffiliatePrograms
+
+-- | Identifier of the chat for which affiliate programs are searched for.
+--   Can be an identifier of the Saved Messages chat, of a chat with an
+--   owned bot, or of a channel chat with can_post_messages administrator
+--   right
+[chat_id] :: SearchAffiliatePrograms -> Maybe Int
+
+-- | Sort order for the results
+[sort_order] :: SearchAffiliatePrograms -> Maybe AffiliateProgramSortOrder
+
+-- | Offset of the first affiliate program to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: SearchAffiliatePrograms -> Maybe Text
+
+-- | The maximum number of affiliate programs to return
+[limit] :: SearchAffiliatePrograms -> Maybe Int
+defaultSearchAffiliatePrograms :: SearchAffiliatePrograms
+instance GHC.Show.Show TD.Query.SearchAffiliatePrograms.SearchAffiliatePrograms
+instance GHC.Classes.Eq TD.Query.SearchAffiliatePrograms.SearchAffiliatePrograms
+instance TD.Lib.Internal.ShortShow TD.Query.SearchAffiliatePrograms.SearchAffiliatePrograms
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchAffiliatePrograms.SearchAffiliatePrograms
+
 module TD.Query.SearchBackground
 
 -- | Searches for a background by its name. Returns <a>Background</a>
@@ -32633,6 +33065,24 @@ instance GHC.Show.Show TD.Query.SearchCallMessages.SearchCallMessages
 instance GHC.Classes.Eq TD.Query.SearchCallMessages.SearchCallMessages
 instance TD.Lib.Internal.ShortShow TD.Query.SearchCallMessages.SearchCallMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchCallMessages.SearchCallMessages
+
+module TD.Query.SearchChatAffiliateProgram
+
+-- | Searches a chat with an affiliate program. Returns the chat if found
+--   and the program is active. Returns <a>Chat</a>
+data SearchChatAffiliateProgram
+SearchChatAffiliateProgram :: Maybe Text -> Maybe Text -> SearchChatAffiliateProgram
+
+-- | Username of the chat
+[username] :: SearchChatAffiliateProgram -> Maybe Text
+
+-- | The referrer from an internalLinkTypeChatAffiliateProgram link
+[referrer] :: SearchChatAffiliateProgram -> Maybe Text
+defaultSearchChatAffiliateProgram :: SearchChatAffiliateProgram
+instance GHC.Show.Show TD.Query.SearchChatAffiliateProgram.SearchChatAffiliateProgram
+instance GHC.Classes.Eq TD.Query.SearchChatAffiliateProgram.SearchChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Query.SearchChatAffiliateProgram.SearchChatAffiliateProgram
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchChatAffiliateProgram.SearchChatAffiliateProgram
 
 module TD.Query.SearchChatMembers
 
@@ -33245,13 +33695,23 @@ module TD.Query.SearchStickers
 -- | Searches for stickers from public sticker sets that correspond to any
 --   of the given emoji. Returns <a>Stickers</a>
 data SearchStickers
-SearchStickers :: Maybe StickerType -> Maybe Text -> Maybe Int -> SearchStickers
+SearchStickers :: Maybe StickerType -> Maybe Text -> Maybe Text -> Maybe [Text] -> Maybe Int -> Maybe Int -> SearchStickers
 
 -- | Type of the stickers to return
 [sticker_type] :: SearchStickers -> Maybe StickerType
 
--- | Space-separated list of emojis to search for; must be non-empty
+-- | Space-separated list of emojis to search for
 [emojis] :: SearchStickers -> Maybe Text
+
+-- | Query to search for; may be empty to search for emoji only
+[query] :: SearchStickers -> Maybe Text
+
+-- | List of possible IETF language tags of the user's input language; may
+--   be empty if unknown
+[input_language_codes] :: SearchStickers -> Maybe [Text]
+
+-- | The offset from which to return the stickers; must be non-negative
+[offset] :: SearchStickers -> Maybe Int
 
 -- | The maximum number of stickers to be returned; 0-100
 [limit] :: SearchStickers -> Maybe Int
@@ -34400,6 +34860,27 @@ instance GHC.Show.Show TD.Query.SetChatActiveStoriesList.SetChatActiveStoriesLis
 instance GHC.Classes.Eq TD.Query.SetChatActiveStoriesList.SetChatActiveStoriesList
 instance TD.Lib.Internal.ShortShow TD.Query.SetChatActiveStoriesList.SetChatActiveStoriesList
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatActiveStoriesList.SetChatActiveStoriesList
+
+module TD.Query.SetChatAffiliateProgram
+
+-- | Changes affiliate program for a bot. Returns <a>Ok</a>
+data SetChatAffiliateProgram
+SetChatAffiliateProgram :: Maybe Int -> Maybe AffiliateProgramParameters -> SetChatAffiliateProgram
+
+-- | Identifier of the chat with an owned bot for which affiliate program
+--   is changed
+[chat_id] :: SetChatAffiliateProgram -> Maybe Int
+
+-- | Parameters of the affiliate program; pass null to close the currently
+--   active program. If there is an active program, then commission and
+--   program duration can only be increased. If the active program is
+--   scheduled to be closed, then it can't be changed anymore
+[parameters] :: SetChatAffiliateProgram -> Maybe AffiliateProgramParameters
+defaultSetChatAffiliateProgram :: SetChatAffiliateProgram
+instance GHC.Show.Show TD.Query.SetChatAffiliateProgram.SetChatAffiliateProgram
+instance GHC.Classes.Eq TD.Query.SetChatAffiliateProgram.SetChatAffiliateProgram
+instance TD.Lib.Internal.ShortShow TD.Query.SetChatAffiliateProgram.SetChatAffiliateProgram
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatAffiliateProgram.SetChatAffiliateProgram
 
 module TD.Query.SetChatAvailableReactions
 
@@ -35850,7 +36331,7 @@ SetStoryPrivacySettings :: Maybe Int -> Maybe StoryPrivacySettings -> SetStoryPr
 -- | Identifier of the story
 [story_id] :: SetStoryPrivacySettings -> Maybe Int
 
--- | The new privacy settigs for the story
+-- | The new privacy settings for the story
 [privacy_settings] :: SetStoryPrivacySettings -> Maybe StoryPrivacySettings
 defaultSetStoryPrivacySettings :: SetStoryPrivacySettings
 instance GHC.Show.Show TD.Query.SetStoryPrivacySettings.SetStoryPrivacySettings
