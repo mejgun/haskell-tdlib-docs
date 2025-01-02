@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.ConnectAffiliateProgram</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier">ConnectAffiliateProgram</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#defaultConnectAffiliateProgram"><span class="hs-identifier">defaultConnectAffiliateProgram</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.AffiliateType.html"><span class="hs-identifier">TD.Data.AffiliateType</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AffiliateType</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Connects an affiliate program to the given affiliate. Returns information about the connected affiliate program. Returns 'TD.Data.ConnectedAffiliateProgram.ConnectedAffiliateProgram'</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="ConnectAffiliateProgram"><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-var">ConnectAffiliateProgram</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ConnectAffiliateProgram"><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-var">ConnectAffiliateProgram</span></a></span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="affiliate"><span class="annot"><span class="annottext">ConnectAffiliateProgram -&gt; Maybe AffiliateType
+</span><a href="TD.Query.ConnectAffiliateProgram.html#affiliate"><span class="hs-identifier hs-var hs-var">affiliate</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.AffiliateType.html#AffiliateType"><span class="hs-identifier hs-type">AffiliateType.AffiliateType</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The affiliate to which the affiliate program will be connected</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="bot_user_id"><span class="annot"><span class="annottext">ConnectAffiliateProgram -&gt; Maybe Int
+</span><a href="TD.Query.ConnectAffiliateProgram.html#bot_user_id"><span class="hs-identifier hs-var hs-var">bot_user_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the bot, which affiliate program is connected</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679813471"><span id="local-6989586621679813478"><span class="annot"><span class="annottext">ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool
+(ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool)
+-&gt; (ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool)
+-&gt; Eq ConnectAffiliateProgram
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool
+== :: ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool
+$c/= :: ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool
+/= :: ConnectAffiliateProgram -&gt; ConnectAffiliateProgram -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679813485"><span id="local-6989586621679813494"><span id="local-6989586621679813498"><span class="annot"><span class="annottext">Int -&gt; ConnectAffiliateProgram -&gt; ShowS
+[ConnectAffiliateProgram] -&gt; ShowS
+ConnectAffiliateProgram -&gt; String
+(Int -&gt; ConnectAffiliateProgram -&gt; ShowS)
+-&gt; (ConnectAffiliateProgram -&gt; String)
+-&gt; ([ConnectAffiliateProgram] -&gt; ShowS)
+-&gt; Show ConnectAffiliateProgram
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; ConnectAffiliateProgram -&gt; ShowS
+showsPrec :: Int -&gt; ConnectAffiliateProgram -&gt; ShowS
+$cshow :: ConnectAffiliateProgram -&gt; String
+show :: ConnectAffiliateProgram -&gt; String
+$cshowList :: [ConnectAffiliateProgram] -&gt; ShowS
+showList :: [ConnectAffiliateProgram] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679813513"><span class="annot"><span class="annottext">shortShow :: ConnectAffiliateProgram -&gt; String
+</span><a href="#local-6989586621679813513"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span><span>
+</span><span id="line-22"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">affiliate :: ConnectAffiliateProgram -&gt; Maybe AffiliateType
+</span><a href="TD.Query.ConnectAffiliateProgram.html#affiliate"><span class="hs-identifier hs-var">affiliate</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679813515"><span class="annot"><span class="annottext">Maybe AffiliateType
+</span><a href="#local-6989586621679813515"><span class="hs-identifier hs-var">affiliate_</span></a></span></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: ConnectAffiliateProgram -&gt; Maybe Int
+</span><a href="TD.Query.ConnectAffiliateProgram.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679813516"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679813516"><span class="hs-identifier hs-var">bot_user_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ConnectAffiliateProgram&quot;</span></span><span>
+</span><span id="line-26"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-27"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;affiliate&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe AffiliateType -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe AffiliateType
+</span><a href="#local-6989586621679813515"><span class="hs-identifier hs-var">affiliate_</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;bot_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679813516"><span class="hs-identifier hs-var">bot_user_id_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679813521"><span id="local-6989586621679813525"><span id="local-6989586621679813528"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-32"></span><span>  </span><span id="local-6989586621679813552"><span class="annot"><span class="annottext">toJSON :: ConnectAffiliateProgram -&gt; Value
+</span><a href="#local-6989586621679813552"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">affiliate :: ConnectAffiliateProgram -&gt; Maybe AffiliateType
+</span><a href="TD.Query.ConnectAffiliateProgram.html#affiliate"><span class="hs-identifier hs-var">affiliate</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679813554"><span class="annot"><span class="annottext">Maybe AffiliateType
+</span><a href="#local-6989586621679813554"><span class="hs-identifier hs-var">affiliate_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: ConnectAffiliateProgram -&gt; Maybe Int
+</span><a href="TD.Query.ConnectAffiliateProgram.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679813555"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679813555"><span class="hs-identifier hs-var">bot_user_id_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-38"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;connectAffiliateProgram&quot;</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;affiliate&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Maybe AffiliateType -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe AffiliateType
+</span><a href="#local-6989586621679813554"><span class="hs-identifier hs-var">affiliate_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;bot_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679813555"><span class="hs-identifier hs-var">bot_user_id_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#defaultConnectAffiliateProgram"><span class="hs-identifier hs-type">defaultConnectAffiliateProgram</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span><span>
+</span><span id="line-44"></span><span id="defaultConnectAffiliateProgram"><span class="annot"><span class="annottext">defaultConnectAffiliateProgram :: ConnectAffiliateProgram
+</span><a href="TD.Query.ConnectAffiliateProgram.html#defaultConnectAffiliateProgram"><span class="hs-identifier hs-var hs-var">defaultConnectAffiliateProgram</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>  </span><span class="annot"><a href="TD.Query.ConnectAffiliateProgram.html#ConnectAffiliateProgram"><span class="hs-identifier hs-type">ConnectAffiliateProgram</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">affiliate :: Maybe AffiliateType
+</span><a href="TD.Query.ConnectAffiliateProgram.html#affiliate"><span class="hs-identifier hs-var">affiliate</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe AffiliateType
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: Maybe Int
+</span><a href="TD.Query.ConnectAffiliateProgram.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span></pre></body></html>

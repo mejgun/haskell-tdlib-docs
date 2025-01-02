@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.SentGift</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier">SentGift</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.Gift.html"><span class="hs-identifier">TD.Data.Gift</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Gift</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.UpgradedGift.html"><span class="hs-identifier">TD.Data.UpgradedGift</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">UpgradedGift</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Represents a gift received by a user</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="SentGift"><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier hs-var">SentGift</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SentGiftRegular"><span class="annot"><a href="TD.Data.SentGift.html#SentGiftRegular"><span class="hs-identifier hs-var">SentGiftRegular</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Regular gift</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="gift"><span class="annot"><span class="annottext">SentGift -&gt; Maybe Gift
+</span><a href="TD.Data.SentGift.html#gift"><span class="hs-identifier hs-var hs-var">gift</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.Gift.html#Gift"><span class="hs-identifier hs-type">Gift.Gift</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The gift</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="SentGiftUpgraded"><span class="annot"><a href="TD.Data.SentGift.html#SentGiftUpgraded"><span class="hs-identifier hs-var">SentGiftUpgraded</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Upgraded gift</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_gift"><span class="annot"><span class="annottext">SentGift -&gt; Maybe UpgradedGift
+</span><a href="TD.Data.SentGift.html#_gift"><span class="hs-identifier hs-var hs-var">_gift</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGift.html#UpgradedGift"><span class="hs-identifier hs-type">UpgradedGift.UpgradedGift</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The gift</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679723348"><span id="local-6989586621679723355"><span class="annot"><span class="annottext">SentGift -&gt; SentGift -&gt; Bool
+(SentGift -&gt; SentGift -&gt; Bool)
+-&gt; (SentGift -&gt; SentGift -&gt; Bool) -&gt; Eq SentGift
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: SentGift -&gt; SentGift -&gt; Bool
+== :: SentGift -&gt; SentGift -&gt; Bool
+$c/= :: SentGift -&gt; SentGift -&gt; Bool
+/= :: SentGift -&gt; SentGift -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679723362"><span id="local-6989586621679723372"><span id="local-6989586621679723376"><span class="annot"><span class="annottext">Int -&gt; SentGift -&gt; ShowS
+[SentGift] -&gt; ShowS
+SentGift -&gt; String
+(Int -&gt; SentGift -&gt; ShowS)
+-&gt; (SentGift -&gt; String) -&gt; ([SentGift] -&gt; ShowS) -&gt; Show SentGift
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; SentGift -&gt; ShowS
+showsPrec :: Int -&gt; SentGift -&gt; ShowS
+$cshow :: SentGift -&gt; String
+show :: SentGift -&gt; String
+$cshowList :: [SentGift] -&gt; ShowS
+showList :: [SentGift] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier hs-type">SentGift</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679723392"><span class="annot"><span class="annottext">shortShow :: SentGift -&gt; String
+</span><a href="#local-6989586621679723392"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGiftRegular"><span class="hs-identifier hs-type">SentGiftRegular</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: SentGift -&gt; Maybe Gift
+</span><a href="TD.Data.SentGift.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679723394"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679723394"><span class="hs-identifier hs-var">gift_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SentGiftRegular&quot;</span></span><span>
+</span><span id="line-25"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Gift -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679723394"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-27"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-28"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGiftUpgraded"><span class="hs-identifier hs-type">SentGiftUpgraded</span></a></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_gift :: SentGift -&gt; Maybe UpgradedGift
+</span><a href="TD.Data.SentGift.html#_gift"><span class="hs-identifier hs-var">_gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679723397"><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679723397"><span class="hs-identifier hs-var">_gift_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SentGiftUpgraded&quot;</span></span><span>
+</span><span id="line-32"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_gift&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe UpgradedGift -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679723397"><span class="hs-identifier hs-var">_gift_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679723400"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier hs-type">SentGift</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679723434"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser SentGift
+</span><a href="#local-6989586621679723434"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679723436"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679723436"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679723438"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723438"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-38"></span><span>    </span><span id="local-6989586621679723439"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679723439"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723438"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679723439"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sentGiftRegular&quot;</span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser SentGift
+</span><a href="#local-6989586621679723441"><span class="hs-identifier hs-var">parseSentGiftRegular</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679723436"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sentGiftUpgraded&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser SentGift
+</span><a href="#local-6989586621679723442"><span class="hs-identifier hs-var">parseSentGiftUpgraded</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679723436"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-43"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser SentGift
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-44"></span><span>    </span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>      </span><span class="annot"><a href="#local-6989586621679723441"><span class="hs-identifier hs-type">parseSentGiftRegular</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier hs-type">SentGift</span></a></span><span>
+</span><span id="line-47"></span><span>      </span><span id="local-6989586621679723441"><span class="annot"><span class="annottext">parseSentGiftRegular :: Value -&gt; Parser SentGift
+</span><a href="#local-6989586621679723441"><span class="hs-identifier hs-var hs-var">parseSentGiftRegular</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SentGiftRegular&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift)
+-&gt; (Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679723444"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723444"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679723445"><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679723445"><span class="hs-identifier hs-var">gift_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723444"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Gift)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span class="annot"><span class="annottext">SentGift -&gt; Parser SentGift
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(SentGift -&gt; Parser SentGift) -&gt; SentGift -&gt; Parser SentGift
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGiftRegular"><span class="hs-identifier hs-type">SentGiftRegular</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: Maybe Gift
+</span><a href="TD.Data.SentGift.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Gift
+</span><a href="#local-6989586621679723445"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><a href="#local-6989586621679723442"><span class="hs-identifier hs-type">parseSentGiftUpgraded</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGift"><span class="hs-identifier hs-type">SentGift</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span id="local-6989586621679723442"><span class="annot"><span class="annottext">parseSentGiftUpgraded :: Value -&gt; Parser SentGift
+</span><a href="#local-6989586621679723442"><span class="hs-identifier hs-var hs-var">parseSentGiftUpgraded</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SentGiftUpgraded&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift)
+-&gt; (Object -&gt; Parser SentGift) -&gt; Value -&gt; Parser SentGift
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679723447"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723447"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679723448"><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679723448"><span class="hs-identifier hs-var">_gift_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679723447"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe UpgradedGift)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>
+</span><span id="line-55"></span><span>        </span><span class="annot"><span class="annottext">SentGift -&gt; Parser SentGift
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(SentGift -&gt; Parser SentGift) -&gt; SentGift -&gt; Parser SentGift
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.SentGift.html#SentGiftUpgraded"><span class="hs-identifier hs-type">SentGiftUpgraded</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_gift :: Maybe UpgradedGift
+</span><a href="TD.Data.SentGift.html#_gift"><span class="hs-identifier hs-var">_gift</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679723448"><span class="hs-identifier hs-var">_gift_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-58"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser SentGift
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span></pre></body></html>
