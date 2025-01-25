@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.EmojiStatusType</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier">EmojiStatusType</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftBackdropColors.html"><span class="hs-identifier">TD.Data.UpgradedGiftBackdropColors</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">UpgradedGiftBackdropColors</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Describes type of emoji status</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="EmojiStatusType"><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-var">EmojiStatusType</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EmojiStatusTypeCustomEmoji"><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeCustomEmoji"><span class="hs-identifier hs-var">EmojiStatusTypeCustomEmoji</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A custom emoji set as emoji status</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="custom_emoji_id"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#custom_emoji_id"><span class="hs-identifier hs-var hs-var">custom_emoji_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the custom emoji in stickerFormatTgs format</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="EmojiStatusTypeUpgradedGift"><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeUpgradedGift"><span class="hs-identifier hs-var">EmojiStatusTypeUpgradedGift</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ An upgraded gift set as emoji status</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="upgraded_gift_id"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#upgraded_gift_id"><span class="hs-identifier hs-var hs-var">upgraded_gift_id</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the upgraded gift</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="gift_title"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_title"><span class="hs-identifier hs-var hs-var">gift_title</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                                </span><span class="annot"><span class="hs-comment">-- ^ The title of the upgraded gift</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="gift_name"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_name"><span class="hs-identifier hs-var hs-var">gift_name</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                                </span><span class="annot"><span class="hs-comment">-- ^ Unique name of the upgraded gift that can be used with internalLinkTypeUpgradedGift</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="model_custom_emoji_id"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#model_custom_emoji_id"><span class="hs-identifier hs-var hs-var">model_custom_emoji_id</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                   </span><span class="annot"><span class="hs-comment">-- ^ Custom emoji identifier of the model of the upgraded gift</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="symbol_custom_emoji_id"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#symbol_custom_emoji_id"><span class="hs-identifier hs-var hs-var">symbol_custom_emoji_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                   </span><span class="annot"><span class="hs-comment">-- ^ Custom emoji identifier of the symbol of the upgraded gift</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="backdrop_colors"><span class="annot"><span class="annottext">EmojiStatusType -&gt; Maybe UpgradedGiftBackdropColors
+</span><a href="TD.Data.EmojiStatusType.html#backdrop_colors"><span class="hs-identifier hs-var hs-var">backdrop_colors</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftBackdropColors.html#UpgradedGiftBackdropColors"><span class="hs-identifier hs-type">UpgradedGiftBackdropColors.UpgradedGiftBackdropColors</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Colors of the backdrop of the upgraded gift</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679734458"><span id="local-6989586621679734471"><span class="annot"><span class="annottext">EmojiStatusType -&gt; EmojiStatusType -&gt; Bool
+(EmojiStatusType -&gt; EmojiStatusType -&gt; Bool)
+-&gt; (EmojiStatusType -&gt; EmojiStatusType -&gt; Bool)
+-&gt; Eq EmojiStatusType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EmojiStatusType -&gt; EmojiStatusType -&gt; Bool
+== :: EmojiStatusType -&gt; EmojiStatusType -&gt; Bool
+$c/= :: EmojiStatusType -&gt; EmojiStatusType -&gt; Bool
+/= :: EmojiStatusType -&gt; EmojiStatusType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679734479"><span id="local-6989586621679734495"><span id="local-6989586621679734499"><span class="annot"><span class="annottext">Int -&gt; EmojiStatusType -&gt; ShowS
+[EmojiStatusType] -&gt; ShowS
+EmojiStatusType -&gt; String
+(Int -&gt; EmojiStatusType -&gt; ShowS)
+-&gt; (EmojiStatusType -&gt; String)
+-&gt; ([EmojiStatusType] -&gt; ShowS)
+-&gt; Show EmojiStatusType
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; EmojiStatusType -&gt; ShowS
+showsPrec :: Int -&gt; EmojiStatusType -&gt; ShowS
+$cshow :: EmojiStatusType -&gt; String
+show :: EmojiStatusType -&gt; String
+$cshowList :: [EmojiStatusType] -&gt; ShowS
+showList :: [EmojiStatusType] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-type">EmojiStatusType</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>  </span><span id="local-6989586621679734522"><span class="annot"><span class="annottext">shortShow :: EmojiStatusType -&gt; String
+</span><a href="#local-6989586621679734522"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeCustomEmoji"><span class="hs-identifier hs-type">EmojiStatusTypeCustomEmoji</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#custom_emoji_id"><span class="hs-identifier hs-var">custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734524"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734524"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EmojiStatusTypeCustomEmoji&quot;</span></span><span>
+</span><span id="line-30"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;custom_emoji_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734524"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeUpgradedGift"><span class="hs-identifier hs-type">EmojiStatusTypeUpgradedGift</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">upgraded_gift_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#upgraded_gift_id"><span class="hs-identifier hs-var">upgraded_gift_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734527"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734527"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_title :: EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_title"><span class="hs-identifier hs-var">gift_title</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734528"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734528"><span class="hs-identifier hs-var">gift_title_</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_name :: EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_name"><span class="hs-identifier hs-var">gift_name</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734529"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734529"><span class="hs-identifier hs-var">gift_name_</span></a></span></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">model_custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#model_custom_emoji_id"><span class="hs-identifier hs-var">model_custom_emoji_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734530"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734530"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">symbol_custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#symbol_custom_emoji_id"><span class="hs-identifier hs-var">symbol_custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734531"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734531"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">backdrop_colors :: EmojiStatusType -&gt; Maybe UpgradedGiftBackdropColors
+</span><a href="TD.Data.EmojiStatusType.html#backdrop_colors"><span class="hs-identifier hs-var">backdrop_colors</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734532"><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734532"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EmojiStatusTypeUpgradedGift&quot;</span></span><span>
+</span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;upgraded_gift_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734527"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift_title&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734528"><span class="hs-identifier hs-var">gift_title_</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift_name&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734529"><span class="hs-identifier hs-var">gift_name_</span></a></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;model_custom_emoji_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734530"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span><span>
+</span><span id="line-47"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;symbol_custom_emoji_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734531"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span><span>
+</span><span id="line-48"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;backdrop_colors&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe UpgradedGiftBackdropColors -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734532"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span><span>
+</span><span id="line-49"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679734535"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-type">EmojiStatusType</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-52"></span><span>  </span><span id="local-6989586621679734594"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser EmojiStatusType
+</span><a href="#local-6989586621679734594"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679734596"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679734596"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679734598"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734598"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-53"></span><span>    </span><span id="local-6989586621679734599"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679734599"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734598"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679734599"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-56"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;emojiStatusTypeCustomEmoji&quot;</span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser EmojiStatusType
+</span><a href="#local-6989586621679734601"><span class="hs-identifier hs-var">parseEmojiStatusTypeCustomEmoji</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679734596"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;emojiStatusTypeUpgradedGift&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser EmojiStatusType
+</span><a href="#local-6989586621679734602"><span class="hs-identifier hs-var">parseEmojiStatusTypeUpgradedGift</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679734596"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                             </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser EmojiStatusType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-59"></span><span>    </span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-61"></span><span>      </span><span class="annot"><a href="#local-6989586621679734601"><span class="hs-identifier hs-type">parseEmojiStatusTypeCustomEmoji</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-type">EmojiStatusType</span></a></span><span>
+</span><span id="line-62"></span><span>      </span><span id="local-6989586621679734601"><span class="annot"><span class="annottext">parseEmojiStatusTypeCustomEmoji :: Value -&gt; Parser EmojiStatusType
+</span><a href="#local-6989586621679734601"><span class="hs-identifier hs-var hs-var">parseEmojiStatusTypeCustomEmoji</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser EmojiStatusType)
+-&gt; Value
+-&gt; Parser EmojiStatusType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EmojiStatusTypeCustomEmoji&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser EmojiStatusType)
+ -&gt; Value -&gt; Parser EmojiStatusType)
+-&gt; (Object -&gt; Parser EmojiStatusType)
+-&gt; Value
+-&gt; Parser EmojiStatusType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679734604"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734604"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-63"></span><span>        </span><span id="local-6989586621679734605"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734605"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734604"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;custom_emoji_id&quot;</span></span><span>
+</span><span id="line-64"></span><span>        </span><span class="annot"><span class="annottext">EmojiStatusType -&gt; Parser EmojiStatusType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(EmojiStatusType -&gt; Parser EmojiStatusType)
+-&gt; EmojiStatusType -&gt; Parser EmojiStatusType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeCustomEmoji"><span class="hs-identifier hs-type">EmojiStatusTypeCustomEmoji</span></a></span><span>
+</span><span id="line-65"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">custom_emoji_id :: Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#custom_emoji_id"><span class="hs-identifier hs-var">custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734605"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-67"></span><span>      </span><span class="annot"><a href="#local-6989586621679734602"><span class="hs-identifier hs-type">parseEmojiStatusTypeUpgradedGift</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-type">EmojiStatusType</span></a></span><span>
+</span><span id="line-68"></span><span>      </span><span id="local-6989586621679734602"><span class="annot"><span class="annottext">parseEmojiStatusTypeUpgradedGift :: Value -&gt; Parser EmojiStatusType
+</span><a href="#local-6989586621679734602"><span class="hs-identifier hs-var hs-var">parseEmojiStatusTypeUpgradedGift</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser EmojiStatusType)
+-&gt; Value
+-&gt; Parser EmojiStatusType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EmojiStatusTypeUpgradedGift&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser EmojiStatusType)
+ -&gt; Value -&gt; Parser EmojiStatusType)
+-&gt; (Object -&gt; Parser EmojiStatusType)
+-&gt; Value
+-&gt; Parser EmojiStatusType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679734609"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-69"></span><span>        </span><span id="local-6989586621679734610"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734610"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;upgraded_gift_id&quot;</span></span><span>
+</span><span id="line-70"></span><span>        </span><span id="local-6989586621679734611"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734611"><span class="hs-identifier hs-var">gift_title_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift_title&quot;</span></span><span>
+</span><span id="line-71"></span><span>        </span><span id="local-6989586621679734612"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734612"><span class="hs-identifier hs-var">gift_name_</span></a></span></span><span>              </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift_name&quot;</span></span><span>
+</span><span id="line-72"></span><span>        </span><span id="local-6989586621679734613"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734613"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;model_custom_emoji_id&quot;</span></span><span>
+</span><span id="line-73"></span><span>        </span><span id="local-6989586621679734614"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734614"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;symbol_custom_emoji_id&quot;</span></span><span>
+</span><span id="line-74"></span><span>        </span><span id="local-6989586621679734615"><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734615"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679734609"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe UpgradedGiftBackdropColors)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;backdrop_colors&quot;</span></span><span>
+</span><span id="line-75"></span><span>        </span><span class="annot"><span class="annottext">EmojiStatusType -&gt; Parser EmojiStatusType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(EmojiStatusType -&gt; Parser EmojiStatusType)
+-&gt; EmojiStatusType -&gt; Parser EmojiStatusType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeUpgradedGift"><span class="hs-identifier hs-type">EmojiStatusTypeUpgradedGift</span></a></span><span>
+</span><span id="line-76"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">upgraded_gift_id :: Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#upgraded_gift_id"><span class="hs-identifier hs-var">upgraded_gift_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734610"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span><span>
+</span><span id="line-77"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_title :: Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_title"><span class="hs-identifier hs-var">gift_title</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734611"><span class="hs-identifier hs-var">gift_title_</span></a></span><span>
+</span><span id="line-78"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_name :: Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_name"><span class="hs-identifier hs-var">gift_name</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734612"><span class="hs-identifier hs-var">gift_name_</span></a></span><span>
+</span><span id="line-79"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">model_custom_emoji_id :: Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#model_custom_emoji_id"><span class="hs-identifier hs-var">model_custom_emoji_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734613"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span><span>
+</span><span id="line-80"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">symbol_custom_emoji_id :: Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#symbol_custom_emoji_id"><span class="hs-identifier hs-var">symbol_custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734614"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span><span>
+</span><span id="line-81"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">backdrop_colors :: Maybe UpgradedGiftBackdropColors
+</span><a href="TD.Data.EmojiStatusType.html#backdrop_colors"><span class="hs-identifier hs-var">backdrop_colors</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734615"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span><span>
+</span><span id="line-82"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-83"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser EmojiStatusType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679734618"><span id="local-6989586621679734622"><span id="local-6989586621679734625"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusType"><span class="hs-identifier hs-type">EmojiStatusType</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-86"></span><span>  </span><span id="local-6989586621679734671"><span class="annot"><span class="annottext">toJSON :: EmojiStatusType -&gt; Value
+</span><a href="#local-6989586621679734671"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeCustomEmoji"><span class="hs-identifier hs-type">EmojiStatusTypeCustomEmoji</span></a></span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#custom_emoji_id"><span class="hs-identifier hs-var">custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734673"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734673"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-89"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-90"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;emojiStatusTypeCustomEmoji&quot;</span></span><span>
+</span><span id="line-91"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;custom_emoji_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734673"><span class="hs-identifier hs-var">custom_emoji_id_</span></a></span><span>
+</span><span id="line-92"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-93"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.EmojiStatusType.html#EmojiStatusTypeUpgradedGift"><span class="hs-identifier hs-type">EmojiStatusTypeUpgradedGift</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">upgraded_gift_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#upgraded_gift_id"><span class="hs-identifier hs-var">upgraded_gift_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734678"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734678"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span></span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_title :: EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_title"><span class="hs-identifier hs-var">gift_title</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734679"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734679"><span class="hs-identifier hs-var">gift_title_</span></a></span></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gift_name :: EmojiStatusType -&gt; Maybe Text
+</span><a href="TD.Data.EmojiStatusType.html#gift_name"><span class="hs-identifier hs-var">gift_name</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734680"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734680"><span class="hs-identifier hs-var">gift_name_</span></a></span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">model_custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#model_custom_emoji_id"><span class="hs-identifier hs-var">model_custom_emoji_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734681"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734681"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">symbol_custom_emoji_id :: EmojiStatusType -&gt; Maybe Int
+</span><a href="TD.Data.EmojiStatusType.html#symbol_custom_emoji_id"><span class="hs-identifier hs-var">symbol_custom_emoji_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734682"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734682"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">backdrop_colors :: EmojiStatusType -&gt; Maybe UpgradedGiftBackdropColors
+</span><a href="TD.Data.EmojiStatusType.html#backdrop_colors"><span class="hs-identifier hs-var">backdrop_colors</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679734683"><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734683"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span></span><span>
+</span><span id="line-100"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-101"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-102"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;emojiStatusTypeUpgradedGift&quot;</span></span><span>
+</span><span id="line-103"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;upgraded_gift_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734678"><span class="hs-identifier hs-var">upgraded_gift_id_</span></a></span><span>
+</span><span id="line-104"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift_title&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734679"><span class="hs-identifier hs-var">gift_title_</span></a></span><span>
+</span><span id="line-105"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift_name&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679734680"><span class="hs-identifier hs-var">gift_name_</span></a></span><span>
+</span><span id="line-106"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;model_custom_emoji_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734681"><span class="hs-identifier hs-var">model_custom_emoji_id_</span></a></span><span>
+</span><span id="line-107"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;symbol_custom_emoji_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679734682"><span class="hs-identifier hs-var">symbol_custom_emoji_id_</span></a></span><span>
+</span><span id="line-108"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;backdrop_colors&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Maybe UpgradedGiftBackdropColors -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGiftBackdropColors
+</span><a href="#local-6989586621679734683"><span class="hs-identifier hs-var">backdrop_colors_</span></a></span><span>
+</span><span id="line-109"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-110"></span><span>
+</span><span id="line-111"></span></pre></body></html>

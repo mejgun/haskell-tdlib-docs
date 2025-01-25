@@ -6,20 +6,20 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span>
-</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Sends a gift upgraded by the current user to another user. Returns 'TD.Data.Ok.Ok'</span></span><span>
-</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="TransferGift"><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-var">TransferGift</span></a></span></span><span>
-</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TransferGift"><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-var">TransferGift</span></a></span></span><span>
-</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="sender_user_id"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#sender_user_id"><span class="hs-identifier hs-var hs-var">sender_user_id</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the user that sent the gift</span></span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_id"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#message_id"><span class="hs-identifier hs-var hs-var">message_id</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the message with the upgraded gift in the chat with the user</span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="receiver_user_id"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#receiver_user_id"><span class="hs-identifier hs-var hs-var">receiver_user_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the user that will receive the gift</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="star_count"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var hs-var">star_count</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The amount of Telegram Stars required for the transfer</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679894477"><span id="local-6989586621679894485"><span class="annot"><span class="annottext">TransferGift -&gt; TransferGift -&gt; Bool
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html"><span class="hs-identifier">TD.Data.MessageSender</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSender</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Sends an upgraded gift to another user or a channel chat. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="TransferGift"><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-var">TransferGift</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TransferGift"><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-var">TransferGift</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="received_gift_id"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Text
+</span><a href="TD.Query.TransferGift.html#received_gift_id"><span class="hs-identifier hs-var hs-var">received_gift_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                      </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the gift</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="new_owner_id"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe MessageSender
+</span><a href="TD.Query.TransferGift.html#new_owner_id"><span class="hs-identifier hs-var hs-var">new_owner_id</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html#MessageSender"><span class="hs-identifier hs-type">MessageSender.MessageSender</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the user or the channel chat that will receive the gift</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="star_count"><span class="annot"><span class="annottext">TransferGift -&gt; Maybe Int
+</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var hs-var">star_count</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ The amount of Telegram Stars required to pay for the transfer</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679901442"><span id="local-6989586621679901451"><span class="annot"><span class="annottext">TransferGift -&gt; TransferGift -&gt; Bool
 (TransferGift -&gt; TransferGift -&gt; Bool)
 -&gt; (TransferGift -&gt; TransferGift -&gt; Bool) -&gt; Eq TransferGift
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -27,7 +27,7 @@ $c== :: TransferGift -&gt; TransferGift -&gt; Bool
 == :: TransferGift -&gt; TransferGift -&gt; Bool
 $c/= :: TransferGift -&gt; TransferGift -&gt; Bool
 /= :: TransferGift -&gt; TransferGift -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679894491"><span id="local-6989586621679894501"><span id="local-6989586621679894505"><span class="annot"><span class="annottext">Int -&gt; TransferGift -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679901459"><span id="local-6989586621679901470"><span id="local-6989586621679901474"><span class="annot"><span class="annottext">Int -&gt; TransferGift -&gt; ShowS
 [TransferGift] -&gt; ShowS
 TransferGift -&gt; String
 (Int -&gt; TransferGift -&gt; ShowS)
@@ -43,23 +43,20 @@ show :: TransferGift -&gt; String
 $cshowList :: [TransferGift] -&gt; ShowS
 showList :: [TransferGift] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-19"></span><span>
-</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-21"></span><span>  </span><span id="local-6989586621679894520"><span class="annot"><span class="annottext">shortShow :: TransferGift -&gt; String
-</span><a href="#local-6989586621679894520"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
-</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sender_user_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#sender_user_id"><span class="hs-identifier hs-var">sender_user_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894522"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894522"><span class="hs-identifier hs-var">sender_user_id_</span></a></span></span><span>
-</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894523"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894523"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
-</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894524"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894524"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679901492"><span class="annot"><span class="annottext">shortShow :: TransferGift -&gt; String
+</span><a href="#local-6989586621679901492"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">received_gift_id :: TransferGift -&gt; Maybe Text
+</span><a href="TD.Query.TransferGift.html#received_gift_id"><span class="hs-identifier hs-var">received_gift_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901494"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679901494"><span class="hs-identifier hs-var">received_gift_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">new_owner_id :: TransferGift -&gt; Maybe MessageSender
+</span><a href="TD.Query.TransferGift.html#new_owner_id"><span class="hs-identifier hs-var">new_owner_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901495"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679901495"><span class="hs-identifier hs-var">new_owner_id_</span></a></span></span><span>
 </span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894525"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894525"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
+</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901496"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679901496"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
 </span><span id="line-27"></span><span>      </span><span class="hs-special">}</span><span>
 </span><span id="line-28"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;TransferGift&quot;</span></span><span>
@@ -68,99 +65,81 @@ forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
 </span><span id="line-30"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;sender_user_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span class="hs-string">&quot;received_gift_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894522"><span class="hs-identifier hs-var">sender_user_id_</span></a></span><span>
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679901494"><span class="hs-identifier hs-var">received_gift_id_</span></a></span><span>
 </span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;message_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span class="hs-string">&quot;new_owner_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSender -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894523"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679901495"><span class="hs-identifier hs-var">new_owner_id_</span></a></span><span>
 </span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;receiver_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894524"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span><span>
-</span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;star_count&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894525"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
-</span><span id="line-34"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-35"></span><span>
-</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679894530"><span id="local-6989586621679894534"><span id="local-6989586621679894537"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-37"></span><span>  </span><span id="local-6989586621679894565"><span class="annot"><span class="annottext">toJSON :: TransferGift -&gt; Value
-</span><a href="#local-6989586621679894565"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-38"></span><span>    </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
-</span><span id="line-39"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sender_user_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#sender_user_id"><span class="hs-identifier hs-var">sender_user_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894567"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894567"><span class="hs-identifier hs-var">sender_user_id_</span></a></span></span><span>
-</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894568"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894568"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
-</span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894569"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894569"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span></span><span>
-</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: TransferGift -&gt; Maybe Int
-</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679894570"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894570"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
-</span><span id="line-43"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-44"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679901496"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-33"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679901501"><span id="local-6989586621679901505"><span id="local-6989586621679901508"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679901537"><span class="annot"><span class="annottext">toJSON :: TransferGift -&gt; Value
+</span><a href="#local-6989586621679901537"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-37"></span><span>    </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">received_gift_id :: TransferGift -&gt; Maybe Text
+</span><a href="TD.Query.TransferGift.html#received_gift_id"><span class="hs-identifier hs-var">received_gift_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901539"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679901539"><span class="hs-identifier hs-var">received_gift_id_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">new_owner_id :: TransferGift -&gt; Maybe MessageSender
+</span><a href="TD.Query.TransferGift.html#new_owner_id"><span class="hs-identifier hs-var">new_owner_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901540"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679901540"><span class="hs-identifier hs-var">new_owner_id_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: TransferGift -&gt; Maybe Int
+</span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679901541"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679901541"><span class="hs-identifier hs-var">star_count_</span></a></span></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-45"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span id="line-43"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;@type&quot;</span></span><span>            </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;transferGift&quot;</span></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;received_gift_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679901539"><span class="hs-identifier hs-var">received_gift_id_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;new_owner_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSender -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679901540"><span class="hs-identifier hs-var">new_owner_id_</span></a></span><span>
 </span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;sender_user_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894567"><span class="hs-identifier hs-var">sender_user_id_</span></a></span><span>
-</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;message_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894568"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
-</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;receiver_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894569"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span><span>
-</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
 </span><span class="hs-string">&quot;star_count&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679894570"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
-</span><span id="line-50"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-51"></span><span>
-</span><span id="line-52"></span><span class="annot"><a href="TD.Query.TransferGift.html#defaultTransferGift"><span class="hs-identifier hs-type">defaultTransferGift</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
-</span><span id="line-53"></span><span id="defaultTransferGift"><span class="annot"><span class="annottext">defaultTransferGift :: TransferGift
+</span><a href="#local-6989586621679901541"><span class="hs-identifier hs-var">star_count_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="TD.Query.TransferGift.html#defaultTransferGift"><span class="hs-identifier hs-type">defaultTransferGift</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
+</span><span id="line-50"></span><span id="defaultTransferGift"><span class="annot"><span class="annottext">defaultTransferGift :: TransferGift
 </span><a href="TD.Query.TransferGift.html#defaultTransferGift"><span class="hs-identifier hs-var hs-var">defaultTransferGift</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-54"></span><span>  </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
-</span><span id="line-55"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">sender_user_id :: Maybe Int
-</span><a href="TD.Query.TransferGift.html#sender_user_id"><span class="hs-identifier hs-var">sender_user_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-51"></span><span>  </span><span class="annot"><a href="TD.Query.TransferGift.html#TransferGift"><span class="hs-identifier hs-type">TransferGift</span></a></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">received_gift_id :: Maybe Text
+</span><a href="TD.Query.TransferGift.html#received_gift_id"><span class="hs-identifier hs-var">received_gift_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: Maybe Int
-</span><a href="TD.Query.TransferGift.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">new_owner_id :: Maybe MessageSender
+</span><a href="TD.Query.TransferGift.html#new_owner_id"><span class="hs-identifier hs-var">new_owner_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: Maybe Int
-</span><a href="TD.Query.TransferGift.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
-forall a. Maybe a
-</span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: Maybe Int
+</span><span id="line-54"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">star_count :: Maybe Int
 </span><a href="TD.Query.TransferGift.html#star_count"><span class="hs-identifier hs-var">star_count</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-59"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-60"></span><span>
-</span><span id="line-61"></span></pre></body></html>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-56"></span><span>
+</span><span id="line-57"></span></pre></body></html>
