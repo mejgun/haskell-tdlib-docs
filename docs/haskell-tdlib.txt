@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.54.0
+@version 2.0.55.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -3180,6 +3180,28 @@ instance GHC.Show.Show TD.Data.PassportAuthorizationForm.PassportAuthorizationFo
 instance GHC.Classes.Eq TD.Data.PassportAuthorizationForm.PassportAuthorizationForm
 instance TD.Lib.Internal.ShortShow TD.Data.PassportAuthorizationForm.PassportAuthorizationForm
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PassportAuthorizationForm.PassportAuthorizationForm
+
+module TD.Data.PaidReactionType
+
+-- | Describes type of paid message reaction
+data PaidReactionType
+
+-- | A paid reaction on behalf of the current user
+PaidReactionTypeRegular :: PaidReactionType
+
+-- | An anonymous paid reaction
+PaidReactionTypeAnonymous :: PaidReactionType
+
+-- | A paid reaction on behalf of an owned chat
+PaidReactionTypeChat :: Maybe Int -> PaidReactionType
+
+-- | Identifier of the chat
+[chat_id] :: PaidReactionType -> Maybe Int
+instance GHC.Show.Show TD.Data.PaidReactionType.PaidReactionType
+instance GHC.Classes.Eq TD.Data.PaidReactionType.PaidReactionType
+instance TD.Lib.Internal.ShortShow TD.Data.PaidReactionType.PaidReactionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PaidReactionType.PaidReactionType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PaidReactionType.PaidReactionType
 
 module TD.Data.PageBlockVerticalAlignment
 
@@ -7418,7 +7440,7 @@ data UpgradedGift
 
 -- | Describes an upgraded gift that can be transferred to another owner or
 --   transferred to the TON blockchain as an NFT
-UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> UpgradedGift
+UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> UpgradedGift
 
 -- | Unique identifier of the gift
 [_id] :: UpgradedGift -> Maybe Int
@@ -7450,6 +7472,9 @@ UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int 
 -- | Name of the owner for the case when owner identifier and address
 --   aren't known
 [owner_name] :: UpgradedGift -> Maybe Text
+
+-- | Address of the gift NFT in TON blockchain; may be empty if none
+[gift_address] :: UpgradedGift -> Maybe Text
 
 -- | Model of the upgraded gift
 [model] :: UpgradedGift -> Maybe UpgradedGiftModel
@@ -13486,14 +13511,15 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 [is_live_stream] :: InternalLinkType -> Maybe Bool
 
 -- | The link is a link to a Web App. Call searchPublicChat with the given
---   bot username, check that the user is a bot, then call searchWebApp
---   with the received bot and the given web_app_short_name. Process
---   received foundWebApp by showing a confirmation dialog if needed. If
---   the bot can be added to attachment or side menu, but isn't added yet,
---   then show a disclaimer about Mini Apps being third-party applications
---   instead of the dialog and ask the user to accept their Terms of
---   service. If the user accept the terms and confirms adding, then use
---   toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
+--   bot username, check that the user is a bot. If the bot is restricted
+--   for the current user, then show an error message. Otherwise, call
+--   searchWebApp with the received bot and the given web_app_short_name.
+--   Process received foundWebApp by showing a confirmation dialog if
+--   needed. If the bot can be added to attachment or side menu, but isn't
+--   added yet, then show a disclaimer about Mini Apps being third-party
+--   applications instead of the dialog and ask the user to accept their
+--   Terms of service. If the user accept the terms and confirms adding,
+--   then use toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
 InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe WebAppOpenMode -> InternalLinkType
 
@@ -17574,10 +17600,16 @@ LinkPreviewTypeUser :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
 [is_bot] :: LinkPreviewType -> Maybe Bool
 
 -- | The link is a link to a video
-LinkPreviewTypeVideo :: Maybe Video -> LinkPreviewType
+LinkPreviewTypeVideo :: Maybe Video -> Maybe Photo -> Maybe Int -> LinkPreviewType
 
 -- | The video description
 [video] :: LinkPreviewType -> Maybe Video
+
+-- | Cover of the video; may be null if none
+[cover] :: LinkPreviewType -> Maybe Photo
+
+-- | Timestamp from which the video playing must start, in seconds
+[start_timestamp] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to a video chat
 LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
@@ -22319,6 +22351,21 @@ UpdateApplicationVerificationRequired :: Maybe Int -> Maybe Text -> Maybe Int ->
 -- | Cloud project number to pass to the Play Integrity API on Android
 [cloud_project_number] :: Update -> Maybe Int
 
+-- | A request can't be completed unless reCAPTCHA verification is
+--   performed; for official mobile applications only. The method
+--   setApplicationVerificationToken must be called once the verification
+--   is completed or failed
+UpdateApplicationRecaptchaVerificationRequired :: Maybe Int -> Maybe Text -> Maybe Text -> Update
+
+-- | Unique identifier for the verification process
+[verification_id] :: Update -> Maybe Int
+
+-- | The action for the check
+[_action] :: Update -> Maybe Text
+
+-- | Identifier of the reCAPTCHA key
+[recaptcha_key_id] :: Update -> Maybe Text
+
 -- | New call was created or information about a call was updated
 UpdateCall :: Maybe Call -> Update
 
@@ -22636,6 +22683,12 @@ UpdateDefaultReactionType :: Maybe ReactionType -> Update
 
 -- | The new type of the default reaction
 [reaction_type] :: Update -> Maybe ReactionType
+
+-- | The type of default paid reaction has changed
+UpdateDefaultPaidReactionType :: Maybe PaidReactionType -> Update
+
+-- | The new type of the default paid reaction
+[___type] :: Update -> Maybe PaidReactionType
 
 -- | Tags used in Saved Messages or a Saved Messages topic have changed
 UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
@@ -23703,7 +23756,7 @@ module TD.Query.AddPendingPaidMessageReaction
 --   getMessageAvailableReactions to check whether the reaction is
 --   available for the message. Returns <a>Ok</a>
 data AddPendingPaidMessageReaction
-AddPendingPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> AddPendingPaidMessageReaction
+AddPendingPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe PaidReactionType -> AddPendingPaidMessageReaction
 
 -- | Identifier of the chat to which the message belongs
 [chat_id] :: AddPendingPaidMessageReaction -> Maybe Int
@@ -23716,14 +23769,10 @@ AddPendingPaidMessageReaction :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bo
 --   getOption("paid_reaction_star_count_max")
 [star_count] :: AddPendingPaidMessageReaction -> Maybe Int
 
--- | Pass true if the user didn't choose anonymity explicitly, for example,
---   the reaction is set from the message bubble
-[use_default_is_anonymous] :: AddPendingPaidMessageReaction -> Maybe Bool
-
--- | Pass true to make paid reaction of the user on the message anonymous;
---   pass false to make the user's profile visible among top reactors.
---   Ignored if use_default_is_anonymous == true
-[is_anonymous] :: AddPendingPaidMessageReaction -> Maybe Bool
+-- | Type of the paid reaction; pass null if the user didn't choose
+--   reaction type explicitly, for example, the reaction is set from the
+--   message bubble
+[_type] :: AddPendingPaidMessageReaction -> Maybe PaidReactionType
 defaultAddPendingPaidMessageReaction :: AddPendingPaidMessageReaction
 instance GHC.Show.Show TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
 instance GHC.Classes.Eq TD.Query.AddPendingPaidMessageReaction.AddPendingPaidMessageReaction
@@ -27614,6 +27663,20 @@ instance GHC.Classes.Eq TD.Query.GetChatAvailableMessageSenders.GetChatAvailable
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatAvailableMessageSenders.GetChatAvailableMessageSenders
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAvailableMessageSenders.GetChatAvailableMessageSenders
 
+module TD.Query.GetChatAvailablePaidMessageReactionSenders
+
+-- | Returns the list of message sender identifiers, which can be used to
+--   send a paid reaction in a chat. Returns <a>MessageSenders</a>
+data GetChatAvailablePaidMessageReactionSenders
+GetChatAvailablePaidMessageReactionSenders :: Maybe Int -> GetChatAvailablePaidMessageReactionSenders
+
+-- | Chat identifier
+[chat_id] :: GetChatAvailablePaidMessageReactionSenders -> Maybe Int
+instance GHC.Show.Show TD.Query.GetChatAvailablePaidMessageReactionSenders.GetChatAvailablePaidMessageReactionSenders
+instance GHC.Classes.Eq TD.Query.GetChatAvailablePaidMessageReactionSenders.GetChatAvailablePaidMessageReactionSenders
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatAvailablePaidMessageReactionSenders.GetChatAvailablePaidMessageReactionSenders
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatAvailablePaidMessageReactionSenders.GetChatAvailablePaidMessageReactionSenders
+
 module TD.Query.GetChatBoostFeatures
 
 -- | Returns the list of features available for different chat boost
@@ -29610,7 +29673,8 @@ GetMainWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe WebAppOpenParamet
 -- | Identifier of the chat in which the Web App is opened; pass 0 if none
 [chat_id] :: GetMainWebApp -> Maybe Int
 
--- | Identifier of the target bot
+-- | Identifier of the target bot. If the bot is restricted for the current
+--   user, then show an error instead of calling the method
 [bot_user_id] :: GetMainWebApp -> Maybe Int
 
 -- | Start parameter from internalLinkTypeMainWebApp
@@ -30551,26 +30615,23 @@ GetReceivedGifts :: Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Boo
 --   without can_post_messages administrator right
 [exclude_unsaved] :: GetReceivedGifts -> Maybe Bool
 
--- | Pass true to exclude gifts that are saved to the chat's profile page;
---   for channel chats with can_post_messages administrator right only
+-- | Pass true to exclude gifts that are saved to the chat's profile page.
+--   Always false for gifts received by other users and channel chats
+--   without can_post_messages administrator right
 [exclude_saved] :: GetReceivedGifts -> Maybe Bool
 
 -- | Pass true to exclude gifts that can be purchased unlimited number of
---   times; for channel chats with can_post_messages administrator right
---   only
+--   times
 [exclude_unlimited] :: GetReceivedGifts -> Maybe Bool
 
 -- | Pass true to exclude gifts that can be purchased limited number of
---   times; for channel chats with can_post_messages administrator right
---   only
+--   times
 [exclude_limited] :: GetReceivedGifts -> Maybe Bool
 
--- | Pass true to exclude upgraded gifts; for channel chats with
---   can_post_messages administrator right only
+-- | Pass true to exclude upgraded gifts
 [exclude_upgraded] :: GetReceivedGifts -> Maybe Bool
 
--- | Pass true to sort results by gift price instead of send date; for
---   channel chats with can_post_messages administrator right only
+-- | Pass true to sort results by gift price instead of send date
 [sort_by_price] :: GetReceivedGifts -> Maybe Bool
 
 -- | Offset of the first entry to return as received from the previous
@@ -31808,7 +31869,8 @@ module TD.Query.GetWebAppUrl
 data GetWebAppUrl
 GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe WebAppOpenParameters -> GetWebAppUrl
 
--- | Identifier of the target bot
+-- | Identifier of the target bot. If the bot is restricted for the current
+--   user, then show an error instead of calling the method
 [bot_user_id] :: GetWebAppUrl -> Maybe Int
 
 -- | The URL from a keyboardButtonTypeWebApp button,
@@ -32270,7 +32332,8 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe InputMe
 --   can't be opened in secret chats
 [chat_id] :: OpenWebApp -> Maybe Int
 
--- | Identifier of the bot, providing the Web App
+-- | Identifier of the bot, providing the Web App. If the bot is restricted
+--   for the current user, then show an error instead of calling the method
 [bot_user_id] :: OpenWebApp -> Maybe Int
 
 -- | The URL from an inlineKeyboardButtonTypeWebApp button, a botMenuButton
@@ -35264,19 +35327,21 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetAlarm.SetAlarm
 
 module TD.Query.SetApplicationVerificationToken
 
--- | Application verification has been completed. Can be called before
---   authorization. Returns <a>Ok</a>
+-- | Application or reCAPTCHA verification has been completed. Can be
+--   called before authorization. Returns <a>Ok</a>
 data SetApplicationVerificationToken
 SetApplicationVerificationToken :: Maybe Int -> Maybe Text -> SetApplicationVerificationToken
 
 -- | Unique identifier for the verification process as received from
---   updateApplicationVerificationRequired
+--   updateApplicationVerificationRequired or
+--   updateApplicationRecaptchaVerificationRequired
 [verification_id] :: SetApplicationVerificationToken -> Maybe Int
 
 -- | Play Integrity API token for the Android application, or secret from
---   push notification for the iOS application; pass an empty string to
---   abort verification and receive error VERIFICATION_FAILED for the
---   request
+--   push notification for the iOS application for application
+--   verification, or reCAPTCHA token for reCAPTCHA verifications; pass an
+--   empty string to abort verification and receive error
+--   VERIFICATION_FAILED for the request
 [token] :: SetApplicationVerificationToken -> Maybe Text
 defaultSetApplicationVerificationToken :: SetApplicationVerificationToken
 instance GHC.Show.Show TD.Query.SetApplicationVerificationToken.SetApplicationVerificationToken
@@ -36738,6 +36803,28 @@ instance GHC.Show.Show TD.Query.SetOption.SetOption
 instance GHC.Classes.Eq TD.Query.SetOption.SetOption
 instance TD.Lib.Internal.ShortShow TD.Query.SetOption.SetOption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetOption.SetOption
+
+module TD.Query.SetPaidMessageReactionType
+
+-- | Changes type of paid message reaction of the current user on a
+--   message. The message must have paid reaction added by the current
+--   user. Returns <a>Ok</a>
+data SetPaidMessageReactionType
+SetPaidMessageReactionType :: Maybe Int -> Maybe Int -> Maybe PaidReactionType -> SetPaidMessageReactionType
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: SetPaidMessageReactionType -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: SetPaidMessageReactionType -> Maybe Int
+
+-- | New type of the paid reaction
+[_type] :: SetPaidMessageReactionType -> Maybe PaidReactionType
+defaultSetPaidMessageReactionType :: SetPaidMessageReactionType
+instance GHC.Show.Show TD.Query.SetPaidMessageReactionType.SetPaidMessageReactionType
+instance GHC.Classes.Eq TD.Query.SetPaidMessageReactionType.SetPaidMessageReactionType
+instance TD.Lib.Internal.ShortShow TD.Query.SetPaidMessageReactionType.SetPaidMessageReactionType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPaidMessageReactionType.SetPaidMessageReactionType
 
 module TD.Query.SetPassportElement
 
@@ -38374,29 +38461,6 @@ instance GHC.Show.Show TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSpons
 instance GHC.Classes.Eq TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleHasSponsoredMessagesEnabled.ToggleHasSponsoredMessagesEnabled
-
-module TD.Query.TogglePaidMessageReactionIsAnonymous
-
--- | Changes whether the paid message reaction of the user to a message is
---   anonymous. The message must have paid reaction added by the user.
---   Returns <a>Ok</a>
-data TogglePaidMessageReactionIsAnonymous
-TogglePaidMessageReactionIsAnonymous :: Maybe Int -> Maybe Int -> Maybe Bool -> TogglePaidMessageReactionIsAnonymous
-
--- | Identifier of the chat to which the message belongs
-[chat_id] :: TogglePaidMessageReactionIsAnonymous -> Maybe Int
-
--- | Identifier of the message
-[message_id] :: TogglePaidMessageReactionIsAnonymous -> Maybe Int
-
--- | Pass true to make paid reaction of the user on the message anonymous;
---   pass false to make the user's profile visible among top reactors
-[is_anonymous] :: TogglePaidMessageReactionIsAnonymous -> Maybe Bool
-defaultTogglePaidMessageReactionIsAnonymous :: TogglePaidMessageReactionIsAnonymous
-instance GHC.Show.Show TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
-instance GHC.Classes.Eq TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
-instance TD.Lib.Internal.ShortShow TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TogglePaidMessageReactionIsAnonymous.TogglePaidMessageReactionIsAnonymous
 
 module TD.Query.ToggleSavedMessagesTopicIsPinned
 
