@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.55.0
+@version 2.0.56.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -374,6 +374,10 @@ UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages :: UserPrivacySetting
 -- | A privacy setting for managing whether received gifts are
 --   automatically shown on the user's profile page
 UserPrivacySettingAutosaveGifts :: UserPrivacySetting
+
+-- | A privacy setting for managing whether the user can receive messages
+--   without additional payment
+UserPrivacySettingAllowUnpaidMessages :: UserPrivacySetting
 instance GHC.Show.Show TD.Data.UserPrivacySetting.UserPrivacySetting
 instance GHC.Classes.Eq TD.Data.UserPrivacySetting.UserPrivacySetting
 instance TD.Lib.Internal.ShortShow TD.Data.UserPrivacySetting.UserPrivacySetting
@@ -1503,7 +1507,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayWinnerOption.Sta
 module TD.Data.StarGiveawayPaymentOption
 data StarGiveawayPaymentOption
 
--- | Describes an option for creating Telegram Star giveaway. Use
+-- | Describes an option for creating of Telegram Star giveaway. Use
 --   telegramPaymentPurposeStarGiveaway for out-of-store payments
 StarGiveawayPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe [StarGiveawayWinnerOption] -> Maybe Bool -> Maybe Bool -> StarGiveawayPaymentOption
 
@@ -1541,7 +1545,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayPaymentOption.St
 module TD.Data.StarGiveawayPaymentOptions
 data StarGiveawayPaymentOptions
 
--- | Contains a list of options for creating Telegram Star giveaway
+-- | Contains a list of options for creating of Telegram Star giveaway
 StarGiveawayPaymentOptions :: Maybe [StarGiveawayPaymentOption] -> StarGiveawayPaymentOptions
 
 -- | The list of options
@@ -1550,6 +1554,19 @@ instance GHC.Show.Show TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOpt
 instance GHC.Classes.Eq TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
 instance TD.Lib.Internal.ShortShow TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarGiveawayPaymentOptions.StarGiveawayPaymentOptions
+
+module TD.Data.StarCount
+data StarCount
+
+-- | Contains a number of Telegram Stars
+StarCount :: Maybe Int -> StarCount
+
+-- | Number of Telegram Stars
+[star_count] :: StarCount -> Maybe Int
+instance GHC.Show.Show TD.Data.StarCount.StarCount
+instance GHC.Classes.Eq TD.Data.StarCount.StarCount
+instance TD.Lib.Internal.ShortShow TD.Data.StarCount.StarCount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarCount.StarCount
 
 module TD.Data.StarAmount
 data StarAmount
@@ -2767,6 +2784,52 @@ instance GHC.Classes.Eq TD.Data.PremiumLimit.PremiumLimit
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumLimit.PremiumLimit
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumLimit.PremiumLimit
 
+module TD.Data.PremiumGiveawayPaymentOption
+data PremiumGiveawayPaymentOption
+
+-- | Describes an option for creating of Telegram Premium giveaway or
+--   manual distribution of Telegram Premium among chat members. Use
+--   telegramPaymentPurposePremiumGiftCodes or
+--   telegramPaymentPurposePremiumGiveaway for out-of-store payments
+PremiumGiveawayPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> PremiumGiveawayPaymentOption
+
+-- | ISO 4217 currency code for Telegram Premium gift code payment
+[currency] :: PremiumGiveawayPaymentOption -> Maybe Text
+
+-- | The amount to pay, in the smallest units of the currency
+[amount] :: PremiumGiveawayPaymentOption -> Maybe Int
+
+-- | Number of users which will be able to activate the gift codes
+[winner_count] :: PremiumGiveawayPaymentOption -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active
+[month_count] :: PremiumGiveawayPaymentOption -> Maybe Int
+
+-- | Identifier of the store product associated with the option; may be
+--   empty if none
+[store_product_id] :: PremiumGiveawayPaymentOption -> Maybe Text
+
+-- | Number of times the store product must be paid
+[store_product_quantity] :: PremiumGiveawayPaymentOption -> Maybe Int
+instance GHC.Show.Show TD.Data.PremiumGiveawayPaymentOption.PremiumGiveawayPaymentOption
+instance GHC.Classes.Eq TD.Data.PremiumGiveawayPaymentOption.PremiumGiveawayPaymentOption
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiveawayPaymentOption.PremiumGiveawayPaymentOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayPaymentOption.PremiumGiveawayPaymentOption
+
+module TD.Data.PremiumGiveawayPaymentOptions
+data PremiumGiveawayPaymentOptions
+
+-- | Contains a list of options for creating of Telegram Premium giveaway
+--   or manual distribution of Telegram Premium among chat members
+PremiumGiveawayPaymentOptions :: Maybe [PremiumGiveawayPaymentOption] -> PremiumGiveawayPaymentOptions
+
+-- | The list of options
+[options] :: PremiumGiveawayPaymentOptions -> Maybe [PremiumGiveawayPaymentOption]
+instance GHC.Show.Show TD.Data.PremiumGiveawayPaymentOptions.PremiumGiveawayPaymentOptions
+instance GHC.Classes.Eq TD.Data.PremiumGiveawayPaymentOptions.PremiumGiveawayPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiveawayPaymentOptions.PremiumGiveawayPaymentOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiveawayPaymentOptions.PremiumGiveawayPaymentOptions
+
 module TD.Data.PremiumFeature
 
 -- | Describes a feature available to Premium users
@@ -3348,13 +3411,20 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NotificationGroupType.Notifi
 module TD.Data.NewChatPrivacySettings
 data NewChatPrivacySettings
 
--- | Contains privacy settings for new chats with non-contacts
-NewChatPrivacySettings :: Maybe Bool -> NewChatPrivacySettings
+-- | Contains privacy settings for chats with non-contacts
+NewChatPrivacySettings :: Maybe Bool -> Maybe Int -> NewChatPrivacySettings
 
 -- | True, if non-contacts users are able to write first to the current
 --   user. Telegram Premium subscribers are able to write first regardless
 --   of this setting
 [allow_new_chats_from_unknown_users] :: NewChatPrivacySettings -> Maybe Bool
+
+-- | Number of Telegram Stars that must be paid for every incoming private
+--   message by non-contacts; 0-getOption("paid_message_star_count_max").
+--   If positive, then allow_new_chats_from_unknown_users must be true. The
+--   current user will receive getOption("paid_message_earnings_per_mille")
+--   Telegram Stars for each 1000 Telegram Stars paid for message sending
+[incoming_paid_message_star_count] :: NewChatPrivacySettings -> Maybe Int
 defaultNewChatPrivacySettings :: NewChatPrivacySettings
 instance GHC.Show.Show TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
 instance GHC.Classes.Eq TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
@@ -3692,7 +3762,7 @@ module TD.Data.MessageSendOptions
 data MessageSendOptions
 
 -- | Options to be used when a message is sent
-MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
+MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
 
 -- | Pass true to disable notification for the message
 [disable_notification] :: MessageSendOptions -> Maybe Bool
@@ -3708,14 +3778,18 @@ MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Ma
 --   a small fee; for bots only
 [allow_paid_broadcast] :: MessageSendOptions -> Maybe Bool
 
+-- | The number of Telegram Stars the user agreed to pay to send the
+--   messages
+[paid_message_star_count] :: MessageSendOptions -> Maybe Int
+
 -- | Pass true if the user explicitly chosen a sticker or a custom emoji
 --   from an installed sticker set; applicable only to sendMessage and
 --   sendMessageAlbum
 [update_order_of_installed_sticker_sets] :: MessageSendOptions -> Maybe Bool
 
 -- | Message scheduling state; pass null to send message immediately.
---   Messages sent to a secret chat, live location messages and
---   self-destructing messages can't be scheduled
+--   Messages sent to a secret chat, to a chat with paid messages, live
+--   location messages and self-destructing messages can't be scheduled
 [scheduling_state] :: MessageSendOptions -> Maybe MessageSchedulingState
 
 -- | Identifier of the effect to apply to the message; pass 0 if none;
@@ -5843,10 +5917,14 @@ module TD.Data.GroupCall
 data GroupCall
 
 -- | Describes a group call
-GroupCall :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
+GroupCall :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
 
 -- | Group call identifier
 [_id] :: GroupCall -> Maybe Int
+
+-- | Identifier of one-to-one call from which the group call was created; 0
+--   if unknown
+[from_call_id] :: GroupCall -> Maybe Int
 
 -- | Group call title
 [title] :: GroupCall -> Maybe Text
@@ -6413,12 +6491,35 @@ module TD.Data.TelegramPaymentPurpose
 -- | Describes a purpose of a payment toward Telegram
 data TelegramPaymentPurpose
 
--- | The user creating Telegram Premium gift codes for other users
+-- | The user gifting Telegram Premium to another user
+TelegramPaymentPurposePremiumGift :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> TelegramPaymentPurpose
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: TelegramPaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Identifier of the user which will receive Telegram Premium
+[user_id] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active for
+--   the user
+[month_count] :: TelegramPaymentPurpose -> Maybe Int
+
+-- | Text to show to the user receiving Telegram Premium;
+--   0-getOption("gift_text_length_max") characters. Only Bold, Italic,
+--   Underline, Strikethrough, Spoiler, and CustomEmoji entities are
+--   allowed
+[text] :: TelegramPaymentPurpose -> Maybe FormattedText
+
+-- | The user boosting a chat by creating Telegram Premium gift codes for
+--   other users
 TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe FormattedText -> TelegramPaymentPurpose
 
 -- | Identifier of the supergroup or channel chat, which will be
 --   automatically boosted by the users for duration of the Premium
---   subscription and which is administered by the user; 0 if none
+--   subscription and which is administered by the user
 [boosted_chat_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -6431,10 +6532,10 @@ TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -
 [user_ids] :: TelegramPaymentPurpose -> Maybe [Int]
 
 -- | Number of months the Telegram Premium subscription will be active for
---   the users
+--   the user
 [month_count] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Text to show along with the gift codes;
+-- | Text to show to the user receiving Telegram Premium;
 --   0-getOption("gift_text_length_max") characters. Only Bold, Italic,
 --   Underline, Strikethrough, Spoiler, and CustomEmoji entities are
 --   allowed
@@ -6456,7 +6557,7 @@ TelegramPaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text 
 [winner_count] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active for
---   the users
+--   the user
 [month_count] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | The user buying Telegram Stars
@@ -6474,7 +6575,7 @@ TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramP
 -- | The user buying Telegram Stars for other users
 TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
 
--- | Identifier of the user to which Telegram Stars are gifted
+-- | Identifier of the user which will receive Telegram Premium
 [user_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -6566,12 +6667,31 @@ StorePaymentPurposePremiumSubscription :: Maybe Bool -> Maybe Bool -> StorePayme
 --   subscription; only for App Store
 [is_upgrade] :: StorePaymentPurpose -> Maybe Bool
 
--- | The user creating Telegram Premium gift codes for other users
+-- | The user gifting Telegram Premium to another user
+StorePaymentPurposePremiumGift :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe FormattedText -> StorePaymentPurpose
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: StorePaymentPurpose -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: StorePaymentPurpose -> Maybe Int
+
+-- | Identifiers of the user which will receive Telegram Premium
+[user_id] :: StorePaymentPurpose -> Maybe Int
+
+-- | Text to show along with the gift codes;
+--   0-getOption("gift_text_length_max") characters. Only Bold, Italic,
+--   Underline, Strikethrough, Spoiler, and CustomEmoji entities are
+--   allowed
+[text] :: StorePaymentPurpose -> Maybe FormattedText
+
+-- | The user boosting a chat by creating Telegram Premium gift codes for
+--   other users
 StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe FormattedText -> StorePaymentPurpose
 
 -- | Identifier of the supergroup or channel chat, which will be
 --   automatically boosted by the users for duration of the Premium
---   subscription and which is administered by the user; 0 if none
+--   subscription and which is administered by the user
 [boosted_chat_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -6634,7 +6754,7 @@ StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> StorePayment
 -- | The user buying Telegram Stars for other users
 StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
 
--- | Identifier of the user to which Telegram Stars are gifted
+-- | Identifiers of the user which will receive Telegram Premium
 [user_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -7559,56 +7679,52 @@ instance GHC.Classes.Eq TD.Data.Stickers.Stickers
 instance TD.Lib.Internal.ShortShow TD.Data.Stickers.Stickers
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Stickers.Stickers
 
-module TD.Data.PremiumGiftCodePaymentOption
-data PremiumGiftCodePaymentOption
+module TD.Data.PremiumGiftPaymentOption
+data PremiumGiftPaymentOption
 
--- | Describes an option for creating Telegram Premium gift codes or
---   Telegram Premium giveaway. Use telegramPaymentPurposePremiumGiftCodes
---   or telegramPaymentPurposePremiumGiveaway for out-of-store payments
-PremiumGiftCodePaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Sticker -> PremiumGiftCodePaymentOption
+-- | Describes an option for gifting Telegram Premium to a user. Use
+--   telegramPaymentPurposePremiumGift for out-of-store payments or
+--   payments in Telegram Stars
+PremiumGiftPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> PremiumGiftPaymentOption
 
--- | ISO 4217 currency code for Telegram Premium gift code payment
-[currency] :: PremiumGiftCodePaymentOption -> Maybe Text
+-- | ISO 4217 currency code for the payment
+[currency] :: PremiumGiftPaymentOption -> Maybe Text
 
 -- | The amount to pay, in the smallest units of the currency
-[amount] :: PremiumGiftCodePaymentOption -> Maybe Int
+[amount] :: PremiumGiftPaymentOption -> Maybe Int
+
+-- | The alternative amount of Telegram Stars to pay; 0 if payment in
+--   Telegram Stars is not possible
+[star_count] :: PremiumGiftPaymentOption -> Maybe Int
 
 -- | The discount associated with this option, as a percentage
-[discount_percentage] :: PremiumGiftCodePaymentOption -> Maybe Int
-
--- | Number of users which will be able to activate the gift codes
-[winner_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+[discount_percentage] :: PremiumGiftPaymentOption -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
-[month_count] :: PremiumGiftCodePaymentOption -> Maybe Int
+[month_count] :: PremiumGiftPaymentOption -> Maybe Int
 
--- | Identifier of the store product associated with the option; may be
---   empty if none
-[store_product_id] :: PremiumGiftCodePaymentOption -> Maybe Text
+-- | Identifier of the store product associated with the option
+[store_product_id] :: PremiumGiftPaymentOption -> Maybe Text
 
--- | Number of times the store product must be paid
-[store_product_quantity] :: PremiumGiftCodePaymentOption -> Maybe Int
+-- | A sticker to be shown along with the option; may be null if unknown
+[sticker] :: PremiumGiftPaymentOption -> Maybe Sticker
+instance GHC.Show.Show TD.Data.PremiumGiftPaymentOption.PremiumGiftPaymentOption
+instance GHC.Classes.Eq TD.Data.PremiumGiftPaymentOption.PremiumGiftPaymentOption
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftPaymentOption.PremiumGiftPaymentOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftPaymentOption.PremiumGiftPaymentOption
 
--- | A sticker to be shown along with the gift code; may be null if unknown
-[sticker] :: PremiumGiftCodePaymentOption -> Maybe Sticker
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOption.PremiumGiftCodePaymentOption
+module TD.Data.PremiumGiftPaymentOptions
+data PremiumGiftPaymentOptions
 
-module TD.Data.PremiumGiftCodePaymentOptions
-data PremiumGiftCodePaymentOptions
+-- | Contains a list of options for gifting Telegram Premium to a user
+PremiumGiftPaymentOptions :: Maybe [PremiumGiftPaymentOption] -> PremiumGiftPaymentOptions
 
--- | Contains a list of options for creating Telegram Premium gift codes or
---   Telegram Premium giveaway
-PremiumGiftCodePaymentOptions :: Maybe [PremiumGiftCodePaymentOption] -> PremiumGiftCodePaymentOptions
-
--- | The list of options
-[options] :: PremiumGiftCodePaymentOptions -> Maybe [PremiumGiftCodePaymentOption]
-instance GHC.Show.Show TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance GHC.Classes.Eq TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftCodePaymentOptions.PremiumGiftCodePaymentOptions
+-- | The list of options sorted by Telegram Premium subscription duration
+[options] :: PremiumGiftPaymentOptions -> Maybe [PremiumGiftPaymentOption]
+instance GHC.Show.Show TD.Data.PremiumGiftPaymentOptions.PremiumGiftPaymentOptions
+instance GHC.Classes.Eq TD.Data.PremiumGiftPaymentOptions.PremiumGiftPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Data.PremiumGiftPaymentOptions.PremiumGiftPaymentOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumGiftPaymentOptions.PremiumGiftPaymentOptions
 
 module TD.Data.MessageEffectType
 
@@ -7732,7 +7848,7 @@ module TD.Data.ReceivedGift
 data ReceivedGift
 
 -- | Represents a gift received by a user or a chat
-ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe SentGift -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ReceivedGift
+ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe SentGift -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ReceivedGift
 
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
@@ -7752,6 +7868,9 @@ ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Mayb
 -- | True, if the gift is displayed on the chat's profile page; only for
 --   the receiver of the gift
 [is_saved] :: ReceivedGift -> Maybe Bool
+
+-- | True, if the gift is pinned to the top of the chat's profile page
+[is_pinned] :: ReceivedGift -> Maybe Bool
 
 -- | True, if the gift is a regular gift that can be upgraded to a unique
 --   gift; only for the receiver of the gift
@@ -8556,7 +8675,7 @@ MessageSendingStatePending :: Maybe Int -> MessageSendingState
 [sending_id] :: MessageSendingState -> Maybe Int
 
 -- | The message failed to be sent
-MessageSendingStateFailed :: Maybe Error -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Double -> MessageSendingState
+MessageSendingStateFailed :: Maybe Error -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Double -> MessageSendingState
 
 -- | The cause of the message sending failure
 [_error] :: MessageSendingState -> Maybe Error
@@ -8576,6 +8695,10 @@ MessageSendingStateFailed :: Maybe Error -> Maybe Bool -> Maybe Bool -> Maybe Bo
 -- | True, if the message can be re-sent only if the message to be replied
 --   is removed. This will be done automatically by resendMessages
 [need_drop_reply] :: MessageSendingState -> Maybe Bool
+
+-- | The number of Telegram Stars that must be paid to send the message; 0
+--   if the current amount is correct
+[required_paid_message_star_count] :: MessageSendingState -> Maybe Int
 
 -- | Time left before the message can be re-sent, in seconds. No update is
 --   sent when this field changes
@@ -8690,7 +8813,7 @@ module TD.Data.User
 data User
 
 -- | Represents a user
-User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
+User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
 
 -- | User identifier
 [_id] :: User -> Maybe Int
@@ -8768,6 +8891,11 @@ User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -
 --   canSendMessageToUser to check whether the current user can message the
 --   user or try to create a chat with them
 [restricts_new_chats] :: User -> Maybe Bool
+
+-- | Number of Telegram Stars that must be paid by general user for each
+--   sent message to the user. If positive and userFullInfo is unknown, use
+--   canSendMessageToUser to check whether the current user must pay
+[paid_message_star_count] :: User -> Maybe Int
 
 -- | If false, the user is inaccessible, and the only information known
 --   about the user is inside this class. Identifier of the user can't be
@@ -13356,7 +13484,7 @@ InternalLinkTypePremiumFeatures :: Maybe Text -> InternalLinkType
 
 -- | The link is a link to the screen for gifting Telegram Premium
 --   subscriptions to friends via inputInvoiceTelegram with
---   telegramPaymentPurposePremiumGiftCodes payments or in-store purchases
+--   telegramPaymentPurposePremiumGift payments or in-store purchases
 InternalLinkTypePremiumGift :: Maybe Text -> InternalLinkType
 
 -- | Referrer to be passed to searchChatAffiliateProgram
@@ -13709,7 +13837,7 @@ data Supergroup
 --   all administrators use the name and photo of the channel instead of
 --   individual names and profile photos. Unlike supergroups, channels can
 --   have an unlimited number of subscribers
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Supergroup
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
 
 -- | Supergroup or channel identifier
 [_id] :: Supergroup -> Maybe Int
@@ -13790,6 +13918,10 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 -- | If non-empty, contains a human-readable description of the reason why
 --   access to this supergroup or channel must be restricted
 [restriction_reason] :: Supergroup -> Maybe Text
+
+-- | Number of Telegram Stars that must be paid by non-administrator users
+--   of the supergroup chat for each sent message
+[paid_message_star_count] :: Supergroup -> Maybe Int
 
 -- | True, if the supergroup or channel has non-expired stories available
 --   to the current user
@@ -13907,68 +14039,6 @@ instance GHC.Show.Show TD.Data.ChatActiveStories.ChatActiveStories
 instance GHC.Classes.Eq TD.Data.ChatActiveStories.ChatActiveStories
 instance TD.Lib.Internal.ShortShow TD.Data.ChatActiveStories.ChatActiveStories
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatActiveStories.ChatActiveStories
-
-module TD.Data.ChatActionBar
-
--- | Describes actions which must be possible to do through a chat action
---   bar
-data ChatActionBar
-
--- | The chat can be reported as spam using the method reportChat with an
---   empty option_id and message_ids. If the chat is a private chat with a
---   user with an emoji status, then a notice about emoji status usage must
---   be shown
-ChatActionBarReportSpam :: Maybe Bool -> ChatActionBar
-
--- | If true, the chat was automatically archived and can be moved back to
---   the main chat list using addChatToList simultaneously with setting
---   chat notification settings to default using
---   setChatNotificationSettings
-[can_unarchive] :: ChatActionBar -> Maybe Bool
-
--- | The chat is a recently created group chat to which new members can be
---   invited
-ChatActionBarInviteMembers :: ChatActionBar
-
--- | The chat is a private or secret chat, which can be reported using the
---   method reportChat, or the other user can be blocked using the method
---   setMessageSenderBlockList, or the other user can be added to the
---   contact list using the method addContact. If the chat is a private
---   chat with a user with an emoji status, then a notice about emoji
---   status usage must be shown
-ChatActionBarReportAddBlock :: Maybe Bool -> ChatActionBar
-
--- | If true, the chat was automatically archived and can be moved back to
---   the main chat list using addChatToList simultaneously with setting
---   chat notification settings to default using
---   setChatNotificationSettings
-[can_unarchive] :: ChatActionBar -> Maybe Bool
-
--- | The chat is a private or secret chat and the other user can be added
---   to the contact list using the method addContact
-ChatActionBarAddContact :: ChatActionBar
-
--- | The chat is a private or secret chat with a mutual contact and the
---   user's phone number can be shared with the other user using the method
---   sharePhoneNumber
-ChatActionBarSharePhoneNumber :: ChatActionBar
-
--- | The chat is a private chat with an administrator of a chat to which
---   the user sent join request
-ChatActionBarJoinRequest :: Maybe Text -> Maybe Bool -> Maybe Int -> ChatActionBar
-
--- | Title of the chat to which the join request was sent
-[title] :: ChatActionBar -> Maybe Text
-
--- | True, if the join request was sent to a channel chat
-[is_channel] :: ChatActionBar -> Maybe Bool
-
--- | Point in time (Unix timestamp) when the join request was sent
-[request_date] :: ChatActionBar -> Maybe Int
-instance GHC.Show.Show TD.Data.ChatActionBar.ChatActionBar
-instance GHC.Classes.Eq TD.Data.ChatActionBar.ChatActionBar
-instance TD.Lib.Internal.ShortShow TD.Data.ChatActionBar.ChatActionBar
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatActionBar.ChatActionBar
 
 module TD.Data.ChatAction
 
@@ -14121,6 +14191,13 @@ data CanSendMessageToUserResult
 
 -- | The user can be messaged
 CanSendMessageToUserResultOk :: CanSendMessageToUserResult
+
+-- | The user can be messaged, but the messages are paid
+CanSendMessageToUserResultUserHasPaidMessages :: Maybe Int -> CanSendMessageToUserResult
+
+-- | Number of Telegram Stars that must be paid by the current user for
+--   each sent message to the user
+[outgoing_paid_message_star_count] :: CanSendMessageToUserResult -> Maybe Int
 
 -- | The user can't be messaged, because they are deleted or unknown
 CanSendMessageToUserResultUserIsDeleted :: CanSendMessageToUserResult
@@ -16360,7 +16437,10 @@ PushMessageContentSticker :: Maybe Sticker -> Maybe Text -> Maybe Bool -> PushMe
 [is_pinned] :: PushMessageContent -> Maybe Bool
 
 -- | A message with a story
-PushMessageContentStory :: Maybe Bool -> PushMessageContent
+PushMessageContentStory :: Maybe Bool -> Maybe Bool -> PushMessageContent
+
+-- | True, if the user was mentioned in the story
+[is_mention] :: PushMessageContent -> Maybe Bool
 
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
@@ -16410,13 +16490,27 @@ PushMessageContentVoiceNote :: Maybe VoiceNote -> Maybe Bool -> PushMessageConte
 -- | A newly created basic group
 PushMessageContentBasicGroupChatCreate :: PushMessageContent
 
+-- | A video chat or live stream was started
+PushMessageContentVideoChatStarted :: PushMessageContent
+
+-- | A video chat or live stream has ended
+PushMessageContentVideoChatEnded :: PushMessageContent
+
+-- | An invitation of participants to a video chat or live stream
+PushMessageContentInviteVideoChatParticipants :: Maybe Bool -> PushMessageContent
+
+-- | True, if the current user was invited to the video chat or the live
+--   stream
+[is_current_user] :: PushMessageContent -> Maybe Bool
+
 -- | New chat members were invited to a group
 PushMessageContentChatAddMembers :: Maybe Text -> Maybe Bool -> Maybe Bool -> PushMessageContent
 
 -- | Name of the added member
 [member_name] :: PushMessageContent -> Maybe Text
 
--- | True, if the current user was added to the group
+-- | True, if the current user was invited to the video chat or the live
+--   stream
 [is_current_user] :: PushMessageContent -> Maybe Bool
 
 -- | True, if the user has returned to the group themselves
@@ -16451,7 +16545,8 @@ PushMessageContentChatDeleteMember :: Maybe Text -> Maybe Bool -> Maybe Bool -> 
 -- | Name of the added member
 [member_name] :: PushMessageContent -> Maybe Text
 
--- | True, if the current user was added to the group
+-- | True, if the current user was invited to the video chat or the live
+--   stream
 [is_current_user] :: PushMessageContent -> Maybe Bool
 
 -- | True, if the user has left the group themselves
@@ -16471,6 +16566,13 @@ PushMessageContentRecurringPayment :: Maybe Text -> PushMessageContent
 
 -- | A profile photo was suggested to the user
 PushMessageContentSuggestProfilePhoto :: PushMessageContent
+
+-- | A user in the chat came within proximity alert range from the current
+--   user
+PushMessageContentProximityAlertTriggered :: Maybe Int -> PushMessageContent
+
+-- | The distance to the user
+[distance] :: PushMessageContent -> Maybe Int
 
 -- | A forwarded messages
 PushMessageContentMessageForwards :: Maybe Int -> PushMessageContent
@@ -17227,7 +17329,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -17261,6 +17363,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   seconds. An updateSupergroupFullInfo update is not triggered when
 --   value of this field changes, but both new and old values are non-zero
 [slow_mode_delay_expires_in] :: SupergroupFullInfo -> Maybe Double
+
+-- | True, if paid messages can be enabled in the supergroup chat; for
+--   supergroup only
+[can_enable_paid_messages] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if paid reaction can be enabled in the channel chat; for
 --   channels only
@@ -17759,7 +17865,11 @@ module TD.Data.AlternativeVideo
 data AlternativeVideo
 
 -- | Describes an alternative re-encoded quality of a video file
-AlternativeVideo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe File -> Maybe File -> AlternativeVideo
+AlternativeVideo :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe File -> Maybe File -> AlternativeVideo
+
+-- | Unique identifier of the alternative video, which is used in the HLS
+--   file
+[_id] :: AlternativeVideo -> Maybe Int
 
 -- | Video width
 [width] :: AlternativeVideo -> Maybe Int
@@ -18056,7 +18166,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BotVerification -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BotVerification -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -18129,6 +18239,14 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 -- | Number of group chats where both the other user and the current user
 --   are a member; 0 for the current user
 [group_in_common_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of Telegram Stars that must be paid by the user for each sent
+--   message to the current user
+[incoming_paid_message_star_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of Telegram Stars that must be paid by the current user for
+--   each sent message to the user
+[outgoing_paid_message_star_count] :: UserFullInfo -> Maybe Int
 
 -- | Information about verification status of the user provided by a bot;
 --   may be null if none or unknown
@@ -18213,7 +18331,7 @@ StarTransactionTypeGiveawayDeposit :: Maybe Int -> Maybe Int -> StarTransactionT
 [giveaway_message_id] :: StarTransactionType -> Maybe Int
 
 -- | The transaction is a withdrawal of earned Telegram Stars to Fragment;
---   for bots and channel chats only
+--   for regular users, bots, supergroup and channel chats only
 StarTransactionTypeFragmentWithdrawal :: Maybe RevenueWithdrawalState -> StarTransactionType
 
 -- | State of the withdrawal; may be null for refunds from Fragment
@@ -18402,7 +18520,11 @@ StarTransactionTypeGiftSale :: Maybe Int -> Maybe Gift -> StarTransactionType
 [gift] :: StarTransactionType -> Maybe Gift
 
 -- | The transaction is an upgrade of a gift; for regular users only
-StarTransactionTypeGiftUpgrade :: Maybe UpgradedGift -> StarTransactionType
+StarTransactionTypeGiftUpgrade :: Maybe Int -> Maybe UpgradedGift -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
 
 -- | The gift
 [_gift] :: StarTransactionType -> Maybe UpgradedGift
@@ -18440,6 +18562,48 @@ StarTransactionTypeAffiliateProgramCommission :: Maybe Int -> Maybe Int -> StarT
 -- | The number of Telegram Stars received by the affiliate for each 1000
 --   Telegram Stars received by the program owner
 [commission_per_mille] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a sending of a paid message; for regular users only
+StarTransactionTypePaidMessageSend :: Maybe Int -> Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | Number of sent paid messages
+[message_count] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a paid message; for regular users
+--   and supergroup chats only
+StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe StarAmount -> StarTransactionType
+
+-- | Identifier of the sender of the message
+[sender_id] :: StarTransactionType -> Maybe MessageSender
+
+-- | Number of sent paid messages
+[message_count] :: StarTransactionType -> Maybe Int
+
+-- | The number of Telegram Stars received by the affiliate for each 1000
+--   Telegram Stars received by the program owner
+[commission_per_mille] :: StarTransactionType -> Maybe Int
+
+-- | The amount of Telegram Stars that were received by Telegram; can be
+--   negative for refunds
+[commission_star_amount] :: StarTransactionType -> Maybe StarAmount
+
+-- | The transaction is a purchase of Telegram Premium subscription; for
+--   regular users only
+StarTransactionTypePremiumPurchase :: Maybe Int -> Maybe Int -> Maybe Sticker -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active
+[month_count] :: StarTransactionType -> Maybe Int
+
+-- | The sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: StarTransactionType -> Maybe Sticker
 
 -- | The transaction is a transaction of an unsupported type
 StarTransactionTypeUnsupported :: StarTransactionType
@@ -19991,7 +20155,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -20099,6 +20263,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   by the current user, supergroupFullInfo.my_boost_count must be used
 --   instead
 [sender_boost_count] :: Message -> Maybe Int
+
+-- | The number of Telegram Stars the sender paid to send the message
+[paid_message_star_count] :: Message -> Maybe Int
 
 -- | For channel posts and anonymous group messages, optional author
 --   signature
@@ -21101,162 +21268,6 @@ instance GHC.Classes.Eq TD.Data.ChatEvents.ChatEvents
 instance TD.Lib.Internal.ShortShow TD.Data.ChatEvents.ChatEvents
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatEvents.ChatEvents
 
-module TD.Data.Chat
-data Chat
-
--- | A chat. (Can be a private chat, basic group, supergroup, or secret
---   chat)
-Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe BusinessBotManageBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
-
--- | Chat unique identifier
-[_id] :: Chat -> Maybe Int
-
--- | Type of the chat
-[_type] :: Chat -> Maybe ChatType
-
--- | Chat title
-[title] :: Chat -> Maybe Text
-
--- | Chat photo; may be null
-[photo] :: Chat -> Maybe ChatPhotoInfo
-
--- | Identifier of the accent color for message sender name, and
---   backgrounds of chat photo, reply header, and link preview
-[accent_color_id] :: Chat -> Maybe Int
-
--- | Identifier of a custom emoji to be shown on the reply header and link
---   preview background for messages sent by the chat; 0 if none
-[background_custom_emoji_id] :: Chat -> Maybe Int
-
--- | Identifier of the profile accent color for the chat's profile; -1 if
---   none
-[profile_accent_color_id] :: Chat -> Maybe Int
-
--- | Identifier of a custom emoji to be shown on the background of the
---   chat's profile; 0 if none
-[profile_background_custom_emoji_id] :: Chat -> Maybe Int
-
--- | Actions that non-administrator chat members are allowed to take in the
---   chat
-[permissions] :: Chat -> Maybe ChatPermissions
-
--- | Last message in the chat; may be null if none or unknown
-[last_message] :: Chat -> Maybe Message
-
--- | Positions of the chat in chat lists
-[positions] :: Chat -> Maybe [ChatPosition]
-
--- | Chat lists to which the chat belongs. A chat can have a non-zero
---   position in a chat list even it doesn't belong to the chat list and
---   have no position in a chat list even it belongs to the chat list
-[chat_lists] :: Chat -> Maybe [ChatList]
-
--- | Identifier of a user or chat that is selected to send messages in the
---   chat; may be null if the user can't change message sender
-[message_sender_id] :: Chat -> Maybe MessageSender
-
--- | Block list to which the chat is added; may be null if none
-[block_list] :: Chat -> Maybe BlockList
-
--- | True, if chat content can't be saved locally, forwarded, or copied
-[has_protected_content] :: Chat -> Maybe Bool
-
--- | True, if translation of all messages in the chat must be suggested to
---   the user
-[is_translatable] :: Chat -> Maybe Bool
-
--- | True, if the chat is marked as unread
-[is_marked_as_unread] :: Chat -> Maybe Bool
-
--- | True, if the chat is a forum supergroup that must be shown in the
---   "View as topics" mode, or Saved Messages chat that must be shown in
---   the "View as chats"
-[view_as_topics] :: Chat -> Maybe Bool
-
--- | True, if the chat has scheduled messages
-[has_scheduled_messages] :: Chat -> Maybe Bool
-
--- | True, if the chat messages can be deleted only for the current user
---   while other users will continue to see the messages
-[can_be_deleted_only_for_self] :: Chat -> Maybe Bool
-
--- | True, if the chat messages can be deleted for all users
-[can_be_deleted_for_all_users] :: Chat -> Maybe Bool
-
--- | True, if the chat can be reported to Telegram moderators through
---   reportChat or reportChatPhoto
-[can_be_reported] :: Chat -> Maybe Bool
-
--- | Default value of the disable_notification parameter, used when a
---   message is sent to the chat
-[default_disable_notification] :: Chat -> Maybe Bool
-
--- | Number of unread messages in the chat
-[unread_count] :: Chat -> Maybe Int
-
--- | Identifier of the last read incoming message
-[last_read_inbox_message_id] :: Chat -> Maybe Int
-
--- | Identifier of the last read outgoing message
-[last_read_outbox_message_id] :: Chat -> Maybe Int
-
--- | Number of unread messages with a mention/reply in the chat
-[unread_mention_count] :: Chat -> Maybe Int
-
--- | Number of messages with unread reactions in the chat
-[unread_reaction_count] :: Chat -> Maybe Int
-
--- | Notification settings for the chat
-[notification_settings] :: Chat -> Maybe ChatNotificationSettings
-
--- | Types of reaction, available in the chat
-[available_reactions] :: Chat -> Maybe ChatAvailableReactions
-
--- | Current message auto-delete or self-destruct timer setting for the
---   chat, in seconds; 0 if disabled. Self-destruct timer in secret chats
---   starts after the message or its content is viewed. Auto-delete timer
---   in other chats starts from the send date
-[message_auto_delete_time] :: Chat -> Maybe Int
-
--- | Emoji status to be shown along with chat title; may be null
-[emoji_status] :: Chat -> Maybe EmojiStatus
-
--- | Background set for the chat; may be null if none
-[background] :: Chat -> Maybe ChatBackground
-
--- | If non-empty, name of a theme, set for the chat
-[theme_name] :: Chat -> Maybe Text
-
--- | Information about actions which must be possible to do through the
---   chat action bar; may be null if none
-[action_bar] :: Chat -> Maybe ChatActionBar
-
--- | Information about bar for managing a business bot in the chat; may be
---   null if none
-[business_bot_manage_bar] :: Chat -> Maybe BusinessBotManageBar
-
--- | Information about video chat of the chat
-[video_chat] :: Chat -> Maybe VideoChat
-
--- | Information about pending join requests; may be null if none
-[pending_join_requests] :: Chat -> Maybe ChatJoinRequestsInfo
-
--- | Identifier of the message from which reply markup needs to be used; 0
---   if there is no default custom reply markup in the chat
-[reply_markup_message_id] :: Chat -> Maybe Int
-
--- | A draft of a message in the chat; may be null if none
-[draft_message] :: Chat -> Maybe DraftMessage
-
--- | Application-specific data associated with the chat. (For example, the
---   chat scroll position or local chat notification settings can be stored
---   here.) Persistent if the message database is used
-[client_data] :: Chat -> Maybe Text
-instance GHC.Show.Show TD.Data.Chat.Chat
-instance GHC.Classes.Eq TD.Data.Chat.Chat
-instance TD.Lib.Internal.ShortShow TD.Data.Chat.Chat
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Chat.Chat
-
 module TD.Data.BusinessMessage
 data BusinessMessage
 
@@ -21445,6 +21456,259 @@ instance GHC.Classes.Eq TD.Data.AccountTtl.AccountTtl
 instance TD.Lib.Internal.ShortShow TD.Data.AccountTtl.AccountTtl
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AccountTtl.AccountTtl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.AccountTtl.AccountTtl
+
+module TD.Data.AccountInfo
+data AccountInfo
+
+-- | Contains basic information about another user that started a chat with
+--   the current user
+AccountInfo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> AccountInfo
+
+-- | Month when the user was registered in Telegram; 0-12; may be 0 if
+--   unknown
+[registration_month] :: AccountInfo -> Maybe Int
+
+-- | Year when the user was registered in Telegram; 0-9999; may be 0 if
+--   unknown
+[registration_year] :: AccountInfo -> Maybe Int
+
+-- | A two-letter ISO 3166-1 alpha-2 country code based on the phone number
+--   of the user; may be empty if unknown
+[phone_number_country_code] :: AccountInfo -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the user changed name last time; 0
+--   if unknown
+[last_name_change_date] :: AccountInfo -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the user changed photo last time;
+--   0 if unknown
+[last_photo_change_date] :: AccountInfo -> Maybe Int
+instance GHC.Show.Show TD.Data.AccountInfo.AccountInfo
+instance GHC.Classes.Eq TD.Data.AccountInfo.AccountInfo
+instance TD.Lib.Internal.ShortShow TD.Data.AccountInfo.AccountInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AccountInfo.AccountInfo
+
+module TD.Data.ChatActionBar
+
+-- | Describes actions which must be possible to do through a chat action
+--   bar
+data ChatActionBar
+
+-- | The chat can be reported as spam using the method reportChat with an
+--   empty option_id and message_ids. If the chat is a private chat with a
+--   user with an emoji status, then a notice about emoji status usage must
+--   be shown
+ChatActionBarReportSpam :: Maybe Bool -> ChatActionBar
+
+-- | If true, the chat was automatically archived and can be moved back to
+--   the main chat list using addChatToList simultaneously with setting
+--   chat notification settings to default using
+--   setChatNotificationSettings
+[can_unarchive] :: ChatActionBar -> Maybe Bool
+
+-- | The chat is a recently created group chat to which new members can be
+--   invited
+ChatActionBarInviteMembers :: ChatActionBar
+
+-- | The chat is a private or secret chat, which can be reported using the
+--   method reportChat, or the other user can be blocked using the method
+--   setMessageSenderBlockList, or the other user can be added to the
+--   contact list using the method addContact. If the chat is a private
+--   chat with a user with an emoji status, then a notice about emoji
+--   status usage must be shown
+ChatActionBarReportAddBlock :: Maybe Bool -> Maybe AccountInfo -> ChatActionBar
+
+-- | If true, the chat was automatically archived and can be moved back to
+--   the main chat list using addChatToList simultaneously with setting
+--   chat notification settings to default using
+--   setChatNotificationSettings
+[can_unarchive] :: ChatActionBar -> Maybe Bool
+
+-- | Basic information about the other user in the chat; may be null if
+--   unknown
+[account_info] :: ChatActionBar -> Maybe AccountInfo
+
+-- | The chat is a private or secret chat and the other user can be added
+--   to the contact list using the method addContact
+ChatActionBarAddContact :: ChatActionBar
+
+-- | The chat is a private or secret chat with a mutual contact and the
+--   user's phone number can be shared with the other user using the method
+--   sharePhoneNumber
+ChatActionBarSharePhoneNumber :: ChatActionBar
+
+-- | The chat is a private chat with an administrator of a chat to which
+--   the user sent join request
+ChatActionBarJoinRequest :: Maybe Text -> Maybe Bool -> Maybe Int -> ChatActionBar
+
+-- | Title of the chat to which the join request was sent
+[title] :: ChatActionBar -> Maybe Text
+
+-- | True, if the join request was sent to a channel chat
+[is_channel] :: ChatActionBar -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the join request was sent
+[request_date] :: ChatActionBar -> Maybe Int
+instance GHC.Show.Show TD.Data.ChatActionBar.ChatActionBar
+instance GHC.Classes.Eq TD.Data.ChatActionBar.ChatActionBar
+instance TD.Lib.Internal.ShortShow TD.Data.ChatActionBar.ChatActionBar
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatActionBar.ChatActionBar
+
+module TD.Data.Chat
+data Chat
+
+-- | A chat. (Can be a private chat, basic group, supergroup, or secret
+--   chat)
+Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe Text -> Maybe ChatActionBar -> Maybe BusinessBotManageBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
+
+-- | Chat unique identifier
+[_id] :: Chat -> Maybe Int
+
+-- | Type of the chat
+[_type] :: Chat -> Maybe ChatType
+
+-- | Chat title
+[title] :: Chat -> Maybe Text
+
+-- | Chat photo; may be null
+[photo] :: Chat -> Maybe ChatPhotoInfo
+
+-- | Identifier of the accent color for message sender name, and
+--   backgrounds of chat photo, reply header, and link preview
+[accent_color_id] :: Chat -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the reply header and link
+--   preview background for messages sent by the chat; 0 if none
+[background_custom_emoji_id] :: Chat -> Maybe Int
+
+-- | Identifier of the profile accent color for the chat's profile; -1 if
+--   none
+[profile_accent_color_id] :: Chat -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the background of the
+--   chat's profile; 0 if none
+[profile_background_custom_emoji_id] :: Chat -> Maybe Int
+
+-- | Actions that non-administrator chat members are allowed to take in the
+--   chat
+[permissions] :: Chat -> Maybe ChatPermissions
+
+-- | Last message in the chat; may be null if none or unknown
+[last_message] :: Chat -> Maybe Message
+
+-- | Positions of the chat in chat lists
+[positions] :: Chat -> Maybe [ChatPosition]
+
+-- | Chat lists to which the chat belongs. A chat can have a non-zero
+--   position in a chat list even it doesn't belong to the chat list and
+--   have no position in a chat list even it belongs to the chat list
+[chat_lists] :: Chat -> Maybe [ChatList]
+
+-- | Identifier of a user or chat that is selected to send messages in the
+--   chat; may be null if the user can't change message sender
+[message_sender_id] :: Chat -> Maybe MessageSender
+
+-- | Block list to which the chat is added; may be null if none
+[block_list] :: Chat -> Maybe BlockList
+
+-- | True, if chat content can't be saved locally, forwarded, or copied
+[has_protected_content] :: Chat -> Maybe Bool
+
+-- | True, if translation of all messages in the chat must be suggested to
+--   the user
+[is_translatable] :: Chat -> Maybe Bool
+
+-- | True, if the chat is marked as unread
+[is_marked_as_unread] :: Chat -> Maybe Bool
+
+-- | True, if the chat is a forum supergroup that must be shown in the
+--   "View as topics" mode, or Saved Messages chat that must be shown in
+--   the "View as chats"
+[view_as_topics] :: Chat -> Maybe Bool
+
+-- | True, if the chat has scheduled messages
+[has_scheduled_messages] :: Chat -> Maybe Bool
+
+-- | True, if the chat messages can be deleted only for the current user
+--   while other users will continue to see the messages
+[can_be_deleted_only_for_self] :: Chat -> Maybe Bool
+
+-- | True, if the chat messages can be deleted for all users
+[can_be_deleted_for_all_users] :: Chat -> Maybe Bool
+
+-- | True, if the chat can be reported to Telegram moderators through
+--   reportChat or reportChatPhoto
+[can_be_reported] :: Chat -> Maybe Bool
+
+-- | Default value of the disable_notification parameter, used when a
+--   message is sent to the chat
+[default_disable_notification] :: Chat -> Maybe Bool
+
+-- | Number of unread messages in the chat
+[unread_count] :: Chat -> Maybe Int
+
+-- | Identifier of the last read incoming message
+[last_read_inbox_message_id] :: Chat -> Maybe Int
+
+-- | Identifier of the last read outgoing message
+[last_read_outbox_message_id] :: Chat -> Maybe Int
+
+-- | Number of unread messages with a mention/reply in the chat
+[unread_mention_count] :: Chat -> Maybe Int
+
+-- | Number of messages with unread reactions in the chat
+[unread_reaction_count] :: Chat -> Maybe Int
+
+-- | Notification settings for the chat
+[notification_settings] :: Chat -> Maybe ChatNotificationSettings
+
+-- | Types of reaction, available in the chat
+[available_reactions] :: Chat -> Maybe ChatAvailableReactions
+
+-- | Current message auto-delete or self-destruct timer setting for the
+--   chat, in seconds; 0 if disabled. Self-destruct timer in secret chats
+--   starts after the message or its content is viewed. Auto-delete timer
+--   in other chats starts from the send date
+[message_auto_delete_time] :: Chat -> Maybe Int
+
+-- | Emoji status to be shown along with chat title; may be null
+[emoji_status] :: Chat -> Maybe EmojiStatus
+
+-- | Background set for the chat; may be null if none
+[background] :: Chat -> Maybe ChatBackground
+
+-- | If non-empty, name of a theme, set for the chat
+[theme_name] :: Chat -> Maybe Text
+
+-- | Information about actions which must be possible to do through the
+--   chat action bar; may be null if none
+[action_bar] :: Chat -> Maybe ChatActionBar
+
+-- | Information about bar for managing a business bot in the chat; may be
+--   null if none
+[business_bot_manage_bar] :: Chat -> Maybe BusinessBotManageBar
+
+-- | Information about video chat of the chat
+[video_chat] :: Chat -> Maybe VideoChat
+
+-- | Information about pending join requests; may be null if none
+[pending_join_requests] :: Chat -> Maybe ChatJoinRequestsInfo
+
+-- | Identifier of the message from which reply markup needs to be used; 0
+--   if there is no default custom reply markup in the chat
+[reply_markup_message_id] :: Chat -> Maybe Int
+
+-- | A draft of a message in the chat; may be null if none
+[draft_message] :: Chat -> Maybe DraftMessage
+
+-- | Application-specific data associated with the chat. (For example, the
+--   chat scroll position or local chat notification settings can be stored
+--   here.) Persistent if the message database is used
+[client_data] :: Chat -> Maybe Text
+instance GHC.Show.Show TD.Data.Chat.Chat
+instance GHC.Classes.Eq TD.Data.Chat.Chat
+instance TD.Lib.Internal.ShortShow TD.Data.Chat.Chat
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Chat.Chat
 
 module TD.Data.AccentColor
 data AccentColor
@@ -23323,7 +23587,8 @@ PaymentResult :: PaymentResult -> GeneralResult
 PhoneNumberInfo :: PhoneNumberInfo -> GeneralResult
 PremiumFeatures :: PremiumFeatures -> GeneralResult
 PremiumGiftCodeInfo :: PremiumGiftCodeInfo -> GeneralResult
-PremiumGiftCodePaymentOptions :: PremiumGiftCodePaymentOptions -> GeneralResult
+PremiumGiftPaymentOptions :: PremiumGiftPaymentOptions -> GeneralResult
+PremiumGiveawayPaymentOptions :: PremiumGiveawayPaymentOptions -> GeneralResult
 PremiumLimit :: PremiumLimit -> GeneralResult
 PremiumState :: PremiumState -> GeneralResult
 PreparedInlineMessage :: PreparedInlineMessage -> GeneralResult
@@ -23352,6 +23617,7 @@ SentWebAppMessage :: SentWebAppMessage -> GeneralResult
 Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
+StarCount :: StarCount -> GeneralResult
 StarGiveawayPaymentOptions :: StarGiveawayPaymentOptions -> GeneralResult
 StarPaymentOptions :: StarPaymentOptions -> GeneralResult
 StarRevenueStatistics :: StarRevenueStatistics -> GeneralResult
@@ -24002,6 +24268,25 @@ instance GHC.Show.Show TD.Query.AllowBotToSendMessages.AllowBotToSendMessages
 instance GHC.Classes.Eq TD.Query.AllowBotToSendMessages.AllowBotToSendMessages
 instance TD.Lib.Internal.ShortShow TD.Query.AllowBotToSendMessages.AllowBotToSendMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AllowBotToSendMessages.AllowBotToSendMessages
+
+module TD.Query.AllowUnpaidMessagesFromUser
+
+-- | Allows the specified user to send unpaid private messages to the
+--   current user by adding a rule to
+--   userPrivacySettingAllowUnpaidMessages. Returns <a>Ok</a>
+data AllowUnpaidMessagesFromUser
+AllowUnpaidMessagesFromUser :: Maybe Int -> Maybe Bool -> AllowUnpaidMessagesFromUser
+
+-- | Identifier of the user
+[user_id] :: AllowUnpaidMessagesFromUser -> Maybe Int
+
+-- | Pass true to refund the user previously paid messages
+[refund_payments] :: AllowUnpaidMessagesFromUser -> Maybe Bool
+defaultAllowUnpaidMessagesFromUser :: AllowUnpaidMessagesFromUser
+instance GHC.Show.Show TD.Query.AllowUnpaidMessagesFromUser.AllowUnpaidMessagesFromUser
+instance GHC.Classes.Eq TD.Query.AllowUnpaidMessagesFromUser.AllowUnpaidMessagesFromUser
+instance TD.Lib.Internal.ShortShow TD.Query.AllowUnpaidMessagesFromUser.AllowUnpaidMessagesFromUser
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AllowUnpaidMessagesFromUser.AllowUnpaidMessagesFromUser
 
 module TD.Query.AnswerCallbackQuery
 
@@ -25062,8 +25347,7 @@ CreateCall :: Maybe Int -> Maybe CallProtocol -> Maybe Bool -> Maybe Int -> Crea
 [is_video] :: CreateCall -> Maybe Bool
 
 -- | Identifier of the group call to which the user will be added after
---   exchanging private key via the call; pass 0 if none; currently,
---   ignored
+--   exchanging private key via the call; pass 0 if none
 [group_call_id] :: CreateCall -> Maybe Int
 defaultCreateCall :: CreateCall
 instance GHC.Show.Show TD.Query.CreateCall.CreateCall
@@ -30226,6 +30510,20 @@ instance GHC.Classes.Eq TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
 instance TD.Lib.Internal.ShortShow TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOwnedStickerSets.GetOwnedStickerSets
 
+module TD.Query.GetPaidMessageRevenue
+
+-- | Returns the total number of Telegram Stars received by the current
+--   user for paid messages from the given user. Returns <a>StarCount</a>
+data GetPaidMessageRevenue
+GetPaidMessageRevenue :: Maybe Int -> GetPaidMessageRevenue
+
+-- | Identifier of the user
+[user_id] :: GetPaidMessageRevenue -> Maybe Int
+instance GHC.Show.Show TD.Query.GetPaidMessageRevenue.GetPaidMessageRevenue
+instance GHC.Classes.Eq TD.Query.GetPaidMessageRevenue.GetPaidMessageRevenue
+instance TD.Lib.Internal.ShortShow TD.Query.GetPaidMessageRevenue.GetPaidMessageRevenue
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPaidMessageRevenue.GetPaidMessageRevenue
+
 module TD.Query.GetPassportAuthorizationForm
 
 -- | Returns a Telegram Passport authorization form for sharing data with a
@@ -30434,22 +30732,33 @@ instance GHC.Classes.Eq TD.Query.GetPremiumFeatures.GetPremiumFeatures
 instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumFeatures.GetPremiumFeatures
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumFeatures.GetPremiumFeatures
 
-module TD.Query.GetPremiumGiftCodePaymentOptions
+module TD.Query.GetPremiumGiftPaymentOptions
 
--- | Returns available options for Telegram Premium gift code or Telegram
---   Premium giveaway creation. Returns
---   <a>PremiumGiftCodePaymentOptions</a>
-data GetPremiumGiftCodePaymentOptions
-GetPremiumGiftCodePaymentOptions :: Maybe Int -> GetPremiumGiftCodePaymentOptions
+-- | Returns available options for gifting Telegram Premium to a user.
+--   Returns <a>PremiumGiftPaymentOptions</a>
+data GetPremiumGiftPaymentOptions
+GetPremiumGiftPaymentOptions :: GetPremiumGiftPaymentOptions
+instance GHC.Show.Show TD.Query.GetPremiumGiftPaymentOptions.GetPremiumGiftPaymentOptions
+instance GHC.Classes.Eq TD.Query.GetPremiumGiftPaymentOptions.GetPremiumGiftPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiftPaymentOptions.GetPremiumGiftPaymentOptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiftPaymentOptions.GetPremiumGiftPaymentOptions
+
+module TD.Query.GetPremiumGiveawayPaymentOptions
+
+-- | Returns available options for creating of Telegram Premium giveaway or
+--   manual distribution of Telegram Premium among chat members. Returns
+--   <a>PremiumGiveawayPaymentOptions</a>
+data GetPremiumGiveawayPaymentOptions
+GetPremiumGiveawayPaymentOptions :: Maybe Int -> GetPremiumGiveawayPaymentOptions
 
 -- | Identifier of the supergroup or channel chat, which will be
 --   automatically boosted by receivers of the gift codes and which is
---   administered by the user; 0 if none
-[boosted_chat_id] :: GetPremiumGiftCodePaymentOptions -> Maybe Int
-instance GHC.Show.Show TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
-instance GHC.Classes.Eq TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
-instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiftCodePaymentOptions.GetPremiumGiftCodePaymentOptions
+--   administered by the user
+[boosted_chat_id] :: GetPremiumGiveawayPaymentOptions -> Maybe Int
+instance GHC.Show.Show TD.Query.GetPremiumGiveawayPaymentOptions.GetPremiumGiveawayPaymentOptions
+instance GHC.Classes.Eq TD.Query.GetPremiumGiveawayPaymentOptions.GetPremiumGiveawayPaymentOptions
+instance TD.Lib.Internal.ShortShow TD.Query.GetPremiumGiveawayPaymentOptions.GetPremiumGiveawayPaymentOptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumGiveawayPaymentOptions.GetPremiumGiveawayPaymentOptions
 
 module TD.Query.GetPremiumInfoSticker
 
@@ -31018,8 +31327,8 @@ module TD.Query.GetStarRevenueStatistics
 data GetStarRevenueStatistics
 GetStarRevenueStatistics :: Maybe MessageSender -> Maybe Bool -> GetStarRevenueStatistics
 
--- | Identifier of the owner of the Telegram Stars; can be identifier of an
---   owned bot, or identifier of a channel chat with
+-- | Identifier of the owner of the Telegram Stars; can be identifier of
+--   the current user, an owned bot, or a supergroup or a channel chat with
 --   supergroupFullInfo.can_get_star_revenue_statistics == true
 [owner_id] :: GetStarRevenueStatistics -> Maybe MessageSender
 
@@ -31060,8 +31369,8 @@ GetStarTransactions :: Maybe MessageSender -> Maybe Text -> Maybe StarTransactio
 
 -- | Identifier of the owner of the Telegram Stars; can be the identifier
 --   of the current user, identifier of an owned bot, or identifier of a
---   channel chat with supergroupFullInfo.can_get_star_revenue_statistics
---   == true
+--   supergroup or a channel chat with
+--   supergroupFullInfo.can_get_star_revenue_statistics == true
 [owner_id] :: GetStarTransactions -> Maybe MessageSender
 
 -- | If non-empty, only transactions related to the Star Subscription will
@@ -31090,8 +31399,8 @@ module TD.Query.GetStarWithdrawalUrl
 data GetStarWithdrawalUrl
 GetStarWithdrawalUrl :: Maybe MessageSender -> Maybe Int -> Maybe Text -> GetStarWithdrawalUrl
 
--- | Identifier of the owner of the Telegram Stars; can be identifier of an
---   owned bot, or identifier of an owned channel chat
+-- | Identifier of the owner of the Telegram Stars; can be identifier of
+--   the current user, an owned bot, or an owned supergroup or channel chat
 [owner_id] :: GetStarWithdrawalUrl -> Maybe MessageSender
 
 -- | The number of Telegram Stars to withdraw. Must be at least
@@ -31888,17 +32197,18 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebAppUrl.GetWebAppUrl
 
 module TD.Query.GetWebPageInstantView
 
--- | Returns an instant view version of a web page if available. Returns a
---   404 error if the web page has no instant view page. Returns
---   <a>WebPageInstantView</a>
+-- | Returns an instant view version of a web page if available. This is an
+--   offline request if only_local is true. Returns a 404 error if the web
+--   page has no instant view page. Returns <a>WebPageInstantView</a>
 data GetWebPageInstantView
 GetWebPageInstantView :: Maybe Text -> Maybe Bool -> GetWebPageInstantView
 
 -- | The web page URL
 [url] :: GetWebPageInstantView -> Maybe Text
 
--- | Pass true to get full instant view for the web page
-[force_full] :: GetWebPageInstantView -> Maybe Bool
+-- | Pass true to get only locally available information without sending
+--   network requests
+[only_local] :: GetWebPageInstantView -> Maybe Bool
 defaultGetWebPageInstantView :: GetWebPageInstantView
 instance GHC.Show.Show TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance GHC.Classes.Eq TD.Query.GetWebPageInstantView.GetWebPageInstantView
@@ -32025,7 +32335,7 @@ module TD.Query.JoinGroupCall
 -- | Joins an active group call. Returns join response payload for tgcalls.
 --   Returns <a>Text</a>
 data JoinGroupCall
-JoinGroupCall :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Text -> JoinGroupCall
+JoinGroupCall :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> JoinGroupCall
 
 -- | Group call identifier
 [group_call_id] :: JoinGroupCall -> Maybe Int
@@ -32050,6 +32360,10 @@ JoinGroupCall :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Text -> 
 -- | If non-empty, invite hash to be used to join the group call without
 --   being muted by administrators
 [invite_hash] :: JoinGroupCall -> Maybe Text
+
+-- | Fingerprint of the encryption key for E2E group calls not bound to a
+--   chat; pass 0 for voice chats
+[key_fingerprint] :: JoinGroupCall -> Maybe Int
 defaultJoinGroupCall :: JoinGroupCall
 instance GHC.Show.Show TD.Query.JoinGroupCall.JoinGroupCall
 instance GHC.Classes.Eq TD.Query.JoinGroupCall.JoinGroupCall
@@ -33671,7 +33985,7 @@ module TD.Query.ResendMessages
 --   identifiers passed in message_ids. If a message can't be re-sent, null
 --   will be returned instead of the message. Returns <a>Messages</a>
 data ResendMessages
-ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe InputTextQuote -> ResendMessages
+ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe InputTextQuote -> Maybe Int -> ResendMessages
 
 -- | Identifier of the chat to send messages
 [chat_id] :: ResendMessages -> Maybe Int
@@ -33684,6 +33998,11 @@ ResendMessages :: Maybe Int -> Maybe [Int] -> Maybe InputTextQuote -> ResendMess
 --   none. Ignored if more than one message is re-sent, or if
 --   messageSendingStateFailed.need_another_reply_quote == false
 [quote] :: ResendMessages -> Maybe InputTextQuote
+
+-- | The number of Telegram Stars the user agreed to pay to send the
+--   messages. Ignored if
+--   messageSendingStateFailed.required_paid_message_star_count == 0
+[paid_message_star_count] :: ResendMessages -> Maybe Int
 defaultResendMessages :: ResendMessages
 instance GHC.Show.Show TD.Query.ResendMessages.ResendMessages
 instance GHC.Classes.Eq TD.Query.ResendMessages.ResendMessages
@@ -34949,7 +35268,8 @@ SendGift :: Maybe Int -> Maybe MessageSender -> Maybe FormattedText -> Maybe Boo
 
 -- | Text to show along with the gift; 0-getOption("gift_text_length_max")
 --   characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, and
---   CustomEmoji entities are allowed
+--   CustomEmoji entities are allowed. Must be empty if the receiver
+--   enabled paid messages
 [text] :: SendGift -> Maybe FormattedText
 
 -- | Pass true to show gift text and sender only to the gift receiver;
@@ -35166,7 +35486,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendPhoneNumberFirebaseSms.Send
 module TD.Query.SendQuickReplyShortcutMessages
 
 -- | Sends messages from a quick reply shortcut. Requires Telegram Business
---   subscription. Returns <a>Messages</a>
+--   subscription. Can't be used to send paid messages. Returns
+--   <a>Messages</a>
 data SendQuickReplyShortcutMessages
 SendQuickReplyShortcutMessages :: Maybe Int -> Maybe Int -> Maybe Int -> SendQuickReplyShortcutMessages
 
@@ -36021,6 +36342,31 @@ instance GHC.Show.Show TD.Query.SetChatNotificationSettings.SetChatNotificationS
 instance GHC.Classes.Eq TD.Query.SetChatNotificationSettings.SetChatNotificationSettings
 instance TD.Lib.Internal.ShortShow TD.Query.SetChatNotificationSettings.SetChatNotificationSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatNotificationSettings.SetChatNotificationSettings
+
+module TD.Query.SetChatPaidMessageStarCount
+
+-- | Changes the amount of Telegram Stars that must be paid to send a
+--   message to a supergroup chat; requires can_restrict_members
+--   administrator right and supergroupFullInfo.can_enable_paid_messages.
+--   Returns <a>Ok</a>
+data SetChatPaidMessageStarCount
+SetChatPaidMessageStarCount :: Maybe Int -> Maybe Int -> SetChatPaidMessageStarCount
+
+-- | Identifier of the supergroup chat
+[chat_id] :: SetChatPaidMessageStarCount -> Maybe Int
+
+-- | The new number of Telegram Stars that must be paid for each message
+--   that is sent to the supergroup chat unless the sender is an
+--   administrator of the chat; 0-getOption("paid_message_star_count_max").
+--   The supergroup will receive
+--   getOption("paid_message_earnings_per_mille") Telegram Stars for each
+--   1000 Telegram Stars paid for message sending
+[paid_message_star_count] :: SetChatPaidMessageStarCount -> Maybe Int
+defaultSetChatPaidMessageStarCount :: SetChatPaidMessageStarCount
+instance GHC.Show.Show TD.Query.SetChatPaidMessageStarCount.SetChatPaidMessageStarCount
+instance GHC.Classes.Eq TD.Query.SetChatPaidMessageStarCount.SetChatPaidMessageStarCount
+instance TD.Lib.Internal.ShortShow TD.Query.SetChatPaidMessageStarCount.SetChatPaidMessageStarCount
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatPaidMessageStarCount.SetChatPaidMessageStarCount
 
 module TD.Query.SetChatPermissions
 
@@ -36945,6 +37291,27 @@ instance GHC.Classes.Eq TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 instance TD.Lib.Internal.ShortShow TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedForumTopics.SetPinnedForumTopics
 
+module TD.Query.SetPinnedGifts
+
+-- | Changes the list of pinned gifts on the current user's or the
+--   channel's profile page; requires can_post_messages administrator right
+--   in the channel chat. Returns <a>Ok</a>
+data SetPinnedGifts
+SetPinnedGifts :: Maybe MessageSender -> Maybe [Text] -> SetPinnedGifts
+
+-- | Identifier of the user or the channel chat that received the gifts
+[owner_id] :: SetPinnedGifts -> Maybe MessageSender
+
+-- | New list of pinned gifts. All gifts must be upgraded and saved on the
+--   profile page first. There can be up to
+--   getOption("pinned_gift_count_max") pinned gifts
+[received_gift_ids] :: SetPinnedGifts -> Maybe [Text]
+defaultSetPinnedGifts :: SetPinnedGifts
+instance GHC.Show.Show TD.Query.SetPinnedGifts.SetPinnedGifts
+instance GHC.Classes.Eq TD.Query.SetPinnedGifts.SetPinnedGifts
+instance TD.Lib.Internal.ShortShow TD.Query.SetPinnedGifts.SetPinnedGifts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedGifts.SetPinnedGifts
+
 module TD.Query.SetPinnedSavedMessagesTopics
 
 -- | Changes the order of pinned Saved Messages topics. Returns <a>Ok</a>
@@ -37720,8 +38087,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StopPoll.StopPoll
 
 module TD.Query.SuggestUserProfilePhoto
 
--- | Suggests a profile photo to another regular user with common messages.
---   Returns <a>Ok</a>
+-- | Suggests a profile photo to another regular user with common messages
+--   and allowing non-paid messages. Returns <a>Ok</a>
 data SuggestUserProfilePhoto
 SuggestUserProfilePhoto :: Maybe Int -> Maybe InputChatPhoto -> SuggestUserProfilePhoto
 
@@ -38296,7 +38663,7 @@ module TD.Query.ToggleGiftIsSaved
 
 -- | Toggles whether a gift is shown on the current user's or the channel's
 --   profile page; requires can_post_messages administrator right in the
---   chat. Returns <a>Ok</a>
+--   channel chat. Returns <a>Ok</a>
 data ToggleGiftIsSaved
 ToggleGiftIsSaved :: Maybe Text -> Maybe Bool -> ToggleGiftIsSaved
 
