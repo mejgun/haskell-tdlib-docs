@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.57.0
+@version 2.0.58.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -438,7 +438,7 @@ UpgradedGiftBackdrop :: Maybe Text -> Maybe UpgradedGiftBackdropColors -> Maybe 
 -- | Colors of the backdrop
 [colors] :: UpgradedGiftBackdrop -> Maybe UpgradedGiftBackdropColors
 
--- | The number of upgraded gift that receive this backdrop for each 1000
+-- | The number of upgraded gifts that receive this backdrop for each 1000
 --   gifts upgraded
 [rarity_per_mille] :: UpgradedGiftBackdrop -> Maybe Int
 instance GHC.Show.Show TD.Data.UpgradedGiftBackdrop.UpgradedGiftBackdrop
@@ -1276,6 +1276,34 @@ instance TD.Lib.Internal.ShortShow TD.Data.StoryAreaPosition.StoryAreaPosition
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryAreaPosition.StoryAreaPosition
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StoryAreaPosition.StoryAreaPosition
 
+module TD.Data.StoreTransaction
+
+-- | Describes an in-store transaction
+data StoreTransaction
+
+-- | A purchase through App Store
+StoreTransactionAppStore :: Maybe ByteString -> StoreTransaction
+
+-- | App Store receipt
+[receipt] :: StoreTransaction -> Maybe ByteString
+
+-- | A purchase through Google Play
+StoreTransactionGooglePlay :: Maybe Text -> Maybe Text -> Maybe Text -> StoreTransaction
+
+-- | Application package name
+[package_name] :: StoreTransaction -> Maybe Text
+
+-- | Identifier of the purchased store product
+[store_product_id] :: StoreTransaction -> Maybe Text
+
+-- | Google Play purchase token
+[purchase_token] :: StoreTransaction -> Maybe Text
+instance GHC.Show.Show TD.Data.StoreTransaction.StoreTransaction
+instance GHC.Classes.Eq TD.Data.StoreTransaction.StoreTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.StoreTransaction.StoreTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoreTransaction.StoreTransaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StoreTransaction.StoreTransaction
+
 module TD.Data.StorageStatisticsFast
 data StorageStatisticsFast
 
@@ -1629,6 +1657,43 @@ instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRevenueStatistics
+
+module TD.Data.SponsoredChat
+data SponsoredChat
+
+-- | Describes a sponsored chat
+SponsoredChat :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> SponsoredChat
+
+-- | Unique identifier of this result
+[unique_id] :: SponsoredChat -> Maybe Int
+
+-- | Chat identifier
+[chat_id] :: SponsoredChat -> Maybe Int
+
+-- | Additional optional information about the sponsor to be shown along
+--   with the chat
+[sponsor_info] :: SponsoredChat -> Maybe Text
+
+-- | If non-empty, additional information about the sponsored chat to be
+--   shown along with the chat
+[additional_info] :: SponsoredChat -> Maybe Text
+instance GHC.Show.Show TD.Data.SponsoredChat.SponsoredChat
+instance GHC.Classes.Eq TD.Data.SponsoredChat.SponsoredChat
+instance TD.Lib.Internal.ShortShow TD.Data.SponsoredChat.SponsoredChat
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SponsoredChat.SponsoredChat
+
+module TD.Data.SponsoredChats
+data SponsoredChats
+
+-- | Contains a list of sponsored chats
+SponsoredChats :: Maybe [SponsoredChat] -> SponsoredChats
+
+-- | List of sponsored chats
+[chats] :: SponsoredChats -> Maybe [SponsoredChat]
+instance GHC.Show.Show TD.Data.SponsoredChats.SponsoredChats
+instance GHC.Classes.Eq TD.Data.SponsoredChats.SponsoredChats
+instance TD.Lib.Internal.ShortShow TD.Data.SponsoredChats.SponsoredChats
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SponsoredChats.SponsoredChats
 
 module TD.Data.SessionType
 
@@ -2227,37 +2292,37 @@ instance GHC.Classes.Eq TD.Data.ReportStoryResult.ReportStoryResult
 instance TD.Lib.Internal.ShortShow TD.Data.ReportStoryResult.ReportStoryResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportStoryResult.ReportStoryResult
 
-module TD.Data.ReportChatSponsoredMessageResult
+module TD.Data.ReportSponsoredResult
 
--- | Describes result of sponsored message report
-data ReportChatSponsoredMessageResult
+-- | Describes result of sponsored message or chat report
+data ReportSponsoredResult
 
 -- | The message was reported successfully
-ReportChatSponsoredMessageResultOk :: ReportChatSponsoredMessageResult
+ReportSponsoredResultOk :: ReportSponsoredResult
 
 -- | The sponsored message is too old or not found
-ReportChatSponsoredMessageResultFailed :: ReportChatSponsoredMessageResult
+ReportSponsoredResultFailed :: ReportSponsoredResult
 
 -- | The user must choose an option to report the message and repeat
 --   request with the chosen option
-ReportChatSponsoredMessageResultOptionRequired :: Maybe Text -> Maybe [ReportOption] -> ReportChatSponsoredMessageResult
+ReportSponsoredResultOptionRequired :: Maybe Text -> Maybe [ReportOption] -> ReportSponsoredResult
 
 -- | Title for the option choice
-[title] :: ReportChatSponsoredMessageResult -> Maybe Text
+[title] :: ReportSponsoredResult -> Maybe Text
 
 -- | List of available options
-[options] :: ReportChatSponsoredMessageResult -> Maybe [ReportOption]
+[options] :: ReportSponsoredResult -> Maybe [ReportOption]
 
 -- | Sponsored messages were hidden for the user in all chats
-ReportChatSponsoredMessageResultAdsHidden :: ReportChatSponsoredMessageResult
+ReportSponsoredResultAdsHidden :: ReportSponsoredResult
 
 -- | The user asked to hide sponsored messages, but Telegram Premium is
 --   required for this
-ReportChatSponsoredMessageResultPremiumRequired :: ReportChatSponsoredMessageResult
-instance GHC.Show.Show TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
-instance GHC.Classes.Eq TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
-instance TD.Lib.Internal.ShortShow TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportChatSponsoredMessageResult.ReportChatSponsoredMessageResult
+ReportSponsoredResultPremiumRequired :: ReportSponsoredResult
+instance GHC.Show.Show TD.Data.ReportSponsoredResult.ReportSponsoredResult
+instance GHC.Classes.Eq TD.Data.ReportSponsoredResult.ReportSponsoredResult
+instance TD.Lib.Internal.ShortShow TD.Data.ReportSponsoredResult.ReportSponsoredResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReportSponsoredResult.ReportSponsoredResult
 
 module TD.Data.ReportChatResult
 
@@ -3423,7 +3488,8 @@ NewChatPrivacySettings :: Maybe Bool -> Maybe Int -> NewChatPrivacySettings
 --   message by non-contacts; 0-getOption("paid_message_star_count_max").
 --   If positive, then allow_new_chats_from_unknown_users must be true. The
 --   current user will receive getOption("paid_message_earnings_per_mille")
---   Telegram Stars for each 1000 Telegram Stars paid for message sending
+--   Telegram Stars for each 1000 Telegram Stars paid for message sending.
+--   Can be positive, only if getOption("can_enable_paid_messages") is true
 [incoming_paid_message_star_count] :: NewChatPrivacySettings -> Maybe Int
 defaultNewChatPrivacySettings :: NewChatPrivacySettings
 instance GHC.Show.Show TD.Data.NewChatPrivacySettings.NewChatPrivacySettings
@@ -6345,7 +6411,10 @@ module TD.Data.ForumTopicInfo
 data ForumTopicInfo
 
 -- | Contains basic information about a forum topic
-ForumTopicInfo :: Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> Maybe Int -> Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ForumTopicInfo
+ForumTopicInfo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> Maybe Int -> Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ForumTopicInfo
+
+-- | Identifier of the forum chat to which the topic belongs
+[chat_id] :: ForumTopicInfo -> Maybe Int
 
 -- | Message thread identifier of the topic
 [message_thread_id] :: ForumTopicInfo -> Maybe Int
@@ -6494,7 +6563,8 @@ data TelegramPaymentPurpose
 -- | The user gifting Telegram Premium to another user
 TelegramPaymentPurposePremiumGift :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> TelegramPaymentPurpose
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -6522,7 +6592,8 @@ TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -
 --   subscription and which is administered by the user
 [boosted_chat_id] :: TelegramPaymentPurpose -> Maybe Int
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -6547,7 +6618,8 @@ TelegramPaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text 
 -- | Giveaway parameters
 [parameters] :: TelegramPaymentPurpose -> Maybe GiveawayParameters
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -6563,7 +6635,8 @@ TelegramPaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text 
 -- | The user buying Telegram Stars
 TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -6578,7 +6651,8 @@ TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> May
 -- | Identifier of the user which will receive Telegram Premium
 [user_id] :: TelegramPaymentPurpose -> Maybe Int
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -6593,7 +6667,8 @@ TelegramPaymentPurposeStarGiveaway :: Maybe GiveawayParameters -> Maybe Text -> 
 -- | Giveaway parameters
 [parameters] :: TelegramPaymentPurpose -> Maybe GiveawayParameters
 
--- | ISO 4217 currency code of the payment currency
+-- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
+--   payments in Telegram Stars
 [currency] :: TelegramPaymentPurpose -> Maybe Text
 
 -- | Paid amount, in the smallest units of the currency
@@ -7524,10 +7599,10 @@ UpgradedGiftSymbol :: Maybe Text -> Maybe Sticker -> Maybe Int -> UpgradedGiftSy
 -- | Name of the symbol
 [name] :: UpgradedGiftSymbol -> Maybe Text
 
--- | The sticker representing the upgraded gift
+-- | The sticker representing the symbol
 [sticker] :: UpgradedGiftSymbol -> Maybe Sticker
 
--- | The number of upgraded gift that receive this symbol for each 1000
+-- | The number of upgraded gifts that receive this symbol for each 1000
 --   gifts upgraded
 [rarity_per_mille] :: UpgradedGiftSymbol -> Maybe Int
 instance GHC.Show.Show TD.Data.UpgradedGiftSymbol.UpgradedGiftSymbol
@@ -7547,7 +7622,7 @@ UpgradedGiftModel :: Maybe Text -> Maybe Sticker -> Maybe Int -> UpgradedGiftMod
 -- | The sticker representing the upgraded gift
 [sticker] :: UpgradedGiftModel -> Maybe Sticker
 
--- | The number of upgraded gift that receive this model for each 1000
+-- | The number of upgraded gifts that receive this model for each 1000
 --   gifts upgraded
 [rarity_per_mille] :: UpgradedGiftModel -> Maybe Int
 instance GHC.Show.Show TD.Data.UpgradedGiftModel.UpgradedGiftModel
@@ -7586,14 +7661,18 @@ UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int 
 --   null if none or unknown
 [owner_id] :: UpgradedGift -> Maybe MessageSender
 
--- | Address of the gift NFT owner in TON blockchain; may be empty if none
+-- | Address of the gift NFT owner in TON blockchain; may be empty if none.
+--   Append the address to getOption("ton_blockchain_explorer_url") to get
+--   a link with information about the address
 [owner_address] :: UpgradedGift -> Maybe Text
 
 -- | Name of the owner for the case when owner identifier and address
 --   aren't known
 [owner_name] :: UpgradedGift -> Maybe Text
 
--- | Address of the gift NFT in TON blockchain; may be empty if none
+-- | Address of the gift NFT in TON blockchain; may be empty if none.
+--   Append the address to getOption("ton_blockchain_explorer_url") to get
+--   a link with information about the address
 [gift_address] :: UpgradedGift -> Maybe Text
 
 -- | Model of the upgraded gift
@@ -14770,57 +14849,6 @@ instance GHC.Classes.Eq TD.Data.BusinessFeatures.BusinessFeatures
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessFeatures.BusinessFeatures
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessFeatures.BusinessFeatures
 
-module TD.Data.BusinessConnection
-data BusinessConnection
-
--- | Describes a connection of the bot with a business account
-BusinessConnection :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> BusinessConnection
-
--- | Unique identifier of the connection
-[_id] :: BusinessConnection -> Maybe Text
-
--- | Identifier of the business user that created the connection
-[user_id] :: BusinessConnection -> Maybe Int
-
--- | Chat identifier of the private chat with the user
-[user_chat_id] :: BusinessConnection -> Maybe Int
-
--- | Point in time (Unix timestamp) when the connection was established
-[date] :: BusinessConnection -> Maybe Int
-
--- | True, if the bot can send messages to the connected user; false
---   otherwise
-[can_reply] :: BusinessConnection -> Maybe Bool
-
--- | True, if the connection is enabled; false otherwise
-[is_enabled] :: BusinessConnection -> Maybe Bool
-instance GHC.Show.Show TD.Data.BusinessConnection.BusinessConnection
-instance GHC.Classes.Eq TD.Data.BusinessConnection.BusinessConnection
-instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnection.BusinessConnection
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnection.BusinessConnection
-
-module TD.Data.BusinessConnectedBot
-data BusinessConnectedBot
-
--- | Describes a bot connected to a business account
-BusinessConnectedBot :: Maybe Int -> Maybe BusinessRecipients -> Maybe Bool -> BusinessConnectedBot
-
--- | User identifier of the bot
-[bot_user_id] :: BusinessConnectedBot -> Maybe Int
-
--- | Private chats that will be accessible to the bot
-[recipients] :: BusinessConnectedBot -> Maybe BusinessRecipients
-
--- | True, if the bot can send messages to the private chats; false
---   otherwise
-[can_reply] :: BusinessConnectedBot -> Maybe Bool
-defaultBusinessConnectedBot :: BusinessConnectedBot
-instance GHC.Show.Show TD.Data.BusinessConnectedBot.BusinessConnectedBot
-instance GHC.Classes.Eq TD.Data.BusinessConnectedBot.BusinessConnectedBot
-instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBot.BusinessConnectedBot
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
-
 module TD.Data.BusinessChatLinkInfo
 data BusinessChatLinkInfo
 
@@ -14871,6 +14899,116 @@ instance GHC.Show.Show TD.Data.BusinessChatLinks.BusinessChatLinks
 instance GHC.Classes.Eq TD.Data.BusinessChatLinks.BusinessChatLinks
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessChatLinks.BusinessChatLinks
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessChatLinks.BusinessChatLinks
+
+module TD.Data.BusinessBotRights
+data BusinessBotRights
+
+-- | Describes rights of a business bot
+BusinessBotRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> BusinessBotRights
+
+-- | True, if the bot can send and edit messages in the private chats that
+--   had incoming messages in the last 24 hours
+[can_reply] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can mark incoming private messages as read
+[can_read_messages] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can delete sent messages
+[can_delete_sent_messages] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can delete any message
+[can_delete_all_messages] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can edit name of the business account
+[can_edit_name] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can edit bio of the business account
+[can_edit_bio] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can edit profile photo of the business account
+[can_edit_profile_photo] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can edit username of the business account
+[can_edit_username] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can view gifts and amount of Telegram Stars owned by
+--   the business account
+[can_view_gifts_and_stars] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can sell regular gifts received by the business
+--   account
+[can_sell_gifts] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can change gift receiving settings of the business
+--   account
+[can_change_gift_settings] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can transfer and upgrade gifts received by the
+--   business account
+[can_transfer_and_upgrade_gifts] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can transfer Telegram Stars received by the business
+--   account to account of the bot, or use them to upgrade and transfer
+--   gifts
+[can_transfer_stars] :: BusinessBotRights -> Maybe Bool
+
+-- | True, if the bot can send, edit and delete stories
+[can_manage_stories] :: BusinessBotRights -> Maybe Bool
+defaultBusinessBotRights :: BusinessBotRights
+instance GHC.Show.Show TD.Data.BusinessBotRights.BusinessBotRights
+instance GHC.Classes.Eq TD.Data.BusinessBotRights.BusinessBotRights
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessBotRights.BusinessBotRights
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessBotRights.BusinessBotRights
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessBotRights.BusinessBotRights
+
+module TD.Data.BusinessConnection
+data BusinessConnection
+
+-- | Describes a connection of the bot with a business account
+BusinessConnection :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BusinessBotRights -> Maybe Bool -> BusinessConnection
+
+-- | Unique identifier of the connection
+[_id] :: BusinessConnection -> Maybe Text
+
+-- | Identifier of the business user that created the connection
+[user_id] :: BusinessConnection -> Maybe Int
+
+-- | Chat identifier of the private chat with the user
+[user_chat_id] :: BusinessConnection -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the connection was established
+[date] :: BusinessConnection -> Maybe Int
+
+-- | Rights of the bot; may be null if the connection was disabled
+[rights] :: BusinessConnection -> Maybe BusinessBotRights
+
+-- | True, if the connection is enabled; false otherwise
+[is_enabled] :: BusinessConnection -> Maybe Bool
+instance GHC.Show.Show TD.Data.BusinessConnection.BusinessConnection
+instance GHC.Classes.Eq TD.Data.BusinessConnection.BusinessConnection
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnection.BusinessConnection
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnection.BusinessConnection
+
+module TD.Data.BusinessConnectedBot
+data BusinessConnectedBot
+
+-- | Describes a bot connected to a business account
+BusinessConnectedBot :: Maybe Int -> Maybe BusinessRecipients -> Maybe BusinessBotRights -> BusinessConnectedBot
+
+-- | User identifier of the bot
+[bot_user_id] :: BusinessConnectedBot -> Maybe Int
+
+-- | Private chats that will be accessible to the bot
+[recipients] :: BusinessConnectedBot -> Maybe BusinessRecipients
+
+-- | Rights of the bot
+[rights] :: BusinessConnectedBot -> Maybe BusinessBotRights
+defaultBusinessConnectedBot :: BusinessConnectedBot
+instance GHC.Show.Show TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance GHC.Classes.Eq TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
 
 module TD.Data.BusinessBotManageBar
 data BusinessBotManageBar
@@ -15868,6 +16006,14 @@ AuthorizationStateWaitTdlibParameters :: AuthorizationState
 --   requestQrCodeAuthentication or checkAuthenticationBotToken for other
 --   authentication options
 AuthorizationStateWaitPhoneNumber :: AuthorizationState
+
+-- | The user must buy Telegram Premium as an in-store purchase to log in.
+--   Call checkAuthenticationPremiumPurchase and then
+--   setAuthenticationPremiumPurchaseTransaction
+AuthorizationStateWaitPremiumPurchase :: Maybe Text -> AuthorizationState
+
+-- | Identifier of the store product that must be bought
+[store_product_id] :: AuthorizationState -> Maybe Text
 
 -- | TDLib needs the user's email address to authorize. Call
 --   setAuthenticationEmailAddress to provide the email address, or
@@ -18162,108 +18308,6 @@ instance GHC.Classes.Eq TD.Data.BotInfo.BotInfo
 instance TD.Lib.Internal.ShortShow TD.Data.BotInfo.BotInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotInfo.BotInfo
 
-module TD.Data.UserFullInfo
-data UserFullInfo
-
--- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe BotVerification -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
-
--- | User profile photo set by the current user for the contact; may be
---   null. If null and user.profile_photo is null, then the photo is empty;
---   otherwise, it is unknown. If non-null, then it is the same photo as in
---   user.profile_photo and chat.photo. This photo isn't returned in the
---   list of user photos
-[personal_photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | User profile photo; may be null. If null and user.profile_photo is
---   null, then the photo is empty; otherwise, it is unknown. If non-null
---   and personal_photo is null, then it is the same photo as in
---   user.profile_photo and chat.photo
-[photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | User profile photo visible if the main photo is hidden by privacy
---   settings; may be null. If null and user.profile_photo is null, then
---   the photo is empty; otherwise, it is unknown. If non-null and both
---   photo and personal_photo are null, then it is the same photo as in
---   user.profile_photo and chat.photo. This photo isn't returned in the
---   list of user photos
-[public_photo] :: UserFullInfo -> Maybe ChatPhoto
-
--- | Block list to which the user is added; may be null if none
-[block_list] :: UserFullInfo -> Maybe BlockList
-
--- | True, if the user can be called
-[can_be_called] :: UserFullInfo -> Maybe Bool
-
--- | True, if a video call can be created with the user
-[supports_video_calls] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user can't be called due to their privacy settings
-[has_private_calls] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user can't be linked in forwarded messages due to their
---   privacy settings
-[has_private_forwards] :: UserFullInfo -> Maybe Bool
-
--- | True, if voice and video notes can't be sent or forwarded to the user
-[has_restricted_voice_and_video_note_messages] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user has posted to profile stories
-[has_posted_to_profile_stories] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user always enabled sponsored messages; known only for
---   the current user
-[has_sponsored_messages_enabled] :: UserFullInfo -> Maybe Bool
-
--- | True, if the current user needs to explicitly allow to share their
---   phone number with the user when the method addContact is used
-[need_phone_number_privacy_exception] :: UserFullInfo -> Maybe Bool
-
--- | True, if the user set chat background for both chat users and it
---   wasn't reverted yet
-[set_chat_background] :: UserFullInfo -> Maybe Bool
-
--- | A short user bio; may be null for bots
-[bio] :: UserFullInfo -> Maybe FormattedText
-
--- | Birthdate of the user; may be null if unknown
-[birthdate] :: UserFullInfo -> Maybe Birthdate
-
--- | Identifier of the personal chat of the user; 0 if none
-[personal_chat_id] :: UserFullInfo -> Maybe Int
-
--- | Number of saved to profile gifts for other users or the total number
---   of received gifts for the current user
-[gift_count] :: UserFullInfo -> Maybe Int
-
--- | Number of group chats where both the other user and the current user
---   are a member; 0 for the current user
-[group_in_common_count] :: UserFullInfo -> Maybe Int
-
--- | Number of Telegram Stars that must be paid by the user for each sent
---   message to the current user
-[incoming_paid_message_star_count] :: UserFullInfo -> Maybe Int
-
--- | Number of Telegram Stars that must be paid by the current user for
---   each sent message to the user
-[outgoing_paid_message_star_count] :: UserFullInfo -> Maybe Int
-
--- | Information about verification status of the user provided by a bot;
---   may be null if none or unknown
-[bot_verification] :: UserFullInfo -> Maybe BotVerification
-
--- | Information about business settings for Telegram Business accounts;
---   may be null if none
-[business_info] :: UserFullInfo -> Maybe BusinessInfo
-
--- | For bots, information about the bot; may be null if the user isn't a
---   bot
-[bot_info] :: UserFullInfo -> Maybe BotInfo
-instance GHC.Show.Show TD.Data.UserFullInfo.UserFullInfo
-instance GHC.Classes.Eq TD.Data.UserFullInfo.UserFullInfo
-instance TD.Lib.Internal.ShortShow TD.Data.UserFullInfo.UserFullInfo
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserFullInfo.UserFullInfo
-
 module TD.Data.AffiliateInfo
 data AffiliateInfo
 
@@ -18591,7 +18635,7 @@ StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> May
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
 -- | The transaction is a purchase of Telegram Premium subscription; for
---   regular users only
+--   regular users and bots only
 StarTransactionTypePremiumPurchase :: Maybe Int -> Maybe Int -> Maybe Sticker -> StarTransactionType
 
 -- | Identifier of the user that gifted Telegram Stars; 0 if the user was
@@ -18604,6 +18648,22 @@ StarTransactionTypePremiumPurchase :: Maybe Int -> Maybe Int -> Maybe Sticker ->
 -- | The sticker to be shown in the transaction information; may be null if
 --   unknown
 [sticker] :: StarTransactionType -> Maybe Sticker
+
+-- | The transaction is a transfer of Telegram Stars to a business bot; for
+--   regular users only
+StarTransactionTypeBusinessBotTransferSend :: Maybe Int -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a transfer of Telegram Stars from a business
+--   account; for bots only
+StarTransactionTypeBusinessBotTransferReceive :: Maybe Int -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
 
 -- | The transaction is a transaction of an unsupported type
 StarTransactionTypeUnsupported :: StarTransactionType
@@ -19882,6 +19942,23 @@ MessageRefundedUpgradedGift :: Maybe Gift -> Maybe MessageSender -> Maybe Bool -
 --   gift; otherwise, this is a transferred gift
 [is_upgrade] :: MessageContent -> Maybe Bool
 
+-- | Paid messages were refunded
+MessagePaidMessagesRefunded :: Maybe Int -> Maybe Int -> MessageContent
+
+-- | The number of refunded messages
+[message_count] :: MessageContent -> Maybe Int
+
+-- | Number of Telegram Stars needed to buy access to the media in the
+--   message
+[star_count] :: MessageContent -> Maybe Int
+
+-- | A price for paid messages was changed in the supergroup chat
+MessagePaidMessagePriceChanged :: Maybe Int -> MessageContent
+
+-- | The new number of Telegram Stars that must be paid by
+--   non-administrator users of the supergroup chat for each sent message
+[paid_message_star_count] :: MessageContent -> Maybe Int
+
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
 
@@ -20697,13 +20774,17 @@ module TD.Data.ForumTopic
 data ForumTopic
 
 -- | Describes a forum topic
-ForumTopic :: Maybe ForumTopicInfo -> Maybe Message -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe DraftMessage -> ForumTopic
+ForumTopic :: Maybe ForumTopicInfo -> Maybe Message -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe DraftMessage -> ForumTopic
 
 -- | Basic information about the topic
 [info] :: ForumTopic -> Maybe ForumTopicInfo
 
 -- | Last message in the topic; may be null if unknown
 [last_message] :: ForumTopic -> Maybe Message
+
+-- | A parameter used to determine order of the topic in the topic list.
+--   Topics must be sorted by the order in descending order
+[order] :: ForumTopic -> Maybe Int
 
 -- | True, if the topic is pinned in the topic list
 [is_pinned] :: ForumTopic -> Maybe Bool
@@ -21710,6 +21791,155 @@ instance GHC.Classes.Eq TD.Data.Chat.Chat
 instance TD.Lib.Internal.ShortShow TD.Data.Chat.Chat
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Chat.Chat
 
+module TD.Data.AcceptedGiftTypes
+data AcceptedGiftTypes
+
+-- | Describes gift types that are accepted by a user
+AcceptedGiftTypes :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> AcceptedGiftTypes
+
+-- | True, if unlimited regular gifts are accepted
+[unlimited_gifts] :: AcceptedGiftTypes -> Maybe Bool
+
+-- | True, if limited regular gifts are accepted
+[limited_gifts] :: AcceptedGiftTypes -> Maybe Bool
+
+-- | True, if upgraded gifts and regular gifts that can be upgraded for
+--   free are accepted
+[upgraded_gifts] :: AcceptedGiftTypes -> Maybe Bool
+
+-- | True, if Telegram Premium subscription is accepted
+[premium_subscription] :: AcceptedGiftTypes -> Maybe Bool
+defaultAcceptedGiftTypes :: AcceptedGiftTypes
+instance GHC.Show.Show TD.Data.AcceptedGiftTypes.AcceptedGiftTypes
+instance GHC.Classes.Eq TD.Data.AcceptedGiftTypes.AcceptedGiftTypes
+instance TD.Lib.Internal.ShortShow TD.Data.AcceptedGiftTypes.AcceptedGiftTypes
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AcceptedGiftTypes.AcceptedGiftTypes
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.AcceptedGiftTypes.AcceptedGiftTypes
+
+module TD.Data.GiftSettings
+data GiftSettings
+
+-- | Contains settings for gift receiving for a user
+GiftSettings :: Maybe Bool -> Maybe AcceptedGiftTypes -> GiftSettings
+
+-- | True, if a button for sending a gift to the user or by the user must
+--   always be shown in the input field
+[show_gift_button] :: GiftSettings -> Maybe Bool
+
+-- | Types of gifts accepted by the user; for Telegram Premium users only
+[accepted_gift_types] :: GiftSettings -> Maybe AcceptedGiftTypes
+defaultGiftSettings :: GiftSettings
+instance GHC.Show.Show TD.Data.GiftSettings.GiftSettings
+instance GHC.Classes.Eq TD.Data.GiftSettings.GiftSettings
+instance TD.Lib.Internal.ShortShow TD.Data.GiftSettings.GiftSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftSettings.GiftSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GiftSettings.GiftSettings
+
+module TD.Data.UserFullInfo
+data UserFullInfo
+
+-- | Contains full information about a user
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GiftSettings -> Maybe BotVerification -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+
+-- | User profile photo set by the current user for the contact; may be
+--   null. If null and user.profile_photo is null, then the photo is empty;
+--   otherwise, it is unknown. If non-null, then it is the same photo as in
+--   user.profile_photo and chat.photo. This photo isn't returned in the
+--   list of user photos
+[personal_photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | User profile photo; may be null. If null and user.profile_photo is
+--   null, then the photo is empty; otherwise, it is unknown. If non-null
+--   and personal_photo is null, then it is the same photo as in
+--   user.profile_photo and chat.photo
+[photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | User profile photo visible if the main photo is hidden by privacy
+--   settings; may be null. If null and user.profile_photo is null, then
+--   the photo is empty; otherwise, it is unknown. If non-null and both
+--   photo and personal_photo are null, then it is the same photo as in
+--   user.profile_photo and chat.photo. This photo isn't returned in the
+--   list of user photos
+[public_photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | Block list to which the user is added; may be null if none
+[block_list] :: UserFullInfo -> Maybe BlockList
+
+-- | True, if the user can be called
+[can_be_called] :: UserFullInfo -> Maybe Bool
+
+-- | True, if a video call can be created with the user
+[supports_video_calls] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user can't be called due to their privacy settings
+[has_private_calls] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user can't be linked in forwarded messages due to their
+--   privacy settings
+[has_private_forwards] :: UserFullInfo -> Maybe Bool
+
+-- | True, if voice and video notes can't be sent or forwarded to the user
+[has_restricted_voice_and_video_note_messages] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user has posted to profile stories
+[has_posted_to_profile_stories] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user always enabled sponsored messages; known only for
+--   the current user
+[has_sponsored_messages_enabled] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the current user needs to explicitly allow to share their
+--   phone number with the user when the method addContact is used
+[need_phone_number_privacy_exception] :: UserFullInfo -> Maybe Bool
+
+-- | True, if the user set chat background for both chat users and it
+--   wasn't reverted yet
+[set_chat_background] :: UserFullInfo -> Maybe Bool
+
+-- | A short user bio; may be null for bots
+[bio] :: UserFullInfo -> Maybe FormattedText
+
+-- | Birthdate of the user; may be null if unknown
+[birthdate] :: UserFullInfo -> Maybe Birthdate
+
+-- | Identifier of the personal chat of the user; 0 if none
+[personal_chat_id] :: UserFullInfo -> Maybe Int
+
+-- | Number of saved to profile gifts for other users or the total number
+--   of received gifts for the current user
+[gift_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of group chats where both the other user and the current user
+--   are a member; 0 for the current user
+[group_in_common_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of Telegram Stars that must be paid by the user for each sent
+--   message to the current user
+[incoming_paid_message_star_count] :: UserFullInfo -> Maybe Int
+
+-- | Number of Telegram Stars that must be paid by the current user for
+--   each sent message to the user
+[outgoing_paid_message_star_count] :: UserFullInfo -> Maybe Int
+
+-- | Settings for gift receiving for the user
+[gift_settings] :: UserFullInfo -> Maybe GiftSettings
+
+-- | Information about verification status of the user provided by a bot;
+--   may be null if none or unknown
+[bot_verification] :: UserFullInfo -> Maybe BotVerification
+
+-- | Information about business settings for Telegram Business accounts;
+--   may be null if none
+[business_info] :: UserFullInfo -> Maybe BusinessInfo
+
+-- | For bots, information about the bot; may be null if the user isn't a
+--   bot
+[bot_info] :: UserFullInfo -> Maybe BotInfo
+instance GHC.Show.Show TD.Data.UserFullInfo.UserFullInfo
+instance GHC.Classes.Eq TD.Data.UserFullInfo.UserFullInfo
+instance TD.Lib.Internal.ShortShow TD.Data.UserFullInfo.UserFullInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserFullInfo.UserFullInfo
+
 module TD.Data.AccentColor
 data AccentColor
 
@@ -22316,13 +22546,28 @@ UpdateQuickReplyShortcutMessages :: Maybe Int -> Maybe [QuickReplyMessage] -> Up
 [messages] :: Update -> Maybe [QuickReplyMessage]
 
 -- | Basic information about a topic in a forum chat was changed
-UpdateForumTopicInfo :: Maybe Int -> Maybe ForumTopicInfo -> Update
+UpdateForumTopicInfo :: Maybe ForumTopicInfo -> Update
+
+-- | New information about the topic
+[info] :: Update -> Maybe ForumTopicInfo
+
+-- | Information about a topic in a forum chat was changed
+UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe ChatNotificationSettings -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | New information about the topic
-[info] :: Update -> Maybe ForumTopicInfo
+-- | Message thread identifier of the topic
+[message_thread_id] :: Update -> Maybe Int
+
+-- | True, if the message is pinned
+[is_pinned] :: Update -> Maybe Bool
+
+-- | Identifier of last read outgoing message
+[last_read_outbox_message_id] :: Update -> Maybe Int
+
+-- | The new notification settings
+[notification_settings] :: Update -> Maybe ChatNotificationSettings
 
 -- | Notification settings for some type of chats were updated
 UpdateScopeNotificationSettings :: Maybe NotificationSettingsScope -> Maybe ScopeNotificationSettings -> Update
@@ -22424,8 +22669,7 @@ UpdateChatAction :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe ChatA
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | If not 0, the message thread identifier in which the action was
---   performed
+-- | Message thread identifier of the topic
 [message_thread_id] :: Update -> Maybe Int
 
 -- | Identifier of a message sender performing the action
@@ -22895,6 +23139,23 @@ UpdateConnectionState :: Maybe ConnectionState -> Update
 
 -- | The new connection state
 [state] :: Update -> Maybe ConnectionState
+
+-- | The freeze state of the current user's account has changed
+UpdateFreezeState :: Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Text -> Update
+
+-- | True, if the account is frozen
+[is_frozen] :: Update -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the account was frozen; 0 if the
+--   account isn't frozen
+[freezing_date] :: Update -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the account will be deleted and
+--   can't be unfrozen; 0 if the account isn't frozen
+[deletion_date] :: Update -> Maybe Int
+
+-- | The link to open to send an appeal to unfreeze the account
+[appeal_link] :: Update -> Maybe Text
 
 -- | New terms of service must be accepted by the user. If the terms of
 --   service are declined, then the deleteAccount method must be called
@@ -23605,7 +23866,7 @@ ReceivedGifts :: ReceivedGifts -> GeneralResult
 RecommendedChatFolders :: RecommendedChatFolders -> GeneralResult
 RecoveryEmailAddress :: RecoveryEmailAddress -> GeneralResult
 ReportChatResult :: ReportChatResult -> GeneralResult
-ReportChatSponsoredMessageResult :: ReportChatSponsoredMessageResult -> GeneralResult
+ReportSponsoredResult :: ReportSponsoredResult -> GeneralResult
 ReportStoryResult :: ReportStoryResult -> GeneralResult
 ResetPasswordResult :: ResetPasswordResult -> GeneralResult
 RtmpUrl :: RtmpUrl -> GeneralResult
@@ -23616,7 +23877,9 @@ SecretChat :: SecretChat -> GeneralResult
 SentWebAppMessage :: SentWebAppMessage -> GeneralResult
 Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
+SponsoredChats :: SponsoredChats -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
+StarAmount :: StarAmount -> GeneralResult
 StarCount :: StarCount -> GeneralResult
 StarGiveawayPaymentOptions :: StarGiveawayPaymentOptions -> GeneralResult
 StarPaymentOptions :: StarPaymentOptions -> GeneralResult
@@ -24433,47 +24696,23 @@ instance GHC.Classes.Eq TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 instance TD.Lib.Internal.ShortShow TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 
-module TD.Query.AssignAppStoreTransaction
+module TD.Query.AssignStoreTransaction
 
--- | Informs server about a purchase through App Store. For official
---   applications only. Returns <a>Ok</a>
-data AssignAppStoreTransaction
-AssignAppStoreTransaction :: Maybe ByteString -> Maybe StorePaymentPurpose -> AssignAppStoreTransaction
+-- | Informs server about an in-store purchase. For official applications
+--   only. Returns <a>Ok</a>
+data AssignStoreTransaction
+AssignStoreTransaction :: Maybe StoreTransaction -> Maybe StorePaymentPurpose -> AssignStoreTransaction
 
--- | App Store receipt
-[receipt] :: AssignAppStoreTransaction -> Maybe ByteString
-
--- | Transaction purpose
-[purpose] :: AssignAppStoreTransaction -> Maybe StorePaymentPurpose
-defaultAssignAppStoreTransaction :: AssignAppStoreTransaction
-instance GHC.Show.Show TD.Query.AssignAppStoreTransaction.AssignAppStoreTransaction
-instance GHC.Classes.Eq TD.Query.AssignAppStoreTransaction.AssignAppStoreTransaction
-instance TD.Lib.Internal.ShortShow TD.Query.AssignAppStoreTransaction.AssignAppStoreTransaction
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AssignAppStoreTransaction.AssignAppStoreTransaction
-
-module TD.Query.AssignGooglePlayTransaction
-
--- | Informs server about a purchase through Google Play. For official
---   applications only. Returns <a>Ok</a>
-data AssignGooglePlayTransaction
-AssignGooglePlayTransaction :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe StorePaymentPurpose -> AssignGooglePlayTransaction
-
--- | Application package name
-[package_name] :: AssignGooglePlayTransaction -> Maybe Text
-
--- | Identifier of the purchased store product
-[store_product_id] :: AssignGooglePlayTransaction -> Maybe Text
-
--- | Google Play purchase token
-[purchase_token] :: AssignGooglePlayTransaction -> Maybe Text
+-- | Information about the transaction
+[transaction] :: AssignStoreTransaction -> Maybe StoreTransaction
 
 -- | Transaction purpose
-[purpose] :: AssignGooglePlayTransaction -> Maybe StorePaymentPurpose
-defaultAssignGooglePlayTransaction :: AssignGooglePlayTransaction
-instance GHC.Show.Show TD.Query.AssignGooglePlayTransaction.AssignGooglePlayTransaction
-instance GHC.Classes.Eq TD.Query.AssignGooglePlayTransaction.AssignGooglePlayTransaction
-instance TD.Lib.Internal.ShortShow TD.Query.AssignGooglePlayTransaction.AssignGooglePlayTransaction
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AssignGooglePlayTransaction.AssignGooglePlayTransaction
+[purpose] :: AssignStoreTransaction -> Maybe StorePaymentPurpose
+defaultAssignStoreTransaction :: AssignStoreTransaction
+instance GHC.Show.Show TD.Query.AssignStoreTransaction.AssignStoreTransaction
+instance GHC.Classes.Eq TD.Query.AssignStoreTransaction.AssignStoreTransaction
+instance TD.Lib.Internal.ShortShow TD.Query.AssignStoreTransaction.AssignStoreTransaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AssignStoreTransaction.AssignStoreTransaction
 
 module TD.Query.BanChatMember
 
@@ -24567,7 +24806,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanBotSendMessages.CanBotSendMe
 module TD.Query.CanPurchaseFromStore
 
 -- | Checks whether an in-store purchase is possible. Must be called before
---   any in-store purchase. Returns <a>Ok</a>
+--   any in-store purchase. For official applications only. Returns
+--   <a>Ok</a>
 data CanPurchaseFromStore
 CanPurchaseFromStore :: Maybe StorePaymentPurpose -> CanPurchaseFromStore
 
@@ -24794,6 +25034,25 @@ instance GHC.Show.Show TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAut
 instance GHC.Classes.Eq TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
 instance TD.Lib.Internal.ShortShow TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationPasswordRecoveryCode.CheckAuthenticationPasswordRecoveryCode
+
+module TD.Query.CheckAuthenticationPremiumPurchase
+
+-- | Checks whether an in-store purchase of Telegram Premium is possible
+--   before authorization. Works only when the current authorization state
+--   is authorizationStateWaitPremiumPurchase. Returns <a>Ok</a>
+data CheckAuthenticationPremiumPurchase
+CheckAuthenticationPremiumPurchase :: Maybe Text -> Maybe Int -> CheckAuthenticationPremiumPurchase
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: CheckAuthenticationPremiumPurchase -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: CheckAuthenticationPremiumPurchase -> Maybe Int
+defaultCheckAuthenticationPremiumPurchase :: CheckAuthenticationPremiumPurchase
+instance GHC.Show.Show TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
+instance GHC.Classes.Eq TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
+instance TD.Lib.Internal.ShortShow TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
 
 module TD.Query.CheckChatFolderInviteLink
 
@@ -25830,6 +26089,43 @@ instance GHC.Classes.Eq TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnec
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessConnectedBot.DeleteBusinessConnectedBot
 
+module TD.Query.DeleteBusinessMessages
+
+-- | Deletes messages on behalf of a business account; for bots only.
+--   Returns <a>Ok</a>
+data DeleteBusinessMessages
+DeleteBusinessMessages :: Maybe Text -> Maybe [Int] -> DeleteBusinessMessages
+
+-- | Unique identifier of business connection through which the messages
+--   were received
+[business_connection_id] :: DeleteBusinessMessages -> Maybe Text
+
+-- | Identifier of the messages
+[message_ids] :: DeleteBusinessMessages -> Maybe [Int]
+defaultDeleteBusinessMessages :: DeleteBusinessMessages
+instance GHC.Show.Show TD.Query.DeleteBusinessMessages.DeleteBusinessMessages
+instance GHC.Classes.Eq TD.Query.DeleteBusinessMessages.DeleteBusinessMessages
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBusinessMessages.DeleteBusinessMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessMessages.DeleteBusinessMessages
+
+module TD.Query.DeleteBusinessStory
+
+-- | Deletes a story sent by the bot on behalf of a business account; for
+--   bots only. Returns <a>Ok</a>
+data DeleteBusinessStory
+DeleteBusinessStory :: Maybe Text -> Maybe Int -> DeleteBusinessStory
+
+-- | Unique identifier of business connection
+[business_connection_id] :: DeleteBusinessStory -> Maybe Text
+
+-- | Identifier of the story to delete
+[story_id] :: DeleteBusinessStory -> Maybe Int
+defaultDeleteBusinessStory :: DeleteBusinessStory
+instance GHC.Show.Show TD.Query.DeleteBusinessStory.DeleteBusinessStory
+instance GHC.Classes.Eq TD.Query.DeleteBusinessStory.DeleteBusinessStory
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBusinessStory.DeleteBusinessStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessStory.DeleteBusinessStory
+
 module TD.Query.DeleteChat
 
 -- | Deletes a chat along with all messages in the corresponding chat for
@@ -26611,6 +26907,36 @@ instance GHC.Show.Show TD.Query.EditBusinessMessageText.EditBusinessMessageText
 instance GHC.Classes.Eq TD.Query.EditBusinessMessageText.EditBusinessMessageText
 instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessMessageText.EditBusinessMessageText
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessMessageText.EditBusinessMessageText
+
+module TD.Query.EditBusinessStory
+
+-- | Changes a story sent by the bot on behalf of a business account; for
+--   bots only. Returns <a>Story</a>
+data EditBusinessStory
+EditBusinessStory :: Maybe Int -> Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> EditBusinessStory
+
+-- | Identifier of the chat that posted the story
+[story_sender_chat_id] :: EditBusinessStory -> Maybe Int
+
+-- | Identifier of the story to edit
+[story_id] :: EditBusinessStory -> Maybe Int
+
+-- | New content of the story
+[content] :: EditBusinessStory -> Maybe InputStoryContent
+
+-- | New clickable rectangle areas to be shown on the story media
+[areas] :: EditBusinessStory -> Maybe InputStoryAreas
+
+-- | New story caption
+[caption] :: EditBusinessStory -> Maybe FormattedText
+
+-- | The new privacy settings for the story
+[privacy_settings] :: EditBusinessStory -> Maybe StoryPrivacySettings
+defaultEditBusinessStory :: EditBusinessStory
+instance GHC.Show.Show TD.Query.EditBusinessStory.EditBusinessStory
+instance GHC.Classes.Eq TD.Query.EditBusinessStory.EditBusinessStory
+instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessStory.EditBusinessStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessStory.EditBusinessStory
 
 module TD.Query.EditChatFolder
 
@@ -27753,6 +28079,20 @@ instance GHC.Show.Show TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance GHC.Classes.Eq TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance TD.Lib.Internal.ShortShow TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotSimilarBots.GetBotSimilarBots
+
+module TD.Query.GetBusinessAccountStarAmount
+
+-- | Returns the amount of Telegram Stars owned by a business account; for
+--   bots only. Returns <a>StarAmount</a>
+data GetBusinessAccountStarAmount
+GetBusinessAccountStarAmount :: Maybe Text -> GetBusinessAccountStarAmount
+
+-- | Unique identifier of business connection
+[business_connection_id] :: GetBusinessAccountStarAmount -> Maybe Text
+instance GHC.Show.Show TD.Query.GetBusinessAccountStarAmount.GetBusinessAccountStarAmount
+instance GHC.Classes.Eq TD.Query.GetBusinessAccountStarAmount.GetBusinessAccountStarAmount
+instance TD.Lib.Internal.ShortShow TD.Query.GetBusinessAccountStarAmount.GetBusinessAccountStarAmount
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessAccountStarAmount.GetBusinessAccountStarAmount
 
 module TD.Query.GetBusinessChatLinkInfo
 
@@ -30914,7 +31254,11 @@ module TD.Query.GetReceivedGifts
 -- | Returns gifts received by the given user or chat. Returns
 --   <a>ReceivedGifts</a>
 data GetReceivedGifts
-GetReceivedGifts :: Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> GetReceivedGifts
+GetReceivedGifts :: Maybe Text -> Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> GetReceivedGifts
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request; for bots only
+[business_connection_id] :: GetReceivedGifts -> Maybe Text
 
 -- | Identifier of the gift receiver
 [owner_id] :: GetReceivedGifts -> Maybe MessageSender
@@ -31234,6 +31578,20 @@ instance GHC.Show.Show TD.Query.GetScopeNotificationSettings.GetScopeNotificatio
 instance GHC.Classes.Eq TD.Query.GetScopeNotificationSettings.GetScopeNotificationSettings
 instance TD.Lib.Internal.ShortShow TD.Query.GetScopeNotificationSettings.GetScopeNotificationSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetScopeNotificationSettings.GetScopeNotificationSettings
+
+module TD.Query.GetSearchSponsoredChats
+
+-- | Returns sponsored chats to be shown in the search results. Returns
+--   <a>SponsoredChats</a>
+data GetSearchSponsoredChats
+GetSearchSponsoredChats :: Maybe Text -> GetSearchSponsoredChats
+
+-- | Query the user searches for
+[query] :: GetSearchSponsoredChats -> Maybe Text
+instance GHC.Show.Show TD.Query.GetSearchSponsoredChats.GetSearchSponsoredChats
+instance GHC.Classes.Eq TD.Query.GetSearchSponsoredChats.GetSearchSponsoredChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetSearchSponsoredChats.GetSearchSponsoredChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSearchSponsoredChats.GetSearchSponsoredChats
 
 module TD.Query.GetSearchedForTags
 
@@ -32215,6 +32573,34 @@ instance GHC.Classes.Eq TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance TD.Lib.Internal.ShortShow TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebPageInstantView.GetWebPageInstantView
 
+module TD.Query.GiftPremiumWithStars
+
+-- | Allows to buy a Telegram Premium subscription for another user with
+--   payment in Telegram Stars; for bots only. Returns <a>Ok</a>
+data GiftPremiumWithStars
+GiftPremiumWithStars :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> GiftPremiumWithStars
+
+-- | Identifier of the user which will receive Telegram Premium
+[user_id] :: GiftPremiumWithStars -> Maybe Int
+
+-- | The number of Telegram Stars to pay for subscription
+[star_count] :: GiftPremiumWithStars -> Maybe Int
+
+-- | Number of months the Telegram Premium subscription will be active for
+--   the user
+[month_count] :: GiftPremiumWithStars -> Maybe Int
+
+-- | Text to show to the user receiving Telegram Premium;
+--   0-getOption("gift_text_length_max") characters. Only Bold, Italic,
+--   Underline, Strikethrough, Spoiler, and CustomEmoji entities are
+--   allowed
+[text] :: GiftPremiumWithStars -> Maybe FormattedText
+defaultGiftPremiumWithStars :: GiftPremiumWithStars
+instance GHC.Show.Show TD.Query.GiftPremiumWithStars.GiftPremiumWithStars
+instance GHC.Classes.Eq TD.Query.GiftPremiumWithStars.GiftPremiumWithStars
+instance TD.Lib.Internal.ShortShow TD.Query.GiftPremiumWithStars.GiftPremiumWithStars
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GiftPremiumWithStars.GiftPremiumWithStars
+
 module TD.Query.HideContactCloseBirthdays
 
 -- | Hides the list of contacts that have close birthdays for 24 hours.
@@ -32614,6 +33000,19 @@ instance GHC.Classes.Eq TD.Query.OpenMessageContent.OpenMessageContent
 instance TD.Lib.Internal.ShortShow TD.Query.OpenMessageContent.OpenMessageContent
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenMessageContent.OpenMessageContent
 
+module TD.Query.OpenSponsoredChat
+
+-- | Informs TDLib that the user opened a sponsored chat. Returns <a>Ok</a>
+data OpenSponsoredChat
+OpenSponsoredChat :: Maybe Int -> OpenSponsoredChat
+
+-- | Unique identifier of the sponsored chat
+[sponsored_chat_unique_id] :: OpenSponsoredChat -> Maybe Int
+instance GHC.Show.Show TD.Query.OpenSponsoredChat.OpenSponsoredChat
+instance GHC.Classes.Eq TD.Query.OpenSponsoredChat.OpenSponsoredChat
+instance TD.Lib.Internal.ShortShow TD.Query.OpenSponsoredChat.OpenSponsoredChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenSponsoredChat.OpenSponsoredChat
+
 module TD.Query.OpenStory
 
 -- | Informs TDLib that a story is opened and is being viewed by the user.
@@ -32990,6 +33389,28 @@ instance GHC.Show.Show TD.Query.ReadAllMessageThreadReactions.ReadAllMessageThre
 instance GHC.Classes.Eq TD.Query.ReadAllMessageThreadReactions.ReadAllMessageThreadReactions
 instance TD.Lib.Internal.ShortShow TD.Query.ReadAllMessageThreadReactions.ReadAllMessageThreadReactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadAllMessageThreadReactions.ReadAllMessageThreadReactions
+
+module TD.Query.ReadBusinessMessage
+
+-- | Reads a message on behalf of a business account; for bots only.
+--   Returns <a>Ok</a>
+data ReadBusinessMessage
+ReadBusinessMessage :: Maybe Text -> Maybe Int -> Maybe Int -> ReadBusinessMessage
+
+-- | Unique identifier of business connection through which the message was
+--   received
+[business_connection_id] :: ReadBusinessMessage -> Maybe Text
+
+-- | The chat the message belongs to
+[chat_id] :: ReadBusinessMessage -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: ReadBusinessMessage -> Maybe Int
+defaultReadBusinessMessage :: ReadBusinessMessage
+instance GHC.Show.Show TD.Query.ReadBusinessMessage.ReadBusinessMessage
+instance GHC.Classes.Eq TD.Query.ReadBusinessMessage.ReadBusinessMessage
+instance TD.Lib.Internal.ShortShow TD.Query.ReadBusinessMessage.ReadBusinessMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadBusinessMessage.ReadBusinessMessage
 
 module TD.Query.ReadChatList
 
@@ -33768,7 +34189,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportChatPhoto.ReportChatPhoto
 module TD.Query.ReportChatSponsoredMessage
 
 -- | Reports a sponsored message to Telegram moderators. Returns
---   <a>ReportChatSponsoredMessageResult</a>
+--   <a>ReportSponsoredResult</a>
 data ReportChatSponsoredMessage
 ReportChatSponsoredMessage :: Maybe Int -> Maybe Int -> Maybe ByteString -> ReportChatSponsoredMessage
 
@@ -33823,6 +34244,25 @@ instance GHC.Show.Show TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCo
 instance GHC.Classes.Eq TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
 instance TD.Lib.Internal.ShortShow TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportPhoneNumberCodeMissing.ReportPhoneNumberCodeMissing
+
+module TD.Query.ReportSponsoredChat
+
+-- | Reports a sponsored chat to Telegram moderators. Returns
+--   <a>ReportSponsoredResult</a>
+data ReportSponsoredChat
+ReportSponsoredChat :: Maybe Int -> Maybe ByteString -> ReportSponsoredChat
+
+-- | Unique identifier of the sponsored chat
+[sponsored_chat_unique_id] :: ReportSponsoredChat -> Maybe Int
+
+-- | Option identifier chosen by the user; leave empty for the initial
+--   request
+[option_id] :: ReportSponsoredChat -> Maybe ByteString
+defaultReportSponsoredChat :: ReportSponsoredChat
+instance GHC.Show.Show TD.Query.ReportSponsoredChat.ReportSponsoredChat
+instance GHC.Classes.Eq TD.Query.ReportSponsoredChat.ReportSponsoredChat
+instance TD.Lib.Internal.ShortShow TD.Query.ReportSponsoredChat.ReportSponsoredChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportSponsoredChat.ReportSponsoredChat
 
 module TD.Query.ReportStory
 
@@ -33922,6 +34362,7 @@ module TD.Query.RequestQrCodeAuthentication
 --   logged in device. Works only when the current authorization state is
 --   authorizationStateWaitPhoneNumber, or if there is no pending
 --   authentication query and the current authorization state is
+--   authorizationStateWaitPremiumPurchase,
 --   authorizationStateWaitEmailAddress, authorizationStateWaitEmailCode,
 --   authorizationStateWaitCode, authorizationStateWaitRegistration, or
 --   authorizationStateWaitPassword. Returns <a>Ok</a>
@@ -34987,10 +35428,15 @@ module TD.Query.SellGift
 
 -- | Sells a gift for Telegram Stars. Returns <a>Ok</a>
 data SellGift
-SellGift :: Maybe Text -> SellGift
+SellGift :: Maybe Text -> Maybe Text -> SellGift
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request; for bots only
+[business_connection_id] :: SellGift -> Maybe Text
 
 -- | Identifier of the gift
 [received_gift_id] :: SellGift -> Maybe Text
+defaultSellGift :: SellGift
 instance GHC.Show.Show TD.Query.SellGift.SellGift
 instance GHC.Classes.Eq TD.Query.SellGift.SellGift
 instance TD.Lib.Internal.ShortShow TD.Query.SellGift.SellGift
@@ -35705,6 +36151,7 @@ module TD.Query.SetAuthenticationPhoneNumber
 --   the user. Works only when the current authorization state is
 --   authorizationStateWaitPhoneNumber, or if there is no pending
 --   authentication query and the current authorization state is
+--   authorizationStateWaitPremiumPurchase,
 --   authorizationStateWaitEmailAddress, authorizationStateWaitEmailCode,
 --   authorizationStateWaitCode, authorizationStateWaitRegistration, or
 --   authorizationStateWaitPassword. Returns <a>Ok</a>
@@ -35722,6 +36169,32 @@ instance GHC.Show.Show TD.Query.SetAuthenticationPhoneNumber.SetAuthenticationPh
 instance GHC.Classes.Eq TD.Query.SetAuthenticationPhoneNumber.SetAuthenticationPhoneNumber
 instance TD.Lib.Internal.ShortShow TD.Query.SetAuthenticationPhoneNumber.SetAuthenticationPhoneNumber
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetAuthenticationPhoneNumber.SetAuthenticationPhoneNumber
+
+module TD.Query.SetAuthenticationPremiumPurchaseTransaction
+
+-- | Informs server about an in-store purchase of Telegram Premium before
+--   authorization. Works only when the current authorization state is
+--   authorizationStateWaitPremiumPurchase. Returns <a>Ok</a>
+data SetAuthenticationPremiumPurchaseTransaction
+SetAuthenticationPremiumPurchaseTransaction :: Maybe StoreTransaction -> Maybe Bool -> Maybe Text -> Maybe Int -> SetAuthenticationPremiumPurchaseTransaction
+
+-- | Information about the transaction
+[transaction] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe StoreTransaction
+
+-- | Pass true if this is a restore of a Telegram Premium purchase; only
+--   for App Store
+[is_restore] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Bool
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Text
+
+-- | Paid amount, in the smallest units of the currency
+[amount] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Int
+defaultSetAuthenticationPremiumPurchaseTransaction :: SetAuthenticationPremiumPurchaseTransaction
+instance GHC.Show.Show TD.Query.SetAuthenticationPremiumPurchaseTransaction.SetAuthenticationPremiumPurchaseTransaction
+instance GHC.Classes.Eq TD.Query.SetAuthenticationPremiumPurchaseTransaction.SetAuthenticationPremiumPurchaseTransaction
+instance TD.Lib.Internal.ShortShow TD.Query.SetAuthenticationPremiumPurchaseTransaction.SetAuthenticationPremiumPurchaseTransaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetAuthenticationPremiumPurchaseTransaction.SetAuthenticationPremiumPurchaseTransaction
 
 module TD.Query.SetAutoDownloadSettings
 
@@ -35893,6 +36366,106 @@ instance GHC.Show.Show TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance GHC.Classes.Eq TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance TD.Lib.Internal.ShortShow TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBotUpdatesStatus.SetBotUpdatesStatus
+
+module TD.Query.SetBusinessAccountBio
+
+-- | Changes the bio of a business account; for bots only. Returns
+--   <a>Ok</a>
+data SetBusinessAccountBio
+SetBusinessAccountBio :: Maybe Text -> Maybe Text -> SetBusinessAccountBio
+
+-- | Unique identifier of business connection
+[business_connection_id] :: SetBusinessAccountBio -> Maybe Text
+
+-- | The new value of the bio; 0-getOption("bio_length_max") characters
+--   without line feeds
+[bio] :: SetBusinessAccountBio -> Maybe Text
+defaultSetBusinessAccountBio :: SetBusinessAccountBio
+instance GHC.Show.Show TD.Query.SetBusinessAccountBio.SetBusinessAccountBio
+instance GHC.Classes.Eq TD.Query.SetBusinessAccountBio.SetBusinessAccountBio
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAccountBio.SetBusinessAccountBio
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAccountBio.SetBusinessAccountBio
+
+module TD.Query.SetBusinessAccountGiftSettings
+
+-- | Changes settings for gift receiving of a business account; for bots
+--   only. Returns <a>Ok</a>
+data SetBusinessAccountGiftSettings
+SetBusinessAccountGiftSettings :: Maybe Text -> Maybe GiftSettings -> SetBusinessAccountGiftSettings
+
+-- | Unique identifier of business connection
+[business_connection_id] :: SetBusinessAccountGiftSettings -> Maybe Text
+
+-- | The new settings
+[settings] :: SetBusinessAccountGiftSettings -> Maybe GiftSettings
+defaultSetBusinessAccountGiftSettings :: SetBusinessAccountGiftSettings
+instance GHC.Show.Show TD.Query.SetBusinessAccountGiftSettings.SetBusinessAccountGiftSettings
+instance GHC.Classes.Eq TD.Query.SetBusinessAccountGiftSettings.SetBusinessAccountGiftSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAccountGiftSettings.SetBusinessAccountGiftSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAccountGiftSettings.SetBusinessAccountGiftSettings
+
+module TD.Query.SetBusinessAccountName
+
+-- | Changes the first and last name of a business account; for bots only.
+--   Returns <a>Ok</a>
+data SetBusinessAccountName
+SetBusinessAccountName :: Maybe Text -> Maybe Text -> Maybe Text -> SetBusinessAccountName
+
+-- | Unique identifier of business connection
+[business_connection_id] :: SetBusinessAccountName -> Maybe Text
+
+-- | The new value of the first name for the business account; 1-64
+--   characters
+[first_name] :: SetBusinessAccountName -> Maybe Text
+
+-- | The new value of the optional last name for the business account; 0-64
+--   characters
+[last_name] :: SetBusinessAccountName -> Maybe Text
+defaultSetBusinessAccountName :: SetBusinessAccountName
+instance GHC.Show.Show TD.Query.SetBusinessAccountName.SetBusinessAccountName
+instance GHC.Classes.Eq TD.Query.SetBusinessAccountName.SetBusinessAccountName
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAccountName.SetBusinessAccountName
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAccountName.SetBusinessAccountName
+
+module TD.Query.SetBusinessAccountProfilePhoto
+
+-- | Changes a profile photo of a business account; for bots only. Returns
+--   <a>Ok</a>
+data SetBusinessAccountProfilePhoto
+SetBusinessAccountProfilePhoto :: Maybe Text -> Maybe InputChatPhoto -> Maybe Bool -> SetBusinessAccountProfilePhoto
+
+-- | Unique identifier of business connection
+[business_connection_id] :: SetBusinessAccountProfilePhoto -> Maybe Text
+
+-- | Profile photo to set; pass null to remove the photo
+[photo] :: SetBusinessAccountProfilePhoto -> Maybe InputChatPhoto
+
+-- | Pass true to set the public photo, which will be visible even the main
+--   photo is hidden by privacy settings
+[is_public] :: SetBusinessAccountProfilePhoto -> Maybe Bool
+defaultSetBusinessAccountProfilePhoto :: SetBusinessAccountProfilePhoto
+instance GHC.Show.Show TD.Query.SetBusinessAccountProfilePhoto.SetBusinessAccountProfilePhoto
+instance GHC.Classes.Eq TD.Query.SetBusinessAccountProfilePhoto.SetBusinessAccountProfilePhoto
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAccountProfilePhoto.SetBusinessAccountProfilePhoto
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAccountProfilePhoto.SetBusinessAccountProfilePhoto
+
+module TD.Query.SetBusinessAccountUsername
+
+-- | Changes the editable username of a business account; for bots only.
+--   Returns <a>Ok</a>
+data SetBusinessAccountUsername
+SetBusinessAccountUsername :: Maybe Text -> Maybe Text -> SetBusinessAccountUsername
+
+-- | Unique identifier of business connection
+[business_connection_id] :: SetBusinessAccountUsername -> Maybe Text
+
+-- | The new value of the username
+[username] :: SetBusinessAccountUsername -> Maybe Text
+defaultSetBusinessAccountUsername :: SetBusinessAccountUsername
+instance GHC.Show.Show TD.Query.SetBusinessAccountUsername.SetBusinessAccountUsername
+instance GHC.Classes.Eq TD.Query.SetBusinessAccountUsername.SetBusinessAccountUsername
+instance TD.Lib.Internal.ShortShow TD.Query.SetBusinessAccountUsername.SetBusinessAccountUsername
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetBusinessAccountUsername.SetBusinessAccountUsername
 
 module TD.Query.SetBusinessAwayMessageSettings
 
@@ -36792,6 +37365,20 @@ instance GHC.Classes.Eq TD.Query.SetGameScore.SetGameScore
 instance TD.Lib.Internal.ShortShow TD.Query.SetGameScore.SetGameScore
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGameScore.SetGameScore
 
+module TD.Query.SetGiftSettings
+
+-- | Changes settings for gift receiving for the current user. Returns
+--   <a>Ok</a>
+data SetGiftSettings
+SetGiftSettings :: Maybe GiftSettings -> SetGiftSettings
+
+-- | The new settings
+[settings] :: SetGiftSettings -> Maybe GiftSettings
+instance GHC.Show.Show TD.Query.SetGiftSettings.SetGiftSettings
+instance GHC.Classes.Eq TD.Query.SetGiftSettings.SetGiftSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetGiftSettings.SetGiftSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGiftSettings.SetGiftSettings
+
 module TD.Query.SetGroupCallParticipantIsSpeaking
 
 -- | Informs TDLib that speaking state of a participant of an active group
@@ -37376,7 +37963,7 @@ SetProfilePhoto :: Maybe InputChatPhoto -> Maybe Bool -> SetProfilePhoto
 -- | Profile photo to set
 [photo] :: SetProfilePhoto -> Maybe InputChatPhoto
 
--- | Pass true to set a public photo, which will be visible even the main
+-- | Pass true to set the public photo, which will be visible even the main
 --   photo is hidden by privacy settings
 [is_public] :: SetProfilePhoto -> Maybe Bool
 defaultSetProfilePhoto :: SetProfilePhoto
@@ -39122,6 +39709,24 @@ instance GHC.Classes.Eq TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 
+module TD.Query.TransferBusinessAccountStars
+
+-- | Transfer Telegram Stars from the business account to the business bot;
+--   for bots only. Returns <a>Ok</a>
+data TransferBusinessAccountStars
+TransferBusinessAccountStars :: Maybe Text -> Maybe Int -> TransferBusinessAccountStars
+
+-- | Unique identifier of business connection
+[business_connection_id] :: TransferBusinessAccountStars -> Maybe Text
+
+-- | Number of Telegram Stars to transfer
+[star_count] :: TransferBusinessAccountStars -> Maybe Int
+defaultTransferBusinessAccountStars :: TransferBusinessAccountStars
+instance GHC.Show.Show TD.Query.TransferBusinessAccountStars.TransferBusinessAccountStars
+instance GHC.Classes.Eq TD.Query.TransferBusinessAccountStars.TransferBusinessAccountStars
+instance TD.Lib.Internal.ShortShow TD.Query.TransferBusinessAccountStars.TransferBusinessAccountStars
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TransferBusinessAccountStars.TransferBusinessAccountStars
+
 module TD.Query.TransferChatOwnership
 
 -- | Changes the owner of a chat; requires owner privileges in the chat.
@@ -39151,7 +39756,11 @@ module TD.Query.TransferGift
 -- | Sends an upgraded gift to another user or a channel chat. Returns
 --   <a>Ok</a>
 data TransferGift
-TransferGift :: Maybe Text -> Maybe MessageSender -> Maybe Int -> TransferGift
+TransferGift :: Maybe Text -> Maybe Text -> Maybe MessageSender -> Maybe Int -> TransferGift
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request; for bots only
+[business_connection_id] :: TransferGift -> Maybe Text
 
 -- | Identifier of the gift
 [received_gift_id] :: TransferGift -> Maybe Text
@@ -39303,7 +39912,11 @@ module TD.Query.UpgradeGift
 
 -- | Upgrades a regular gift. Returns <a>UpgradeGiftResult</a>
 data UpgradeGift
-UpgradeGift :: Maybe Text -> Maybe Bool -> Maybe Int -> UpgradeGift
+UpgradeGift :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Int -> UpgradeGift
+
+-- | Unique identifier of business connection on behalf of which to send
+--   the request; for bots only
+[business_connection_id] :: UpgradeGift -> Maybe Text
 
 -- | Identifier of the gift
 [received_gift_id] :: UpgradeGift -> Maybe Text
@@ -39413,6 +40026,20 @@ instance GHC.Show.Show TD.Query.ViewPremiumFeature.ViewPremiumFeature
 instance GHC.Classes.Eq TD.Query.ViewPremiumFeature.ViewPremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Query.ViewPremiumFeature.ViewPremiumFeature
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ViewPremiumFeature.ViewPremiumFeature
+
+module TD.Query.ViewSponsoredChat
+
+-- | Informs TDLib that the user fully viewed a sponsored chat. Returns
+--   <a>Ok</a>
+data ViewSponsoredChat
+ViewSponsoredChat :: Maybe Int -> ViewSponsoredChat
+
+-- | Unique identifier of the sponsored chat
+[sponsored_chat_unique_id] :: ViewSponsoredChat -> Maybe Int
+instance GHC.Show.Show TD.Query.ViewSponsoredChat.ViewSponsoredChat
+instance GHC.Classes.Eq TD.Query.ViewSponsoredChat.ViewSponsoredChat
+instance TD.Lib.Internal.ShortShow TD.Query.ViewSponsoredChat.ViewSponsoredChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ViewSponsoredChat.ViewSponsoredChat
 
 module TD.Query.ViewTrendingStickerSets
 

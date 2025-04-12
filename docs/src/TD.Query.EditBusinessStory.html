@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EditBusinessStory</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier">EditBusinessStory</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#defaultEditBusinessStory"><span class="hs-identifier">defaultEditBusinessStory</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputStoryContent.html"><span class="hs-identifier">TD.Data.InputStoryContent</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputStoryContent</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreas.html"><span class="hs-identifier">TD.Data.InputStoryAreas</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputStoryAreas</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html"><span class="hs-identifier">TD.Data.FormattedText</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">FormattedText</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.StoryPrivacySettings.html"><span class="hs-identifier">TD.Data.StoryPrivacySettings</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">StoryPrivacySettings</span></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="annot"><span class="hs-comment">-- | Changes a story sent by the bot on behalf of a business account; for bots only. Returns 'TD.Data.Story.Story'</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">data</span><span> </span><span id="EditBusinessStory"><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-var">EditBusinessStory</span></a></span></span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EditBusinessStory"><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-var">EditBusinessStory</span></a></span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="story_sender_chat_id"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_sender_chat_id"><span class="hs-identifier hs-var hs-var">story_sender_chat_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat that posted the story</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="story_id"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_id"><span class="hs-identifier hs-var hs-var">story_id</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the story to edit</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="content"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe InputStoryContent
+</span><a href="TD.Query.EditBusinessStory.html#content"><span class="hs-identifier hs-var hs-var">content</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryContent.html#InputStoryContent"><span class="hs-identifier hs-type">InputStoryContent.InputStoryContent</span></a></span><span>       </span><span class="annot"><span class="hs-comment">-- ^ New content of the story</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="areas"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe InputStoryAreas
+</span><a href="TD.Query.EditBusinessStory.html#areas"><span class="hs-identifier hs-var hs-var">areas</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.InputStoryAreas.html#InputStoryAreas"><span class="hs-identifier hs-type">InputStoryAreas.InputStoryAreas</span></a></span><span>           </span><span class="annot"><span class="hs-comment">-- ^ New clickable rectangle areas to be shown on the story media</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="caption"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe FormattedText
+</span><a href="TD.Query.EditBusinessStory.html#caption"><span class="hs-identifier hs-var hs-var">caption</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html#FormattedText"><span class="hs-identifier hs-type">FormattedText.FormattedText</span></a></span><span>               </span><span class="annot"><span class="hs-comment">-- ^ New story caption</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="privacy_settings"><span class="annot"><span class="annottext">EditBusinessStory -&gt; Maybe StoryPrivacySettings
+</span><a href="TD.Query.EditBusinessStory.html#privacy_settings"><span class="hs-identifier hs-var hs-var">privacy_settings</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.StoryPrivacySettings.html#StoryPrivacySettings"><span class="hs-identifier hs-type">StoryPrivacySettings.StoryPrivacySettings</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The new privacy settings for the story</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-24"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679846544"><span id="local-6989586621679846558"><span class="annot"><span class="annottext">EditBusinessStory -&gt; EditBusinessStory -&gt; Bool
+(EditBusinessStory -&gt; EditBusinessStory -&gt; Bool)
+-&gt; (EditBusinessStory -&gt; EditBusinessStory -&gt; Bool)
+-&gt; Eq EditBusinessStory
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EditBusinessStory -&gt; EditBusinessStory -&gt; Bool
+== :: EditBusinessStory -&gt; EditBusinessStory -&gt; Bool
+$c/= :: EditBusinessStory -&gt; EditBusinessStory -&gt; Bool
+/= :: EditBusinessStory -&gt; EditBusinessStory -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679846568"><span id="local-6989586621679846584"><span id="local-6989586621679846588"><span class="annot"><span class="annottext">Int -&gt; EditBusinessStory -&gt; ShowS
+[EditBusinessStory] -&gt; ShowS
+EditBusinessStory -&gt; String
+(Int -&gt; EditBusinessStory -&gt; ShowS)
+-&gt; (EditBusinessStory -&gt; String)
+-&gt; ([EditBusinessStory] -&gt; ShowS)
+-&gt; Show EditBusinessStory
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; EditBusinessStory -&gt; ShowS
+showsPrec :: Int -&gt; EditBusinessStory -&gt; ShowS
+$cshow :: EditBusinessStory -&gt; String
+show :: EditBusinessStory -&gt; String
+$cshowList :: [EditBusinessStory] -&gt; ShowS
+showList :: [EditBusinessStory] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-27"></span><span>  </span><span id="local-6989586621679846613"><span class="annot"><span class="annottext">shortShow :: EditBusinessStory -&gt; String
+</span><a href="#local-6989586621679846613"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">story_sender_chat_id :: EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_sender_chat_id"><span class="hs-identifier hs-var">story_sender_chat_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846615"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846615"><span class="hs-identifier hs-var">story_sender_chat_id_</span></a></span></span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">story_id :: EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_id"><span class="hs-identifier hs-var">story_id</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846616"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846616"><span class="hs-identifier hs-var">story_id_</span></a></span></span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">content :: EditBusinessStory -&gt; Maybe InputStoryContent
+</span><a href="TD.Query.EditBusinessStory.html#content"><span class="hs-identifier hs-var">content</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846617"><span class="annot"><span class="annottext">Maybe InputStoryContent
+</span><a href="#local-6989586621679846617"><span class="hs-identifier hs-var">content_</span></a></span></span><span>
+</span><span id="line-32"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">areas :: EditBusinessStory -&gt; Maybe InputStoryAreas
+</span><a href="TD.Query.EditBusinessStory.html#areas"><span class="hs-identifier hs-var">areas</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846618"><span class="annot"><span class="annottext">Maybe InputStoryAreas
+</span><a href="#local-6989586621679846618"><span class="hs-identifier hs-var">areas_</span></a></span></span><span>
+</span><span id="line-33"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">caption :: EditBusinessStory -&gt; Maybe FormattedText
+</span><a href="TD.Query.EditBusinessStory.html#caption"><span class="hs-identifier hs-var">caption</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846619"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679846619"><span class="hs-identifier hs-var">caption_</span></a></span></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">privacy_settings :: EditBusinessStory -&gt; Maybe StoryPrivacySettings
+</span><a href="TD.Query.EditBusinessStory.html#privacy_settings"><span class="hs-identifier hs-var">privacy_settings</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846620"><span class="annot"><span class="annottext">Maybe StoryPrivacySettings
+</span><a href="#local-6989586621679846620"><span class="hs-identifier hs-var">privacy_settings_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EditBusinessStory&quot;</span></span><span>
+</span><span id="line-37"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-38"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;story_sender_chat_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846615"><span class="hs-identifier hs-var">story_sender_chat_id_</span></a></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;story_id&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846616"><span class="hs-identifier hs-var">story_id_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;content&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe InputStoryContent -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryContent
+</span><a href="#local-6989586621679846617"><span class="hs-identifier hs-var">content_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;areas&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe InputStoryAreas -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryAreas
+</span><a href="#local-6989586621679846618"><span class="hs-identifier hs-var">areas_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;caption&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe FormattedText -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679846619"><span class="hs-identifier hs-var">caption_</span></a></span><span>
+</span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;privacy_settings&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe StoryPrivacySettings -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe StoryPrivacySettings
+</span><a href="#local-6989586621679846620"><span class="hs-identifier hs-var">privacy_settings_</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679846625"><span id="local-6989586621679846629"><span id="local-6989586621679846632"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-47"></span><span>  </span><span id="local-6989586621679846674"><span class="annot"><span class="annottext">toJSON :: EditBusinessStory -&gt; Value
+</span><a href="#local-6989586621679846674"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span><span>
+</span><span id="line-49"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">story_sender_chat_id :: EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_sender_chat_id"><span class="hs-identifier hs-var">story_sender_chat_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846676"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846676"><span class="hs-identifier hs-var">story_sender_chat_id_</span></a></span></span><span>
+</span><span id="line-50"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">story_id :: EditBusinessStory -&gt; Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_id"><span class="hs-identifier hs-var">story_id</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846677"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846677"><span class="hs-identifier hs-var">story_id_</span></a></span></span><span>
+</span><span id="line-51"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">content :: EditBusinessStory -&gt; Maybe InputStoryContent
+</span><a href="TD.Query.EditBusinessStory.html#content"><span class="hs-identifier hs-var">content</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846678"><span class="annot"><span class="annottext">Maybe InputStoryContent
+</span><a href="#local-6989586621679846678"><span class="hs-identifier hs-var">content_</span></a></span></span><span>
+</span><span id="line-52"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">areas :: EditBusinessStory -&gt; Maybe InputStoryAreas
+</span><a href="TD.Query.EditBusinessStory.html#areas"><span class="hs-identifier hs-var">areas</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846679"><span class="annot"><span class="annottext">Maybe InputStoryAreas
+</span><a href="#local-6989586621679846679"><span class="hs-identifier hs-var">areas_</span></a></span></span><span>
+</span><span id="line-53"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">caption :: EditBusinessStory -&gt; Maybe FormattedText
+</span><a href="TD.Query.EditBusinessStory.html#caption"><span class="hs-identifier hs-var">caption</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846680"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679846680"><span class="hs-identifier hs-var">caption_</span></a></span></span><span>
+</span><span id="line-54"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">privacy_settings :: EditBusinessStory -&gt; Maybe StoryPrivacySettings
+</span><a href="TD.Query.EditBusinessStory.html#privacy_settings"><span class="hs-identifier hs-var">privacy_settings</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679846681"><span class="annot"><span class="annottext">Maybe StoryPrivacySettings
+</span><a href="#local-6989586621679846681"><span class="hs-identifier hs-var">privacy_settings_</span></a></span></span><span>
+</span><span id="line-55"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;editBusinessStory&quot;</span></span><span>
+</span><span id="line-58"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;story_sender_chat_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846676"><span class="hs-identifier hs-var">story_sender_chat_id_</span></a></span><span>
+</span><span id="line-59"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;story_id&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679846677"><span class="hs-identifier hs-var">story_id_</span></a></span><span>
+</span><span id="line-60"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;content&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe InputStoryContent -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryContent
+</span><a href="#local-6989586621679846678"><span class="hs-identifier hs-var">content_</span></a></span><span>
+</span><span id="line-61"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;areas&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Maybe InputStoryAreas -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryAreas
+</span><a href="#local-6989586621679846679"><span class="hs-identifier hs-var">areas_</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;caption&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe FormattedText -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679846680"><span class="hs-identifier hs-var">caption_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;privacy_settings&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe StoryPrivacySettings -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe StoryPrivacySettings
+</span><a href="#local-6989586621679846681"><span class="hs-identifier hs-var">privacy_settings_</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-65"></span><span>
+</span><span id="line-66"></span><span class="annot"><a href="TD.Query.EditBusinessStory.html#defaultEditBusinessStory"><span class="hs-identifier hs-type">defaultEditBusinessStory</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span><span>
+</span><span id="line-67"></span><span id="defaultEditBusinessStory"><span class="annot"><span class="annottext">defaultEditBusinessStory :: EditBusinessStory
+</span><a href="TD.Query.EditBusinessStory.html#defaultEditBusinessStory"><span class="hs-identifier hs-var hs-var">defaultEditBusinessStory</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-68"></span><span>  </span><span class="annot"><a href="TD.Query.EditBusinessStory.html#EditBusinessStory"><span class="hs-identifier hs-type">EditBusinessStory</span></a></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">story_sender_chat_id :: Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_sender_chat_id"><span class="hs-identifier hs-var">story_sender_chat_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">story_id :: Maybe Int
+</span><a href="TD.Query.EditBusinessStory.html#story_id"><span class="hs-identifier hs-var">story_id</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-71"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">content :: Maybe InputStoryContent
+</span><a href="TD.Query.EditBusinessStory.html#content"><span class="hs-identifier hs-var">content</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryContent
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">areas :: Maybe InputStoryAreas
+</span><a href="TD.Query.EditBusinessStory.html#areas"><span class="hs-identifier hs-var">areas</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe InputStoryAreas
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">caption :: Maybe FormattedText
+</span><a href="TD.Query.EditBusinessStory.html#caption"><span class="hs-identifier hs-var">caption</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">privacy_settings :: Maybe StoryPrivacySettings
+</span><a href="TD.Query.EditBusinessStory.html#privacy_settings"><span class="hs-identifier hs-var">privacy_settings</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe StoryPrivacySettings
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span></pre></body></html>
