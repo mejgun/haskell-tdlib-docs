@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EncryptGroupCallData</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier">EncryptGroupCallData</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#defaultEncryptGroupCallData"><span class="hs-identifier">defaultEncryptGroupCallData</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.GroupCallDataChannel.html"><span class="hs-identifier">TD.Data.GroupCallDataChannel</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">GroupCallDataChannel</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Encrypts group call data before sending them over network using tgcalls. Returns 'TD.Data.Data.Data'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="EncryptGroupCallData"><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-var">EncryptGroupCallData</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EncryptGroupCallData"><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-var">EncryptGroupCallData</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="group_call_id"><span class="annot"><span class="annottext">EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#group_call_id"><span class="hs-identifier hs-var hs-var">group_call_id</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Group call identifier. The call must not be a video chat</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="data_channel"><span class="annot"><span class="annottext">EncryptGroupCallData -&gt; Maybe GroupCallDataChannel
+</span><a href="TD.Query.EncryptGroupCallData.html#data_channel"><span class="hs-identifier hs-var hs-var">data_channel</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.GroupCallDataChannel.html#GroupCallDataChannel"><span class="hs-identifier hs-type">GroupCallDataChannel.GroupCallDataChannel</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Data channel for which data is encrypted</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_data"><span class="annot"><span class="annottext">EncryptGroupCallData -&gt; Maybe ByteString
+</span><a href="TD.Query.EncryptGroupCallData.html#_data"><span class="hs-identifier hs-var hs-var">_data</span></a></span></span><span>                   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span>                             </span><span class="annot"><span class="hs-comment">-- ^ Data to encrypt</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="unencrypted_prefix_size"><span class="annot"><span class="annottext">EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#unencrypted_prefix_size"><span class="hs-identifier hs-var hs-var">unencrypted_prefix_size</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Size of data prefix that must be kept unencrypted</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679856832"><span id="local-6989586621679856842"><span class="annot"><span class="annottext">EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool
+(EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool)
+-&gt; (EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool)
+-&gt; Eq EncryptGroupCallData
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool
+== :: EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool
+$c/= :: EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool
+/= :: EncryptGroupCallData -&gt; EncryptGroupCallData -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679856850"><span id="local-6989586621679856862"><span id="local-6989586621679856866"><span class="annot"><span class="annottext">Int -&gt; EncryptGroupCallData -&gt; ShowS
+[EncryptGroupCallData] -&gt; ShowS
+EncryptGroupCallData -&gt; String
+(Int -&gt; EncryptGroupCallData -&gt; ShowS)
+-&gt; (EncryptGroupCallData -&gt; String)
+-&gt; ([EncryptGroupCallData] -&gt; ShowS)
+-&gt; Show EncryptGroupCallData
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; EncryptGroupCallData -&gt; ShowS
+showsPrec :: Int -&gt; EncryptGroupCallData -&gt; ShowS
+$cshow :: EncryptGroupCallData -&gt; String
+show :: EncryptGroupCallData -&gt; String
+$cshowList :: [EncryptGroupCallData] -&gt; ShowS
+showList :: [EncryptGroupCallData] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-23"></span><span>  </span><span id="local-6989586621679856885"><span class="annot"><span class="annottext">shortShow :: EncryptGroupCallData -&gt; String
+</span><a href="#local-6989586621679856885"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">group_call_id :: EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#group_call_id"><span class="hs-identifier hs-var">group_call_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856887"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856887"><span class="hs-identifier hs-var">group_call_id_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">data_channel :: EncryptGroupCallData -&gt; Maybe GroupCallDataChannel
+</span><a href="TD.Query.EncryptGroupCallData.html#data_channel"><span class="hs-identifier hs-var">data_channel</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856888"><span class="annot"><span class="annottext">Maybe GroupCallDataChannel
+</span><a href="#local-6989586621679856888"><span class="hs-identifier hs-var">data_channel_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_data :: EncryptGroupCallData -&gt; Maybe ByteString
+</span><a href="TD.Query.EncryptGroupCallData.html#_data"><span class="hs-identifier hs-var">_data</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856889"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679856889"><span class="hs-identifier hs-var">_data_</span></a></span></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">unencrypted_prefix_size :: EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#unencrypted_prefix_size"><span class="hs-identifier hs-var">unencrypted_prefix_size</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856890"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856890"><span class="hs-identifier hs-var">unencrypted_prefix_size_</span></a></span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EncryptGroupCallData&quot;</span></span><span>
+</span><span id="line-31"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-32"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;group_call_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856887"><span class="hs-identifier hs-var">group_call_id_</span></a></span><span>
+</span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;data_channel&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe GroupCallDataChannel -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe GroupCallDataChannel
+</span><a href="#local-6989586621679856888"><span class="hs-identifier hs-var">data_channel_</span></a></span><span>
+</span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_data&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679856889"><span class="hs-identifier hs-var">_data_</span></a></span><span>
+</span><span id="line-35"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;unencrypted_prefix_size&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856890"><span class="hs-identifier hs-var">unencrypted_prefix_size_</span></a></span><span>
+</span><span id="line-36"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679856895"><span id="local-6989586621679856899"><span id="local-6989586621679856902"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>  </span><span id="local-6989586621679856934"><span class="annot"><span class="annottext">toJSON :: EncryptGroupCallData -&gt; Value
+</span><a href="#local-6989586621679856934"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">group_call_id :: EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#group_call_id"><span class="hs-identifier hs-var">group_call_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856936"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856936"><span class="hs-identifier hs-var">group_call_id_</span></a></span></span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">data_channel :: EncryptGroupCallData -&gt; Maybe GroupCallDataChannel
+</span><a href="TD.Query.EncryptGroupCallData.html#data_channel"><span class="hs-identifier hs-var">data_channel</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856937"><span class="annot"><span class="annottext">Maybe GroupCallDataChannel
+</span><a href="#local-6989586621679856937"><span class="hs-identifier hs-var">data_channel_</span></a></span></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_data :: EncryptGroupCallData -&gt; Maybe ByteString
+</span><a href="TD.Query.EncryptGroupCallData.html#_data"><span class="hs-identifier hs-var">_data</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856938"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679856938"><span class="hs-identifier hs-var">_data_</span></a></span></span><span>
+</span><span id="line-44"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">unencrypted_prefix_size :: EncryptGroupCallData -&gt; Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#unencrypted_prefix_size"><span class="hs-identifier hs-var">unencrypted_prefix_size</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679856939"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856939"><span class="hs-identifier hs-var">unencrypted_prefix_size_</span></a></span></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;encryptGroupCallData&quot;</span></span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;group_call_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856936"><span class="hs-identifier hs-var">group_call_id_</span></a></span><span>
+</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;data_channel&quot;</span></span><span>            </span><span class="annot"><span class="annottext">Key -&gt; Maybe GroupCallDataChannel -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe GroupCallDataChannel
+</span><a href="#local-6989586621679856937"><span class="hs-identifier hs-var">data_channel_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;data&quot;</span></span><span>                    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Value) -&gt; Maybe ByteString -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeBytes"><span class="hs-identifier hs-var">I.writeBytes</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679856938"><span class="hs-identifier hs-var">_data_</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;unencrypted_prefix_size&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679856939"><span class="hs-identifier hs-var">unencrypted_prefix_size_</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#defaultEncryptGroupCallData"><span class="hs-identifier hs-type">defaultEncryptGroupCallData</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span><span>
+</span><span id="line-55"></span><span id="defaultEncryptGroupCallData"><span class="annot"><span class="annottext">defaultEncryptGroupCallData :: EncryptGroupCallData
+</span><a href="TD.Query.EncryptGroupCallData.html#defaultEncryptGroupCallData"><span class="hs-identifier hs-var hs-var">defaultEncryptGroupCallData</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-56"></span><span>  </span><span class="annot"><a href="TD.Query.EncryptGroupCallData.html#EncryptGroupCallData"><span class="hs-identifier hs-type">EncryptGroupCallData</span></a></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">group_call_id :: Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#group_call_id"><span class="hs-identifier hs-var">group_call_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">data_channel :: Maybe GroupCallDataChannel
+</span><a href="TD.Query.EncryptGroupCallData.html#data_channel"><span class="hs-identifier hs-var">data_channel</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe GroupCallDataChannel
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_data :: Maybe ByteString
+</span><a href="TD.Query.EncryptGroupCallData.html#_data"><span class="hs-identifier hs-var">_data</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">unencrypted_prefix_size :: Maybe Int
+</span><a href="TD.Query.EncryptGroupCallData.html#unencrypted_prefix_size"><span class="hs-identifier hs-var">unencrypted_prefix_size</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span></pre></body></html>

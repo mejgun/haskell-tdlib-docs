@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.58.0
+@version 2.0.60.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -66,6 +66,40 @@ instance GHC.Show.Show TD.Data.WebAppInfo.WebAppInfo
 instance GHC.Classes.Eq TD.Data.WebAppInfo.WebAppInfo
 instance TD.Lib.Internal.ShortShow TD.Data.WebAppInfo.WebAppInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppInfo.WebAppInfo
+
+module TD.Data.VideoChatStream
+data VideoChatStream
+
+-- | Describes an available stream in a video chat
+VideoChatStream :: Maybe Int -> Maybe Int -> Maybe Int -> VideoChatStream
+
+-- | Identifier of an audio/video channel
+[channel_id] :: VideoChatStream -> Maybe Int
+
+-- | Scale of segment durations in the stream. The duration is
+--   1000/(2**scale) milliseconds
+[scale] :: VideoChatStream -> Maybe Int
+
+-- | Point in time when the stream currently ends; Unix timestamp in
+--   milliseconds
+[time_offset] :: VideoChatStream -> Maybe Int
+instance GHC.Show.Show TD.Data.VideoChatStream.VideoChatStream
+instance GHC.Classes.Eq TD.Data.VideoChatStream.VideoChatStream
+instance TD.Lib.Internal.ShortShow TD.Data.VideoChatStream.VideoChatStream
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoChatStream.VideoChatStream
+
+module TD.Data.VideoChatStreams
+data VideoChatStreams
+
+-- | Represents a list of video chat streams
+VideoChatStreams :: Maybe [VideoChatStream] -> VideoChatStreams
+
+-- | A list of video chat streams
+[streams] :: VideoChatStreams -> Maybe [VideoChatStream]
+instance GHC.Show.Show TD.Data.VideoChatStreams.VideoChatStreams
+instance GHC.Classes.Eq TD.Data.VideoChatStreams.VideoChatStreams
+instance TD.Lib.Internal.ShortShow TD.Data.VideoChatStreams.VideoChatStreams
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoChatStreams.VideoChatStreams
 
 module TD.Data.VerificationStatus
 data VerificationStatus
@@ -1132,7 +1166,7 @@ module TD.Data.StoryOrigin
 -- | Contains information about the origin of a story that was reposted
 data StoryOrigin
 
--- | The original story was a public story with known sender
+-- | The original story was a public story that was posted by a known chat
 StoryOriginPublicStory :: Maybe Int -> Maybe Int -> StoryOrigin
 
 -- | Identifier of the chat that posted original story
@@ -1141,11 +1175,11 @@ StoryOriginPublicStory :: Maybe Int -> Maybe Int -> StoryOrigin
 -- | Story identifier of the original story
 [story_id] :: StoryOrigin -> Maybe Int
 
--- | The original story was sent by an unknown user
+-- | The original story was posted by an unknown user
 StoryOriginHiddenUser :: Maybe Text -> StoryOrigin
 
--- | Name of the story sender
-[sender_name] :: StoryOrigin -> Maybe Text
+-- | Name of the user or the chat that posted the story
+[poster_name] :: StoryOrigin -> Maybe Text
 instance GHC.Show.Show TD.Data.StoryOrigin.StoryOrigin
 instance GHC.Classes.Eq TD.Data.StoryOrigin.StoryOrigin
 instance TD.Lib.Internal.ShortShow TD.Data.StoryOrigin.StoryOrigin
@@ -1212,7 +1246,7 @@ data StoryInfo
 -- | Contains basic information about a story
 StoryInfo :: Maybe Int -> Maybe Int -> Maybe Bool -> StoryInfo
 
--- | Unique story identifier among stories of the given sender
+-- | Unique story identifier among stories of the chat
 [story_id] :: StoryInfo -> Maybe Int
 
 -- | Point in time (Unix timestamp) when the story was published
@@ -1228,13 +1262,14 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryInfo.StoryInfo
 module TD.Data.StoryFullId
 data StoryFullId
 
--- | Contains identifier of a story along with identifier of its sender
+-- | Contains identifier of a story along with identifier of the chat that
+--   posted it
 StoryFullId :: Maybe Int -> Maybe Int -> StoryFullId
 
 -- | Identifier of the chat that posted the story
-[sender_chat_id] :: StoryFullId -> Maybe Int
+[poster_chat_id] :: StoryFullId -> Maybe Int
 
--- | Unique story identifier among stories of the given sender
+-- | Unique story identifier among stories of the chat
 [story_id] :: StoryFullId -> Maybe Int
 defaultStoryFullId :: StoryFullId
 instance GHC.Show.Show TD.Data.StoryFullId.StoryFullId
@@ -2043,8 +2078,9 @@ ScopeNotificationSettings :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool 
 --   sound is disabled
 [story_sound_id] :: ScopeNotificationSettings -> Maybe Int
 
--- | True, if the sender of stories must be displayed in notifications
-[show_story_sender] :: ScopeNotificationSettings -> Maybe Bool
+-- | True, if the chat that posted a story must be displayed in
+--   notifications
+[show_story_poster] :: ScopeNotificationSettings -> Maybe Bool
 
 -- | True, if notifications for incoming pinned messages will be created as
 --   for an ordinary unread message
@@ -2810,13 +2846,13 @@ PremiumLimitTypeShareableChatFolderCount :: PremiumLimitType
 -- | The maximum number of active stories
 PremiumLimitTypeActiveStoryCount :: PremiumLimitType
 
--- | The maximum number of stories sent per week
-PremiumLimitTypeWeeklySentStoryCount :: PremiumLimitType
+-- | The maximum number of stories posted per week
+PremiumLimitTypeWeeklyPostedStoryCount :: PremiumLimitType
 
--- | The maximum number of stories sent per month
-PremiumLimitTypeMonthlySentStoryCount :: PremiumLimitType
+-- | The maximum number of stories posted per month
+PremiumLimitTypeMonthlyPostedStoryCount :: PremiumLimitType
 
--- | The maximum length of captions of sent stories
+-- | The maximum length of captions of posted stories
 PremiumLimitTypeStoryCaptionLength :: PremiumLimitType
 
 -- | The maximum number of suggested reaction areas on a story
@@ -3655,7 +3691,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageSender.MessageSender
 module TD.Data.VideoChat
 data VideoChat
 
--- | Describes a video chat
+-- | Describes a video chat, i.e. a group call bound to a chat
 VideoChat :: Maybe Int -> Maybe Bool -> Maybe MessageSender -> VideoChat
 
 -- | Group call identifier of an active video chat; 0 if none. Full
@@ -5019,6 +5055,37 @@ instance GHC.Classes.Eq TD.Data.InviteLinkChatType.InviteLinkChatType
 instance TD.Lib.Internal.ShortShow TD.Data.InviteLinkChatType.InviteLinkChatType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InviteLinkChatType.InviteLinkChatType
 
+module TD.Data.InviteGroupCallParticipantResult
+
+-- | Describes result of group call participant invitation
+data InviteGroupCallParticipantResult
+
+-- | The user can't be invited due to their privacy settings
+InviteGroupCallParticipantResultUserPrivacyRestricted :: InviteGroupCallParticipantResult
+
+-- | The user can't be invited because they are already a participant of
+--   the call
+InviteGroupCallParticipantResultUserAlreadyParticipant :: InviteGroupCallParticipantResult
+
+-- | The user can't be invited because they were banned by the owner of the
+--   call and can be invited back only by the owner of the group call
+InviteGroupCallParticipantResultUserWasBanned :: InviteGroupCallParticipantResult
+
+-- | The user was invited and a service message of the type
+--   messageGroupCall was sent which can be used in
+--   declineGroupCallInvitation to cancel the invitation
+InviteGroupCallParticipantResultSuccess :: Maybe Int -> Maybe Int -> InviteGroupCallParticipantResult
+
+-- | Identifier of the chat with the invitation message
+[chat_id] :: InviteGroupCallParticipantResult -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: InviteGroupCallParticipantResult -> Maybe Int
+instance GHC.Show.Show TD.Data.InviteGroupCallParticipantResult.InviteGroupCallParticipantResult
+instance GHC.Classes.Eq TD.Data.InviteGroupCallParticipantResult.InviteGroupCallParticipantResult
+instance TD.Lib.Internal.ShortShow TD.Data.InviteGroupCallParticipantResult.InviteGroupCallParticipantResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InviteGroupCallParticipantResult.InviteGroupCallParticipantResult
+
 module TD.Data.TargetChat
 
 -- | Describes the target chat to be opened
@@ -5275,6 +5342,32 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputPassportElementError.InputPasspo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPassportElementError.InputPassportElementError
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPassportElementError.InputPassportElementError
 
+module TD.Data.InputGroupCall
+
+-- | Describes a non-joined group call that isn't bound to a chat
+data InputGroupCall
+
+-- | The group call is accessible through a link
+InputGroupCallLink :: Maybe Text -> InputGroupCall
+
+-- | The link for the group call
+[link] :: InputGroupCall -> Maybe Text
+
+-- | The group call is accessible through a message of the type
+--   messageGroupCall
+InputGroupCallMessage :: Maybe Int -> Maybe Int -> InputGroupCall
+
+-- | Identifier of the chat with the message
+[chat_id] :: InputGroupCall -> Maybe Int
+
+-- | Identifier of the message of the type messageGroupCall
+[message_id] :: InputGroupCall -> Maybe Int
+instance GHC.Show.Show TD.Data.InputGroupCall.InputGroupCall
+instance GHC.Classes.Eq TD.Data.InputGroupCall.InputGroupCall
+instance TD.Lib.Internal.ShortShow TD.Data.InputGroupCall.InputGroupCall
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputGroupCall.InputGroupCall
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputGroupCall.InputGroupCall
+
 module TD.Data.InputFile
 
 -- | Points to a file
@@ -5351,7 +5444,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputThumbnail.InputThumbnail
 
 module TD.Data.InputStoryContent
 
--- | The content of a story to send
+-- | The content of a story to post
 data InputStoryContent
 
 -- | A photo story
@@ -5822,40 +5915,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.GroupCallVideoQuality.GroupCallVideoQ
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallVideoQuality.GroupCallVideoQuality
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GroupCallVideoQuality.GroupCallVideoQuality
 
-module TD.Data.GroupCallStream
-data GroupCallStream
-
--- | Describes an available stream in a group call
-GroupCallStream :: Maybe Int -> Maybe Int -> Maybe Int -> GroupCallStream
-
--- | Identifier of an audio/video channel
-[channel_id] :: GroupCallStream -> Maybe Int
-
--- | Scale of segment durations in the stream. The duration is
---   1000/(2**scale) milliseconds
-[scale] :: GroupCallStream -> Maybe Int
-
--- | Point in time when the stream currently ends; Unix timestamp in
---   milliseconds
-[time_offset] :: GroupCallStream -> Maybe Int
-instance GHC.Show.Show TD.Data.GroupCallStream.GroupCallStream
-instance GHC.Classes.Eq TD.Data.GroupCallStream.GroupCallStream
-instance TD.Lib.Internal.ShortShow TD.Data.GroupCallStream.GroupCallStream
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallStream.GroupCallStream
-
-module TD.Data.GroupCallStreams
-data GroupCallStreams
-
--- | Represents a list of group call streams
-GroupCallStreams :: Maybe [GroupCallStream] -> GroupCallStreams
-
--- | A list of group call streams
-[streams] :: GroupCallStreams -> Maybe [GroupCallStream]
-instance GHC.Show.Show TD.Data.GroupCallStreams.GroupCallStreams
-instance GHC.Classes.Eq TD.Data.GroupCallStreams.GroupCallStreams
-instance TD.Lib.Internal.ShortShow TD.Data.GroupCallStreams.GroupCallStreams
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallStreams.GroupCallStreams
-
 module TD.Data.GroupCallRecentSpeaker
 data GroupCallRecentSpeaker
 
@@ -5871,6 +5930,22 @@ instance GHC.Show.Show TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
 instance GHC.Classes.Eq TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
+
+module TD.Data.GroupCallParticipants
+data GroupCallParticipants
+
+-- | Contains identifiers of group call participants
+GroupCallParticipants :: Maybe Int -> Maybe [MessageSender] -> GroupCallParticipants
+
+-- | Total number of group call participants
+[total_count] :: GroupCallParticipants -> Maybe Int
+
+-- | Identifiers of the participants
+[participant_ids] :: GroupCallParticipants -> Maybe [MessageSender]
+instance GHC.Show.Show TD.Data.GroupCallParticipants.GroupCallParticipants
+instance GHC.Classes.Eq TD.Data.GroupCallParticipants.GroupCallParticipants
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallParticipants.GroupCallParticipants
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallParticipants.GroupCallParticipants
 
 module TD.Data.GroupCallParticipantVideoInfo
 data GroupCallParticipantVideoInfo
@@ -5966,6 +6041,46 @@ instance GHC.Classes.Eq TD.Data.GroupCallParticipant.GroupCallParticipant
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCallParticipant.GroupCallParticipant
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallParticipant.GroupCallParticipant
 
+module TD.Data.GroupCallJoinParameters
+data GroupCallJoinParameters
+
+-- | Describes parameters used to join a group call
+GroupCallJoinParameters :: Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> GroupCallJoinParameters
+
+-- | Audio channel synchronization source identifier; received from tgcalls
+[audio_source_id] :: GroupCallJoinParameters -> Maybe Int
+
+-- | Group call join payload; received from tgcalls
+[payload] :: GroupCallJoinParameters -> Maybe Text
+
+-- | Pass true to join the call with muted microphone
+[is_muted] :: GroupCallJoinParameters -> Maybe Bool
+
+-- | Pass true if the user's video is enabled
+[is_my_video_enabled] :: GroupCallJoinParameters -> Maybe Bool
+defaultGroupCallJoinParameters :: GroupCallJoinParameters
+instance GHC.Show.Show TD.Data.GroupCallJoinParameters.GroupCallJoinParameters
+instance GHC.Classes.Eq TD.Data.GroupCallJoinParameters.GroupCallJoinParameters
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallJoinParameters.GroupCallJoinParameters
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallJoinParameters.GroupCallJoinParameters
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GroupCallJoinParameters.GroupCallJoinParameters
+
+module TD.Data.GroupCallInfo
+data GroupCallInfo
+
+-- | Contains information about a just created or just joined group call
+GroupCallInfo :: Maybe Int -> Maybe Text -> GroupCallInfo
+
+-- | Identifier of the group call
+[group_call_id] :: GroupCallInfo -> Maybe Int
+
+-- | Join response payload for tgcalls; empty if the call isn't joined
+[join_payload] :: GroupCallInfo -> Maybe Text
+instance GHC.Show.Show TD.Data.GroupCallInfo.GroupCallInfo
+instance GHC.Classes.Eq TD.Data.GroupCallInfo.GroupCallInfo
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallInfo.GroupCallInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallInfo.GroupCallInfo
+
 module TD.Data.GroupCallId
 data GroupCallId
 
@@ -5979,34 +6094,55 @@ instance GHC.Classes.Eq TD.Data.GroupCallId.GroupCallId
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCallId.GroupCallId
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallId.GroupCallId
 
+module TD.Data.GroupCallDataChannel
+
+-- | Describes data channel for a group call
+data GroupCallDataChannel
+
+-- | The main data channel for audio and video data
+GroupCallDataChannelMain :: GroupCallDataChannel
+
+-- | The data channel for screen sharing
+GroupCallDataChannelScreenSharing :: GroupCallDataChannel
+instance GHC.Show.Show TD.Data.GroupCallDataChannel.GroupCallDataChannel
+instance GHC.Classes.Eq TD.Data.GroupCallDataChannel.GroupCallDataChannel
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallDataChannel.GroupCallDataChannel
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallDataChannel.GroupCallDataChannel
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GroupCallDataChannel.GroupCallDataChannel
+
 module TD.Data.GroupCall
 data GroupCall
 
 -- | Describes a group call
-GroupCall :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
+GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
 
 -- | Group call identifier
 [_id] :: GroupCall -> Maybe Int
 
--- | Identifier of one-to-one call from which the group call was created; 0
---   if unknown
-[from_call_id] :: GroupCall -> Maybe Int
-
--- | Group call title
+-- | Group call title; for video chats only
 [title] :: GroupCall -> Maybe Text
 
+-- | Invite link for the group call; for group calls that aren't bound to a
+--   chat. For video chats call getVideoChatInviteLink to get the link
+[invite_link] :: GroupCall -> Maybe Text
+
 -- | Point in time (Unix timestamp) when the group call is expected to be
---   started by an administrator; 0 if it is already active or was ended
+--   started by an administrator; 0 if it is already active or was ended;
+--   for video chats only
 [scheduled_start_date] :: GroupCall -> Maybe Int
 
 -- | True, if the group call is scheduled and the current user will receive
---   a notification when the group call starts
+--   a notification when the group call starts; for video chats only
 [enabled_start_notification] :: GroupCall -> Maybe Bool
 
 -- | True, if the call is active
 [is_active] :: GroupCall -> Maybe Bool
 
--- | True, if the chat is an RTMP stream instead of an ordinary video chat
+-- | True, if the call is bound to a chat
+[is_video_chat] :: GroupCall -> Maybe Bool
+
+-- | True, if the call is an RTMP stream instead of an ordinary video chat;
+--   for video chats only
 [is_rtmp_stream] :: GroupCall -> Maybe Bool
 
 -- | True, if the call is joined
@@ -6016,14 +6152,20 @@ GroupCall :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> 
 --   call needs to be rejoined
 [need_rejoin] :: GroupCall -> Maybe Bool
 
--- | True, if the current user can manage the group call
+-- | True, if the user is the owner of the call and can end the call,
+--   change volume level of other users, or ban users there; for group
+--   calls that aren't bound to a chat
+[is_owned] :: GroupCall -> Maybe Bool
+
+-- | True, if the current user can manage the group call; for video chats
+--   only
 [can_be_managed] :: GroupCall -> Maybe Bool
 
 -- | Number of participants in the group call
 [participant_count] :: GroupCall -> Maybe Int
 
 -- | True, if group call participants, which are muted, aren't returned in
---   participant list
+--   participant list; for video chats only
 [has_hidden_listeners] :: GroupCall -> Maybe Bool
 
 -- | True, if all group call participants are loaded
@@ -6041,11 +6183,12 @@ GroupCall :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Bool -> 
 -- | True, if the current user can broadcast video or share screen
 [can_enable_video] :: GroupCall -> Maybe Bool
 
--- | True, if only group call administrators can unmute new participants
+-- | True, if only group call administrators can unmute new participants;
+--   for video chats only
 [mute_new_participants] :: GroupCall -> Maybe Bool
 
 -- | True, if the current user can enable or disable mute_new_participants
---   setting
+--   setting; for video chats only
 [can_toggle_mute_new_participants] :: GroupCall -> Maybe Bool
 
 -- | Duration of the ongoing group call recording, in seconds; 0 if none.
@@ -7035,9 +7178,10 @@ InputMessageReplyToExternalMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQ
 -- | Describes a story to be replied
 InputMessageReplyToStory :: Maybe Int -> Maybe Int -> InputMessageReplyTo
 
--- | The identifier of the sender of the story. Currently, stories can be
---   replied only in the sender's chat and channel stories can't be replied
-[story_sender_chat_id] :: InputMessageReplyTo -> Maybe Int
+-- | The identifier of the poster of the story. Currently, stories can be
+--   replied only in the chat that posted the story; channel stories can't
+--   be replied
+[story_poster_chat_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: InputMessageReplyTo -> Maybe Int
@@ -7150,7 +7294,8 @@ PhoneNumberAuthenticationSettings :: Maybe Bool -> Maybe Bool -> Maybe Bool -> M
 [firebase_authentication_settings] :: PhoneNumberAuthenticationSettings -> Maybe FirebaseAuthenticationSettings
 
 -- | List of up to 20 authentication tokens, recently received in
---   updateOption("authentication_token") in previously logged out sessions
+--   updateOption("authentication_token") in previously logged out
+--   sessions; for setAuthenticationPhoneNumber only
 [authentication_tokens] :: PhoneNumberAuthenticationSettings -> Maybe [Text]
 defaultPhoneNumberAuthenticationSettings :: PhoneNumberAuthenticationSettings
 instance GHC.Show.Show TD.Data.PhoneNumberAuthenticationSettings.PhoneNumberAuthenticationSettings
@@ -7362,19 +7507,6 @@ instance GHC.Classes.Eq TD.Data.NetworkStatistics.NetworkStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.NetworkStatistics.NetworkStatistics
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NetworkStatistics.NetworkStatistics
 
-module TD.Data.FilePart
-data FilePart
-
--- | Contains a part of a file
-FilePart :: Maybe ByteString -> FilePart
-
--- | File bytes
-[_data] :: FilePart -> Maybe ByteString
-instance GHC.Show.Show TD.Data.FilePart.FilePart
-instance GHC.Classes.Eq TD.Data.FilePart.FilePart
-instance TD.Lib.Internal.ShortShow TD.Data.FilePart.FilePart
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FilePart.FilePart
-
 module TD.Data.FileDownloadedPrefixSize
 data FileDownloadedPrefixSize
 
@@ -7481,7 +7613,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Video.Video
 module TD.Data.StoryVideo
 data StoryVideo
 
--- | Describes a video file sent in a story
+-- | Describes a video file posted as a story
 StoryVideo :: Maybe Double -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Minithumbnail -> Maybe Thumbnail -> Maybe Int -> Maybe Double -> Maybe File -> StoryVideo
 
 -- | Duration of the video, in seconds
@@ -8138,21 +8270,21 @@ data Story
 -- | Represents a story
 Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Story
 
--- | Unique story identifier among stories of the given sender
+-- | Unique story identifier among stories posted by the given chat
 [_id] :: Story -> Maybe Int
 
 -- | Identifier of the chat that posted the story
-[sender_chat_id] :: Story -> Maybe Int
+[poster_chat_id] :: Story -> Maybe Int
 
--- | Identifier of the sender of the story; may be null if the story is
---   posted on behalf of the sender_chat_id
-[sender_id] :: Story -> Maybe MessageSender
+-- | Identifier of the user or chat that posted the story; may be null if
+--   the story is posted on behalf of the poster_chat_id
+[poster_id] :: Story -> Maybe MessageSender
 
 -- | Point in time (Unix timestamp) when the story was published
 [date] :: Story -> Maybe Int
 
--- | True, if the story is being sent by the current user
-[is_being_sent] :: Story -> Maybe Bool
+-- | True, if the story is being posted by the current user
+[is_being_posted] :: Story -> Maybe Bool
 
 -- | True, if the story is being edited by the current user
 [is_being_edited] :: Story -> Maybe Bool
@@ -8160,8 +8292,8 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 -- | True, if the story was edited
 [is_edited] :: Story -> Maybe Bool
 
--- | True, if the story is saved in the sender's profile and will be
---   available there after expiration
+-- | True, if the story is saved in the profile of the chat that posted it
+--   and will be available there after expiration
 [is_posted_to_chat_page] :: Story -> Maybe Bool
 
 -- | True, if the story is visible only for the current user
@@ -8177,7 +8309,8 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 --   screenshots and saving of the story content must be also forbidden
 [can_be_forwarded] :: Story -> Maybe Bool
 
--- | True, if the story can be replied in the chat with the story sender
+-- | True, if the story can be replied in the chat with the user that
+--   posted the story
 [can_be_replied] :: Story -> Maybe Bool
 
 -- | True, if the story's is_posted_to_chat_page value can be changed
@@ -9888,6 +10021,19 @@ instance GHC.Classes.Eq TD.Data.DatabaseStatistics.DatabaseStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.DatabaseStatistics.DatabaseStatistics
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DatabaseStatistics.DatabaseStatistics
 
+module TD.Data.Data
+data Data
+
+-- | Contains some binary data
+Data :: Maybe ByteString -> Data
+
+-- | Data
+[_data] :: Data -> Maybe ByteString
+instance GHC.Show.Show TD.Data.Data.Data
+instance GHC.Classes.Eq TD.Data.Data.Data
+instance TD.Lib.Internal.ShortShow TD.Data.Data.Data
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Data.Data
+
 module TD.Data.CustomRequestResult
 data CustomRequestResult
 
@@ -10427,12 +10573,12 @@ InputMessagePoll :: Maybe FormattedText -> Maybe [FormattedText] -> Maybe Bool -
 -- | True, if the poll needs to be sent already closed; for bots only
 [is_closed] :: InputMessageContent -> Maybe Bool
 
--- | A message with a forwarded story. Stories can't be sent to secret
+-- | A message with a forwarded story. Stories can't be forwarded to secret
 --   chats. A story can be forwarded only if story.can_be_forwarded
 InputMessageStory :: Maybe Int -> Maybe Int -> InputMessageContent
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: InputMessageContent -> Maybe Int
+[story_poster_chat_id] :: InputMessageContent -> Maybe Int
 
 -- | Story identifier
 [story_id] :: InputMessageContent -> Maybe Int
@@ -10927,7 +11073,7 @@ ChatStatisticsObjectTypeMessage :: Maybe Int -> ChatStatisticsObjectType
 -- | Message identifier
 [message_id] :: ChatStatisticsObjectType -> Maybe Int
 
--- | Describes a story sent by the chat
+-- | Describes a story posted on behalf of the chat
 ChatStatisticsObjectTypeStory :: Maybe Int -> ChatStatisticsObjectType
 
 -- | Story identifier
@@ -10976,7 +11122,7 @@ module TD.Data.ChatStatisticsInteractionInfo
 data ChatStatisticsInteractionInfo
 
 -- | Contains statistics about interactions with a message sent in the chat
---   or a story sent by the chat
+--   or a story posted on behalf of the chat
 ChatStatisticsInteractionInfo :: Maybe ChatStatisticsObjectType -> Maybe Int -> Maybe Int -> Maybe Int -> ChatStatisticsInteractionInfo
 
 -- | Type of the object
@@ -11092,13 +11238,14 @@ ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe Stat
 --   messages
 [mean_message_reaction_count] :: ChatStatistics -> Maybe StatisticalValue
 
--- | Mean number of times the recently sent stories were viewed
+-- | Mean number of times the recently posted stories were viewed
 [mean_story_view_count] :: ChatStatistics -> Maybe StatisticalValue
 
--- | Mean number of times the recently sent stories were shared
+-- | Mean number of times the recently posted stories were shared
 [mean_story_share_count] :: ChatStatistics -> Maybe StatisticalValue
 
--- | Mean number of times reactions were added to the recently sent stories
+-- | Mean number of times reactions were added to the recently posted
+--   stories
 [mean_story_reaction_count] :: ChatStatistics -> Maybe StatisticalValue
 
 -- | A percentage of users with enabled notifications for the chat; 0-100
@@ -11143,7 +11290,7 @@ ChatStatisticsChannel :: Maybe DateRange -> Maybe StatisticalValue -> Maybe Stat
 [instant_view_interaction_graph] :: ChatStatistics -> Maybe StatisticalGraph
 
 -- | Detailed statistics about number of views and shares of recently sent
---   messages and stories
+--   messages and posted stories
 [recent_interactions] :: ChatStatistics -> Maybe [ChatStatisticsInteractionInfo]
 instance GHC.Show.Show TD.Data.ChatStatistics.ChatStatistics
 instance GHC.Classes.Eq TD.Data.ChatStatistics.ChatStatistics
@@ -11454,11 +11601,12 @@ ChatNotificationSettings :: Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -
 [story_sound_id] :: ChatNotificationSettings -> Maybe Int
 
 -- | If true, the value for the relevant type of chat is used instead of
---   show_story_sender
-[use_default_show_story_sender] :: ChatNotificationSettings -> Maybe Bool
+--   show_story_poster
+[use_default_show_story_poster] :: ChatNotificationSettings -> Maybe Bool
 
--- | True, if the sender of stories must be displayed in notifications
-[show_story_sender] :: ChatNotificationSettings -> Maybe Bool
+-- | True, if the chat that posted a story must be displayed in
+--   notifications
+[show_story_poster] :: ChatNotificationSettings -> Maybe Bool
 
 -- | If true, the value for the relevant type of chat or the forum chat is
 --   used instead of disable_pinned_message_notifications
@@ -13440,6 +13588,13 @@ InternalLinkTypeGame :: Maybe Text -> Maybe Text -> InternalLinkType
 -- | Short name of the game
 [game_short_name] :: InternalLinkType -> Maybe Text
 
+-- | The link is a link to a group call that isn't bound to a chat. Call
+--   joinGroupCall with the given invite_link
+InternalLinkTypeGroupCall :: Maybe Text -> InternalLinkType
+
+-- | Internal representation of the invite link
+[invite_link] :: InternalLinkType -> Maybe Text
+
 -- | The link must be opened in an Instant View. Call getWebPageInstantView
 --   with the given URL to process the link. If Instant View is found, then
 --   show it, otherwise, open the fallback URL in an external browser
@@ -13639,12 +13794,12 @@ InternalLinkTypeStickerSet :: Maybe Text -> Maybe Bool -> InternalLinkType
 [expect_custom_emoji] :: InternalLinkType -> Maybe Bool
 
 -- | The link is a link to a story. Call searchPublicChat with the given
---   sender username, then call getStory with the received chat identifier
+--   poster username, then call getStory with the received chat identifier
 --   and the given story identifier, then show the story if received
 InternalLinkTypeStory :: Maybe Text -> Maybe Int -> InternalLinkType
 
--- | Username of the sender of the story
-[story_sender_username] :: InternalLinkType -> Maybe Text
+-- | Username of the poster of the story
+[story_poster_username] :: InternalLinkType -> Maybe Text
 
 -- | Story identifier
 [story_id] :: InternalLinkType -> Maybe Int
@@ -13702,7 +13857,7 @@ InternalLinkTypeUserToken :: Maybe Text -> InternalLinkType
 [token] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to a video chat. Call searchPublicChat with the
---   given chat username, and then joinGroupCall with the given invite hash
+--   given chat username, and then joinVideoChat with the given invite hash
 --   to process the link
 InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalLinkType
 
@@ -13936,7 +14091,7 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 -- | Number of members in the supergroup or channel; 0 if unknown.
 --   Currently, it is guaranteed to be known only if the supergroup or
 --   channel was received through getChatSimilarChats,
---   getChatsToSendStories, getCreatedPublicChats, getGroupsInCommon,
+--   getChatsToPostStories, getCreatedPublicChats, getGroupsInCommon,
 --   getInactiveSupergroupChats, getRecommendedChats,
 --   getSuitableDiscussionChats, getUserPrivacySettingRules,
 --   getVideoChatAvailableParticipants, searchPublicChats, or in
@@ -14103,7 +14258,7 @@ ChatActiveStories :: Maybe Int -> Maybe StoryList -> Maybe Int -> Maybe Int -> M
 
 -- | A parameter used to determine order of the stories in the story list;
 --   0 if the stories doesn't need to be shown in the story list. Stories
---   must be sorted by the pair (order, story_sender_chat_id) in descending
+--   must be sorted by the pair (order, story_poster_chat_id) in descending
 --   order
 [order] :: ChatActiveStories -> Maybe Int
 
@@ -14223,46 +14378,6 @@ instance GHC.Classes.Eq TD.Data.CanTransferOwnershipResult.CanTransferOwnershipR
 instance TD.Lib.Internal.ShortShow TD.Data.CanTransferOwnershipResult.CanTransferOwnershipResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanTransferOwnershipResult.CanTransferOwnershipResult
 
-module TD.Data.CanSendStoryResult
-
--- | Represents result of checking whether the current user can send a
---   story in the specific chat
-data CanSendStoryResult
-
--- | A story can be sent
-CanSendStoryResultOk :: CanSendStoryResult
-
--- | The user must subscribe to Telegram Premium to be able to post stories
-CanSendStoryResultPremiumNeeded :: CanSendStoryResult
-
--- | The chat must be boosted first by Telegram Premium subscribers to post
---   more stories. Call getChatBoostStatus to get current boost status of
---   the chat
-CanSendStoryResultBoostNeeded :: CanSendStoryResult
-
--- | The limit for the number of active stories exceeded. The user can buy
---   Telegram Premium, delete an active story, or wait for the oldest story
---   to expire
-CanSendStoryResultActiveStoryLimitExceeded :: CanSendStoryResult
-
--- | The weekly limit for the number of posted stories exceeded. The user
---   needs to buy Telegram Premium or wait specified time
-CanSendStoryResultWeeklyLimitExceeded :: Maybe Int -> CanSendStoryResult
-
--- | Time left before the user can send the next story
-[retry_after] :: CanSendStoryResult -> Maybe Int
-
--- | The monthly limit for the number of posted stories exceeded. The user
---   needs to buy Telegram Premium or wait specified time
-CanSendStoryResultMonthlyLimitExceeded :: Maybe Int -> CanSendStoryResult
-
--- | Time left before the user can send the next story
-[retry_after] :: CanSendStoryResult -> Maybe Int
-instance GHC.Show.Show TD.Data.CanSendStoryResult.CanSendStoryResult
-instance GHC.Classes.Eq TD.Data.CanSendStoryResult.CanSendStoryResult
-instance TD.Lib.Internal.ShortShow TD.Data.CanSendStoryResult.CanSendStoryResult
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanSendStoryResult.CanSendStoryResult
-
 module TD.Data.CanSendMessageToUserResult
 
 -- | Describes result of canSendMessageToUser
@@ -14288,6 +14403,46 @@ instance GHC.Show.Show TD.Data.CanSendMessageToUserResult.CanSendMessageToUserRe
 instance GHC.Classes.Eq TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
 instance TD.Lib.Internal.ShortShow TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanSendMessageToUserResult.CanSendMessageToUserResult
+
+module TD.Data.CanPostStoryResult
+
+-- | Represents result of checking whether the current user can post a
+--   story on behalf of the specific chat
+data CanPostStoryResult
+
+-- | A story can be sent
+CanPostStoryResultOk :: CanPostStoryResult
+
+-- | The user must subscribe to Telegram Premium to be able to post stories
+CanPostStoryResultPremiumNeeded :: CanPostStoryResult
+
+-- | The chat must be boosted first by Telegram Premium subscribers to post
+--   more stories. Call getChatBoostStatus to get current boost status of
+--   the chat
+CanPostStoryResultBoostNeeded :: CanPostStoryResult
+
+-- | The limit for the number of active stories exceeded. The user can buy
+--   Telegram Premium, delete an active story, or wait for the oldest story
+--   to expire
+CanPostStoryResultActiveStoryLimitExceeded :: CanPostStoryResult
+
+-- | The weekly limit for the number of posted stories exceeded. The user
+--   needs to buy Telegram Premium or wait specified time
+CanPostStoryResultWeeklyLimitExceeded :: Maybe Int -> CanPostStoryResult
+
+-- | Time left before the user can post the next story
+[retry_after] :: CanPostStoryResult -> Maybe Int
+
+-- | The monthly limit for the number of posted stories exceeded. The user
+--   needs to buy Telegram Premium or wait specified time
+CanPostStoryResultMonthlyLimitExceeded :: Maybe Int -> CanPostStoryResult
+
+-- | Time left before the user can post the next story
+[retry_after] :: CanPostStoryResult -> Maybe Int
+instance GHC.Show.Show TD.Data.CanPostStoryResult.CanPostStoryResult
+instance GHC.Classes.Eq TD.Data.CanPostStoryResult.CanPostStoryResult
+instance TD.Lib.Internal.ShortShow TD.Data.CanPostStoryResult.CanPostStoryResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanPostStoryResult.CanPostStoryResult
 
 module TD.Data.CallbackQueryPayload
 
@@ -14498,13 +14653,11 @@ CallDiscardReasonDisconnected :: CallDiscardReason
 -- | The call was ended because one of the parties hung up
 CallDiscardReasonHungUp :: CallDiscardReason
 
--- | The call was ended because it has been used successfully to transfer
---   private encryption key for the associated group call
-CallDiscardReasonAllowGroupCall :: Maybe ByteString -> CallDiscardReason
+-- | The call was ended because it has been upgraded to a group call
+CallDiscardReasonUpgradeToGroupCall :: Maybe Text -> CallDiscardReason
 
--- | Encrypted using the call private key encryption key for the associated
---   group call
-[encrypted_group_call_key] :: CallDiscardReason -> Maybe ByteString
+-- | Invite link for the group call
+[invite_link] :: CallDiscardReason -> Maybe Text
 instance GHC.Show.Show TD.Data.CallDiscardReason.CallDiscardReason
 instance GHC.Classes.Eq TD.Data.CallDiscardReason.CallDiscardReason
 instance TD.Lib.Internal.ShortShow TD.Data.CallDiscardReason.CallDiscardReason
@@ -14528,7 +14681,7 @@ CallStatePending :: Maybe Bool -> Maybe Bool -> CallState
 CallStateExchangingKeys :: CallState
 
 -- | The call is ready to use
-CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Maybe ByteString -> Maybe [Text] -> Maybe Bool -> Maybe Text -> CallState
+CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Maybe ByteString -> Maybe [Text] -> Maybe Bool -> Maybe Bool -> Maybe Text -> CallState
 
 -- | Call protocols supported by the other call participant
 [protocol] :: CallState -> Maybe CallProtocol
@@ -14547,6 +14700,10 @@ CallStateReady :: Maybe CallProtocol -> Maybe [CallServer] -> Maybe Text -> Mayb
 
 -- | True, if peer-to-peer connection is allowed by users privacy settings
 [allow_p2p] :: CallState -> Maybe Bool
+
+-- | True, if the other party supports upgrading of the call to a group
+--   call
+[is_group_call_supported] :: CallState -> Maybe Bool
 
 -- | Custom JSON-encoded call parameters to be passed to tgcalls
 [custom_parameters] :: CallState -> Maybe Text
@@ -14584,7 +14741,7 @@ module TD.Data.Call
 data Call
 
 -- | Describes a call
-Call :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe CallState -> Maybe Int -> Call
+Call :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe CallState -> Call
 
 -- | Call identifier, not persistent
 [_id] :: Call -> Maybe Int
@@ -14600,11 +14757,6 @@ Call :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe CallState ->
 
 -- | Call state
 [state] :: Call -> Maybe CallState
-
--- | Identifier of the group call associated with the call; 0 if the group
---   call isn't created yet. The group call can be received through the
---   method getGroupCall
-[group_call_id] :: Call -> Maybe Int
 instance GHC.Show.Show TD.Data.Call.Call
 instance GHC.Classes.Eq TD.Data.Call.Call
 instance TD.Lib.Internal.ShortShow TD.Data.Call.Call
@@ -14952,7 +15104,7 @@ BusinessBotRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 --   gifts
 [can_transfer_stars] :: BusinessBotRights -> Maybe Bool
 
--- | True, if the bot can send, edit and delete stories
+-- | True, if the bot can post, edit and delete stories
 [can_manage_stories] :: BusinessBotRights -> Maybe Bool
 defaultBusinessBotRights :: BusinessBotRights
 instance GHC.Show.Show TD.Data.BusinessBotRights.BusinessBotRights
@@ -17778,6 +17930,9 @@ LinkPreviewTypeExternalVideo :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe I
 -- | Duration of the animation, in seconds
 [duration] :: LinkPreviewType -> Maybe Int
 
+-- | The link is a link to a group call that isn't bound to a chat
+LinkPreviewTypeGroupCall :: LinkPreviewType
+
 -- | The link is a link to an invoice
 LinkPreviewTypeInvoice :: LinkPreviewType
 
@@ -17813,7 +17968,7 @@ LinkPreviewTypeStickerSet :: Maybe [Sticker] -> LinkPreviewType
 LinkPreviewTypeStory :: Maybe Int -> Maybe Int -> LinkPreviewType
 
 -- | The identifier of the chat that posted the story
-[story_sender_chat_id] :: LinkPreviewType -> Maybe Int
+[story_poster_chat_id] :: LinkPreviewType -> Maybe Int
 
 -- | Story identifier
 [story_id] :: LinkPreviewType -> Maybe Int
@@ -19277,7 +19432,7 @@ MessagePoll :: Maybe Poll -> MessageContent
 MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: MessageContent -> Maybe Int
+[story_poster_chat_id] :: MessageContent -> Maybe Int
 
 -- | Story identifier
 [story_id] :: MessageContent -> Maybe Int
@@ -19329,6 +19484,29 @@ MessageCall :: Maybe Bool -> Maybe CallDiscardReason -> Maybe Int -> MessageCont
 
 -- | Call duration, in seconds
 [duration] :: MessageContent -> Maybe Int
+
+-- | A message with information about a group call not bound to a chat. If
+--   the message is incoming, the call isn't active, isn't missed, and has
+--   no duration, and getOption("can_accept_calls") is true, then incoming
+--   call screen must be shown to the user. Use joinGroupCall to accept the
+--   call or declineGroupCallInvitation to decline it. If the call become
+--   active or missed, then the call screen must be hidden
+MessageGroupCall :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [MessageSender] -> MessageContent
+
+-- | True, if the call is active, i.e. the called user joined the call
+[is_active] :: MessageContent -> Maybe Bool
+
+-- | True, if the called user missed or declined the call
+[was_missed] :: MessageContent -> Maybe Bool
+
+-- | True, if the call was a video call
+[is_video] :: MessageContent -> Maybe Bool
+
+-- | Call duration, in seconds
+[duration] :: MessageContent -> Maybe Int
+
+-- | Identifiers of some other call participants
+[other_participant_ids] :: MessageContent -> Maybe [MessageSender]
 
 -- | A new video chat was scheduled
 MessageVideoChatScheduled :: Maybe Int -> Maybe Int -> MessageContent
@@ -20218,8 +20396,8 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Mess
 -- | Describes a story replied by a given message
 MessageReplyToStory :: Maybe Int -> Maybe Int -> MessageReplyTo
 
--- | The identifier of the sender of the story
-[story_sender_chat_id] :: MessageReplyTo -> Maybe Int
+-- | The identifier of the poster of the story
+[story_poster_chat_id] :: MessageReplyTo -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: MessageReplyTo -> Maybe Int
@@ -22552,7 +22730,7 @@ UpdateForumTopicInfo :: Maybe ForumTopicInfo -> Update
 [info] :: Update -> Maybe ForumTopicInfo
 
 -- | Information about a topic in a forum chat was changed
-UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe ChatNotificationSettings -> Update
+UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -22562,6 +22740,9 @@ UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe C
 
 -- | True, if the message is pinned
 [is_pinned] :: Update -> Maybe Bool
+
+-- | Identifier of the last read incoming message
+[last_read_inbox_message_id] :: Update -> Maybe Int
 
 -- | Identifier of last read outgoing message
 [last_read_outbox_message_id] :: Update -> Maybe Int
@@ -22883,7 +23064,7 @@ UpdateCall :: Maybe Call -> Update
 -- | Information about a group call was updated
 UpdateGroupCall :: Maybe GroupCall -> Update
 
--- | New data about a group call
+-- | New data about the group call
 [group_call] :: Update -> Maybe GroupCall
 
 -- | Information about a group call participant was changed. The updates
@@ -22891,11 +23072,41 @@ UpdateGroupCall :: Maybe GroupCall -> Update
 --   and only if the call is joined or being joined
 UpdateGroupCallParticipant :: Maybe Int -> Maybe GroupCallParticipant -> Update
 
--- | Identifier of group call
+-- | Identifier of the group call
 [group_call_id] :: Update -> Maybe Int
 
--- | New data about a participant
+-- | New data about the participant
 [participant] :: Update -> Maybe GroupCallParticipant
+
+-- | The list of group call participants that can send and receive
+--   encrypted call data has changed; for group calls not bound to a chat
+--   only
+UpdateGroupCallParticipants :: Maybe Int -> Maybe [Int] -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | New list of group call participant user identifiers. The identifiers
+--   may be invalid or the corresponding users may be unknown. The
+--   participants must be shown in the list of group call participants even
+--   there is no information about them
+[participant_user_ids] :: Update -> Maybe [Int]
+
+-- | The verification state of an encrypted group call has changed; for
+--   group calls not bound to a chat only
+UpdateGroupCallVerificationState :: Maybe Int -> Maybe Int -> Maybe [Text] -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | The call state generation to which the emoji corresponds. If
+--   generation is different for two users, then their emoji may be also
+--   different
+[generation] :: Update -> Maybe Int
+
+-- | Group call state fingerprint represented as 4 emoji; may be empty if
+--   the state isn't verified yet
+[emojis] :: Update -> Maybe [Text]
 
 -- | New call signaling data arrived
 UpdateNewCallSignalingData :: Maybe Int -> Maybe ByteString -> Update
@@ -22961,13 +23172,13 @@ UpdateStory :: Maybe Story -> Update
 UpdateStoryDeleted :: Maybe Int -> Maybe Int -> Update
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: Update -> Maybe Int
+[story_poster_chat_id] :: Update -> Maybe Int
 
 -- | Story identifier
 [story_id] :: Update -> Maybe Int
 
--- | A story has been successfully sent
-UpdateStorySendSucceeded :: Maybe Story -> Maybe Int -> Update
+-- | A story has been successfully posted
+UpdateStoryPostSucceeded :: Maybe Story -> Maybe Int -> Update
 
 -- | The new information about the story
 [story] :: Update -> Maybe Story
@@ -22975,9 +23186,9 @@ UpdateStorySendSucceeded :: Maybe Story -> Maybe Int -> Update
 -- | The previous temporary story identifier
 [old_story_id] :: Update -> Maybe Int
 
--- | A story failed to send. If the story sending is canceled, then
+-- | A story failed to post. If the story posting is canceled, then
 --   updateStoryDeleted will be received instead of this update
-UpdateStorySendFailed :: Maybe Story -> Maybe Error -> Maybe CanSendStoryResult -> Update
+UpdateStoryPostFailed :: Maybe Story -> Maybe Error -> Maybe CanPostStoryResult -> Update
 
 -- | The new information about the story
 [story] :: Update -> Maybe Story
@@ -22986,7 +23197,7 @@ UpdateStorySendFailed :: Maybe Story -> Maybe Error -> Maybe CanSendStoryResult 
 [_error] :: Update -> Maybe Error
 
 -- | Type of the error; may be null if unknown
-[error_type] :: Update -> Maybe CanSendStoryResult
+[error_type] :: Update -> Maybe CanPostStoryResult
 
 -- | The list of active stories posted by a specific chat has changed
 UpdateChatActiveStories :: Maybe ChatActiveStories -> Update
@@ -23191,7 +23402,8 @@ UpdateWebAppMessageSent :: Maybe Int -> Update
 -- | The list of active emoji reactions has changed
 UpdateActiveEmojiReactions :: Maybe [Text] -> Update
 
--- | The new list of active emoji reactions
+-- | Group call state fingerprint represented as 4 emoji; may be empty if
+--   the state isn't verified yet
 [emojis] :: Update -> Maybe [Text]
 
 -- | The list of available message effects has changed
@@ -23282,7 +23494,8 @@ UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
 -- | The list of supported dice emojis has changed
 UpdateDiceEmojis :: Maybe [Text] -> Update
 
--- | The new list of active emoji reactions
+-- | Group call state fingerprint represented as 4 emoji; may be empty if
+--   the state isn't verified yet
 [emojis] :: Update -> Maybe [Text]
 
 -- | Some animated emoji message was clicked and a big animated sticker
@@ -23307,7 +23520,8 @@ UpdateAnimationSearchParameters :: Maybe Text -> Maybe [Text] -> Update
 -- | Name of the animation search provider
 [provider] :: Update -> Maybe Text
 
--- | The new list of active emoji reactions
+-- | Group call state fingerprint represented as 4 emoji; may be empty if
+--   the state isn't verified yet
 [emojis] :: Update -> Maybe [Text]
 
 -- | The list of suggested to the user actions has changed
@@ -23718,8 +23932,8 @@ BusinessMessage :: BusinessMessage -> GeneralResult
 BusinessMessages :: BusinessMessages -> GeneralResult
 CallId :: CallId -> GeneralResult
 CallbackQueryAnswer :: CallbackQueryAnswer -> GeneralResult
+CanPostStoryResult :: CanPostStoryResult -> GeneralResult
 CanSendMessageToUserResult :: CanSendMessageToUserResult -> GeneralResult
-CanSendStoryResult :: CanSendStoryResult -> GeneralResult
 CanTransferOwnershipResult :: CanTransferOwnershipResult -> GeneralResult
 Chat :: Chat -> GeneralResult
 ChatActiveStories :: ChatActiveStories -> GeneralResult
@@ -23763,6 +23977,7 @@ Countries :: Countries -> GeneralResult
 CreatedBasicGroupChat :: CreatedBasicGroupChat -> GeneralResult
 CurrentWeather :: CurrentWeather -> GeneralResult
 CustomRequestResult :: CustomRequestResult -> GeneralResult
+Data :: Data -> GeneralResult
 DatabaseStatistics :: DatabaseStatistics -> GeneralResult
 DeepLinkInfo :: DeepLinkInfo -> GeneralResult
 EmailAddressAuthenticationCodeInfo :: EmailAddressAuthenticationCodeInfo -> GeneralResult
@@ -23776,7 +23991,6 @@ Error :: Error -> GeneralResult
 FailedToAddMembers :: FailedToAddMembers -> GeneralResult
 File :: File -> GeneralResult
 FileDownloadedPrefixSize :: FileDownloadedPrefixSize -> GeneralResult
-FilePart :: FilePart -> GeneralResult
 FormattedText :: FormattedText -> GeneralResult
 ForumTopic :: ForumTopic -> GeneralResult
 ForumTopicInfo :: ForumTopicInfo -> GeneralResult
@@ -23797,12 +24011,14 @@ Gifts :: Gifts -> GeneralResult
 GiveawayInfo :: GiveawayInfo -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
-GroupCallStreams :: GroupCallStreams -> GeneralResult
+GroupCallInfo :: GroupCallInfo -> GeneralResult
+GroupCallParticipants :: GroupCallParticipants -> GeneralResult
 Hashtags :: Hashtags -> GeneralResult
 HttpUrl :: HttpUrl -> GeneralResult
 ImportedContacts :: ImportedContacts -> GeneralResult
 InlineQueryResults :: InlineQueryResults -> GeneralResult
 InternalLinkType :: InternalLinkType -> GeneralResult
+InviteGroupCallParticipantResult :: InviteGroupCallParticipantResult -> GeneralResult
 JsonValue :: JsonValue -> GeneralResult
 LanguagePackInfo :: LanguagePackInfo -> GeneralResult
 LanguagePackStringValue :: LanguagePackStringValue -> GeneralResult
@@ -23923,6 +24139,7 @@ UserPrivacySettingRules :: UserPrivacySettingRules -> GeneralResult
 UserSupportInfo :: UserSupportInfo -> GeneralResult
 Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
+VideoChatStreams :: VideoChatStreams -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
 instance GHC.Show.Show TD.GeneralResult.GeneralResult
@@ -24745,6 +24962,27 @@ instance GHC.Classes.Eq TD.Query.BanChatMember.BanChatMember
 instance TD.Lib.Internal.ShortShow TD.Query.BanChatMember.BanChatMember
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.BanChatMember.BanChatMember
 
+module TD.Query.BanGroupCallParticipants
+
+-- | Bans users from a group call not bound to a chat; requires
+--   groupCall.is_owned. Only the owner of the group call can invite the
+--   banned users back. Returns <a>Ok</a>
+data BanGroupCallParticipants
+BanGroupCallParticipants :: Maybe Int -> Maybe [Int] -> BanGroupCallParticipants
+
+-- | Group call identifier
+[group_call_id] :: BanGroupCallParticipants -> Maybe Int
+
+-- | Identifiers of group call participants to ban; identifiers of unknown
+--   users from the update updateGroupCallParticipants can be also passed
+--   to the method
+[user_ids] :: BanGroupCallParticipants -> Maybe [Int]
+defaultBanGroupCallParticipants :: BanGroupCallParticipants
+instance GHC.Show.Show TD.Query.BanGroupCallParticipants.BanGroupCallParticipants
+instance GHC.Classes.Eq TD.Query.BanGroupCallParticipants.BanGroupCallParticipants
+instance TD.Lib.Internal.ShortShow TD.Query.BanGroupCallParticipants.BanGroupCallParticipants
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.BanGroupCallParticipants.BanGroupCallParticipants
+
 module TD.Query.BlockMessageSenderFromReplies
 
 -- | Blocks an original sender of a message in the Replies chat. Returns
@@ -24803,6 +25041,22 @@ instance GHC.Classes.Eq TD.Query.CanBotSendMessages.CanBotSendMessages
 instance TD.Lib.Internal.ShortShow TD.Query.CanBotSendMessages.CanBotSendMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanBotSendMessages.CanBotSendMessages
 
+module TD.Query.CanPostStory
+
+-- | Checks whether the current user can post a story on behalf of a chat;
+--   requires can_post_stories right for supergroup and channel chats.
+--   Returns <a>CanPostStoryResult</a>
+data CanPostStory
+CanPostStory :: Maybe Int -> CanPostStory
+
+-- | Chat identifier. Pass Saved Messages chat identifier when posting a
+--   story on behalf of the current user
+[chat_id] :: CanPostStory -> Maybe Int
+instance GHC.Show.Show TD.Query.CanPostStory.CanPostStory
+instance GHC.Classes.Eq TD.Query.CanPostStory.CanPostStory
+instance TD.Lib.Internal.ShortShow TD.Query.CanPostStory.CanPostStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanPostStory.CanPostStory
+
 module TD.Query.CanPurchaseFromStore
 
 -- | Checks whether an in-store purchase is possible. Must be called before
@@ -24836,22 +25090,6 @@ instance GHC.Show.Show TD.Query.CanSendMessageToUser.CanSendMessageToUser
 instance GHC.Classes.Eq TD.Query.CanSendMessageToUser.CanSendMessageToUser
 instance TD.Lib.Internal.ShortShow TD.Query.CanSendMessageToUser.CanSendMessageToUser
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanSendMessageToUser.CanSendMessageToUser
-
-module TD.Query.CanSendStory
-
--- | Checks whether the current user can send a story on behalf of a chat;
---   requires can_post_stories right for supergroup and channel chats.
---   Returns <a>CanSendStoryResult</a>
-data CanSendStory
-CanSendStory :: Maybe Int -> CanSendStory
-
--- | Chat identifier. Pass Saved Messages chat identifier when posting a
---   story on behalf of the current user
-[chat_id] :: CanSendStory -> Maybe Int
-instance GHC.Show.Show TD.Query.CanSendStory.CanSendStory
-instance GHC.Classes.Eq TD.Query.CanSendStory.CanSendStory
-instance TD.Lib.Internal.ShortShow TD.Query.CanSendStory.CanSendStory
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CanSendStory.CanSendStory
 
 module TD.Query.CanTransferOwnership
 
@@ -25465,8 +25703,8 @@ module TD.Query.CloseStory
 data CloseStory
 CloseStory :: Maybe Int -> Maybe Int -> CloseStory
 
--- | The identifier of the sender of the story to close
-[story_sender_chat_id] :: CloseStory -> Maybe Int
+-- | The identifier of the poster of the story to close
+[story_poster_chat_id] :: CloseStory -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: CloseStory -> Maybe Int
@@ -25594,7 +25832,7 @@ module TD.Query.CreateCall
 
 -- | Creates a new call. Returns <a>CallId</a>
 data CreateCall
-CreateCall :: Maybe Int -> Maybe CallProtocol -> Maybe Bool -> Maybe Int -> CreateCall
+CreateCall :: Maybe Int -> Maybe CallProtocol -> Maybe Bool -> CreateCall
 
 -- | Identifier of the user to be called
 [user_id] :: CreateCall -> Maybe Int
@@ -25604,10 +25842,6 @@ CreateCall :: Maybe Int -> Maybe CallProtocol -> Maybe Bool -> Maybe Int -> Crea
 
 -- | Pass true to create a video call
 [is_video] :: CreateCall -> Maybe Bool
-
--- | Identifier of the group call to which the user will be added after
---   exchanging private key via the call; pass 0 if none
-[group_call_id] :: CreateCall -> Maybe Int
 defaultCreateCall :: CreateCall
 instance GHC.Show.Show TD.Query.CreateCall.CreateCall
 instance GHC.Classes.Eq TD.Query.CreateCall.CreateCall
@@ -25736,12 +25970,14 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateForumTopic.CreateForumTop
 
 module TD.Query.CreateGroupCall
 
--- | Creates a group call from a one-to-one call. Returns <a>Ok</a>
+-- | Creates a new group call that isn't bound to a chat. Returns
+--   <a>GroupCallInfo</a>
 data CreateGroupCall
-CreateGroupCall :: Maybe Int -> CreateGroupCall
+CreateGroupCall :: Maybe GroupCallJoinParameters -> CreateGroupCall
 
--- | Call identifier
-[call_id] :: CreateGroupCall -> Maybe Int
+-- | Parameters to join the call; pass null to only create call link
+--   without joining the call
+[join_parameters] :: CreateGroupCall -> Maybe GroupCallJoinParameters
 instance GHC.Show.Show TD.Query.CreateGroupCall.CreateGroupCall
 instance GHC.Classes.Eq TD.Query.CreateGroupCall.CreateGroupCall
 instance TD.Lib.Internal.ShortShow TD.Query.CreateGroupCall.CreateGroupCall
@@ -25983,6 +26219,48 @@ instance GHC.Classes.Eq TD.Query.CreateVideoChat.CreateVideoChat
 instance TD.Lib.Internal.ShortShow TD.Query.CreateVideoChat.CreateVideoChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateVideoChat.CreateVideoChat
 
+module TD.Query.DeclineGroupCallInvitation
+
+-- | Declines an invitation to an active group call via messageGroupCall.
+--   Can be called both by the sender and the receiver of the invitation.
+--   Returns <a>Ok</a>
+data DeclineGroupCallInvitation
+DeclineGroupCallInvitation :: Maybe Int -> Maybe Int -> DeclineGroupCallInvitation
+
+-- | Identifier of the chat with the message
+[chat_id] :: DeclineGroupCallInvitation -> Maybe Int
+
+-- | Identifier of the message of the type messageGroupCall
+[message_id] :: DeclineGroupCallInvitation -> Maybe Int
+defaultDeclineGroupCallInvitation :: DeclineGroupCallInvitation
+instance GHC.Show.Show TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
+instance GHC.Classes.Eq TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
+instance TD.Lib.Internal.ShortShow TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
+
+module TD.Query.DecryptGroupCallData
+
+-- | Decrypts group call data received by tgcalls. Returns <a>Data</a>
+data DecryptGroupCallData
+DecryptGroupCallData :: Maybe Int -> Maybe MessageSender -> Maybe GroupCallDataChannel -> Maybe ByteString -> DecryptGroupCallData
+
+-- | Group call identifier. The call must not be a video chat
+[group_call_id] :: DecryptGroupCallData -> Maybe Int
+
+-- | Identifier of the group call participant, which sent the data
+[participant_id] :: DecryptGroupCallData -> Maybe MessageSender
+
+-- | Data channel for which data was encrypted; pass null if unknown
+[data_channel] :: DecryptGroupCallData -> Maybe GroupCallDataChannel
+
+-- | Data to decrypt
+[_data] :: DecryptGroupCallData -> Maybe ByteString
+defaultDecryptGroupCallData :: DecryptGroupCallData
+instance GHC.Show.Show TD.Query.DecryptGroupCallData.DecryptGroupCallData
+instance GHC.Classes.Eq TD.Query.DecryptGroupCallData.DecryptGroupCallData
+instance TD.Lib.Internal.ShortShow TD.Query.DecryptGroupCallData.DecryptGroupCallData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DecryptGroupCallData.DecryptGroupCallData
+
 module TD.Query.DeleteAccount
 
 -- | Deletes the account of the current user, deleting all information
@@ -26110,7 +26388,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBusinessMessages.DeleteBu
 
 module TD.Query.DeleteBusinessStory
 
--- | Deletes a story sent by the bot on behalf of a business account; for
+-- | Deletes a story posted by the bot on behalf of a business account; for
 --   bots only. Returns <a>Ok</a>
 data DeleteBusinessStory
 DeleteBusinessStory :: Maybe Text -> Maybe Int -> DeleteBusinessStory
@@ -26537,13 +26815,13 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteStickerSet.DeleteStickerS
 
 module TD.Query.DeleteStory
 
--- | Deletes a previously sent story. Can be called only if
+-- | Deletes a previously posted story. Can be called only if
 --   story.can_be_deleted == true. Returns <a>Ok</a>
 data DeleteStory
 DeleteStory :: Maybe Int -> Maybe Int -> DeleteStory
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: DeleteStory -> Maybe Int
+[story_poster_chat_id] :: DeleteStory -> Maybe Int
 
 -- | Identifier of the story to delete
 [story_id] :: DeleteStory -> Maybe Int
@@ -26597,13 +26875,17 @@ module TD.Query.DiscardCall
 
 -- | Discards a call. Returns <a>Ok</a>
 data DiscardCall
-DiscardCall :: Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> DiscardCall
+DiscardCall :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> DiscardCall
 
 -- | Call identifier
 [call_id] :: DiscardCall -> Maybe Int
 
 -- | Pass true if the user was disconnected
 [is_disconnected] :: DiscardCall -> Maybe Bool
+
+-- | If the call was upgraded to a group call, pass invite link to the
+--   group call
+[invite_link] :: DiscardCall -> Maybe Text
 
 -- | The call duration, in seconds
 [duration] :: DiscardCall -> Maybe Int
@@ -26910,13 +27192,13 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessMessageText.EditBus
 
 module TD.Query.EditBusinessStory
 
--- | Changes a story sent by the bot on behalf of a business account; for
+-- | Changes a story posted by the bot on behalf of a business account; for
 --   bots only. Returns <a>Story</a>
 data EditBusinessStory
 EditBusinessStory :: Maybe Int -> Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> EditBusinessStory
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: EditBusinessStory -> Maybe Int
+[story_poster_chat_id] :: EditBusinessStory -> Maybe Int
 
 -- | Identifier of the story to edit
 [story_id] :: EditBusinessStory -> Maybe Int
@@ -27475,7 +27757,7 @@ data EditStory
 EditStory :: Maybe Int -> Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> EditStory
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: EditStory -> Maybe Int
+[story_poster_chat_id] :: EditStory -> Maybe Int
 
 -- | Identifier of the story to edit
 [story_id] :: EditStory -> Maybe Int
@@ -27505,7 +27787,7 @@ data EditStoryCover
 EditStoryCover :: Maybe Int -> Maybe Int -> Maybe Double -> EditStoryCover
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: EditStoryCover -> Maybe Int
+[story_poster_chat_id] :: EditStoryCover -> Maybe Int
 
 -- | Identifier of the story to edit
 [story_id] :: EditStoryCover -> Maybe Int
@@ -27554,10 +27836,34 @@ instance GHC.Classes.Eq TD.Query.EnableProxy.EnableProxy
 instance TD.Lib.Internal.ShortShow TD.Query.EnableProxy.EnableProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EnableProxy.EnableProxy
 
+module TD.Query.EncryptGroupCallData
+
+-- | Encrypts group call data before sending them over network using
+--   tgcalls. Returns <a>Data</a>
+data EncryptGroupCallData
+EncryptGroupCallData :: Maybe Int -> Maybe GroupCallDataChannel -> Maybe ByteString -> Maybe Int -> EncryptGroupCallData
+
+-- | Group call identifier. The call must not be a video chat
+[group_call_id] :: EncryptGroupCallData -> Maybe Int
+
+-- | Data channel for which data is encrypted
+[data_channel] :: EncryptGroupCallData -> Maybe GroupCallDataChannel
+
+-- | Data to encrypt
+[_data] :: EncryptGroupCallData -> Maybe ByteString
+
+-- | Size of data prefix that must be kept unencrypted
+[unencrypted_prefix_size] :: EncryptGroupCallData -> Maybe Int
+defaultEncryptGroupCallData :: EncryptGroupCallData
+instance GHC.Show.Show TD.Query.EncryptGroupCallData.EncryptGroupCallData
+instance GHC.Classes.Eq TD.Query.EncryptGroupCallData.EncryptGroupCallData
+instance TD.Lib.Internal.ShortShow TD.Query.EncryptGroupCallData.EncryptGroupCallData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EncryptGroupCallData.EncryptGroupCallData
+
 module TD.Query.EndGroupCall
 
--- | Ends a group call. Requires groupCall.can_be_managed. Returns
---   <a>Ok</a>
+-- | Ends a group call. Requires groupCall.can_be_managed right for video
+--   chats or groupCall.is_owned otherwise. Returns <a>Ok</a>
 data EndGroupCall
 EndGroupCall :: Maybe Int -> EndGroupCall
 
@@ -27570,8 +27876,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EndGroupCall.EndGroupCall
 
 module TD.Query.EndGroupCallRecording
 
--- | Ends recording of an active group call. Requires
---   groupCall.can_be_managed group call flag. Returns <a>Ok</a>
+-- | Ends recording of an active group call; for video chats only. Requires
+--   groupCall.can_be_managed right. Returns <a>Ok</a>
 data EndGroupCallRecording
 EndGroupCallRecording :: Maybe Int -> EndGroupCallRecording
 
@@ -29102,8 +29408,8 @@ module TD.Query.GetChatStoryInteractions
 data GetChatStoryInteractions
 GetChatStoryInteractions :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -> Maybe Text -> Maybe Int -> GetChatStoryInteractions
 
--- | The identifier of the sender of the story
-[story_sender_chat_id] :: GetChatStoryInteractions -> Maybe Int
+-- | The identifier of the poster of the story
+[story_poster_chat_id] :: GetChatStoryInteractions -> Maybe Int
 
 -- | Story identifier
 [story_id] :: GetChatStoryInteractions -> Maybe Int
@@ -29165,17 +29471,17 @@ instance GHC.Classes.Eq TD.Query.GetChatsForChatFolderInviteLink.GetChatsForChat
 instance TD.Lib.Internal.ShortShow TD.Query.GetChatsForChatFolderInviteLink.GetChatsForChatFolderInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatsForChatFolderInviteLink.GetChatsForChatFolderInviteLink
 
-module TD.Query.GetChatsToSendStories
+module TD.Query.GetChatsToPostStories
 
 -- | Returns supergroup and channel chats in which the current user has the
---   right to post stories. The chats must be rechecked with canSendStory
+--   right to post stories. The chats must be rechecked with canPostStory
 --   before actually trying to post a story there. Returns <a>Chats</a>
-data GetChatsToSendStories
-GetChatsToSendStories :: GetChatsToSendStories
-instance GHC.Show.Show TD.Query.GetChatsToSendStories.GetChatsToSendStories
-instance GHC.Classes.Eq TD.Query.GetChatsToSendStories.GetChatsToSendStories
-instance TD.Lib.Internal.ShortShow TD.Query.GetChatsToSendStories.GetChatsToSendStories
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatsToSendStories.GetChatsToSendStories
+data GetChatsToPostStories
+GetChatsToPostStories :: GetChatsToPostStories
+instance GHC.Show.Show TD.Query.GetChatsToPostStories.GetChatsToPostStories
+instance GHC.Classes.Eq TD.Query.GetChatsToPostStories.GetChatsToPostStories
+instance TD.Lib.Internal.ShortShow TD.Query.GetChatsToPostStories.GetChatsToPostStories
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatsToPostStories.GetChatsToPostStories
 
 module TD.Query.GetCloseFriends
 
@@ -29824,69 +30130,23 @@ instance GHC.Classes.Eq TD.Query.GetGroupCall.GetGroupCall
 instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCall.GetGroupCall
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCall.GetGroupCall
 
-module TD.Query.GetGroupCallInviteLink
+module TD.Query.GetGroupCallParticipants
 
--- | Returns invite link to a video chat in a public chat. Returns
---   <a>HttpUrl</a>
-data GetGroupCallInviteLink
-GetGroupCallInviteLink :: Maybe Int -> Maybe Bool -> GetGroupCallInviteLink
+-- | Returns information about participants of a non-joined group call that
+--   is not bound to a chat. Returns <a>GroupCallParticipants</a>
+data GetGroupCallParticipants
+GetGroupCallParticipants :: Maybe InputGroupCall -> Maybe Int -> GetGroupCallParticipants
 
--- | Group call identifier
-[group_call_id] :: GetGroupCallInviteLink -> Maybe Int
+-- | The group call which participants will be returned
+[input_group_call] :: GetGroupCallParticipants -> Maybe InputGroupCall
 
--- | Pass true if the invite link needs to contain an invite hash, passing
---   which to joinGroupCall would allow the invited user to unmute
---   themselves. Requires groupCall.can_be_managed group call flag
-[can_self_unmute] :: GetGroupCallInviteLink -> Maybe Bool
-defaultGetGroupCallInviteLink :: GetGroupCallInviteLink
-instance GHC.Show.Show TD.Query.GetGroupCallInviteLink.GetGroupCallInviteLink
-instance GHC.Classes.Eq TD.Query.GetGroupCallInviteLink.GetGroupCallInviteLink
-instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallInviteLink.GetGroupCallInviteLink
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallInviteLink.GetGroupCallInviteLink
-
-module TD.Query.GetGroupCallStreamSegment
-
--- | Returns a file with a segment of a group call stream in a modified OGG
---   format for audio or MPEG-4 format for video. Returns <a>FilePart</a>
-data GetGroupCallStreamSegment
-GetGroupCallStreamSegment :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GroupCallVideoQuality -> GetGroupCallStreamSegment
-
--- | Group call identifier
-[group_call_id] :: GetGroupCallStreamSegment -> Maybe Int
-
--- | Point in time when the stream segment begins; Unix timestamp in
---   milliseconds
-[time_offset] :: GetGroupCallStreamSegment -> Maybe Int
-
--- | Segment duration scale; 0-1. Segment's duration is 1000/(2**scale)
---   milliseconds
-[scale] :: GetGroupCallStreamSegment -> Maybe Int
-
--- | Identifier of an audio/video channel to get as received from tgcalls
-[channel_id] :: GetGroupCallStreamSegment -> Maybe Int
-
--- | Video quality as received from tgcalls; pass null to get the worst
---   available quality
-[video_quality] :: GetGroupCallStreamSegment -> Maybe GroupCallVideoQuality
-defaultGetGroupCallStreamSegment :: GetGroupCallStreamSegment
-instance GHC.Show.Show TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
-instance GHC.Classes.Eq TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
-instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
-
-module TD.Query.GetGroupCallStreams
-
--- | Returns information about available group call streams. Returns
---   <a>GroupCallStreams</a>
-data GetGroupCallStreams
-GetGroupCallStreams :: Maybe Int -> GetGroupCallStreams
-
--- | Group call identifier
-[group_call_id] :: GetGroupCallStreams -> Maybe Int
-instance GHC.Show.Show TD.Query.GetGroupCallStreams.GetGroupCallStreams
-instance GHC.Classes.Eq TD.Query.GetGroupCallStreams.GetGroupCallStreams
-instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallStreams.GetGroupCallStreams
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallStreams.GetGroupCallStreams
+-- | The maximum number of participants to return; must be positive
+[limit] :: GetGroupCallParticipants -> Maybe Int
+defaultGetGroupCallParticipants :: GetGroupCallParticipants
+instance GHC.Show.Show TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
+instance GHC.Classes.Eq TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
+instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
 
 module TD.Query.GetGroupsInCommon
 
@@ -31920,7 +32180,7 @@ data GetStory
 GetStory :: Maybe Int -> Maybe Int -> Maybe Bool -> GetStory
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: GetStory -> Maybe Int
+[story_poster_chat_id] :: GetStory -> Maybe Int
 
 -- | Story identifier
 [story_id] :: GetStory -> Maybe Int
@@ -32010,8 +32270,8 @@ module TD.Query.GetStoryPublicForwards
 data GetStoryPublicForwards
 GetStoryPublicForwards :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> GetStoryPublicForwards
 
--- | The identifier of the sender of the story
-[story_sender_chat_id] :: GetStoryPublicForwards -> Maybe Int
+-- | The identifier of the poster of the story
+[story_poster_chat_id] :: GetStoryPublicForwards -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: GetStoryPublicForwards -> Maybe Int
@@ -32469,9 +32729,29 @@ instance GHC.Classes.Eq TD.Query.GetVideoChatAvailableParticipants.GetVideoChatA
 instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatAvailableParticipants.GetVideoChatAvailableParticipants
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatAvailableParticipants.GetVideoChatAvailableParticipants
 
+module TD.Query.GetVideoChatInviteLink
+
+-- | Returns invite link to a video chat in a public chat. Returns
+--   <a>HttpUrl</a>
+data GetVideoChatInviteLink
+GetVideoChatInviteLink :: Maybe Int -> Maybe Bool -> GetVideoChatInviteLink
+
+-- | Group call identifier
+[group_call_id] :: GetVideoChatInviteLink -> Maybe Int
+
+-- | Pass true if the invite link needs to contain an invite hash, passing
+--   which to joinVideoChat would allow the invited user to unmute
+--   themselves. Requires groupCall.can_be_managed right
+[can_self_unmute] :: GetVideoChatInviteLink -> Maybe Bool
+defaultGetVideoChatInviteLink :: GetVideoChatInviteLink
+instance GHC.Show.Show TD.Query.GetVideoChatInviteLink.GetVideoChatInviteLink
+instance GHC.Classes.Eq TD.Query.GetVideoChatInviteLink.GetVideoChatInviteLink
+instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatInviteLink.GetVideoChatInviteLink
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatInviteLink.GetVideoChatInviteLink
+
 module TD.Query.GetVideoChatRtmpUrl
 
--- | Returns RTMP URL for streaming to the chat; requires
+-- | Returns RTMP URL for streaming to the video chat of a chat; requires
 --   can_manage_video_chats administrator right. Returns <a>RtmpUrl</a>
 data GetVideoChatRtmpUrl
 GetVideoChatRtmpUrl :: Maybe Int -> GetVideoChatRtmpUrl
@@ -32482,6 +32762,50 @@ instance GHC.Show.Show TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 instance GHC.Classes.Eq TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
+
+module TD.Query.GetVideoChatStreamSegment
+
+-- | Returns a file with a segment of a video chat stream in a modified OGG
+--   format for audio or MPEG-4 format for video. Returns <a>Data</a>
+data GetVideoChatStreamSegment
+GetVideoChatStreamSegment :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GroupCallVideoQuality -> GetVideoChatStreamSegment
+
+-- | Group call identifier
+[group_call_id] :: GetVideoChatStreamSegment -> Maybe Int
+
+-- | Point in time when the stream segment begins; Unix timestamp in
+--   milliseconds
+[time_offset] :: GetVideoChatStreamSegment -> Maybe Int
+
+-- | Segment duration scale; 0-1. Segment's duration is 1000/(2**scale)
+--   milliseconds
+[scale] :: GetVideoChatStreamSegment -> Maybe Int
+
+-- | Identifier of an audio/video channel to get as received from tgcalls
+[channel_id] :: GetVideoChatStreamSegment -> Maybe Int
+
+-- | Video quality as received from tgcalls; pass null to get the worst
+--   available quality
+[video_quality] :: GetVideoChatStreamSegment -> Maybe GroupCallVideoQuality
+defaultGetVideoChatStreamSegment :: GetVideoChatStreamSegment
+instance GHC.Show.Show TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
+instance GHC.Classes.Eq TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
+instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
+
+module TD.Query.GetVideoChatStreams
+
+-- | Returns information about available video chat streams. Returns
+--   <a>VideoChatStreams</a>
+data GetVideoChatStreams
+GetVideoChatStreams :: Maybe Int -> GetVideoChatStreams
+
+-- | Group call identifier
+[group_call_id] :: GetVideoChatStreams -> Maybe Int
+instance GHC.Show.Show TD.Query.GetVideoChatStreams.GetVideoChatStreams
+instance GHC.Classes.Eq TD.Query.GetVideoChatStreams.GetVideoChatStreams
+instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatStreams.GetVideoChatStreams
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatStreams.GetVideoChatStreams
 
 module TD.Query.GetWebAppLinkUrl
 
@@ -32667,23 +32991,48 @@ instance GHC.Classes.Eq TD.Query.ImportMessages.ImportMessages
 instance TD.Lib.Internal.ShortShow TD.Query.ImportMessages.ImportMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ImportMessages.ImportMessages
 
-module TD.Query.InviteGroupCallParticipants
+module TD.Query.InviteGroupCallParticipant
 
--- | Invites users to an active group call. Sends a service message of type
---   messageInviteVideoChatParticipants for video chats. Returns <a>Ok</a>
-data InviteGroupCallParticipants
-InviteGroupCallParticipants :: Maybe Int -> Maybe [Int] -> InviteGroupCallParticipants
+-- | Invites a user to an active group call; for group calls not bound to a
+--   chat only. Sends a service message of the type messageGroupCall. The
+--   group call can have at most
+--   getOption("group_call_participant_count_max") participants. Returns
+--   <a>InviteGroupCallParticipantResult</a>
+data InviteGroupCallParticipant
+InviteGroupCallParticipant :: Maybe Int -> Maybe Int -> Maybe Bool -> InviteGroupCallParticipant
 
 -- | Group call identifier
-[group_call_id] :: InviteGroupCallParticipants -> Maybe Int
+[group_call_id] :: InviteGroupCallParticipant -> Maybe Int
+
+-- | User identifier
+[user_id] :: InviteGroupCallParticipant -> Maybe Int
+
+-- | Pass true if the group call is a video call
+[is_video] :: InviteGroupCallParticipant -> Maybe Bool
+defaultInviteGroupCallParticipant :: InviteGroupCallParticipant
+instance GHC.Show.Show TD.Query.InviteGroupCallParticipant.InviteGroupCallParticipant
+instance GHC.Classes.Eq TD.Query.InviteGroupCallParticipant.InviteGroupCallParticipant
+instance TD.Lib.Internal.ShortShow TD.Query.InviteGroupCallParticipant.InviteGroupCallParticipant
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.InviteGroupCallParticipant.InviteGroupCallParticipant
+
+module TD.Query.InviteVideoChatParticipants
+
+-- | Invites users to an active video chat. Sends a service message of the
+--   type messageInviteVideoChatParticipants to the chat bound to the group
+--   call. Returns <a>Ok</a>
+data InviteVideoChatParticipants
+InviteVideoChatParticipants :: Maybe Int -> Maybe [Int] -> InviteVideoChatParticipants
+
+-- | Group call identifier
+[group_call_id] :: InviteVideoChatParticipants -> Maybe Int
 
 -- | User identifiers. At most 10 users can be invited simultaneously
-[user_ids] :: InviteGroupCallParticipants -> Maybe [Int]
-defaultInviteGroupCallParticipants :: InviteGroupCallParticipants
-instance GHC.Show.Show TD.Query.InviteGroupCallParticipants.InviteGroupCallParticipants
-instance GHC.Classes.Eq TD.Query.InviteGroupCallParticipants.InviteGroupCallParticipants
-instance TD.Lib.Internal.ShortShow TD.Query.InviteGroupCallParticipants.InviteGroupCallParticipants
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.InviteGroupCallParticipants.InviteGroupCallParticipants
+[user_ids] :: InviteVideoChatParticipants -> Maybe [Int]
+defaultInviteVideoChatParticipants :: InviteVideoChatParticipants
+instance GHC.Show.Show TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
+instance GHC.Classes.Eq TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
+instance TD.Lib.Internal.ShortShow TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
 
 module TD.Query.JoinChat
 
@@ -32718,43 +33067,46 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinChatByInviteLink.JoinChatBy
 
 module TD.Query.JoinGroupCall
 
--- | Joins an active group call. Returns join response payload for tgcalls.
---   Returns <a>Text</a>
+-- | Joins a group call that is not bound to a chat. Returns
+--   <a>GroupCallInfo</a>
 data JoinGroupCall
-JoinGroupCall :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> JoinGroupCall
+JoinGroupCall :: Maybe InputGroupCall -> Maybe GroupCallJoinParameters -> JoinGroupCall
 
--- | Group call identifier
-[group_call_id] :: JoinGroupCall -> Maybe Int
+-- | The group call to join
+[input_group_call] :: JoinGroupCall -> Maybe InputGroupCall
 
--- | Identifier of a group call participant, which will be used to join the
---   call; pass null to join as self; video chats only
-[participant_id] :: JoinGroupCall -> Maybe MessageSender
-
--- | Caller audio channel synchronization source identifier; received from
---   tgcalls
-[audio_source_id] :: JoinGroupCall -> Maybe Int
-
--- | Group call join payload; received from tgcalls
-[payload] :: JoinGroupCall -> Maybe Text
-
--- | Pass true to join the call with muted microphone
-[is_muted] :: JoinGroupCall -> Maybe Bool
-
--- | Pass true if the user's video is enabled
-[is_my_video_enabled] :: JoinGroupCall -> Maybe Bool
-
--- | If non-empty, invite hash to be used to join the group call without
---   being muted by administrators
-[invite_hash] :: JoinGroupCall -> Maybe Text
-
--- | Fingerprint of the encryption key for E2E group calls not bound to a
---   chat; pass 0 for voice chats
-[key_fingerprint] :: JoinGroupCall -> Maybe Int
+-- | Parameters to join the call
+[join_parameters] :: JoinGroupCall -> Maybe GroupCallJoinParameters
 defaultJoinGroupCall :: JoinGroupCall
 instance GHC.Show.Show TD.Query.JoinGroupCall.JoinGroupCall
 instance GHC.Classes.Eq TD.Query.JoinGroupCall.JoinGroupCall
 instance TD.Lib.Internal.ShortShow TD.Query.JoinGroupCall.JoinGroupCall
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinGroupCall.JoinGroupCall
+
+module TD.Query.JoinVideoChat
+
+-- | Joins an active video chat. Returns join response payload for tgcalls.
+--   Returns <a>Text</a>
+data JoinVideoChat
+JoinVideoChat :: Maybe Int -> Maybe MessageSender -> Maybe GroupCallJoinParameters -> Maybe Text -> JoinVideoChat
+
+-- | Group call identifier
+[group_call_id] :: JoinVideoChat -> Maybe Int
+
+-- | Identifier of a group call participant, which will be used to join the
+--   call; pass null to join as self; video chats only
+[participant_id] :: JoinVideoChat -> Maybe MessageSender
+
+-- | Parameters to join the call
+[join_parameters] :: JoinVideoChat -> Maybe GroupCallJoinParameters
+
+-- | Invite hash as received from internalLinkTypeVideoChat
+[invite_hash] :: JoinVideoChat -> Maybe Text
+defaultJoinVideoChat :: JoinVideoChat
+instance GHC.Show.Show TD.Query.JoinVideoChat.JoinVideoChat
+instance GHC.Classes.Eq TD.Query.JoinVideoChat.JoinVideoChat
+instance TD.Lib.Internal.ShortShow TD.Query.JoinVideoChat.JoinVideoChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinVideoChat.JoinVideoChat
 
 module TD.Query.LaunchPrepaidGiveaway
 
@@ -32811,7 +33163,7 @@ module TD.Query.LoadActiveStories
 
 -- | Loads more active stories from a story list. The loaded stories will
 --   be sent through updates. Active stories are sorted by the pair
---   (active_stories.order, active_stories.story_sender_chat_id) in
+--   (active_stories.order, active_stories.story_poster_chat_id) in
 --   descending order. Returns a 404 error if all active stories have been
 --   loaded. Returns <a>Ok</a>
 data LoadActiveStories
@@ -33020,8 +33372,8 @@ module TD.Query.OpenStory
 data OpenStory
 OpenStory :: Maybe Int -> Maybe Int -> OpenStory
 
--- | The identifier of the sender of the opened story
-[story_sender_chat_id] :: OpenStory -> Maybe Int
+-- | The identifier of the chat that posted the opened story
+[story_poster_chat_id] :: OpenStory -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: OpenStory -> Maybe Int
@@ -33198,6 +33550,55 @@ instance GHC.Show.Show TD.Query.PingProxy.PingProxy
 instance GHC.Classes.Eq TD.Query.PingProxy.PingProxy
 instance TD.Lib.Internal.ShortShow TD.Query.PingProxy.PingProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.PingProxy.PingProxy
+
+module TD.Query.PostStory
+
+-- | Posts a new story on behalf of a chat; requires can_post_stories right
+--   for supergroup and channel chats. Returns a temporary story. Returns
+--   <a>Story</a>
+data PostStory
+PostStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> PostStory
+
+-- | Identifier of the chat that will post the story. Pass Saved Messages
+--   chat identifier when posting a story on behalf of the current user
+[chat_id] :: PostStory -> Maybe Int
+
+-- | Content of the story
+[content] :: PostStory -> Maybe InputStoryContent
+
+-- | Clickable rectangle areas to be shown on the story media; pass null if
+--   none
+[areas] :: PostStory -> Maybe InputStoryAreas
+
+-- | Story caption; pass null to use an empty caption;
+--   0-getOption("story_caption_length_max") characters; can have entities
+--   only if getOption("can_use_text_entities_in_story_caption")
+[caption] :: PostStory -> Maybe FormattedText
+
+-- | The privacy settings for the story; ignored for stories posted on
+--   behalf of supergroup and channel chats
+[privacy_settings] :: PostStory -> Maybe StoryPrivacySettings
+
+-- | Period after which the story is moved to archive, in seconds; must be
+--   one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium
+--   users, and 86400 otherwise
+[active_period] :: PostStory -> Maybe Int
+
+-- | Full identifier of the original story, which content was used to
+--   create the story; pass null if the story isn't repost of another story
+[from_story_full_id] :: PostStory -> Maybe StoryFullId
+
+-- | Pass true to keep the story accessible after expiration
+[is_posted_to_chat_page] :: PostStory -> Maybe Bool
+
+-- | Pass true if the content of the story must be protected from
+--   forwarding and screenshotting
+[protect_content] :: PostStory -> Maybe Bool
+defaultPostStory :: PostStory
+instance GHC.Show.Show TD.Query.PostStory.PostStory
+instance GHC.Classes.Eq TD.Query.PostStory.PostStory
+instance TD.Lib.Internal.ShortShow TD.Query.PostStory.PostStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.PostStory.PostStory
 
 module TD.Query.PreliminaryUploadFile
 
@@ -33431,7 +33832,7 @@ module TD.Query.ReadFilePart
 -- | Reads a part of a file from the TDLib file cache and returns read
 --   bytes. This method is intended to be used only if the application has
 --   no direct access to TDLib's file system, because it is usually slower
---   than a direct read from the file. Returns <a>FilePart</a>
+--   than a direct read from the file. Returns <a>Data</a>
 data ReadFilePart
 ReadFilePart :: Maybe Int -> Maybe Int -> Maybe Int -> ReadFilePart
 
@@ -34105,8 +34506,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceStickerInSet.ReplaceStic
 
 module TD.Query.ReplaceVideoChatRtmpUrl
 
--- | Replaces the current RTMP URL for streaming to the chat; requires
---   owner privileges. Returns <a>RtmpUrl</a>
+-- | Replaces the current RTMP URL for streaming to the video chat of a
+--   chat; requires owner privileges in the chat. Returns <a>RtmpUrl</a>
 data ReplaceVideoChatRtmpUrl
 ReplaceVideoChatRtmpUrl :: Maybe Int -> ReplaceVideoChatRtmpUrl
 
@@ -34271,8 +34672,8 @@ module TD.Query.ReportStory
 data ReportStory
 ReportStory :: Maybe Int -> Maybe Int -> Maybe ByteString -> Maybe Text -> ReportStory
 
--- | The identifier of the sender of the story to report
-[story_sender_chat_id] :: ReportStory -> Maybe Int
+-- | The identifier of the poster of the story to report
+[story_poster_chat_id] :: ReportStory -> Maybe Int
 
 -- | The identifier of the story to report
 [story_id] :: ReportStory -> Maybe Int
@@ -34576,7 +34977,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RevokeChatInviteLink.RevokeChat
 module TD.Query.RevokeGroupCallInviteLink
 
 -- | Revokes invite link for a group call. Requires
---   groupCall.can_be_managed group call flag. Returns <a>Ok</a>
+--   groupCall.can_be_managed right for video chats or groupCall.is_owned
+--   otherwise. Returns <a>Ok</a>
 data RevokeGroupCallInviteLink
 RevokeGroupCallInviteLink :: Maybe Int -> RevokeGroupCallInviteLink
 
@@ -34669,9 +35071,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchBackground.SearchBackgrou
 
 module TD.Query.SearchCallMessages
 
--- | Searches for call messages. Returns the results in reverse
---   chronological order (i.e., in order of decreasing message_id). For
---   optimal performance, the number of returned messages is chosen by
+-- | Searches for call and group call messages. Returns the results in
+--   reverse chronological order (i.e., in order of decreasing message_id).
+--   For optimal performance, the number of returned messages is chosen by
 --   TDLib. Returns <a>FoundMessages</a>
 data SearchCallMessages
 SearchCallMessages :: Maybe Text -> Maybe Int -> Maybe Bool -> SearchCallMessages
@@ -35120,7 +35522,7 @@ SearchPublicStoriesByTag :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -
 
 -- | Identifier of the chat that posted the stories to search for; pass 0
 --   to search stories in all chats
-[story_sender_chat_id] :: SearchPublicStoriesByTag -> Maybe Int
+[story_poster_chat_id] :: SearchPublicStoriesByTag -> Maybe Int
 
 -- | Hashtag or cashtag to search for
 [tag] :: SearchPublicStoriesByTag -> Maybe Text
@@ -35953,55 +36355,6 @@ instance GHC.Show.Show TD.Query.SendQuickReplyShortcutMessages.SendQuickReplySho
 instance GHC.Classes.Eq TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
 instance TD.Lib.Internal.ShortShow TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
-
-module TD.Query.SendStory
-
--- | Sends a new story to a chat; requires can_post_stories right for
---   supergroup and channel chats. Returns a temporary story. Returns
---   <a>Story</a>
-data SendStory
-SendStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> SendStory
-
--- | Identifier of the chat that will post the story. Pass Saved Messages
---   chat identifier when posting a story on behalf of the current user
-[chat_id] :: SendStory -> Maybe Int
-
--- | Content of the story
-[content] :: SendStory -> Maybe InputStoryContent
-
--- | Clickable rectangle areas to be shown on the story media; pass null if
---   none
-[areas] :: SendStory -> Maybe InputStoryAreas
-
--- | Story caption; pass null to use an empty caption;
---   0-getOption("story_caption_length_max") characters; can have entities
---   only if getOption("can_use_text_entities_in_story_caption")
-[caption] :: SendStory -> Maybe FormattedText
-
--- | The privacy settings for the story; ignored for stories sent to
---   supergroup and channel chats
-[privacy_settings] :: SendStory -> Maybe StoryPrivacySettings
-
--- | Period after which the story is moved to archive, in seconds; must be
---   one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium
---   users, and 86400 otherwise
-[active_period] :: SendStory -> Maybe Int
-
--- | Full identifier of the original story, which content was used to
---   create the story; pass null if the story isn't repost of another story
-[from_story_full_id] :: SendStory -> Maybe StoryFullId
-
--- | Pass true to keep the story accessible after expiration
-[is_posted_to_chat_page] :: SendStory -> Maybe Bool
-
--- | Pass true if the content of the story must be protected from
---   forwarding and screenshotting
-[protect_content] :: SendStory -> Maybe Bool
-defaultSendStory :: SendStory
-instance GHC.Show.Show TD.Query.SendStory.SendStory
-instance GHC.Classes.Eq TD.Query.SendStory.SendStory
-instance TD.Lib.Internal.ShortShow TD.Query.SendStory.SendStory
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendStory.SendStory
 
 module TD.Query.SendWebAppCustomRequest
 
@@ -37382,7 +37735,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGiftSettings.SetGiftSettings
 module TD.Query.SetGroupCallParticipantIsSpeaking
 
 -- | Informs TDLib that speaking state of a participant of an active group
---   has changed. Returns <a>Ok</a>
+--   call has changed. Returns <a>Ok</a>
 data SetGroupCallParticipantIsSpeaking
 SetGroupCallParticipantIsSpeaking :: Maybe Int -> Maybe Int -> Maybe Bool -> SetGroupCallParticipantIsSpeaking
 
@@ -37404,9 +37757,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGroupCallParticipantIsSpeaki
 module TD.Query.SetGroupCallParticipantVolumeLevel
 
 -- | Changes volume level of a participant of an active group call. If the
---   current user can manage the group call, then the participant's volume
---   level will be changed for all users with the default volume level.
---   Returns <a>Ok</a>
+--   current user can manage the group call or is the owner of the group
+--   call, then the participant's volume level will be changed for all
+--   users with the default volume level. Returns <a>Ok</a>
 data SetGroupCallParticipantVolumeLevel
 SetGroupCallParticipantVolumeLevel :: Maybe Int -> Maybe MessageSender -> Maybe Int -> SetGroupCallParticipantVolumeLevel
 
@@ -37423,24 +37776,6 @@ instance GHC.Show.Show TD.Query.SetGroupCallParticipantVolumeLevel.SetGroupCallP
 instance GHC.Classes.Eq TD.Query.SetGroupCallParticipantVolumeLevel.SetGroupCallParticipantVolumeLevel
 instance TD.Lib.Internal.ShortShow TD.Query.SetGroupCallParticipantVolumeLevel.SetGroupCallParticipantVolumeLevel
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGroupCallParticipantVolumeLevel.SetGroupCallParticipantVolumeLevel
-
-module TD.Query.SetGroupCallTitle
-
--- | Sets group call title. Requires groupCall.can_be_managed group call
---   flag. Returns <a>Ok</a>
-data SetGroupCallTitle
-SetGroupCallTitle :: Maybe Int -> Maybe Text -> SetGroupCallTitle
-
--- | Group call identifier
-[group_call_id] :: SetGroupCallTitle -> Maybe Int
-
--- | New group call title; 1-64 characters
-[title] :: SetGroupCallTitle -> Maybe Text
-defaultSetGroupCallTitle :: SetGroupCallTitle
-instance GHC.Show.Show TD.Query.SetGroupCallTitle.SetGroupCallTitle
-instance GHC.Classes.Eq TD.Query.SetGroupCallTitle.SetGroupCallTitle
-instance TD.Lib.Internal.ShortShow TD.Query.SetGroupCallTitle.SetGroupCallTitle
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGroupCallTitle.SetGroupCallTitle
 
 module TD.Query.SetInactiveSessionTtl
 
@@ -38217,8 +38552,8 @@ module TD.Query.SetStoryReaction
 data SetStoryReaction
 SetStoryReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -> SetStoryReaction
 
--- | The identifier of the sender of the story
-[story_sender_chat_id] :: SetStoryReaction -> Maybe Int
+-- | The identifier of the poster of the story
+[story_poster_chat_id] :: SetStoryReaction -> Maybe Int
 
 -- | The identifier of the story
 [story_id] :: SetStoryReaction -> Maybe Int
@@ -38486,6 +38821,24 @@ instance GHC.Classes.Eq TD.Query.SetVideoChatDefaultParticipant.SetVideoChatDefa
 instance TD.Lib.Internal.ShortShow TD.Query.SetVideoChatDefaultParticipant.SetVideoChatDefaultParticipant
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetVideoChatDefaultParticipant.SetVideoChatDefaultParticipant
 
+module TD.Query.SetVideoChatTitle
+
+-- | Sets title of a video chat; requires groupCall.can_be_managed right.
+--   Returns <a>Ok</a>
+data SetVideoChatTitle
+SetVideoChatTitle :: Maybe Int -> Maybe Text -> SetVideoChatTitle
+
+-- | Group call identifier
+[group_call_id] :: SetVideoChatTitle -> Maybe Int
+
+-- | New group call title; 1-64 characters
+[title] :: SetVideoChatTitle -> Maybe Text
+defaultSetVideoChatTitle :: SetVideoChatTitle
+instance GHC.Show.Show TD.Query.SetVideoChatTitle.SetVideoChatTitle
+instance GHC.Classes.Eq TD.Query.SetVideoChatTitle.SetVideoChatTitle
+instance TD.Lib.Internal.ShortShow TD.Query.SetVideoChatTitle.SetVideoChatTitle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetVideoChatTitle.SetVideoChatTitle
+
 module TD.Query.ShareChatWithBot
 
 -- | Shares a chat after pressing a keyboardButtonTypeRequestChat button
@@ -38567,8 +38920,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ShareUsersWithBot.ShareUsersWit
 
 module TD.Query.StartGroupCallRecording
 
--- | Starts recording of an active group call. Requires
---   groupCall.can_be_managed group call flag. Returns <a>Ok</a>
+-- | Starts recording of an active group call; for video chats only.
+--   Requires groupCall.can_be_managed right. Returns <a>Ok</a>
 data StartGroupCallRecording
 StartGroupCallRecording :: Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> StartGroupCallRecording
 
@@ -38612,18 +38965,18 @@ instance GHC.Classes.Eq TD.Query.StartGroupCallScreenSharing.StartGroupCallScree
 instance TD.Lib.Internal.ShortShow TD.Query.StartGroupCallScreenSharing.StartGroupCallScreenSharing
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartGroupCallScreenSharing.StartGroupCallScreenSharing
 
-module TD.Query.StartScheduledGroupCall
+module TD.Query.StartScheduledVideoChat
 
--- | Starts a scheduled group call. Returns <a>Ok</a>
-data StartScheduledGroupCall
-StartScheduledGroupCall :: Maybe Int -> StartScheduledGroupCall
+-- | Starts a scheduled video chat. Returns <a>Ok</a>
+data StartScheduledVideoChat
+StartScheduledVideoChat :: Maybe Int -> StartScheduledVideoChat
 
--- | Group call identifier
-[group_call_id] :: StartScheduledGroupCall -> Maybe Int
-instance GHC.Show.Show TD.Query.StartScheduledGroupCall.StartScheduledGroupCall
-instance GHC.Classes.Eq TD.Query.StartScheduledGroupCall.StartScheduledGroupCall
-instance TD.Lib.Internal.ShortShow TD.Query.StartScheduledGroupCall.StartScheduledGroupCall
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartScheduledGroupCall.StartScheduledGroupCall
+-- | Group call identifier of the video chat
+[group_call_id] :: StartScheduledVideoChat -> Maybe Int
+instance GHC.Show.Show TD.Query.StartScheduledVideoChat.StartScheduledVideoChat
+instance GHC.Classes.Eq TD.Query.StartScheduledVideoChat.StartScheduledVideoChat
+instance TD.Lib.Internal.ShortShow TD.Query.StartScheduledVideoChat.StartScheduledVideoChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartScheduledVideoChat.StartScheduledVideoChat
 
 module TD.Query.StopBusinessPoll
 
@@ -39266,24 +39619,6 @@ instance GHC.Classes.Eq TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 
-module TD.Query.ToggleGroupCallEnabledStartNotification
-
--- | Toggles whether the current user will receive a notification when the
---   group call starts; scheduled group calls only. Returns <a>Ok</a>
-data ToggleGroupCallEnabledStartNotification
-ToggleGroupCallEnabledStartNotification :: Maybe Int -> Maybe Bool -> ToggleGroupCallEnabledStartNotification
-
--- | Group call identifier
-[group_call_id] :: ToggleGroupCallEnabledStartNotification -> Maybe Int
-
--- | New value of the enabled_start_notification setting
-[enabled_start_notification] :: ToggleGroupCallEnabledStartNotification -> Maybe Bool
-defaultToggleGroupCallEnabledStartNotification :: ToggleGroupCallEnabledStartNotification
-instance GHC.Show.Show TD.Query.ToggleGroupCallEnabledStartNotification.ToggleGroupCallEnabledStartNotification
-instance GHC.Classes.Eq TD.Query.ToggleGroupCallEnabledStartNotification.ToggleGroupCallEnabledStartNotification
-instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallEnabledStartNotification.ToggleGroupCallEnabledStartNotification
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallEnabledStartNotification.ToggleGroupCallEnabledStartNotification
-
 module TD.Query.ToggleGroupCallIsMyVideoEnabled
 
 -- | Toggles whether current user's video is enabled. Returns <a>Ok</a>
@@ -39318,30 +39653,10 @@ instance GHC.Classes.Eq TD.Query.ToggleGroupCallIsMyVideoPaused.ToggleGroupCallI
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallIsMyVideoPaused.ToggleGroupCallIsMyVideoPaused
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallIsMyVideoPaused.ToggleGroupCallIsMyVideoPaused
 
-module TD.Query.ToggleGroupCallMuteNewParticipants
-
--- | Toggles whether new participants of a group call can be unmuted only
---   by administrators of the group call. Requires
---   groupCall.can_toggle_mute_new_participants group call flag. Returns
---   <a>Ok</a>
-data ToggleGroupCallMuteNewParticipants
-ToggleGroupCallMuteNewParticipants :: Maybe Int -> Maybe Bool -> ToggleGroupCallMuteNewParticipants
-
--- | Group call identifier
-[group_call_id] :: ToggleGroupCallMuteNewParticipants -> Maybe Int
-
--- | New value of the mute_new_participants setting
-[mute_new_participants] :: ToggleGroupCallMuteNewParticipants -> Maybe Bool
-defaultToggleGroupCallMuteNewParticipants :: ToggleGroupCallMuteNewParticipants
-instance GHC.Show.Show TD.Query.ToggleGroupCallMuteNewParticipants.ToggleGroupCallMuteNewParticipants
-instance GHC.Classes.Eq TD.Query.ToggleGroupCallMuteNewParticipants.ToggleGroupCallMuteNewParticipants
-instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallMuteNewParticipants.ToggleGroupCallMuteNewParticipants
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallMuteNewParticipants.ToggleGroupCallMuteNewParticipants
-
 module TD.Query.ToggleGroupCallParticipantIsHandRaised
 
--- | Toggles whether a group call participant hand is rased. Returns
---   <a>Ok</a>
+-- | Toggles whether a group call participant hand is rased; for video
+--   chats only. Returns <a>Ok</a>
 data ToggleGroupCallParticipantIsHandRaised
 ToggleGroupCallParticipantIsHandRaised :: Maybe Int -> Maybe MessageSender -> Maybe Bool -> ToggleGroupCallParticipantIsHandRaised
 
@@ -39352,8 +39667,7 @@ ToggleGroupCallParticipantIsHandRaised :: Maybe Int -> Maybe MessageSender -> Ma
 [participant_id] :: ToggleGroupCallParticipantIsHandRaised -> Maybe MessageSender
 
 -- | Pass true if the user's hand needs to be raised. Only self hand can be
---   raised. Requires groupCall.can_be_managed group call flag to lower
---   other's hand
+--   raised. Requires groupCall.can_be_managed right to lower other's hand
 [is_hand_raised] :: ToggleGroupCallParticipantIsHandRaised -> Maybe Bool
 defaultToggleGroupCallParticipantIsHandRaised :: ToggleGroupCallParticipantIsHandRaised
 instance GHC.Show.Show TD.Query.ToggleGroupCallParticipantIsHandRaised.ToggleGroupCallParticipantIsHandRaised
@@ -39481,7 +39795,7 @@ data ToggleStoryIsPostedToChatPage
 ToggleStoryIsPostedToChatPage :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleStoryIsPostedToChatPage
 
 -- | Identifier of the chat that posted the story
-[story_sender_chat_id] :: ToggleStoryIsPostedToChatPage -> Maybe Int
+[story_poster_chat_id] :: ToggleStoryIsPostedToChatPage -> Maybe Int
 
 -- | Identifier of the story
 [story_id] :: ToggleStoryIsPostedToChatPage -> Maybe Int
@@ -39708,6 +40022,43 @@ instance GHC.Show.Show TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 instance GHC.Classes.Eq TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleUsernameIsActive.ToggleUsernameIsActive
+
+module TD.Query.ToggleVideoChatEnabledStartNotification
+
+-- | Toggles whether the current user will receive a notification when the
+--   video chat starts; for scheduled video chats only. Returns <a>Ok</a>
+data ToggleVideoChatEnabledStartNotification
+ToggleVideoChatEnabledStartNotification :: Maybe Int -> Maybe Bool -> ToggleVideoChatEnabledStartNotification
+
+-- | Group call identifier
+[group_call_id] :: ToggleVideoChatEnabledStartNotification -> Maybe Int
+
+-- | New value of the enabled_start_notification setting
+[enabled_start_notification] :: ToggleVideoChatEnabledStartNotification -> Maybe Bool
+defaultToggleVideoChatEnabledStartNotification :: ToggleVideoChatEnabledStartNotification
+instance GHC.Show.Show TD.Query.ToggleVideoChatEnabledStartNotification.ToggleVideoChatEnabledStartNotification
+instance GHC.Classes.Eq TD.Query.ToggleVideoChatEnabledStartNotification.ToggleVideoChatEnabledStartNotification
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleVideoChatEnabledStartNotification.ToggleVideoChatEnabledStartNotification
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleVideoChatEnabledStartNotification.ToggleVideoChatEnabledStartNotification
+
+module TD.Query.ToggleVideoChatMuteNewParticipants
+
+-- | Toggles whether new participants of a video chat can be unmuted only
+--   by administrators of the video chat. Requires
+--   groupCall.can_toggle_mute_new_participants right. Returns <a>Ok</a>
+data ToggleVideoChatMuteNewParticipants
+ToggleVideoChatMuteNewParticipants :: Maybe Int -> Maybe Bool -> ToggleVideoChatMuteNewParticipants
+
+-- | Group call identifier
+[group_call_id] :: ToggleVideoChatMuteNewParticipants -> Maybe Int
+
+-- | New value of the mute_new_participants setting
+[mute_new_participants] :: ToggleVideoChatMuteNewParticipants -> Maybe Bool
+defaultToggleVideoChatMuteNewParticipants :: ToggleVideoChatMuteNewParticipants
+instance GHC.Show.Show TD.Query.ToggleVideoChatMuteNewParticipants.ToggleVideoChatMuteNewParticipants
+instance GHC.Classes.Eq TD.Query.ToggleVideoChatMuteNewParticipants.ToggleVideoChatMuteNewParticipants
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleVideoChatMuteNewParticipants.ToggleVideoChatMuteNewParticipants
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleVideoChatMuteNewParticipants.ToggleVideoChatMuteNewParticipants
 
 module TD.Query.TransferBusinessAccountStars
 
