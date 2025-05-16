@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.60.0
+@version 2.0.61.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -464,7 +464,10 @@ module TD.Data.UpgradedGiftBackdrop
 data UpgradedGiftBackdrop
 
 -- | Describes a backdrop of an upgraded gift
-UpgradedGiftBackdrop :: Maybe Text -> Maybe UpgradedGiftBackdropColors -> Maybe Int -> UpgradedGiftBackdrop
+UpgradedGiftBackdrop :: Maybe Int -> Maybe Text -> Maybe UpgradedGiftBackdropColors -> Maybe Int -> UpgradedGiftBackdrop
+
+-- | Unique identifier of the backdrop
+[_id] :: UpgradedGiftBackdrop -> Maybe Int
 
 -- | Name of the backdrop
 [name] :: UpgradedGiftBackdrop -> Maybe Text
@@ -479,6 +482,50 @@ instance GHC.Show.Show TD.Data.UpgradedGiftBackdrop.UpgradedGiftBackdrop
 instance GHC.Classes.Eq TD.Data.UpgradedGiftBackdrop.UpgradedGiftBackdrop
 instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftBackdrop.UpgradedGiftBackdrop
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftBackdrop.UpgradedGiftBackdrop
+
+module TD.Data.UpgradedGiftBackdropCount
+data UpgradedGiftBackdropCount
+
+-- | Describes a backdrop of an upgraded gift
+UpgradedGiftBackdropCount :: Maybe UpgradedGiftBackdrop -> Maybe Int -> UpgradedGiftBackdropCount
+
+-- | The backdrop
+[backdrop] :: UpgradedGiftBackdropCount -> Maybe UpgradedGiftBackdrop
+
+-- | Total number of gifts with the symbol
+[total_count] :: UpgradedGiftBackdropCount -> Maybe Int
+instance GHC.Show.Show TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
+instance GHC.Classes.Eq TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
+instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
+
+module TD.Data.UpgradedGiftAttributeId
+
+-- | Contains identifier of an upgraded gift attribute to search for
+data UpgradedGiftAttributeId
+
+-- | Identifier of a gift model
+UpgradedGiftAttributeIdModel :: Maybe Int -> UpgradedGiftAttributeId
+
+-- | Identifier of the sticker representing the model
+[sticker_id] :: UpgradedGiftAttributeId -> Maybe Int
+
+-- | Identifier of a gift symbol
+UpgradedGiftAttributeIdSymbol :: Maybe Int -> UpgradedGiftAttributeId
+
+-- | Identifier of the sticker representing the model
+[sticker_id] :: UpgradedGiftAttributeId -> Maybe Int
+
+-- | Identifier of a gift backdrop
+UpgradedGiftAttributeIdBackdrop :: Maybe Int -> UpgradedGiftAttributeId
+
+-- | Identifier of the backdrop
+[backdrop_id] :: UpgradedGiftAttributeId -> Maybe Int
+instance GHC.Show.Show TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
+instance GHC.Classes.Eq TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
+instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
 
 module TD.Data.UnconfirmedSession
 data UnconfirmedSession
@@ -1051,81 +1098,6 @@ instance GHC.Classes.Eq TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
 instance TD.Lib.Internal.ShortShow TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
-
-module TD.Data.SuggestedAction
-
--- | Describes an action suggested to the current user
-data SuggestedAction
-
--- | Suggests the user to enable
---   archive_and_mute_new_chats_from_unknown_users setting in
---   archiveChatListSettings
-SuggestedActionEnableArchiveAndMuteNewChats :: SuggestedAction
-
--- | Suggests the user to check whether they still remember their 2-step
---   verification password
-SuggestedActionCheckPassword :: SuggestedAction
-
--- | Suggests the user to check whether authorization phone number is
---   correct and change the phone number if it is inaccessible
-SuggestedActionCheckPhoneNumber :: SuggestedAction
-
--- | Suggests the user to view a hint about the meaning of one and two
---   check marks on sent messages
-SuggestedActionViewChecksHint :: SuggestedAction
-
--- | Suggests the user to convert specified supergroup to a broadcast group
-SuggestedActionConvertToBroadcastGroup :: Maybe Int -> SuggestedAction
-
--- | Supergroup identifier
-[supergroup_id] :: SuggestedAction -> Maybe Int
-
--- | Suggests the user to set a 2-step verification password to be able to
---   log in again
-SuggestedActionSetPassword :: Maybe Int -> SuggestedAction
-
--- | The number of days to pass between consecutive authorizations if the
---   user declines to set password; if 0, then the user is advised to set
---   the password for security reasons
-[authorization_delay] :: SuggestedAction -> Maybe Int
-
--- | Suggests the user to upgrade the Premium subscription from monthly
---   payments to annual payments
-SuggestedActionUpgradePremium :: SuggestedAction
-
--- | Suggests the user to restore a recently expired Premium subscription
-SuggestedActionRestorePremium :: SuggestedAction
-
--- | Suggests the user to subscribe to the Premium subscription with annual
---   payments
-SuggestedActionSubscribeToAnnualPremium :: SuggestedAction
-
--- | Suggests the user to gift Telegram Premium to friends for Christmas
-SuggestedActionGiftPremiumForChristmas :: SuggestedAction
-
--- | Suggests the user to set birthdate
-SuggestedActionSetBirthdate :: SuggestedAction
-
--- | Suggests the user to set profile photo
-SuggestedActionSetProfilePhoto :: SuggestedAction
-
--- | Suggests the user to extend their expiring Telegram Premium
---   subscription
-SuggestedActionExtendPremium :: Maybe Text -> SuggestedAction
-
--- | A URL for managing Telegram Premium subscription
-[manage_premium_subscription_url] :: SuggestedAction -> Maybe Text
-
--- | Suggests the user to extend their expiring Telegram Star
---   subscriptions. Call getStarSubscriptions with only_expiring == true to
---   get the number of expiring subscriptions and the number of required to
---   buy Telegram Stars
-SuggestedActionExtendStarSubscriptions :: SuggestedAction
-instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
-instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
-instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedAction.SuggestedAction
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SuggestedAction.SuggestedAction
 
 module TD.Data.StoryPrivacySettings
 
@@ -6395,6 +6367,27 @@ instance GHC.Classes.Eq TD.Data.GiveawayInfo.GiveawayInfo
 instance TD.Lib.Internal.ShortShow TD.Data.GiveawayInfo.GiveawayInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiveawayInfo.GiveawayInfo
 
+module TD.Data.GiftForResaleOrder
+
+-- | Describes order in which upgraded gifts for resale will be sorted
+data GiftForResaleOrder
+
+-- | The gifts will be sorted by their price from the lowest to the highest
+GiftForResaleOrderPrice :: GiftForResaleOrder
+
+-- | The gifts will be sorted by the last date when their price was changed
+--   from the newest to the oldest
+GiftForResaleOrderPriceChangeDate :: GiftForResaleOrder
+
+-- | The gifts will be sorted by their number from the smallest to the
+--   largest
+GiftForResaleOrderNumber :: GiftForResaleOrder
+instance GHC.Show.Show TD.Data.GiftForResaleOrder.GiftForResaleOrder
+instance GHC.Classes.Eq TD.Data.GiftForResaleOrder.GiftForResaleOrder
+instance TD.Lib.Internal.ShortShow TD.Data.GiftForResaleOrder.GiftForResaleOrder
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftForResaleOrder.GiftForResaleOrder
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GiftForResaleOrder.GiftForResaleOrder
+
 module TD.Data.GameHighScore
 data GameHighScore
 
@@ -6868,6 +6861,96 @@ instance GHC.Classes.Eq TD.Data.InputInvoice.InputInvoice
 instance TD.Lib.Internal.ShortShow TD.Data.InputInvoice.InputInvoice
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputInvoice.InputInvoice
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputInvoice.InputInvoice
+
+module TD.Data.SuggestedAction
+
+-- | Describes an action suggested to the current user
+data SuggestedAction
+
+-- | Suggests the user to enable
+--   archive_and_mute_new_chats_from_unknown_users setting in
+--   archiveChatListSettings
+SuggestedActionEnableArchiveAndMuteNewChats :: SuggestedAction
+
+-- | Suggests the user to check whether they still remember their 2-step
+--   verification password
+SuggestedActionCheckPassword :: SuggestedAction
+
+-- | Suggests the user to check whether authorization phone number is
+--   correct and change the phone number if it is inaccessible
+SuggestedActionCheckPhoneNumber :: SuggestedAction
+
+-- | Suggests the user to view a hint about the meaning of one and two
+--   check marks on sent messages
+SuggestedActionViewChecksHint :: SuggestedAction
+
+-- | Suggests the user to convert specified supergroup to a broadcast group
+SuggestedActionConvertToBroadcastGroup :: Maybe Int -> SuggestedAction
+
+-- | Supergroup identifier
+[supergroup_id] :: SuggestedAction -> Maybe Int
+
+-- | Suggests the user to set a 2-step verification password to be able to
+--   log in again
+SuggestedActionSetPassword :: Maybe Int -> SuggestedAction
+
+-- | The number of days to pass between consecutive authorizations if the
+--   user declines to set password; if 0, then the user is advised to set
+--   the password for security reasons
+[authorization_delay] :: SuggestedAction -> Maybe Int
+
+-- | Suggests the user to upgrade the Premium subscription from monthly
+--   payments to annual payments
+SuggestedActionUpgradePremium :: SuggestedAction
+
+-- | Suggests the user to restore a recently expired Premium subscription
+SuggestedActionRestorePremium :: SuggestedAction
+
+-- | Suggests the user to subscribe to the Premium subscription with annual
+--   payments
+SuggestedActionSubscribeToAnnualPremium :: SuggestedAction
+
+-- | Suggests the user to gift Telegram Premium to friends for Christmas
+SuggestedActionGiftPremiumForChristmas :: SuggestedAction
+
+-- | Suggests the user to set birthdate
+SuggestedActionSetBirthdate :: SuggestedAction
+
+-- | Suggests the user to set profile photo
+SuggestedActionSetProfilePhoto :: SuggestedAction
+
+-- | Suggests the user to extend their expiring Telegram Premium
+--   subscription
+SuggestedActionExtendPremium :: Maybe Text -> SuggestedAction
+
+-- | A URL for managing Telegram Premium subscription
+[manage_premium_subscription_url] :: SuggestedAction -> Maybe Text
+
+-- | Suggests the user to extend their expiring Telegram Star
+--   subscriptions. Call getStarSubscriptions with only_expiring == true to
+--   get the number of expiring subscriptions and the number of required to
+--   buy Telegram Stars
+SuggestedActionExtendStarSubscriptions :: SuggestedAction
+
+-- | A custom suggestion to be shown at the top of the chat list
+SuggestedActionCustom :: Maybe Text -> Maybe FormattedText -> Maybe FormattedText -> Maybe Text -> SuggestedAction
+
+-- | Unique name of the suggestion
+[name] :: SuggestedAction -> Maybe Text
+
+-- | Title of the suggestion
+[title] :: SuggestedAction -> Maybe FormattedText
+
+-- | Description of the suggestion
+[description] :: SuggestedAction -> Maybe FormattedText
+
+-- | The link to open when the suggestion is clicked
+[url] :: SuggestedAction -> Maybe Text
+instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
+instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
+instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedAction.SuggestedAction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SuggestedAction.SuggestedAction
 
 module TD.Data.StorePaymentPurpose
 
@@ -7742,6 +7825,22 @@ instance GHC.Classes.Eq TD.Data.UpgradedGiftSymbol.UpgradedGiftSymbol
 instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftSymbol.UpgradedGiftSymbol
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftSymbol.UpgradedGiftSymbol
 
+module TD.Data.UpgradedGiftSymbolCount
+data UpgradedGiftSymbolCount
+
+-- | Describes a symbol shown on the pattern of an upgraded gift
+UpgradedGiftSymbolCount :: Maybe UpgradedGiftSymbol -> Maybe Int -> UpgradedGiftSymbolCount
+
+-- | The symbol
+[symbol] :: UpgradedGiftSymbolCount -> Maybe UpgradedGiftSymbol
+
+-- | Total number of gifts with the symbol
+[total_count] :: UpgradedGiftSymbolCount -> Maybe Int
+instance GHC.Show.Show TD.Data.UpgradedGiftSymbolCount.UpgradedGiftSymbolCount
+instance GHC.Classes.Eq TD.Data.UpgradedGiftSymbolCount.UpgradedGiftSymbolCount
+instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftSymbolCount.UpgradedGiftSymbolCount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftSymbolCount.UpgradedGiftSymbolCount
+
 module TD.Data.UpgradedGiftModel
 data UpgradedGiftModel
 
@@ -7762,12 +7861,28 @@ instance GHC.Classes.Eq TD.Data.UpgradedGiftModel.UpgradedGiftModel
 instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftModel.UpgradedGiftModel
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftModel.UpgradedGiftModel
 
+module TD.Data.UpgradedGiftModelCount
+data UpgradedGiftModelCount
+
+-- | Describes a model of an upgraded gift with the number of gifts found
+UpgradedGiftModelCount :: Maybe UpgradedGiftModel -> Maybe Int -> UpgradedGiftModelCount
+
+-- | The model
+[model] :: UpgradedGiftModelCount -> Maybe UpgradedGiftModel
+
+-- | Total number of gifts with the model
+[total_count] :: UpgradedGiftModelCount -> Maybe Int
+instance GHC.Show.Show TD.Data.UpgradedGiftModelCount.UpgradedGiftModelCount
+instance GHC.Classes.Eq TD.Data.UpgradedGiftModelCount.UpgradedGiftModelCount
+instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftModelCount.UpgradedGiftModelCount
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftModelCount.UpgradedGiftModelCount
+
 module TD.Data.UpgradedGift
 data UpgradedGift
 
 -- | Describes an upgraded gift that can be transferred to another owner or
 --   transferred to the TON blockchain as an NFT
-UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> UpgradedGift
+UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> Maybe Int -> UpgradedGift
 
 -- | Unique identifier of the gift
 [_id] :: UpgradedGift -> Maybe Int
@@ -7776,7 +7891,7 @@ UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int 
 [title] :: UpgradedGift -> Maybe Text
 
 -- | Unique name of the upgraded gift that can be used with
---   internalLinkTypeUpgradedGift
+--   internalLinkTypeUpgradedGift or sendResoldGift
 [name] :: UpgradedGift -> Maybe Text
 
 -- | Unique number of the upgraded gift among gifts upgraded from the same
@@ -7818,6 +7933,10 @@ UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int 
 
 -- | Information about the originally sent gift; may be null if unknown
 [original_details] :: UpgradedGift -> Maybe UpgradedGiftOriginalDetails
+
+-- | Number of Telegram Stars that must be paid to buy the gift and send it
+--   to someone else; 0 if resale isn't possible
+[resale_star_count] :: UpgradedGift -> Maybe Int
 instance GHC.Show.Show TD.Data.UpgradedGift.UpgradedGift
 instance GHC.Classes.Eq TD.Data.UpgradedGift.UpgradedGift
 instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGift.UpgradedGift
@@ -7827,7 +7946,7 @@ module TD.Data.UpgradeGiftResult
 data UpgradeGiftResult
 
 -- | Contains result of gift upgrading
-UpgradeGiftResult :: Maybe UpgradedGift -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> UpgradeGiftResult
+UpgradeGiftResult :: Maybe UpgradedGift -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> UpgradeGiftResult
 
 -- | The upgraded gift
 [gift] :: UpgradeGiftResult -> Maybe UpgradedGift
@@ -7846,6 +7965,15 @@ UpgradeGiftResult :: Maybe UpgradedGift -> Maybe Text -> Maybe Bool -> Maybe Boo
 --   gift
 [transfer_star_count] :: UpgradeGiftResult -> Maybe Int
 
+-- | Point in time (Unix timestamp) when the gift can be transferred to
+--   another owner; 0 if the gift can be transferred immediately or
+--   transfer isn't possible
+[next_transfer_date] :: UpgradeGiftResult -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift can be resold to another
+--   user; 0 if the gift can't be resold; only for the receiver of the gift
+[next_resale_date] :: UpgradeGiftResult -> Maybe Int
+
 -- | Point in time (Unix timestamp) when the gift can be transferred to the
 --   TON blockchain as an NFT
 [export_date] :: UpgradeGiftResult -> Maybe Int
@@ -7853,6 +7981,55 @@ instance GHC.Show.Show TD.Data.UpgradeGiftResult.UpgradeGiftResult
 instance GHC.Classes.Eq TD.Data.UpgradeGiftResult.UpgradeGiftResult
 instance TD.Lib.Internal.ShortShow TD.Data.UpgradeGiftResult.UpgradeGiftResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradeGiftResult.UpgradeGiftResult
+
+module TD.Data.GiftForResale
+data GiftForResale
+
+-- | Describes a gift available for resale
+GiftForResale :: Maybe UpgradedGift -> Maybe Text -> GiftForResale
+
+-- | The gift
+[gift] :: GiftForResale -> Maybe UpgradedGift
+
+-- | Unique identifier of the received gift for the current user; only for
+--   the gifts owned by the current user
+[received_gift_id] :: GiftForResale -> Maybe Text
+instance GHC.Show.Show TD.Data.GiftForResale.GiftForResale
+instance GHC.Classes.Eq TD.Data.GiftForResale.GiftForResale
+instance TD.Lib.Internal.ShortShow TD.Data.GiftForResale.GiftForResale
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftForResale.GiftForResale
+
+module TD.Data.GiftsForResale
+data GiftsForResale
+
+-- | Describes gifts available for resale
+GiftsForResale :: Maybe Int -> Maybe [GiftForResale] -> Maybe [UpgradedGiftModelCount] -> Maybe [UpgradedGiftSymbolCount] -> Maybe [UpgradedGiftBackdropCount] -> Maybe Text -> GiftsForResale
+
+-- | Total number of gifts found
+[total_count] :: GiftsForResale -> Maybe Int
+
+-- | The gifts
+[gifts] :: GiftsForResale -> Maybe [GiftForResale]
+
+-- | Available models; for searchGiftsForResale requests without offset and
+--   attributes only
+[models] :: GiftsForResale -> Maybe [UpgradedGiftModelCount]
+
+-- | Available symbols; for searchGiftsForResale requests without offset
+--   and attributes only
+[symbols] :: GiftsForResale -> Maybe [UpgradedGiftSymbolCount]
+
+-- | Available backdrops; for searchGiftsForResale requests without offset
+--   and attributes only
+[backdrops] :: GiftsForResale -> Maybe [UpgradedGiftBackdropCount]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: GiftsForResale -> Maybe Text
+instance GHC.Show.Show TD.Data.GiftsForResale.GiftsForResale
+instance GHC.Classes.Eq TD.Data.GiftsForResale.GiftsForResale
+instance TD.Lib.Internal.ShortShow TD.Data.GiftsForResale.GiftsForResale
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftsForResale.GiftsForResale
 
 module TD.Data.GiftUpgradePreview
 data GiftUpgradePreview
@@ -8059,7 +8236,7 @@ module TD.Data.ReceivedGift
 data ReceivedGift
 
 -- | Represents a gift received by a user or a chat
-ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe SentGift -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ReceivedGift
+ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe SentGift -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ReceivedGift
 
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
@@ -8112,6 +8289,15 @@ ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Mayb
 --   gift; only for the receiver of the gift
 [transfer_star_count] :: ReceivedGift -> Maybe Int
 
+-- | Point in time (Unix timestamp) when the gift can be transferred to
+--   another owner; 0 if the gift can be transferred immediately or
+--   transfer isn't possible; only for the receiver of the gift
+[next_transfer_date] :: ReceivedGift -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift can be resold to another
+--   user; 0 if the gift can't be resold; only for the receiver of the gift
+[next_resale_date] :: ReceivedGift -> Maybe Int
+
 -- | Point in time (Unix timestamp) when the upgraded gift can be
 --   transferred to the TON blockchain as an NFT; 0 if NFT export isn't
 --   possible; only for the receiver of the gift
@@ -8143,20 +8329,6 @@ instance GHC.Show.Show TD.Data.ReceivedGifts.ReceivedGifts
 instance GHC.Classes.Eq TD.Data.ReceivedGifts.ReceivedGifts
 instance TD.Lib.Internal.ShortShow TD.Data.ReceivedGifts.ReceivedGifts
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ReceivedGifts.ReceivedGifts
-
-module TD.Data.Gifts
-data Gifts
-
--- | Contains a list of gifts that can be sent to another user or channel
---   chat
-Gifts :: Maybe [Gift] -> Gifts
-
--- | The list of gifts
-[gifts] :: Gifts -> Maybe [Gift]
-instance GHC.Show.Show TD.Data.Gifts.Gifts
-instance GHC.Classes.Eq TD.Data.Gifts.Gifts
-instance TD.Lib.Internal.ShortShow TD.Data.Gifts.Gifts
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Gifts.Gifts
 
 module TD.Data.ProfilePhoto
 data ProfilePhoto
@@ -12569,7 +12741,7 @@ module TD.Data.ChatBoostLevelFeatures
 data ChatBoostLevelFeatures
 
 -- | Contains a list of features available on a specific chat boost level
-ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatBoostLevelFeatures
+ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatBoostLevelFeatures
 
 -- | Target chat boost level
 [level] :: ChatBoostLevelFeatures -> Maybe Int
@@ -12610,6 +12782,9 @@ ChatBoostLevelFeatures :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Ma
 -- | True, if custom emoji sticker set can be set for the chat
 [can_set_custom_emoji_sticker_set] :: ChatBoostLevelFeatures -> Maybe Bool
 
+-- | True, if automatic translation of messages can be enabled in the chat
+[can_enable_automatic_translation] :: ChatBoostLevelFeatures -> Maybe Bool
+
 -- | True, if speech recognition can be used for video note and voice note
 --   messages by all users
 [can_recognize_speech] :: ChatBoostLevelFeatures -> Maybe Bool
@@ -12625,7 +12800,7 @@ module TD.Data.ChatBoostFeatures
 data ChatBoostFeatures
 
 -- | Contains a list of features available on the first chat boost levels
-ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
+ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> ChatBoostFeatures
 
 -- | The list of features
 [features] :: ChatBoostFeatures -> Maybe [ChatBoostLevelFeatures]
@@ -12651,6 +12826,10 @@ ChatBoostFeatures :: Maybe [ChatBoostLevelFeatures] -> Maybe Int -> Maybe Int ->
 -- | The minimum boost level required to set custom emoji sticker set for
 --   the chat; for supergroup chats only
 [min_custom_emoji_sticker_set_boost_level] :: ChatBoostFeatures -> Maybe Int
+
+-- | The minimum boost level allowing to enable automatic translation of
+--   messages for non-Premium users; for channel chats only
+[min_automatic_translation_boost_level] :: ChatBoostFeatures -> Maybe Int
 
 -- | The minimum boost level allowing to recognize speech in video note and
 --   voice note messages for non-Premium users; for supergroup chats only
@@ -13668,6 +13847,10 @@ InternalLinkTypeMessageDraft :: Maybe FormattedText -> Maybe Bool -> InternalLin
 --   selected
 [contains_link] :: InternalLinkType -> Maybe Bool
 
+-- | The link is a link to the screen with information about Telegram Star
+--   balance and transactions of the current user
+InternalLinkTypeMyStars :: InternalLinkType
+
 -- | The link contains a request of Telegram passport data. Call
 --   getPassportAuthorizationForm with the given parameters to process the
 --   link if the link was received from outside of the application;
@@ -14071,7 +14254,7 @@ data Supergroup
 --   all administrators use the name and photo of the channel instead of
 --   individual names and profile photos. Unlike supergroups, channels can
 --   have an unlimited number of subscribers
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
 
 -- | Supergroup or channel identifier
 [_id] :: Supergroup -> Maybe Int
@@ -14102,6 +14285,9 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 
 -- | Approximate boost level for the chat
 [boost_level] :: Supergroup -> Maybe Int
+
+-- | True, if automatic translation of messages is enabled in the channel
+[has_automatic_translation] :: Supergroup -> Maybe Bool
 
 -- | True, if the channel has a discussion group, or the supergroup is the
 --   designated discussion group for a channel
@@ -14411,7 +14597,10 @@ module TD.Data.CanPostStoryResult
 data CanPostStoryResult
 
 -- | A story can be sent
-CanPostStoryResultOk :: CanPostStoryResult
+CanPostStoryResultOk :: Maybe Int -> CanPostStoryResult
+
+-- | Number of stories that can be posted by the user
+[story_count] :: CanPostStoryResult -> Maybe Int
 
 -- | The user must subscribe to Telegram Premium to be able to post stories
 CanPostStoryResultPremiumNeeded :: CanPostStoryResult
@@ -15889,6 +16078,44 @@ instance GHC.Classes.Eq TD.Data.AvailableReactions.AvailableReactions
 instance TD.Lib.Internal.ShortShow TD.Data.AvailableReactions.AvailableReactions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AvailableReactions.AvailableReactions
 
+module TD.Data.AvailableGift
+data AvailableGift
+
+-- | Describes a gift that is available for purchase
+AvailableGift :: Maybe Gift -> Maybe Int -> Maybe Int -> Maybe Text -> AvailableGift
+
+-- | The gift
+[gift] :: AvailableGift -> Maybe Gift
+
+-- | Number of gifts that are available for resale
+[resale_count] :: AvailableGift -> Maybe Int
+
+-- | The minimum price for the gifts available for resale; 0 if there are
+--   no such gifts
+[min_resale_star_count] :: AvailableGift -> Maybe Int
+
+-- | The title of the upgraded gift; empty if the gift isn't available for
+--   resale
+[title] :: AvailableGift -> Maybe Text
+instance GHC.Show.Show TD.Data.AvailableGift.AvailableGift
+instance GHC.Classes.Eq TD.Data.AvailableGift.AvailableGift
+instance TD.Lib.Internal.ShortShow TD.Data.AvailableGift.AvailableGift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AvailableGift.AvailableGift
+
+module TD.Data.AvailableGifts
+data AvailableGifts
+
+-- | Contains a list of gifts that can be sent to another user or channel
+--   chat
+AvailableGifts :: Maybe [AvailableGift] -> AvailableGifts
+
+-- | The list of gifts
+[gifts] :: AvailableGifts -> Maybe [AvailableGift]
+instance GHC.Show.Show TD.Data.AvailableGifts.AvailableGifts
+instance GHC.Classes.Eq TD.Data.AvailableGifts.AvailableGifts
+instance TD.Lib.Internal.ShortShow TD.Data.AvailableGifts.AvailableGifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AvailableGifts.AvailableGifts
+
 module TD.Data.AutosaveSettingsScope
 
 -- | Describes scope of autosave settings
@@ -16716,7 +16943,7 @@ PushMessageContentGift :: Maybe Int -> PushMessageContent
 PushMessageContentUpgradedGift :: Maybe Bool -> PushMessageContent
 
 -- | True, if the gift was obtained by upgrading of a previously received
---   gift; otherwise, this is a transferred gift
+--   gift; otherwise, this is a transferred or resold gift
 [is_upgrade] :: PushMessageContent -> Maybe Bool
 
 -- | A screenshot of a message in the chat has been taken
@@ -18728,6 +18955,31 @@ StarTransactionTypeGiftUpgrade :: Maybe Int -> Maybe UpgradedGift -> StarTransac
 -- | The gift
 [_gift] :: StarTransactionType -> Maybe UpgradedGift
 
+-- | The transaction is a purchase of an upgraded gift for some user or
+--   channel; for regular users only
+StarTransactionTypeUpgradedGiftPurchase :: Maybe Int -> Maybe UpgradedGift -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The gift
+[_gift] :: StarTransactionType -> Maybe UpgradedGift
+
+-- | The transaction is a sale of an upgraded gift; for regular users only
+StarTransactionTypeUpgradedGiftSale :: Maybe Int -> Maybe UpgradedGift -> Maybe AffiliateInfo -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
+
+-- | The gift
+[_gift] :: StarTransactionType -> Maybe UpgradedGift
+
+-- | Information about the affiliate which received commission from the
+--   transaction; may be null if none
+[affiliate] :: StarTransactionType -> Maybe AffiliateInfo
+
 -- | The transaction is a sending of a paid reaction to a message in a
 --   channel chat by the current user; for regular users only
 StarTransactionTypeChannelPaidReactionSend :: Maybe Int -> Maybe Int -> StarTransactionType
@@ -20070,7 +20322,7 @@ MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe Text -> Maybe Formatte
 
 -- | An upgraded gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> MessageContent
+MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 
 -- | The gift
 [_gift] :: MessageContent -> Maybe UpgradedGift
@@ -20083,7 +20335,7 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -
 [received_gift_id] :: MessageContent -> Maybe Text
 
 -- | True, if the gift was obtained by upgrading of a previously received
---   gift; otherwise, this is a transferred gift
+--   gift; otherwise, this is a transferred or resold gift
 [is_upgrade] :: MessageContent -> Maybe Bool
 
 -- | True, if the gift is displayed on the user's or the channel's profile
@@ -20098,9 +20350,22 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -
 --   receiver of the gift
 [was_transferred] :: MessageContent -> Maybe Bool
 
+-- | Number of Telegram Stars that were paid by the sender for the gift; 0
+--   if the gift was upgraded or transferred
+[last_resale_star_count] :: MessageContent -> Maybe Int
+
 -- | Number of Telegram Stars that must be paid to transfer the upgraded
 --   gift; only for the receiver of the gift
 [transfer_star_count] :: MessageContent -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift can be transferred to
+--   another owner; 0 if the gift can be transferred immediately or
+--   transfer isn't possible; only for the receiver of the gift
+[next_transfer_date] :: MessageContent -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the gift can be resold to another
+--   user; 0 if the gift can't be resold; only for the receiver of the gift
+[next_resale_date] :: MessageContent -> Maybe Int
 
 -- | Point in time (Unix timestamp) when the gift can be transferred to the
 --   TON blockchain as an NFT; 0 if NFT export isn't possible; only for the
@@ -20117,7 +20382,7 @@ MessageRefundedUpgradedGift :: Maybe Gift -> Maybe MessageSender -> Maybe Bool -
 [sender_id] :: MessageContent -> Maybe MessageSender
 
 -- | True, if the gift was obtained by upgrading of a previously received
---   gift; otherwise, this is a transferred gift
+--   gift; otherwise, this is a transferred or resold gift
 [is_upgrade] :: MessageContent -> Maybe Bool
 
 -- | Paid messages were refunded
@@ -21380,6 +21645,12 @@ ChatEventShowMessageSenderToggled :: Maybe Bool -> ChatEventAction
 
 -- | New value of show_message_sender
 [show_message_sender] :: ChatEventAction -> Maybe Bool
+
+-- | The has_automatic_translation setting of a channel was toggled
+ChatEventAutomaticTranslationToggled :: Maybe Bool -> ChatEventAction
+
+-- | New value of has_automatic_translation
+[has_automatic_translation] :: ChatEventAction -> Maybe Bool
 
 -- | A chat invite link was edited
 ChatEventInviteLinkEdited :: Maybe ChatInviteLink -> Maybe ChatInviteLink -> ChatEventAction
@@ -23911,6 +24182,7 @@ AuthenticationCodeInfo :: AuthenticationCodeInfo -> GeneralResult
 AuthorizationState :: AuthorizationState -> GeneralResult
 AutoDownloadSettingsPresets :: AutoDownloadSettingsPresets -> GeneralResult
 AutosaveSettings :: AutosaveSettings -> GeneralResult
+AvailableGifts :: AvailableGifts -> GeneralResult
 AvailableReactions :: AvailableReactions -> GeneralResult
 Background :: Background -> GeneralResult
 Backgrounds :: Backgrounds -> GeneralResult
@@ -24007,7 +24279,7 @@ FoundUsers :: FoundUsers -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
 GiftUpgradePreview :: GiftUpgradePreview -> GeneralResult
-Gifts :: Gifts -> GeneralResult
+GiftsForResale :: GiftsForResale -> GeneralResult
 GiveawayInfo :: GiveawayInfo -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
@@ -28174,7 +28446,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAvailableChatBoostSlots.GetA
 module TD.Query.GetAvailableGifts
 
 -- | Returns gifts that can be sent to other users and channel chats.
---   Returns <a>Gifts</a>
+--   Returns <a>AvailableGifts</a>
 data GetAvailableGifts
 GetAvailableGifts :: GetAvailableGifts
 instance GHC.Show.Show TD.Query.GetAvailableGifts.GetAvailableGifts
@@ -35321,6 +35593,38 @@ instance GHC.Classes.Eq TD.Query.SearchFileDownloads.SearchFileDownloads
 instance TD.Lib.Internal.ShortShow TD.Query.SearchFileDownloads.SearchFileDownloads
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchFileDownloads.SearchFileDownloads
 
+module TD.Query.SearchGiftsForResale
+
+-- | Returns upgraded gifts that can be bought from other owners. Returns
+--   <a>GiftsForResale</a>
+data SearchGiftsForResale
+SearchGiftsForResale :: Maybe Int -> Maybe GiftForResaleOrder -> Maybe [UpgradedGiftAttributeId] -> Maybe Text -> Maybe Int -> SearchGiftsForResale
+
+-- | Identifier of the regular gift that was upgraded to a unique gift
+[gift_id] :: SearchGiftsForResale -> Maybe Int
+
+-- | Order in which the results will be sorted
+[order] :: SearchGiftsForResale -> Maybe GiftForResaleOrder
+
+-- | Attributes used to filter received gifts. If multiple attributes of
+--   the same type are specified, then all of them are allowed. If none
+--   attributes of specific type are specified, then all values for this
+--   attribute type are allowed
+[attributes] :: SearchGiftsForResale -> Maybe [UpgradedGiftAttributeId]
+
+-- | Offset of the first entry to return as received from the previous
+--   request with the same order and attributes; use empty string to get
+--   the first chunk of results
+[offset] :: SearchGiftsForResale -> Maybe Text
+
+-- | The maximum number of gifts to return
+[limit] :: SearchGiftsForResale -> Maybe Int
+defaultSearchGiftsForResale :: SearchGiftsForResale
+instance GHC.Show.Show TD.Query.SearchGiftsForResale.SearchGiftsForResale
+instance GHC.Classes.Eq TD.Query.SearchGiftsForResale.SearchGiftsForResale
+instance TD.Lib.Internal.ShortShow TD.Query.SearchGiftsForResale.SearchGiftsForResale
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchGiftsForResale.SearchGiftsForResale
+
 module TD.Query.SearchHashtags
 
 -- | Searches for recently used hashtags by their prefix. Returns
@@ -36355,6 +36659,29 @@ instance GHC.Show.Show TD.Query.SendQuickReplyShortcutMessages.SendQuickReplySho
 instance GHC.Classes.Eq TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
 instance TD.Lib.Internal.ShortShow TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendQuickReplyShortcutMessages.SendQuickReplyShortcutMessages
+
+module TD.Query.SendResoldGift
+
+-- | Sends an upgraded gift that is available for resale to another user or
+--   channel chat; gifts already owned by the current user must be
+--   transferred using transferGift and can't be passed to the method.
+--   Returns <a>Ok</a>
+data SendResoldGift
+SendResoldGift :: Maybe Text -> Maybe MessageSender -> Maybe Int -> SendResoldGift
+
+-- | Name of the upgraded gift to send
+[gift_name] :: SendResoldGift -> Maybe Text
+
+-- | Identifier of the user or the channel chat that will receive the gift
+[owner_id] :: SendResoldGift -> Maybe MessageSender
+
+-- | The amount of Telegram Stars required to pay for the gift
+[star_count] :: SendResoldGift -> Maybe Int
+defaultSendResoldGift :: SendResoldGift
+instance GHC.Show.Show TD.Query.SendResoldGift.SendResoldGift
+instance GHC.Classes.Eq TD.Query.SendResoldGift.SendResoldGift
+instance TD.Lib.Internal.ShortShow TD.Query.SendResoldGift.SendResoldGift
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendResoldGift.SendResoldGift
 
 module TD.Query.SendWebAppCustomRequest
 
@@ -37717,6 +38044,28 @@ instance GHC.Show.Show TD.Query.SetGameScore.SetGameScore
 instance GHC.Classes.Eq TD.Query.SetGameScore.SetGameScore
 instance TD.Lib.Internal.ShortShow TD.Query.SetGameScore.SetGameScore
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGameScore.SetGameScore
+
+module TD.Query.SetGiftResalePrice
+
+-- | Changes resale price of a unique gift owned by the current user.
+--   Returns <a>Ok</a>
+data SetGiftResalePrice
+SetGiftResalePrice :: Maybe Text -> Maybe Int -> SetGiftResalePrice
+
+-- | Identifier of the unique gift
+[received_gift_id] :: SetGiftResalePrice -> Maybe Text
+
+-- | The new price for the unique gift; 0 or
+--   getOption("gift_resale_star_count_min")-getOption("gift_resale_star_count_max").
+--   Pass 0 to disallow gift resale. The current user will receive
+--   getOption("gift_resale_earnings_per_mille") Telegram Stars for each
+--   1000 Telegram Stars paid for the gift
+[resale_star_count] :: SetGiftResalePrice -> Maybe Int
+defaultSetGiftResalePrice :: SetGiftResalePrice
+instance GHC.Show.Show TD.Query.SetGiftResalePrice.SetGiftResalePrice
+instance GHC.Classes.Eq TD.Query.SetGiftResalePrice.SetGiftResalePrice
+instance TD.Lib.Internal.ShortShow TD.Query.SetGiftResalePrice.SetGiftResalePrice
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGiftResalePrice.SetGiftResalePrice
 
 module TD.Query.SetGiftSettings
 
@@ -39848,6 +40197,27 @@ instance GHC.Show.Show TD.Query.ToggleSupergroupHasAggressiveAntiSpamEnabled.Tog
 instance GHC.Classes.Eq TD.Query.ToggleSupergroupHasAggressiveAntiSpamEnabled.ToggleSupergroupHasAggressiveAntiSpamEnabled
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleSupergroupHasAggressiveAntiSpamEnabled.ToggleSupergroupHasAggressiveAntiSpamEnabled
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupHasAggressiveAntiSpamEnabled.ToggleSupergroupHasAggressiveAntiSpamEnabled
+
+module TD.Query.ToggleSupergroupHasAutomaticTranslation
+
+-- | Toggles whether messages are automatically translated in the channel
+--   chat; requires can_change_info administrator right in the channel. The
+--   chat must have at least
+--   chatBoostFeatures.min_automatic_translation_boost_level boost level to
+--   enable automatic translation. Returns <a>Ok</a>
+data ToggleSupergroupHasAutomaticTranslation
+ToggleSupergroupHasAutomaticTranslation :: Maybe Int -> Maybe Bool -> ToggleSupergroupHasAutomaticTranslation
+
+-- | The identifier of the channel
+[supergroup_id] :: ToggleSupergroupHasAutomaticTranslation -> Maybe Int
+
+-- | The new value of has_automatic_translation
+[has_automatic_translation] :: ToggleSupergroupHasAutomaticTranslation -> Maybe Bool
+defaultToggleSupergroupHasAutomaticTranslation :: ToggleSupergroupHasAutomaticTranslation
+instance GHC.Show.Show TD.Query.ToggleSupergroupHasAutomaticTranslation.ToggleSupergroupHasAutomaticTranslation
+instance GHC.Classes.Eq TD.Query.ToggleSupergroupHasAutomaticTranslation.ToggleSupergroupHasAutomaticTranslation
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleSupergroupHasAutomaticTranslation.ToggleSupergroupHasAutomaticTranslation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleSupergroupHasAutomaticTranslation.ToggleSupergroupHasAutomaticTranslation
 
 module TD.Query.ToggleSupergroupHasHiddenMembers
 
