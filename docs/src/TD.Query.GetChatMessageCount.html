@@ -6,21 +6,22 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.SearchMessagesFilter.html"><span class="hs-identifier">TD.Data.SearchMessagesFilter</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SearchMessagesFilter</span></span><span>
-</span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Returns approximate number of messages of the specified type in the chat. Returns 'TD.Data.Count.Count'</span></span><span>
-</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="GetChatMessageCount"><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-var">GetChatMessageCount</span></a></span></span><span>
-</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetChatMessageCount"><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-var">GetChatMessageCount</span></a></span></span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat in which to count messages</span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_filter"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe SearchMessagesFilter
-</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var hs-var">_filter</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.SearchMessagesFilter.html#SearchMessagesFilter"><span class="hs-identifier hs-type">SearchMessagesFilter.SearchMessagesFilter</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Filter for message content; searchMessagesFilterEmpty is unsupported in this function</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="saved_messages_topic_id"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#saved_messages_topic_id"><span class="hs-identifier hs-var hs-var">saved_messages_topic_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ If not 0, only messages in the specified Saved Messages topic will be counted; pass 0 to count all messages, or for chats other than Saved Messages</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="return_local"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe Bool
-</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var hs-var">return_local</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                      </span><span class="annot"><span class="hs-comment">-- ^ Pass true to get the number of messages without sending network requests, or -1 if the number of messages is unknown locally</span></span><span>
-</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679871777"><span id="local-6989586621679871787"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html"><span class="hs-identifier">TD.Data.MessageTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageTopic</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.SearchMessagesFilter.html"><span class="hs-identifier">TD.Data.SearchMessagesFilter</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SearchMessagesFilter</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Returns approximate number of messages of the specified type in the chat or its topic. Returns 'TD.Data.Count.Count'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="GetChatMessageCount"><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-var">GetChatMessageCount</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GetChatMessageCount"><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-var">GetChatMessageCount</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe Int
+</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                       </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat in which to count messages</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="topic_id"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe MessageTopic
+</span><a href="TD.Query.GetChatMessageCount.html#topic_id"><span class="hs-identifier hs-var hs-var">topic_id</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html#MessageTopic"><span class="hs-identifier hs-type">MessageTopic.MessageTopic</span></a></span><span>                 </span><span class="annot"><span class="hs-comment">-- ^ Pass topic identifier to get number of messages only in specific topic; pass null to get number of messages in all topics</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_filter"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe SearchMessagesFilter
+</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var hs-var">_filter</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.SearchMessagesFilter.html#SearchMessagesFilter"><span class="hs-identifier hs-type">SearchMessagesFilter.SearchMessagesFilter</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Filter for message content; searchMessagesFilterEmpty is unsupported in this function</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="return_local"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; Maybe Bool
+</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var hs-var">return_local</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                      </span><span class="annot"><span class="hs-comment">-- ^ Pass true to get the number of messages without sending network requests, or -1 if the number of messages is unknown locally</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679879147"><span id="local-6989586621679879158"><span class="annot"><span class="annottext">GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
 (GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool)
 -&gt; (GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool)
 -&gt; Eq GetChatMessageCount
@@ -29,7 +30,7 @@ $c== :: GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
 == :: GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
 $c/= :: GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
 /= :: GetChatMessageCount -&gt; GetChatMessageCount -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679871795"><span id="local-6989586621679871807"><span id="local-6989586621679871811"><span class="annot"><span class="annottext">Int -&gt; GetChatMessageCount -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679879167"><span id="local-6989586621679879180"><span id="local-6989586621679879184"><span class="annot"><span class="annottext">Int -&gt; GetChatMessageCount -&gt; ShowS
 [GetChatMessageCount] -&gt; ShowS
 GetChatMessageCount -&gt; String
 (Int -&gt; GetChatMessageCount -&gt; ShowS)
@@ -45,124 +46,124 @@ show :: GetChatMessageCount -&gt; String
 $cshowList :: [GetChatMessageCount] -&gt; ShowS
 showList :: [GetChatMessageCount] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-20"></span><span>
-</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-22"></span><span>  </span><span id="local-6989586621679871830"><span class="annot"><span class="annottext">shortShow :: GetChatMessageCount -&gt; String
-</span><a href="#local-6989586621679871830"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
-</span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871832"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871832"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: GetChatMessageCount -&gt; Maybe SearchMessagesFilter
-</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871833"><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
-</span><a href="#local-6989586621679871833"><span class="hs-identifier hs-var">_filter_</span></a></span></span><span>
-</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871834"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871834"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span></span><span>
-</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: GetChatMessageCount -&gt; Maybe Bool
-</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871835"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679871835"><span class="hs-identifier hs-var">return_local_</span></a></span></span><span>
-</span><span id="line-28"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-29"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-23"></span><span>  </span><span id="local-6989586621679879205"><span class="annot"><span class="annottext">shortShow :: GetChatMessageCount -&gt; String
+</span><a href="#local-6989586621679879205"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetChatMessageCount -&gt; Maybe Int
+</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879207"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679879207"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: GetChatMessageCount -&gt; Maybe MessageTopic
+</span><a href="TD.Query.GetChatMessageCount.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879208"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679879208"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: GetChatMessageCount -&gt; Maybe SearchMessagesFilter
+</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879209"><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
+</span><a href="#local-6989586621679879209"><span class="hs-identifier hs-var">_filter_</span></a></span></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: GetChatMessageCount -&gt; Maybe Bool
+</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879210"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679879210"><span class="hs-identifier hs-var">return_local_</span></a></span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;GetChatMessageCount&quot;</span></span><span>
-</span><span id="line-30"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span id="line-31"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
-</span><span id="line-31"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span id="line-32"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871832"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
-</span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;_filter&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe SearchMessagesFilter -&gt; String
+</span><a href="#local-6989586621679879207"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageTopic -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679879208"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_filter&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe SearchMessagesFilter -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
-</span><a href="#local-6989586621679871833"><span class="hs-identifier hs-var">_filter_</span></a></span><span>
-</span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;saved_messages_topic_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871834"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span><span>
-</span><span id="line-34"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;return_local&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+</span><a href="#local-6989586621679879209"><span class="hs-identifier hs-var">_filter_</span></a></span><span>
+</span><span id="line-35"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;return_local&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679871835"><span class="hs-identifier hs-var">return_local_</span></a></span><span>
-</span><span id="line-35"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-36"></span><span>
-</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679871840"><span id="local-6989586621679871844"><span id="local-6989586621679871847"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-38"></span><span>  </span><span id="local-6989586621679871879"><span class="annot"><span class="annottext">toJSON :: GetChatMessageCount -&gt; Value
-</span><a href="#local-6989586621679871879"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-39"></span><span>    </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
-</span><span id="line-40"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871881"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871881"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: GetChatMessageCount -&gt; Maybe SearchMessagesFilter
-</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871882"><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
-</span><a href="#local-6989586621679871882"><span class="hs-identifier hs-var">_filter_</span></a></span></span><span>
-</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: GetChatMessageCount -&gt; Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871883"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871883"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span></span><span>
-</span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: GetChatMessageCount -&gt; Maybe Bool
-</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679871884"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679871884"><span class="hs-identifier hs-var">return_local_</span></a></span></span><span>
-</span><span id="line-44"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-45"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679879210"><span class="hs-identifier hs-var">return_local_</span></a></span><span>
+</span><span id="line-36"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679879215"><span id="local-6989586621679879219"><span id="local-6989586621679879222"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>  </span><span id="local-6989586621679879256"><span class="annot"><span class="annottext">toJSON :: GetChatMessageCount -&gt; Value
+</span><a href="#local-6989586621679879256"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: GetChatMessageCount -&gt; Maybe Int
+</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879258"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679879258"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: GetChatMessageCount -&gt; Maybe MessageTopic
+</span><a href="TD.Query.GetChatMessageCount.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879259"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679879259"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: GetChatMessageCount -&gt; Maybe SearchMessagesFilter
+</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879260"><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
+</span><a href="#local-6989586621679879260"><span class="hs-identifier hs-var">_filter_</span></a></span></span><span>
+</span><span id="line-44"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: GetChatMessageCount -&gt; Maybe Bool
+</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679879261"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679879261"><span class="hs-identifier hs-var">return_local_</span></a></span></span><span>
+</span><span id="line-45"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-46"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;@type&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+</span><span id="line-47"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;getChatMessageCount&quot;</span></span><span>
-</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871881"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
-</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;filter&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">Key -&gt; Maybe SearchMessagesFilter -&gt; Pair
+</span><a href="#local-6989586621679879258"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageTopic -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679879259"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;filter&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe SearchMessagesFilter -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
-</span><a href="#local-6989586621679871882"><span class="hs-identifier hs-var">_filter_</span></a></span><span>
-</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;saved_messages_topic_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679871883"><span class="hs-identifier hs-var">saved_messages_topic_id_</span></a></span><span>
-</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;return_local&quot;</span></span><span>            </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+</span><a href="#local-6989586621679879260"><span class="hs-identifier hs-var">_filter_</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;return_local&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679871884"><span class="hs-identifier hs-var">return_local_</span></a></span><span>
-</span><span id="line-51"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-52"></span><span>
-</span><span id="line-53"></span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#defaultGetChatMessageCount"><span class="hs-identifier hs-type">defaultGetChatMessageCount</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
-</span><span id="line-54"></span><span id="defaultGetChatMessageCount"><span class="annot"><span class="annottext">defaultGetChatMessageCount :: GetChatMessageCount
+</span><a href="#local-6989586621679879261"><span class="hs-identifier hs-var">return_local_</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#defaultGetChatMessageCount"><span class="hs-identifier hs-type">defaultGetChatMessageCount</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
+</span><span id="line-55"></span><span id="defaultGetChatMessageCount"><span class="annot"><span class="annottext">defaultGetChatMessageCount :: GetChatMessageCount
 </span><a href="TD.Query.GetChatMessageCount.html#defaultGetChatMessageCount"><span class="hs-identifier hs-var hs-var">defaultGetChatMessageCount</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-55"></span><span>  </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
-</span><span id="line-56"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-56"></span><span>  </span><span class="annot"><a href="TD.Query.GetChatMessageCount.html#GetChatMessageCount"><span class="hs-identifier hs-type">GetChatMessageCount</span></a></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.GetChatMessageCount.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: Maybe SearchMessagesFilter
-</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
+</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: Maybe MessageTopic
+</span><a href="TD.Query.GetChatMessageCount.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">saved_messages_topic_id :: Maybe Int
-</span><a href="TD.Query.GetChatMessageCount.html#saved_messages_topic_id"><span class="hs-identifier hs-var">saved_messages_topic_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_filter :: Maybe SearchMessagesFilter
+</span><a href="TD.Query.GetChatMessageCount.html#_filter"><span class="hs-identifier hs-var">_filter</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe SearchMessagesFilter
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-59"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: Maybe Bool
-</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">return_local :: Maybe Bool
+</span><a href="TD.Query.GetChatMessageCount.html#return_local"><span class="hs-identifier hs-var">return_local</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-60"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-61"></span><span>
-</span><span id="line-62"></span></pre></body></html>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span></pre></body></html>

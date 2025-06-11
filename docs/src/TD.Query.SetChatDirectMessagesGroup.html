@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.SetChatDirectMessagesGroup</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier">SetChatDirectMessagesGroup</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#defaultSetChatDirectMessagesGroup"><span class="hs-identifier">defaultSetChatDirectMessagesGroup</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Changes direct messages group settings for a channel chat; requires owner privileges in the chat. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="SetChatDirectMessagesGroup"><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-var">SetChatDirectMessagesGroup</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SetChatDirectMessagesGroup"><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-var">SetChatDirectMessagesGroup</span></a></span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the channel chat</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_enabled"><span class="annot"><span class="annottext">SetChatDirectMessagesGroup -&gt; Maybe Bool
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#is_enabled"><span class="hs-identifier hs-var hs-var">is_enabled</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Pass true if the direct messages group is enabled for the channel chat; pass false otherwise</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="paid_message_star_count"><span class="annot"><span class="annottext">SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#paid_message_star_count"><span class="hs-identifier hs-var hs-var">paid_message_star_count</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ The new number of Telegram Stars that must be paid for each message that is sent to the direct messages chat unless the sender is an administrator of the channel chat; 0-getOption(&quot;paid_message_star_count_max&quot;). The channel will receive getOption(&quot;paid_message_earnings_per_mille&quot;) Telegram Stars for each 1000 Telegram Stars paid for message sending. Requires supergroupFullInfo.can_enable_paid_messages for positive amounts</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679927442"><span id="local-6989586621679927450"><span class="annot"><span class="annottext">SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool
+(SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool)
+-&gt; (SetChatDirectMessagesGroup
+    -&gt; SetChatDirectMessagesGroup -&gt; Bool)
+-&gt; Eq SetChatDirectMessagesGroup
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool
+== :: SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool
+$c/= :: SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool
+/= :: SetChatDirectMessagesGroup -&gt; SetChatDirectMessagesGroup -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679927457"><span id="local-6989586621679927467"><span id="local-6989586621679927471"><span class="annot"><span class="annottext">Int -&gt; SetChatDirectMessagesGroup -&gt; ShowS
+[SetChatDirectMessagesGroup] -&gt; ShowS
+SetChatDirectMessagesGroup -&gt; String
+(Int -&gt; SetChatDirectMessagesGroup -&gt; ShowS)
+-&gt; (SetChatDirectMessagesGroup -&gt; String)
+-&gt; ([SetChatDirectMessagesGroup] -&gt; ShowS)
+-&gt; Show SetChatDirectMessagesGroup
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; SetChatDirectMessagesGroup -&gt; ShowS
+showsPrec :: Int -&gt; SetChatDirectMessagesGroup -&gt; ShowS
+$cshow :: SetChatDirectMessagesGroup -&gt; String
+show :: SetChatDirectMessagesGroup -&gt; String
+$cshowList :: [SetChatDirectMessagesGroup] -&gt; ShowS
+showList :: [SetChatDirectMessagesGroup] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679927487"><span class="annot"><span class="annottext">shortShow :: SetChatDirectMessagesGroup -&gt; String
+</span><a href="#local-6989586621679927487"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span><span>
+</span><span id="line-22"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927489"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927489"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_enabled :: SetChatDirectMessagesGroup -&gt; Maybe Bool
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#is_enabled"><span class="hs-identifier hs-var">is_enabled</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927490"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679927490"><span class="hs-identifier hs-var">is_enabled_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">paid_message_star_count :: SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#paid_message_star_count"><span class="hs-identifier hs-var">paid_message_star_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927491"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927491"><span class="hs-identifier hs-var">paid_message_star_count_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SetChatDirectMessagesGroup&quot;</span></span><span>
+</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927489"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_enabled&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679927490"><span class="hs-identifier hs-var">is_enabled_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;paid_message_star_count&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927491"><span class="hs-identifier hs-var">paid_message_star_count_</span></a></span><span>
+</span><span id="line-31"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679927496"><span id="local-6989586621679927500"><span id="local-6989586621679927503"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-34"></span><span>  </span><span id="local-6989586621679927530"><span class="annot"><span class="annottext">toJSON :: SetChatDirectMessagesGroup -&gt; Value
+</span><a href="#local-6989586621679927530"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927532"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927532"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_enabled :: SetChatDirectMessagesGroup -&gt; Maybe Bool
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#is_enabled"><span class="hs-identifier hs-var">is_enabled</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927533"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679927533"><span class="hs-identifier hs-var">is_enabled_</span></a></span></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">paid_message_star_count :: SetChatDirectMessagesGroup -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#paid_message_star_count"><span class="hs-identifier hs-var">paid_message_star_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927534"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927534"><span class="hs-identifier hs-var">paid_message_star_count_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;setChatDirectMessagesGroup&quot;</span></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927532"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_enabled&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679927533"><span class="hs-identifier hs-var">is_enabled_</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;paid_message_star_count&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679927534"><span class="hs-identifier hs-var">paid_message_star_count_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#defaultSetChatDirectMessagesGroup"><span class="hs-identifier hs-type">defaultSetChatDirectMessagesGroup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span><span>
+</span><span id="line-48"></span><span id="defaultSetChatDirectMessagesGroup"><span class="annot"><span class="annottext">defaultSetChatDirectMessagesGroup :: SetChatDirectMessagesGroup
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#defaultSetChatDirectMessagesGroup"><span class="hs-identifier hs-var hs-var">defaultSetChatDirectMessagesGroup</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-49"></span><span>  </span><span class="annot"><a href="TD.Query.SetChatDirectMessagesGroup.html#SetChatDirectMessagesGroup"><span class="hs-identifier hs-type">SetChatDirectMessagesGroup</span></a></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_enabled :: Maybe Bool
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#is_enabled"><span class="hs-identifier hs-var">is_enabled</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">paid_message_star_count :: Maybe Int
+</span><a href="TD.Query.SetChatDirectMessagesGroup.html#paid_message_star_count"><span class="hs-identifier hs-var">paid_message_star_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span></pre></body></html>

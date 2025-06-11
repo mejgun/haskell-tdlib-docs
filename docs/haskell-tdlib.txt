@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.62.0
+@version 2.0.63.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2205,7 +2205,8 @@ ResendCodeReasonUserRequest :: ResendCodeReason
 ResendCodeReasonVerificationFailed :: Maybe Text -> ResendCodeReason
 
 -- | Cause of the verification failure, for example,
---   PLAY_SERVICES_NOT_AVAILABLE, APNS_RECEIVE_TIMEOUT, or APNS_INIT_FAILED
+--   <a>PLAY_SERVICES_NOT_AVAILABLE</a>, <a>APNS_RECEIVE_TIMEOUT</a>, or
+--   <a>APNS_INIT_FAILED</a>
 [error_message] :: ResendCodeReason -> Maybe Text
 instance GHC.Show.Show TD.Data.ResendCodeReason.ResendCodeReason
 instance GHC.Classes.Eq TD.Data.ResendCodeReason.ResendCodeReason
@@ -3579,6 +3580,36 @@ instance GHC.Classes.Eq TD.Data.MessageViewers.MessageViewers
 instance TD.Lib.Internal.ShortShow TD.Data.MessageViewers.MessageViewers
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageViewers.MessageViewers
 
+module TD.Data.MessageTopic
+
+-- | Describes a topic of messages in a chat
+data MessageTopic
+
+-- | A topic in a forum supergroup chat
+MessageTopicForum :: Maybe Int -> MessageTopic
+
+-- | Unique identifier of the forum topic; all messages in a non-forum
+--   supergroup chats belongs to the General topic
+[forum_topic_id] :: MessageTopic -> Maybe Int
+
+-- | A topic in a channel direct messages chat administered by the current
+--   user
+MessageTopicDirectMessages :: Maybe Int -> MessageTopic
+
+-- | Unique identifier of the topic
+[direct_messages_chat_topic_id] :: MessageTopic -> Maybe Int
+
+-- | A topic in Saved Messages chat
+MessageTopicSavedMessages :: Maybe Int -> MessageTopic
+
+-- | Unique identifier of the Saved Messages topic
+[saved_messages_topic_id] :: MessageTopic -> Maybe Int
+instance GHC.Show.Show TD.Data.MessageTopic.MessageTopic
+instance GHC.Classes.Eq TD.Data.MessageTopic.MessageTopic
+instance TD.Lib.Internal.ShortShow TD.Data.MessageTopic.MessageTopic
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageTopic.MessageTopic
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageTopic.MessageTopic
+
 module TD.Data.MessageStatistics
 data MessageStatistics
 
@@ -3603,11 +3634,15 @@ data MessageSource
 -- | The message is from a chat history
 MessageSourceChatHistory :: MessageSource
 
--- | The message is from a message thread history
+-- | The message is from history of a message thread
 MessageSourceMessageThreadHistory :: MessageSource
 
--- | The message is from a forum topic history
+-- | The message is from history of a forum topic
 MessageSourceForumTopicHistory :: MessageSource
+
+-- | The message is from history of a topic in a channel direct messages
+--   chat administered by the current user
+MessageSourceDirectMessagesChatTopicHistory :: MessageSource
 
 -- | The message is from chat, message thread or forum topic history
 --   preview
@@ -3836,7 +3871,12 @@ module TD.Data.MessageSendOptions
 data MessageSendOptions
 
 -- | Options to be used when a message is sent
-MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
+MessageSendOptions :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
+
+-- | Unique identifier of the topic in a channel direct messages chat
+--   administered by the current user; pass 0 if the chat isn't a channel
+--   direct messages chat administered by the current user
+[direct_messages_chat_topic_id] :: MessageSendOptions -> Maybe Int
 
 -- | Pass true to disable notification for the message
 [disable_notification] :: MessageSendOptions -> Maybe Bool
@@ -3862,8 +3902,9 @@ MessageSendOptions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Ma
 [update_order_of_installed_sticker_sets] :: MessageSendOptions -> Maybe Bool
 
 -- | Message scheduling state; pass null to send message immediately.
---   Messages sent to a secret chat, to a chat with paid messages, live
---   location messages and self-destructing messages can't be scheduled
+--   Messages sent to a secret chat, to a chat with paid messages, to a
+--   channel direct messages chat, live location messages and
+--   self-destructing messages can't be scheduled
 [scheduling_state] :: MessageSendOptions -> Maybe MessageSchedulingState
 
 -- | Identifier of the effect to apply to the message; pass 0 if none;
@@ -3997,7 +4038,11 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+
+-- | True, if content of the message can be copied using
+--   inputMessageForwarded or forwardMessages with copy options
+[can_be_copied] :: MessageProperties -> Maybe Bool
 
 -- | True, if content of the message can be copied to a secret chat using
 --   inputMessageForwarded or forwardMessages with copy options
@@ -4019,7 +4064,7 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 [can_be_edited] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be forwarded using inputMessageForwarded or
---   forwardMessages
+--   forwardMessages without copy options
 [can_be_forwarded] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be paid using inputInvoiceMessage
@@ -4037,8 +4082,7 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 --   using inputMessageReplyToExternalMessage
 [can_be_replied_in_another_chat] :: MessageProperties -> Maybe Bool
 
--- | True, if content of the message can be saved locally or copied using
---   inputMessageForwarded or forwardMessages with copy options
+-- | True, if content of the message can be saved locally
 [can_be_saved] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be shared in a story using
@@ -4050,6 +4094,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 
 -- | True, if scheduling state of the message can be edited
 [can_edit_scheduling_state] :: MessageProperties -> Maybe Bool
+
+-- | True, if author of the message sent on behalf of a chat can be
+--   received through getMessageAuthor
+[can_get_author] :: MessageProperties -> Maybe Bool
 
 -- | True, if code for message embedding can be received using
 --   getMessageEmbeddingCode
@@ -6547,10 +6595,13 @@ module TD.Data.ForumTopicInfo
 data ForumTopicInfo
 
 -- | Contains basic information about a forum topic
-ForumTopicInfo :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> Maybe Int -> Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ForumTopicInfo
+ForumTopicInfo :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe ForumTopicIcon -> Maybe Int -> Maybe MessageSender -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ForumTopicInfo
 
 -- | Identifier of the forum chat to which the topic belongs
 [chat_id] :: ForumTopicInfo -> Maybe Int
+
+-- | Forum topic identifier of the topic
+[forum_topic_id] :: ForumTopicInfo -> Maybe Int
 
 -- | Message thread identifier of the topic
 [message_thread_id] :: ForumTopicInfo -> Maybe Int
@@ -7180,7 +7231,7 @@ MessageCopyOptions :: Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe B
 
 -- | True, if content of the message needs to be copied without reference
 --   to the original sender. Always true if the message is forwarded to a
---   secret chat or is local. Use messageProperties.can_be_saved and
+--   secret chat or is local. Use messageProperties.can_be_copied and
 --   messageProperties.can_be_copied_to_secret_chat to check whether the
 --   message is suitable
 [send_copy] :: MessageCopyOptions -> Maybe Bool
@@ -10713,8 +10764,9 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 --   0-getOption("message_caption_length_max") characters
 [paid_media_caption] :: InputMessageContent -> Maybe FormattedText
 
--- | A message with a poll. Polls can't be sent to secret chats. Polls can
---   be sent only to a private chat with a bot or the Saved Messages chat
+-- | A message with a poll. Polls can't be sent to secret chats and channel
+--   direct messages chats. Polls can be sent to a private chat only if the
+--   chat is a chat with a bot or the Saved Messages chat
 InputMessagePoll :: Maybe FormattedText -> Maybe [FormattedText] -> Maybe Bool -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
 
 -- | Poll question; 1-255 characters (up to 300 characters for bots). Only
@@ -10722,9 +10774,9 @@ InputMessagePoll :: Maybe FormattedText -> Maybe [FormattedText] -> Maybe Bool -
 --   users
 [question] :: InputMessageContent -> Maybe FormattedText
 
--- | List of poll answer options, 2-12 strings 1-100 characters each. Only
---   custom emoji entities are allowed to be added and only by Premium
---   users
+-- | List of poll answer options, 2-getOption("poll_answer_count_max")
+--   strings 1-100 characters each. Only custom emoji entities are allowed
+--   to be added and only by Premium users
 [options] :: InputMessageContent -> Maybe [FormattedText]
 
 -- | True, if the poll voters are anonymous. Non-anonymous polls can't be
@@ -12922,16 +12974,18 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 
 -- | True, if the administrator can access the chat event log, get boost
 --   list, see hidden supergroup and channel members, report supergroup
---   spam messages and ignore slow mode. Implied by any other privilege;
---   applicable to supergroups and channels only
+--   spam messages, ignore slow mode, and send messages to the chat without
+--   paying Telegram Stars. Implied by any other privilege; applicable to
+--   supergroups and channels only
 [can_manage_chat] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can change the chat title, photo, and other
 --   settings
 [can_change_info] :: ChatAdministratorRights -> Maybe Bool
 
--- | True, if the administrator can create channel posts or view channel
---   statistics; applicable to channels only
+-- | True, if the administrator can create channel posts, answer to channel
+--   direct messages, or view channel statistics; applicable to channels
+--   only
 [can_post_messages] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can edit messages of other users and pin
@@ -13767,8 +13821,10 @@ InternalLinkTypeGame :: Maybe Text -> Maybe Text -> InternalLinkType
 -- | Short name of the game
 [game_short_name] :: InternalLinkType -> Maybe Text
 
--- | The link is a link to a group call that isn't bound to a chat. Call
---   joinGroupCall with the given invite_link
+-- | The link is a link to a group call that isn't bound to a chat. Use
+--   getGroupCallParticipants to get the list of group call participants
+--   and show them on the join group call screen. Call joinGroupCall with
+--   the given invite_link to join the call
 InternalLinkTypeGroupCall :: Maybe Text -> InternalLinkType
 
 -- | Internal representation of the invite link
@@ -14254,7 +14310,7 @@ data Supergroup
 --   all administrators use the name and photo of the channel instead of
 --   individual names and profile photos. Unlike supergroups, channels can
 --   have an unlimited number of subscribers
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
 
 -- | Supergroup or channel identifier
 [_id] :: Supergroup -> Maybe Int
@@ -14327,9 +14383,23 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 -- | True, if the supergroup is a forum with topics
 [is_forum] :: Supergroup -> Maybe Bool
 
+-- | True, if the supergroup is a direct message group for a channel chat
+[is_direct_messages_group] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a direct messages group for a channel chat
+--   that is administered by the current user
+[is_administered_direct_messages_group] :: Supergroup -> Maybe Bool
+
 -- | Information about verification status of the supergroup or channel;
 --   may be null if none
 [verification_status] :: Supergroup -> Maybe VerificationStatus
+
+-- | True, if the channel has direct messages group
+[has_direct_messages_group] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a forum, which topics are shown in the same
+--   way as in channel direct messages groups
+[has_forum_tabs] :: Supergroup -> Maybe Bool
 
 -- | True, if content of media messages in the supergroup or channel chat
 --   must be hidden with 18+ spoiler
@@ -17854,7 +17924,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -17879,6 +17949,11 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   for which the supergroup is the designated discussion group; 0 if none
 --   or unknown
 [linked_chat_id] :: SupergroupFullInfo -> Maybe Int
+
+-- | Chat identifier of a direct messages group for the channel, or a
+--   channel, for which the supergroup is the designated direct messages
+--   group; 0 if none
+[direct_messages_chat_id] :: SupergroupFullInfo -> Maybe Int
 
 -- | Delay between consecutive sent messages for non-administrator
 --   supergroup members, in seconds
@@ -19023,8 +19098,8 @@ StarTransactionTypePaidMessageSend :: Maybe Int -> Maybe Int -> StarTransactionT
 -- | Number of sent paid messages
 [message_count] :: StarTransactionType -> Maybe Int
 
--- | The transaction is a receiving of a paid message; for regular users
---   and supergroup chats only
+-- | The transaction is a receiving of a paid message; for regular users,
+--   supergroup and channel chats only
 StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe StarAmount -> StarTransactionType
 
 -- | Identifier of the sender of the message
@@ -19740,9 +19815,10 @@ MessageCall :: Maybe Bool -> Maybe CallDiscardReason -> Maybe Int -> MessageCont
 -- | A message with information about a group call not bound to a chat. If
 --   the message is incoming, the call isn't active, isn't missed, and has
 --   no duration, and getOption("can_accept_calls") is true, then incoming
---   call screen must be shown to the user. Use joinGroupCall to accept the
---   call or declineGroupCallInvitation to decline it. If the call become
---   active or missed, then the call screen must be hidden
+--   call screen must be shown to the user. Use getGroupCallParticipants to
+--   show current group call participants on the screen. Use joinGroupCall
+--   to accept the call or declineGroupCallInvitation to decline it. If the
+--   call become active or missed, then the call screen must be hidden
 MessageGroupCall :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [MessageSender] -> MessageContent
 
 -- | True, if the call is active, i.e. the called user joined the call
@@ -20271,13 +20347,16 @@ MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -
 
 -- | A regular gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe Text -> Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> MessageContent
+MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> MessageContent
 
 -- | The gift
 [gift] :: MessageContent -> Maybe Gift
 
 -- | Sender of the gift
 [sender_id] :: MessageContent -> Maybe MessageSender
+
+-- | Receiver of the gift
+[receiver_id] :: MessageContent -> Maybe MessageSender
 
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
@@ -20322,13 +20401,16 @@ MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe Text -> Maybe Formatte
 
 -- | An upgraded gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 
 -- | The gift
 [_gift] :: MessageContent -> Maybe UpgradedGift
 
 -- | Sender of the gift
 [sender_id] :: MessageContent -> Maybe MessageSender
+
+-- | Receiver of the gift
+[receiver_id] :: MessageContent -> Maybe MessageSender
 
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
@@ -20373,13 +20455,16 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Text -
 [export_date] :: MessageContent -> Maybe Int
 
 -- | A gift which purchase, upgrade or transfer were refunded
-MessageRefundedUpgradedGift :: Maybe Gift -> Maybe MessageSender -> Maybe Bool -> MessageContent
+MessageRefundedUpgradedGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Bool -> MessageContent
 
 -- | The gift
 [gift] :: MessageContent -> Maybe Gift
 
 -- | Sender of the gift
 [sender_id] :: MessageContent -> Maybe MessageSender
+
+-- | Receiver of the gift
+[receiver_id] :: MessageContent -> Maybe MessageSender
 
 -- | True, if the gift was obtained by upgrading of a previously received
 --   gift; otherwise, this is a transferred or resold gift
@@ -20397,6 +20482,17 @@ MessagePaidMessagesRefunded :: Maybe Int -> Maybe Int -> MessageContent
 
 -- | A price for paid messages was changed in the supergroup chat
 MessagePaidMessagePriceChanged :: Maybe Int -> MessageContent
+
+-- | The new number of Telegram Stars that must be paid by
+--   non-administrator users of the supergroup chat for each sent message
+[paid_message_star_count] :: MessageContent -> Maybe Int
+
+-- | A price for direct messages was changed in the channel chat
+MessageDirectMessagePriceChanged :: Maybe Bool -> Maybe Int -> MessageContent
+
+-- | True, if direct messages group was enabled for the channel; false
+--   otherwise
+[is_enabled] :: MessageContent -> Maybe Bool
 
 -- | The new number of Telegram Stars that must be paid by
 --   non-administrator users of the supergroup chat for each sent message
@@ -20675,7 +20771,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -20704,8 +20800,7 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   message sender, for example, as away, or greeting service message
 [is_from_offline] :: Message -> Maybe Bool
 
--- | True, if content of the message can be saved locally or copied using
---   inputMessageForwarded or forwardMessages with copy options
+-- | True, if content of the message can be saved locally
 [can_be_saved] :: Message -> Maybe Bool
 
 -- | True, if media timestamp entities refers to a media in this message as
@@ -20715,9 +20810,6 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | True, if the message is a channel post. All messages to channels are
 --   channel posts, all other messages are not channel posts
 [is_channel_post] :: Message -> Maybe Bool
-
--- | True, if the message is a forum topic message
-[is_topic_message] :: Message -> Maybe Bool
 
 -- | True, if the message contains an unread mention for the current user
 [contains_unread_mention] :: Message -> Maybe Bool
@@ -20755,9 +20847,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   to; unique within the chat to which the message belongs
 [message_thread_id] :: Message -> Maybe Int
 
--- | Identifier of the Saved Messages topic for the message; 0 for messages
---   not from Saved Messages
-[saved_messages_topic_id] :: Message -> Maybe Int
+-- | Identifier of the topic within the chat to which the message belongs;
+--   may be null if none
+[topic_id] :: Message -> Maybe MessageTopic
 
 -- | The message's self-destruct type; may be null if none
 [self_destruct_type] :: Message -> Maybe MessageSelfDestructType
@@ -21328,6 +21420,51 @@ instance GHC.Show.Show TD.Data.FoundFileDownloads.FoundFileDownloads
 instance GHC.Classes.Eq TD.Data.FoundFileDownloads.FoundFileDownloads
 instance TD.Lib.Internal.ShortShow TD.Data.FoundFileDownloads.FoundFileDownloads
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.FoundFileDownloads.FoundFileDownloads
+
+module TD.Data.DirectMessagesChatTopic
+data DirectMessagesChatTopic
+
+-- | Contains information about a topic in a channel direct messages chat
+--   administered by the current user
+DirectMessagesChatTopic :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Message -> Maybe DraftMessage -> DirectMessagesChatTopic
+
+-- | Identifier of the chat to which the topic belongs
+[chat_id] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Unique topic identifier
+[_id] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Identifier of the user or chat that sends the messages to the topic
+[sender_id] :: DirectMessagesChatTopic -> Maybe MessageSender
+
+-- | A parameter used to determine order of the topic in the topic list.
+--   Topics must be sorted by the order in descending order
+[order] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | True, if the forum topic is marked as unread
+[is_marked_as_unread] :: DirectMessagesChatTopic -> Maybe Bool
+
+-- | Number of unread messages in the chat
+[unread_count] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Identifier of the last read incoming message
+[last_read_inbox_message_id] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Identifier of the last read outgoing message
+[last_read_outbox_message_id] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Number of messages with unread reactions in the chat
+[unread_reaction_count] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | Last message in the topic; may be null if none or unknown
+[last_message] :: DirectMessagesChatTopic -> Maybe Message
+
+-- | A draft of a message in the topic; may be null if none
+[draft_message] :: DirectMessagesChatTopic -> Maybe DraftMessage
+instance GHC.Show.Show TD.Data.DirectMessagesChatTopic.DirectMessagesChatTopic
+instance GHC.Classes.Eq TD.Data.DirectMessagesChatTopic.DirectMessagesChatTopic
+instance TD.Lib.Internal.ShortShow TD.Data.DirectMessagesChatTopic.DirectMessagesChatTopic
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DirectMessagesChatTopic.DirectMessagesChatTopic
 
 module TD.Data.ChatEventAction
 
@@ -22964,6 +23101,28 @@ UpdateSavedMessagesTopicCount :: Maybe Int -> Update
 -- | Approximate total number of Saved Messages topics
 [topic_count] :: Update -> Maybe Int
 
+-- | Basic information about a topic in a channel direct messages chat
+--   administered by the current user has changed. This update is
+--   guaranteed to come before the topic identifier is returned to the
+--   application
+UpdateDirectMessagesChatTopic :: Maybe DirectMessagesChatTopic -> Update
+
+-- | New data about the topic
+[_topic] :: Update -> Maybe DirectMessagesChatTopic
+
+-- | Number of messages in a topic has changed; for Saved Messages and
+--   channel direct messages chat topics only
+UpdateTopicMessageCount :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | Identifier of the topic
+[topic_id] :: Update -> Maybe MessageTopic
+
+-- | Approximate number of messages in the topics
+[message_count] :: Update -> Maybe Int
+
 -- | Basic information about a quick reply shortcut has changed. This
 --   update is guaranteed to come before the quick shortcut name is
 --   returned to the application
@@ -23001,7 +23160,7 @@ UpdateForumTopicInfo :: Maybe ForumTopicInfo -> Update
 [info] :: Update -> Maybe ForumTopicInfo
 
 -- | Information about a topic in a forum chat was changed
-UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Update
+UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -23017,6 +23176,12 @@ UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe I
 
 -- | Identifier of last read outgoing message
 [last_read_outbox_message_id] :: Update -> Maybe Int
+
+-- | The new number of unread mention messages left in the chat
+[unread_mention_count] :: Update -> Maybe Int
+
+-- | The new number of messages with unread reactions left in the chat
+[unread_reaction_count] :: Update -> Maybe Int
 
 -- | The new notification settings
 [notification_settings] :: Update -> Maybe ChatNotificationSettings
@@ -24252,6 +24417,7 @@ CustomRequestResult :: CustomRequestResult -> GeneralResult
 Data :: Data -> GeneralResult
 DatabaseStatistics :: DatabaseStatistics -> GeneralResult
 DeepLinkInfo :: DeepLinkInfo -> GeneralResult
+DirectMessagesChatTopic :: DirectMessagesChatTopic -> GeneralResult
 EmailAddressAuthenticationCodeInfo :: EmailAddressAuthenticationCodeInfo -> GeneralResult
 EmojiCategories :: EmojiCategories -> GeneralResult
 EmojiKeywords :: EmojiKeywords -> GeneralResult
@@ -24312,6 +24478,7 @@ MessageLinkInfo :: MessageLinkInfo -> GeneralResult
 MessagePositions :: MessagePositions -> GeneralResult
 MessageProperties :: MessageProperties -> GeneralResult
 MessageReadDate :: MessageReadDate -> GeneralResult
+MessageSender :: MessageSender -> GeneralResult
 MessageSenders :: MessageSenders -> GeneralResult
 MessageStatistics :: MessageStatistics -> GeneralResult
 MessageThreadInfo :: MessageThreadInfo -> GeneralResult
@@ -24684,7 +24851,7 @@ module TD.Query.AddLocalMessage
 data AddLocalMessage
 AddLocalMessage :: Maybe Int -> Maybe MessageSender -> Maybe InputMessageReplyTo -> Maybe Bool -> Maybe InputMessageContent -> AddLocalMessage
 
--- | Target chat
+-- | Target chat; channel direct messages chats aren't supported
 [chat_id] :: AddLocalMessage -> Maybe Int
 
 -- | Identifier of the sender of the message
@@ -26867,6 +27034,50 @@ instance GHC.Classes.Eq TD.Query.DeleteDefaultBackground.DeleteDefaultBackground
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteDefaultBackground.DeleteDefaultBackground
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteDefaultBackground.DeleteDefaultBackground
 
+module TD.Query.DeleteDirectMessagesChatTopicHistory
+
+-- | Deletes all messages in the topic in a channel direct messages chat
+--   administered by the current user. Returns <a>Ok</a>
+data DeleteDirectMessagesChatTopicHistory
+DeleteDirectMessagesChatTopicHistory :: Maybe Int -> Maybe Int -> DeleteDirectMessagesChatTopicHistory
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: DeleteDirectMessagesChatTopicHistory -> Maybe Int
+
+-- | Identifier of the topic which messages will be deleted
+[topic_id] :: DeleteDirectMessagesChatTopicHistory -> Maybe Int
+defaultDeleteDirectMessagesChatTopicHistory :: DeleteDirectMessagesChatTopicHistory
+instance GHC.Show.Show TD.Query.DeleteDirectMessagesChatTopicHistory.DeleteDirectMessagesChatTopicHistory
+instance GHC.Classes.Eq TD.Query.DeleteDirectMessagesChatTopicHistory.DeleteDirectMessagesChatTopicHistory
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteDirectMessagesChatTopicHistory.DeleteDirectMessagesChatTopicHistory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteDirectMessagesChatTopicHistory.DeleteDirectMessagesChatTopicHistory
+
+module TD.Query.DeleteDirectMessagesChatTopicMessagesByDate
+
+-- | Deletes all messages between the specified dates in the topic in a
+--   channel direct messages chat administered by the current user.
+--   Messages sent in the last 30 seconds will not be deleted. Returns
+--   <a>Ok</a>
+data DeleteDirectMessagesChatTopicMessagesByDate
+DeleteDirectMessagesChatTopicMessagesByDate :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> DeleteDirectMessagesChatTopicMessagesByDate
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: DeleteDirectMessagesChatTopicMessagesByDate -> Maybe Int
+
+-- | Identifier of the topic which messages will be deleted
+[topic_id] :: DeleteDirectMessagesChatTopicMessagesByDate -> Maybe Int
+
+-- | The minimum date of the messages to delete
+[min_date] :: DeleteDirectMessagesChatTopicMessagesByDate -> Maybe Int
+
+-- | The maximum date of the messages to delete
+[max_date] :: DeleteDirectMessagesChatTopicMessagesByDate -> Maybe Int
+defaultDeleteDirectMessagesChatTopicMessagesByDate :: DeleteDirectMessagesChatTopicMessagesByDate
+instance GHC.Show.Show TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
+instance GHC.Classes.Eq TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
+
 module TD.Query.DeleteFile
 
 -- | Deletes a file from the TDLib file cache. Returns <a>Ok</a>
@@ -28222,7 +28433,7 @@ ForwardMessages :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe M
 
 -- | Pass true to copy content of the messages without reference to the
 --   original sender. Always true if the messages are forwarded to a secret
---   chat or are local. Use messageProperties.can_be_saved and
+--   chat or are local. Use messageProperties.can_be_copied and
 --   messageProperties.can_be_copied_to_secret_chat to check whether the
 --   message is suitable
 [send_copy] :: ForwardMessages -> Maybe Bool
@@ -29339,10 +29550,14 @@ module TD.Query.GetChatMessageCalendar
 --   of this method depends on the value of the option "utc_time_offset".
 --   Returns <a>MessageCalendar</a>
 data GetChatMessageCalendar
-GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> GetChatMessageCalendar
+GetChatMessageCalendar :: Maybe Int -> Maybe MessageTopic -> Maybe SearchMessagesFilter -> Maybe Int -> GetChatMessageCalendar
 
 -- | Identifier of the chat in which to return information about messages
 [chat_id] :: GetChatMessageCalendar -> Maybe Int
+
+-- | Pass topic identifier to get the result only in specific topic; pass
+--   null to get the result in all topics; forum topics aren't supported
+[topic_id] :: GetChatMessageCalendar -> Maybe MessageTopic
 
 -- | Filter for message content. Filters searchMessagesFilterEmpty,
 --   searchMessagesFilterMention, searchMessagesFilterUnreadMention, and
@@ -29352,11 +29567,6 @@ GetChatMessageCalendar :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -
 -- | The message identifier from which to return information about
 --   messages; use 0 to get results from the last message
 [from_message_id] :: GetChatMessageCalendar -> Maybe Int
-
--- | If not0, only messages in the specified Saved Messages topic will be
---   considered; pass 0 to consider all messages, or for chats other than
---   Saved Messages
-[saved_messages_topic_id] :: GetChatMessageCalendar -> Maybe Int
 defaultGetChatMessageCalendar :: GetChatMessageCalendar
 instance GHC.Show.Show TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
 instance GHC.Classes.Eq TD.Query.GetChatMessageCalendar.GetChatMessageCalendar
@@ -29366,21 +29576,20 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatMessageCalendar.GetChatM
 module TD.Query.GetChatMessageCount
 
 -- | Returns approximate number of messages of the specified type in the
---   chat. Returns <a>Count</a>
+--   chat or its topic. Returns <a>Count</a>
 data GetChatMessageCount
-GetChatMessageCount :: Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Bool -> GetChatMessageCount
+GetChatMessageCount :: Maybe Int -> Maybe MessageTopic -> Maybe SearchMessagesFilter -> Maybe Bool -> GetChatMessageCount
 
 -- | Identifier of the chat in which to count messages
 [chat_id] :: GetChatMessageCount -> Maybe Int
 
+-- | Pass topic identifier to get number of messages only in specific
+--   topic; pass null to get number of messages in all topics
+[topic_id] :: GetChatMessageCount -> Maybe MessageTopic
+
 -- | Filter for message content; searchMessagesFilterEmpty is unsupported
 --   in this function
 [_filter] :: GetChatMessageCount -> Maybe SearchMessagesFilter
-
--- | If not 0, only messages in the specified Saved Messages topic will be
---   counted; pass 0 to count all messages, or for chats other than Saved
---   Messages
-[saved_messages_topic_id] :: GetChatMessageCount -> Maybe Int
 
 -- | Pass true to get the number of messages without sending network
 --   requests, or -1 if the number of messages is unknown locally
@@ -29394,30 +29603,25 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatMessageCount.GetChatMess
 module TD.Query.GetChatMessagePosition
 
 -- | Returns approximate 1-based position of a message among messages,
---   which can be found by the specified filter in the chat. Cannot be used
---   in secret chats. Returns <a>Count</a>
+--   which can be found by the specified filter in the chat and topic.
+--   Cannot be used in secret chats. Returns <a>Count</a>
 data GetChatMessagePosition
-GetChatMessagePosition :: Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> GetChatMessagePosition
+GetChatMessagePosition :: Maybe Int -> Maybe MessageTopic -> Maybe SearchMessagesFilter -> Maybe Int -> GetChatMessagePosition
 
 -- | Identifier of the chat in which to find message position
 [chat_id] :: GetChatMessagePosition -> Maybe Int
 
--- | Message identifier
-[message_id] :: GetChatMessagePosition -> Maybe Int
+-- | Pass topic identifier to get position among messages only in specific
+--   topic; pass null to get position among all chat messages
+[topic_id] :: GetChatMessagePosition -> Maybe MessageTopic
 
 -- | Filter for message content; searchMessagesFilterEmpty,
 --   searchMessagesFilterUnreadMention, searchMessagesFilterUnreadReaction,
 --   and searchMessagesFilterFailedToSend are unsupported in this function
 [_filter] :: GetChatMessagePosition -> Maybe SearchMessagesFilter
 
--- | If not 0, only messages in the specified thread will be considered;
---   supergroups only
-[message_thread_id] :: GetChatMessagePosition -> Maybe Int
-
--- | If not 0, only messages in the specified Saved Messages topic will be
---   considered; pass 0 to consider all relevant messages, or for chats
---   other than Saved Messages
-[saved_messages_topic_id] :: GetChatMessagePosition -> Maybe Int
+-- | Message identifier
+[message_id] :: GetChatMessagePosition -> Maybe Int
 defaultGetChatMessagePosition :: GetChatMessagePosition
 instance GHC.Show.Show TD.Query.GetChatMessagePosition.GetChatMessagePosition
 instance GHC.Classes.Eq TD.Query.GetChatMessagePosition.GetChatMessagePosition
@@ -30060,6 +30264,83 @@ instance GHC.Classes.Eq TD.Query.GetDefaultProfilePhotoCustomEmojiStickers.GetDe
 instance TD.Lib.Internal.ShortShow TD.Query.GetDefaultProfilePhotoCustomEmojiStickers.GetDefaultProfilePhotoCustomEmojiStickers
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDefaultProfilePhotoCustomEmojiStickers.GetDefaultProfilePhotoCustomEmojiStickers
 
+module TD.Query.GetDirectMessagesChatTopic
+
+-- | Returns information about the topic in a channel direct messages chat
+--   administered by the current user. Returns
+--   <a>DirectMessagesChatTopic</a>
+data GetDirectMessagesChatTopic
+GetDirectMessagesChatTopic :: Maybe Int -> Maybe Int -> GetDirectMessagesChatTopic
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: GetDirectMessagesChatTopic -> Maybe Int
+
+-- | Identifier of the topic to get
+[topic_id] :: GetDirectMessagesChatTopic -> Maybe Int
+defaultGetDirectMessagesChatTopic :: GetDirectMessagesChatTopic
+instance GHC.Show.Show TD.Query.GetDirectMessagesChatTopic.GetDirectMessagesChatTopic
+instance GHC.Classes.Eq TD.Query.GetDirectMessagesChatTopic.GetDirectMessagesChatTopic
+instance TD.Lib.Internal.ShortShow TD.Query.GetDirectMessagesChatTopic.GetDirectMessagesChatTopic
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDirectMessagesChatTopic.GetDirectMessagesChatTopic
+
+module TD.Query.GetDirectMessagesChatTopicHistory
+
+-- | Returns messages in the topic in a channel direct messages chat
+--   administered by the current user. The messages are returned in reverse
+--   chronological order (i.e., in order of decreasing message_id). Returns
+--   <a>Messages</a>
+data GetDirectMessagesChatTopicHistory
+GetDirectMessagesChatTopicHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetDirectMessagesChatTopicHistory
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: GetDirectMessagesChatTopicHistory -> Maybe Int
+
+-- | Identifier of the topic which messages will be fetched
+[topic_id] :: GetDirectMessagesChatTopicHistory -> Maybe Int
+
+-- | Identifier of the message starting from which messages must be
+--   fetched; use 0 to get results from the last message
+[from_message_id] :: GetDirectMessagesChatTopicHistory -> Maybe Int
+
+-- | Specify 0 to get results from exactly the message from_message_id or a
+--   negative offset up to 99 to get additionally some newer messages
+[offset] :: GetDirectMessagesChatTopicHistory -> Maybe Int
+
+-- | The maximum number of messages to be returned; must be positive and
+--   can't be greater than 100. If the offset is negative, the limit must
+--   be greater than or equal to -offset. For optimal performance, the
+--   number of returned messages is chosen by TDLib and can be smaller than
+--   the specified limit
+[limit] :: GetDirectMessagesChatTopicHistory -> Maybe Int
+defaultGetDirectMessagesChatTopicHistory :: GetDirectMessagesChatTopicHistory
+instance GHC.Show.Show TD.Query.GetDirectMessagesChatTopicHistory.GetDirectMessagesChatTopicHistory
+instance GHC.Classes.Eq TD.Query.GetDirectMessagesChatTopicHistory.GetDirectMessagesChatTopicHistory
+instance TD.Lib.Internal.ShortShow TD.Query.GetDirectMessagesChatTopicHistory.GetDirectMessagesChatTopicHistory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDirectMessagesChatTopicHistory.GetDirectMessagesChatTopicHistory
+
+module TD.Query.GetDirectMessagesChatTopicMessageByDate
+
+-- | Returns the last message sent in the topic in a channel direct
+--   messages chat administered by the current user no later than the
+--   specified date. Returns <a>Message</a>
+data GetDirectMessagesChatTopicMessageByDate
+GetDirectMessagesChatTopicMessageByDate :: Maybe Int -> Maybe Int -> Maybe Int -> GetDirectMessagesChatTopicMessageByDate
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: GetDirectMessagesChatTopicMessageByDate -> Maybe Int
+
+-- | Identifier of the topic which messages will be fetched
+[topic_id] :: GetDirectMessagesChatTopicMessageByDate -> Maybe Int
+
+-- | Point in time (Unix timestamp) relative to which to search for
+--   messages
+[date] :: GetDirectMessagesChatTopicMessageByDate -> Maybe Int
+defaultGetDirectMessagesChatTopicMessageByDate :: GetDirectMessagesChatTopicMessageByDate
+instance GHC.Show.Show TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
+instance GHC.Classes.Eq TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
+instance TD.Lib.Internal.ShortShow TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
+
 module TD.Query.GetDisallowedChatEmojiStatuses
 
 -- | Returns the list of emoji statuses, which can't be used as chat emoji
@@ -30456,8 +30737,8 @@ module TD.Query.GetInactiveSupergroupChats
 
 -- | Returns a list of recently inactive supergroups and channels. Can be
 --   used when user reaches limit on the number of joined supergroups and
---   channels and receives CHANNELS_TOO_MUCH error. Also, the limit can be
---   increased with Telegram Premium. Returns <a>Chats</a>
+--   channels and receives the error <a>CHANNELS_TOO_MUCH</a>. Also, the
+--   limit can be increased with Telegram Premium. Returns <a>Chats</a>
 data GetInactiveSupergroupChats
 GetInactiveSupergroupChats :: GetInactiveSupergroupChats
 instance GHC.Show.Show TD.Query.GetInactiveSupergroupChats.GetInactiveSupergroupChats
@@ -30965,6 +31246,25 @@ instance GHC.Show.Show TD.Query.GetMessageAddedReactions.GetMessageAddedReaction
 instance GHC.Classes.Eq TD.Query.GetMessageAddedReactions.GetMessageAddedReactions
 instance TD.Lib.Internal.ShortShow TD.Query.GetMessageAddedReactions.GetMessageAddedReactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageAddedReactions.GetMessageAddedReactions
+
+module TD.Query.GetMessageAuthor
+
+-- | Returns information about actual author of a message sent on behalf of
+--   a channel. The method can be called if
+--   messageProperties.can_get_author == true. Returns <a>User</a>
+data GetMessageAuthor
+GetMessageAuthor :: Maybe Int -> Maybe Int -> GetMessageAuthor
+
+-- | Chat identifier
+[chat_id] :: GetMessageAuthor -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: GetMessageAuthor -> Maybe Int
+defaultGetMessageAuthor :: GetMessageAuthor
+instance GHC.Show.Show TD.Query.GetMessageAuthor.GetMessageAuthor
+instance GHC.Classes.Eq TD.Query.GetMessageAuthor.GetMessageAuthor
+instance TD.Lib.Internal.ShortShow TD.Query.GetMessageAuthor.GetMessageAuthor
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMessageAuthor.GetMessageAuthor
 
 module TD.Query.GetMessageAvailableReactions
 
@@ -33471,6 +33771,29 @@ instance GHC.Classes.Eq TD.Query.LoadChats.LoadChats
 instance TD.Lib.Internal.ShortShow TD.Query.LoadChats.LoadChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadChats.LoadChats
 
+module TD.Query.LoadDirectMessagesChatTopics
+
+-- | Loads more topics in a channel direct messages chat administered by
+--   the current user. The loaded topics will be sent through
+--   updateDirectMessagesChatTopic. Topics are sorted by their topic.order
+--   in descending order. Returns a 404 error if all topics have been
+--   loaded. Returns <a>Ok</a>
+data LoadDirectMessagesChatTopics
+LoadDirectMessagesChatTopics :: Maybe Int -> Maybe Int -> LoadDirectMessagesChatTopics
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: LoadDirectMessagesChatTopics -> Maybe Int
+
+-- | The maximum number of topics to be loaded. For optimal performance,
+--   the number of loaded topics is chosen by TDLib and can be smaller than
+--   the specified limit, even if the end of the list is not reached
+[limit] :: LoadDirectMessagesChatTopics -> Maybe Int
+defaultLoadDirectMessagesChatTopics :: LoadDirectMessagesChatTopics
+instance GHC.Show.Show TD.Query.LoadDirectMessagesChatTopics.LoadDirectMessagesChatTopics
+instance GHC.Classes.Eq TD.Query.LoadDirectMessagesChatTopics.LoadDirectMessagesChatTopics
+instance TD.Lib.Internal.ShortShow TD.Query.LoadDirectMessagesChatTopics.LoadDirectMessagesChatTopics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadDirectMessagesChatTopics.LoadDirectMessagesChatTopics
+
 module TD.Query.LoadGroupCallParticipants
 
 -- | Loads more participants of a group call. The loaded participants will
@@ -33663,7 +33986,7 @@ module TD.Query.OpenWebApp
 --   alert about data sent to the bot must be shown once. Returns
 --   <a>WebAppInfo</a>
 data OpenWebApp
-OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe WebAppOpenParameters -> OpenWebApp
+OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe WebAppOpenParameters -> OpenWebApp
 
 -- | Identifier of the chat in which the Web App is opened. The Web App
 --   can't be opened in secret chats
@@ -33678,9 +34001,13 @@ OpenWebApp :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe InputMe
 --   otherwise
 [url] :: OpenWebApp -> Maybe Text
 
--- | If not 0, the message thread identifier in which the message will be
+-- | If not 0, the message thread identifier to which the message will be
 --   sent
 [message_thread_id] :: OpenWebApp -> Maybe Int
+
+-- | If not 0, unique identifier of the topic of channel direct messages
+--   chat to which the message will be sent
+[direct_messages_chat_topic_id] :: OpenWebApp -> Maybe Int
 
 -- | Information about the message or story to be replied in the message
 --   sent by the Web App; pass null if none
@@ -34028,6 +34355,24 @@ instance GHC.Show.Show TD.Query.ReadAllChatReactions.ReadAllChatReactions
 instance GHC.Classes.Eq TD.Query.ReadAllChatReactions.ReadAllChatReactions
 instance TD.Lib.Internal.ShortShow TD.Query.ReadAllChatReactions.ReadAllChatReactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadAllChatReactions.ReadAllChatReactions
+
+module TD.Query.ReadAllDirectMessagesChatTopicReactions
+
+-- | Removes all unread reactions in the topic in a channel direct messages
+--   chat administered by the current user. Returns <a>Ok</a>
+data ReadAllDirectMessagesChatTopicReactions
+ReadAllDirectMessagesChatTopicReactions :: Maybe Int -> Maybe Int -> ReadAllDirectMessagesChatTopicReactions
+
+-- | Identifier of the chat
+[chat_id] :: ReadAllDirectMessagesChatTopicReactions -> Maybe Int
+
+-- | Topic identifier
+[topic_id] :: ReadAllDirectMessagesChatTopicReactions -> Maybe Int
+defaultReadAllDirectMessagesChatTopicReactions :: ReadAllDirectMessagesChatTopicReactions
+instance GHC.Show.Show TD.Query.ReadAllDirectMessagesChatTopicReactions.ReadAllDirectMessagesChatTopicReactions
+instance GHC.Classes.Eq TD.Query.ReadAllDirectMessagesChatTopicReactions.ReadAllDirectMessagesChatTopicReactions
+instance TD.Lib.Internal.ShortShow TD.Query.ReadAllDirectMessagesChatTopicReactions.ReadAllDirectMessagesChatTopicReactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadAllDirectMessagesChatTopicReactions.ReadAllDirectMessagesChatTopicReactions
 
 module TD.Query.ReadAllMessageThreadMentions
 
@@ -35419,15 +35764,19 @@ module TD.Query.SearchChatMessages
 --   (searchSecretMessages must be used instead), or without an enabled
 --   message database. For optimal performance, the number of returned
 --   messages is chosen by TDLib and can be smaller than the specified
---   limit. A combination of query, sender_id, filter and message_thread_id
---   search criteria is expected to be supported, only if it is required
---   for Telegram official application implementation. Returns
+--   limit. A combination of query, sender_id, filter and topic_id search
+--   criteria is expected to be supported, only if it is required for
+--   Telegram official application implementation. Returns
 --   <a>FoundChatMessages</a>
 data SearchChatMessages
-SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe Int -> Maybe Int -> SearchChatMessages
+SearchChatMessages :: Maybe Int -> Maybe MessageTopic -> Maybe Text -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe SearchMessagesFilter -> SearchChatMessages
 
 -- | Identifier of the chat in which to search messages
 [chat_id] :: SearchChatMessages -> Maybe Int
+
+-- | Pass topic identifier to search messages only in specific topic; pass
+--   null to search for messages in all topics
+[topic_id] :: SearchChatMessages -> Maybe MessageTopic
 
 -- | Query to search for
 [query] :: SearchChatMessages -> Maybe Text
@@ -35454,15 +35803,6 @@ SearchChatMessages :: Maybe Int -> Maybe Text -> Maybe MessageSender -> Maybe In
 -- | Additional filter for messages to search; pass null to search for all
 --   messages
 [_filter] :: SearchChatMessages -> Maybe SearchMessagesFilter
-
--- | If not 0, only messages in the specified thread will be returned;
---   supergroups only
-[message_thread_id] :: SearchChatMessages -> Maybe Int
-
--- | If not 0, only messages in the specified Saved Messages topic will be
---   returned; pass 0 to return all messages, or for chats other than Saved
---   Messages
-[saved_messages_topic_id] :: SearchChatMessages -> Maybe Int
 defaultSearchChatMessages :: SearchChatMessages
 instance GHC.Show.Show TD.Query.SearchChatMessages.SearchChatMessages
 instance GHC.Classes.Eq TD.Query.SearchChatMessages.SearchChatMessages
@@ -36787,8 +37127,8 @@ SetApplicationVerificationToken :: Maybe Int -> Maybe Text -> SetApplicationVeri
 -- | Play Integrity API token for the Android application, or secret from
 --   push notification for the iOS application for application
 --   verification, or reCAPTCHA token for reCAPTCHA verifications; pass an
---   empty string to abort verification and receive error
---   VERIFICATION_FAILED for the request
+--   empty string to abort verification and receive the error
+--   <a>VERIFICATION_FAILED</a> for the request
 [token] :: SetApplicationVerificationToken -> Maybe Text
 defaultSetApplicationVerificationToken :: SetApplicationVerificationToken
 instance GHC.Show.Show TD.Query.SetApplicationVerificationToken.SetApplicationVerificationToken
@@ -37422,6 +37762,34 @@ instance GHC.Classes.Eq TD.Query.SetChatDescription.SetChatDescription
 instance TD.Lib.Internal.ShortShow TD.Query.SetChatDescription.SetChatDescription
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatDescription.SetChatDescription
 
+module TD.Query.SetChatDirectMessagesGroup
+
+-- | Changes direct messages group settings for a channel chat; requires
+--   owner privileges in the chat. Returns <a>Ok</a>
+data SetChatDirectMessagesGroup
+SetChatDirectMessagesGroup :: Maybe Int -> Maybe Bool -> Maybe Int -> SetChatDirectMessagesGroup
+
+-- | Identifier of the channel chat
+[chat_id] :: SetChatDirectMessagesGroup -> Maybe Int
+
+-- | Pass true if the direct messages group is enabled for the channel
+--   chat; pass false otherwise
+[is_enabled] :: SetChatDirectMessagesGroup -> Maybe Bool
+
+-- | The new number of Telegram Stars that must be paid for each message
+--   that is sent to the direct messages chat unless the sender is an
+--   administrator of the channel chat;
+--   0-getOption("paid_message_star_count_max"). The channel will receive
+--   getOption("paid_message_earnings_per_mille") Telegram Stars for each
+--   1000 Telegram Stars paid for message sending. Requires
+--   supergroupFullInfo.can_enable_paid_messages for positive amounts
+[paid_message_star_count] :: SetChatDirectMessagesGroup -> Maybe Int
+defaultSetChatDirectMessagesGroup :: SetChatDirectMessagesGroup
+instance GHC.Show.Show TD.Query.SetChatDirectMessagesGroup.SetChatDirectMessagesGroup
+instance GHC.Classes.Eq TD.Query.SetChatDirectMessagesGroup.SetChatDirectMessagesGroup
+instance TD.Lib.Internal.ShortShow TD.Query.SetChatDirectMessagesGroup.SetChatDirectMessagesGroup
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatDirectMessagesGroup.SetChatDirectMessagesGroup
+
 module TD.Query.SetChatDiscussionGroup
 
 -- | Changes the discussion group of a channel chat; requires
@@ -37959,6 +38327,50 @@ instance GHC.Classes.Eq TD.Query.SetDefaultReactionType.SetDefaultReactionType
 instance TD.Lib.Internal.ShortShow TD.Query.SetDefaultReactionType.SetDefaultReactionType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetDefaultReactionType.SetDefaultReactionType
 
+module TD.Query.SetDirectMessagesChatTopicDraftMessage
+
+-- | Changes the draft message in the topic in a channel direct messages
+--   chat administered by the current user. Returns <a>Ok</a>
+data SetDirectMessagesChatTopicDraftMessage
+SetDirectMessagesChatTopicDraftMessage :: Maybe Int -> Maybe Int -> Maybe DraftMessage -> SetDirectMessagesChatTopicDraftMessage
+
+-- | Chat identifier
+[chat_id] :: SetDirectMessagesChatTopicDraftMessage -> Maybe Int
+
+-- | Topic identifier
+[topic_id] :: SetDirectMessagesChatTopicDraftMessage -> Maybe Int
+
+-- | New draft message; pass null to remove the draft. All files in draft
+--   message content must be of the type inputFileLocal. Media thumbnails
+--   and captions are ignored
+[draft_message] :: SetDirectMessagesChatTopicDraftMessage -> Maybe DraftMessage
+defaultSetDirectMessagesChatTopicDraftMessage :: SetDirectMessagesChatTopicDraftMessage
+instance GHC.Show.Show TD.Query.SetDirectMessagesChatTopicDraftMessage.SetDirectMessagesChatTopicDraftMessage
+instance GHC.Classes.Eq TD.Query.SetDirectMessagesChatTopicDraftMessage.SetDirectMessagesChatTopicDraftMessage
+instance TD.Lib.Internal.ShortShow TD.Query.SetDirectMessagesChatTopicDraftMessage.SetDirectMessagesChatTopicDraftMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetDirectMessagesChatTopicDraftMessage.SetDirectMessagesChatTopicDraftMessage
+
+module TD.Query.SetDirectMessagesChatTopicIsMarkedAsUnread
+
+-- | Changes the marked as unread state of the topic in a channel direct
+--   messages chat administered by the current user. Returns <a>Ok</a>
+data SetDirectMessagesChatTopicIsMarkedAsUnread
+SetDirectMessagesChatTopicIsMarkedAsUnread :: Maybe Int -> Maybe Int -> Maybe Bool -> SetDirectMessagesChatTopicIsMarkedAsUnread
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: SetDirectMessagesChatTopicIsMarkedAsUnread -> Maybe Int
+
+-- | Topic identifier
+[topic_id] :: SetDirectMessagesChatTopicIsMarkedAsUnread -> Maybe Int
+
+-- | New value of is_marked_as_unread
+[is_marked_as_unread] :: SetDirectMessagesChatTopicIsMarkedAsUnread -> Maybe Bool
+defaultSetDirectMessagesChatTopicIsMarkedAsUnread :: SetDirectMessagesChatTopicIsMarkedAsUnread
+instance GHC.Show.Show TD.Query.SetDirectMessagesChatTopicIsMarkedAsUnread.SetDirectMessagesChatTopicIsMarkedAsUnread
+instance GHC.Classes.Eq TD.Query.SetDirectMessagesChatTopicIsMarkedAsUnread.SetDirectMessagesChatTopicIsMarkedAsUnread
+instance TD.Lib.Internal.ShortShow TD.Query.SetDirectMessagesChatTopicIsMarkedAsUnread.SetDirectMessagesChatTopicIsMarkedAsUnread
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetDirectMessagesChatTopicIsMarkedAsUnread.SetDirectMessagesChatTopicIsMarkedAsUnread
+
 module TD.Query.SetEmojiStatus
 
 -- | Changes the emoji status of the current user; for Telegram Premium
@@ -38084,7 +38496,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGiftSettings.SetGiftSettings
 module TD.Query.SetGroupCallParticipantIsSpeaking
 
 -- | Informs TDLib that speaking state of a participant of an active group
---   call has changed. Returns <a>Ok</a>
+--   call has changed. Returns identifier of the participant if it is
+--   found. Returns <a>MessageSender</a>
 data SetGroupCallParticipantIsSpeaking
 SetGroupCallParticipantIsSpeaking :: Maybe Int -> Maybe Int -> Maybe Bool -> SetGroupCallParticipantIsSpeaking
 
@@ -40276,13 +40689,16 @@ module TD.Query.ToggleSupergroupIsForum
 --   in the supergroup. Discussion supergroups can't be converted to
 --   forums. Returns <a>Ok</a>
 data ToggleSupergroupIsForum
-ToggleSupergroupIsForum :: Maybe Int -> Maybe Bool -> ToggleSupergroupIsForum
+ToggleSupergroupIsForum :: Maybe Int -> Maybe Bool -> Maybe Bool -> ToggleSupergroupIsForum
 
 -- | Identifier of the supergroup
 [supergroup_id] :: ToggleSupergroupIsForum -> Maybe Int
 
 -- | New value of is_forum
 [is_forum] :: ToggleSupergroupIsForum -> Maybe Bool
+
+-- | New value of has_forum_tabs; ignored if is_forum is false
+[has_forum_tabs] :: ToggleSupergroupIsForum -> Maybe Bool
 defaultToggleSupergroupIsForum :: ToggleSupergroupIsForum
 instance GHC.Show.Show TD.Query.ToggleSupergroupIsForum.ToggleSupergroupIsForum
 instance GHC.Classes.Eq TD.Query.ToggleSupergroupIsForum.ToggleSupergroupIsForum
@@ -40575,6 +40991,24 @@ instance GHC.Show.Show TD.Query.UnpinAllChatMessages.UnpinAllChatMessages
 instance GHC.Classes.Eq TD.Query.UnpinAllChatMessages.UnpinAllChatMessages
 instance TD.Lib.Internal.ShortShow TD.Query.UnpinAllChatMessages.UnpinAllChatMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.UnpinAllChatMessages.UnpinAllChatMessages
+
+module TD.Query.UnpinAllDirectMessagesChatTopicMessages
+
+-- | Removes all pinned messages from the topic in a channel direct
+--   messages chat administered by the current user. Returns <a>Ok</a>
+data UnpinAllDirectMessagesChatTopicMessages
+UnpinAllDirectMessagesChatTopicMessages :: Maybe Int -> Maybe Int -> UnpinAllDirectMessagesChatTopicMessages
+
+-- | Identifier of the chat
+[chat_id] :: UnpinAllDirectMessagesChatTopicMessages -> Maybe Int
+
+-- | Topic identifier
+[topic_id] :: UnpinAllDirectMessagesChatTopicMessages -> Maybe Int
+defaultUnpinAllDirectMessagesChatTopicMessages :: UnpinAllDirectMessagesChatTopicMessages
+instance GHC.Show.Show TD.Query.UnpinAllDirectMessagesChatTopicMessages.UnpinAllDirectMessagesChatTopicMessages
+instance GHC.Classes.Eq TD.Query.UnpinAllDirectMessagesChatTopicMessages.UnpinAllDirectMessagesChatTopicMessages
+instance TD.Lib.Internal.ShortShow TD.Query.UnpinAllDirectMessagesChatTopicMessages.UnpinAllDirectMessagesChatTopicMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.UnpinAllDirectMessagesChatTopicMessages.UnpinAllDirectMessagesChatTopicMessages
 
 module TD.Query.UnpinAllMessageThreadMessages
 
