@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.63.0
+@version 2.0.64.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2987,6 +2987,9 @@ PremiumFeatureBusiness :: PremiumFeature
 
 -- | The ability to use all available message effects
 PremiumFeatureMessageEffects :: PremiumFeature
+
+-- | The ability to create and use checklist messages
+PremiumFeatureChecklists :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
@@ -4038,7 +4041,12 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+
+-- | True, if tasks can be added to the message's checklist using
+--   addChecklistTasks if the current user has Telegram Premium
+--   subscription
+[can_add_tasks] :: MessageProperties -> Maybe Bool
 
 -- | True, if content of the message can be copied using
 --   inputMessageForwarded or forwardMessages with copy options
@@ -4058,9 +4066,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 [can_be_deleted_for_all_users] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be edited using the methods editMessageText,
---   editMessageCaption, or editMessageReplyMarkup. For live location and
---   poll messages this fields shows whether editMessageLiveLocation or
---   stopPoll can be used with this message
+--   editMessageCaption, or editMessageReplyMarkup. For live location,
+--   poll, and checklist messages this fields shows whether
+--   editMessageLiveLocation, stopPoll, or editMessageChecklist
+--   respectively can be used with this message
 [can_be_edited] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be forwarded using inputMessageForwarded or
@@ -4123,9 +4132,18 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 --   and message forwards can be received using getMessagePublicForwards
 [can_get_statistics] :: MessageProperties -> Maybe Bool
 
+-- | True, if advertisements for video of the message can be received
+--   though getVideoMessageAdvertisements
+[can_get_video_advertisements] :: MessageProperties -> Maybe Bool
+
 -- | True, if chat members already viewed the message can be received
 --   through getMessageViewers
 [can_get_viewers] :: MessageProperties -> Maybe Bool
+
+-- | True, if tasks can be marked as done or not done in the message's
+--   checklist using markChecklistTasksAsDone if the current user has
+--   Telegram Premium subscription
+[can_mark_tasks_as_done] :: MessageProperties -> Maybe Bool
 
 -- | True, if speech can be recognized for the message through
 --   recognizeSpeech
@@ -7325,6 +7343,53 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputMessageReplyTo.InputMessageReply
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputMessageReplyTo.InputMessageReplyTo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputMessageReplyTo.InputMessageReplyTo
 
+module TD.Data.InputChecklistTask
+data InputChecklistTask
+
+-- | Describes a task in a checklist to be sent
+InputChecklistTask :: Maybe Int -> Maybe FormattedText -> InputChecklistTask
+
+-- | Unique identifier of the task; must be positive
+[_id] :: InputChecklistTask -> Maybe Int
+
+-- | Text of the task; 1-getOption("checklist_task_text_length_max")
+--   characters without line feeds. May contain only Bold, Italic,
+--   Underline, Strikethrough, Spoiler, and CustomEmoji entities
+[text] :: InputChecklistTask -> Maybe FormattedText
+defaultInputChecklistTask :: InputChecklistTask
+instance GHC.Show.Show TD.Data.InputChecklistTask.InputChecklistTask
+instance GHC.Classes.Eq TD.Data.InputChecklistTask.InputChecklistTask
+instance TD.Lib.Internal.ShortShow TD.Data.InputChecklistTask.InputChecklistTask
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputChecklistTask.InputChecklistTask
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputChecklistTask.InputChecklistTask
+
+module TD.Data.InputChecklist
+data InputChecklist
+
+-- | Describes a checklist to be sent
+InputChecklist :: Maybe FormattedText -> Maybe [InputChecklistTask] -> Maybe Bool -> Maybe Bool -> InputChecklist
+
+-- | Title of the checklist; 1-getOption("checklist_title_length_max")
+--   characters. May contain only Bold, Italic, Underline, Strikethrough,
+--   Spoiler, and CustomEmoji entities
+[title] :: InputChecklist -> Maybe FormattedText
+
+-- | List of tasks in the checklist;
+--   1-getOption("checklist_task_count_max") tasks
+[tasks] :: InputChecklist -> Maybe [InputChecklistTask]
+
+-- | True, if other users can add tasks to the list
+[others_can_add_tasks] :: InputChecklist -> Maybe Bool
+
+-- | True, if other users can mark tasks as done or not done
+[others_can_mark_tasks_as_done] :: InputChecklist -> Maybe Bool
+defaultInputChecklist :: InputChecklist
+instance GHC.Show.Show TD.Data.InputChecklist.InputChecklist
+instance GHC.Classes.Eq TD.Data.InputChecklist.InputChecklist
+instance TD.Lib.Internal.ShortShow TD.Data.InputChecklist.InputChecklist
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputChecklist.InputChecklist
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputChecklist.InputChecklist
+
 module TD.Data.InputBusinessChatLink
 data InputBusinessChatLink
 
@@ -7679,6 +7744,29 @@ instance GHC.Show.Show TD.Data.File.File
 instance GHC.Classes.Eq TD.Data.File.File
 instance TD.Lib.Internal.ShortShow TD.Data.File.File
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.File.File
+
+module TD.Data.VideoStoryboard
+data VideoStoryboard
+
+-- | Describes a storyboard for a video
+VideoStoryboard :: Maybe File -> Maybe Int -> Maybe Int -> Maybe File -> VideoStoryboard
+
+-- | A JPEG file that contains tiled previews of video
+[storyboard_file] :: VideoStoryboard -> Maybe File
+
+-- | Width of a tile
+[width] :: VideoStoryboard -> Maybe Int
+
+-- | Height of a tile
+[height] :: VideoStoryboard -> Maybe Int
+
+-- | File that describes mapping of position in the video to a tile in the
+--   JPEG file
+[map_file] :: VideoStoryboard -> Maybe File
+instance GHC.Show.Show TD.Data.VideoStoryboard.VideoStoryboard
+instance GHC.Classes.Eq TD.Data.VideoStoryboard.VideoStoryboard
+instance TD.Lib.Internal.ShortShow TD.Data.VideoStoryboard.VideoStoryboard
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoStoryboard.VideoStoryboard
 
 module TD.Data.Thumbnail
 data Thumbnail
@@ -8852,26 +8940,6 @@ instance GHC.Show.Show TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance GHC.Classes.Eq TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
-
-module TD.Data.MessageSponsor
-data MessageSponsor
-
--- | Information about the sponsor of a message
-MessageSponsor :: Maybe Text -> Maybe Photo -> Maybe Text -> MessageSponsor
-
--- | URL of the sponsor to be opened when the message is clicked
-[url] :: MessageSponsor -> Maybe Text
-
--- | Photo of the sponsor; may be null if must not be shown
-[photo] :: MessageSponsor -> Maybe Photo
-
--- | Additional optional information about the sponsor to be shown along
---   with the message
-[info] :: MessageSponsor -> Maybe Text
-instance GHC.Show.Show TD.Data.MessageSponsor.MessageSponsor
-instance GHC.Classes.Eq TD.Data.MessageSponsor.MessageSponsor
-instance TD.Lib.Internal.ShortShow TD.Data.MessageSponsor.MessageSponsor
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSponsor.MessageSponsor
 
 module TD.Data.LinkPreviewAlbumMedia
 
@@ -10807,6 +10875,14 @@ InputMessageStory :: Maybe Int -> Maybe Int -> InputMessageContent
 -- | Story identifier
 [story_id] :: InputMessageContent -> Maybe Int
 
+-- | A message with a checklist. Checklists can't be sent to secret chats,
+--   channel chats and channel direct messages chats; for Telegram Premium
+--   users only
+InputMessageChecklist :: Maybe InputChecklist -> InputMessageContent
+
+-- | The checklist to send
+[checklist] :: InputMessageContent -> Maybe InputChecklist
+
 -- | A forwarded message
 InputMessageForwarded :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe MessageCopyOptions -> InputMessageContent
 
@@ -11181,6 +11257,65 @@ instance GHC.Show.Show TD.Data.StickerSet.StickerSet
 instance GHC.Classes.Eq TD.Data.StickerSet.StickerSet
 instance TD.Lib.Internal.ShortShow TD.Data.StickerSet.StickerSet
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StickerSet.StickerSet
+
+module TD.Data.ChecklistTask
+data ChecklistTask
+
+-- | Describes a task in a checklist
+ChecklistTask :: Maybe Int -> Maybe FormattedText -> Maybe Int -> Maybe Int -> ChecklistTask
+
+-- | Unique identifier of the task
+[_id] :: ChecklistTask -> Maybe Int
+
+-- | Text of the task; may contain only Bold, Italic, Underline,
+--   Strikethrough, Spoiler, CustomEmoji, Url, EmailAddress, Mention,
+--   Hashtag, Cashtag and PhoneNumber entities
+[text] :: ChecklistTask -> Maybe FormattedText
+
+-- | Identifier of the user that completed the task; 0 if the task isn't
+--   completed
+[completed_by_user_id] :: ChecklistTask -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the task was completed; 0 if the
+--   task isn't completed
+[completion_date] :: ChecklistTask -> Maybe Int
+instance GHC.Show.Show TD.Data.ChecklistTask.ChecklistTask
+instance GHC.Classes.Eq TD.Data.ChecklistTask.ChecklistTask
+instance TD.Lib.Internal.ShortShow TD.Data.ChecklistTask.ChecklistTask
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChecklistTask.ChecklistTask
+
+module TD.Data.Checklist
+data Checklist
+
+-- | Describes a checklist
+Checklist :: Maybe FormattedText -> Maybe [ChecklistTask] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Checklist
+
+-- | Title of the checklist; may contain only Bold, Italic, Underline,
+--   Strikethrough, Spoiler, and CustomEmoji entities
+[title] :: Checklist -> Maybe FormattedText
+
+-- | List of tasks in the checklist
+[tasks] :: Checklist -> Maybe [ChecklistTask]
+
+-- | True, if users other than creator of the list can add tasks to the
+--   list
+[others_can_add_tasks] :: Checklist -> Maybe Bool
+
+-- | True, if the current user can add tasks to the list if they have
+--   Telegram Premium subscription
+[can_add_tasks] :: Checklist -> Maybe Bool
+
+-- | True, if users other than creator of the list can mark tasks as done
+--   or not done. If true, then the checklist is called "group checklist"
+[others_can_mark_tasks_as_done] :: Checklist -> Maybe Bool
+
+-- | True, if the current user can mark tasks as done or not done if they
+--   have Telegram Premium subscription
+[can_mark_tasks_as_done] :: Checklist -> Maybe Bool
+instance GHC.Show.Show TD.Data.Checklist.Checklist
+instance GHC.Classes.Eq TD.Data.Checklist.Checklist
+instance TD.Lib.Internal.ShortShow TD.Data.Checklist.Checklist
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Checklist.Checklist
 
 module TD.Data.CheckStickerSetNameResult
 
@@ -11752,7 +11887,7 @@ ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe
 -- | True, if the user can send voice notes
 [can_send_voice_notes] :: ChatPermissions -> Maybe Bool
 
--- | True, if the user can send polls
+-- | True, if the user can send polls and checklists
 [can_send_polls] :: ChatPermissions -> Maybe Bool
 
 -- | True, if the user can send animations, games, stickers, and dice and
@@ -17049,6 +17184,15 @@ PushMessageContentText :: Maybe Text -> Maybe Bool -> PushMessageContent
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
 
+-- | A message with a checklist
+PushMessageContentChecklist :: Maybe Text -> Maybe Bool -> PushMessageContent
+
+-- | Game title, empty for pinned game message
+[title] :: PushMessageContent -> Maybe Text
+
+-- | True, if the message is a pinned message with the specified content
+[is_pinned] :: PushMessageContent -> Maybe Bool
+
 -- | A video message
 PushMessageContentVideo :: Maybe Video -> Maybe Text -> Maybe Bool -> Maybe Bool -> PushMessageContent
 
@@ -17168,6 +17312,18 @@ PushMessageContentProximityAlertTriggered :: Maybe Int -> PushMessageContent
 
 -- | The distance to the user
 [distance] :: PushMessageContent -> Maybe Int
+
+-- | Some tasks were added to a checklist
+PushMessageContentChecklistTasksAdded :: Maybe Int -> PushMessageContent
+
+-- | Number of added tasks
+[task_count] :: PushMessageContent -> Maybe Int
+
+-- | Some tasks from a checklist were marked as done or not done
+PushMessageContentChecklistTasksDone :: Maybe Int -> PushMessageContent
+
+-- | Number of added tasks
+[task_count] :: PushMessageContent -> Maybe Int
 
 -- | A forwarded messages
 PushMessageContentMessageForwards :: Maybe Int -> PushMessageContent
@@ -17924,7 +18080,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -18041,6 +18197,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 -- | Number of times the supergroup must be boosted by a user to ignore
 --   slow mode and chat permission restrictions; 0 if unspecified
 [unrestrict_boost_count] :: SupergroupFullInfo -> Maybe Int
+
+-- | Number of Telegram Stars that must be paid by the current user for
+--   each sent message to the supergroup
+[outgoing_paid_message_star_count] :: SupergroupFullInfo -> Maybe Int
 
 -- | Identifier of the supergroup sticker set that must be shown before
 --   user sticker sets; 0 if none
@@ -19200,6 +19360,85 @@ instance GHC.Classes.Eq TD.Data.StarTransactions.StarTransactions
 instance TD.Lib.Internal.ShortShow TD.Data.StarTransactions.StarTransactions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactions.StarTransactions
 
+module TD.Data.AdvertisementSponsor
+data AdvertisementSponsor
+
+-- | Information about the sponsor of an advertisement
+AdvertisementSponsor :: Maybe Text -> Maybe Photo -> Maybe Text -> AdvertisementSponsor
+
+-- | URL of the sponsor to be opened when the advertisement is clicked
+[url] :: AdvertisementSponsor -> Maybe Text
+
+-- | Photo of the sponsor; may be null if must not be shown
+[photo] :: AdvertisementSponsor -> Maybe Photo
+
+-- | Additional optional information about the sponsor to be shown along
+--   with the advertisement
+[info] :: AdvertisementSponsor -> Maybe Text
+instance GHC.Show.Show TD.Data.AdvertisementSponsor.AdvertisementSponsor
+instance GHC.Classes.Eq TD.Data.AdvertisementSponsor.AdvertisementSponsor
+instance TD.Lib.Internal.ShortShow TD.Data.AdvertisementSponsor.AdvertisementSponsor
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AdvertisementSponsor.AdvertisementSponsor
+
+module TD.Data.VideoMessageAdvertisement
+data VideoMessageAdvertisement
+
+-- | Describes an advertisent to be shown while a video from a message is
+--   watched
+VideoMessageAdvertisement :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe AdvertisementSponsor -> Maybe Text -> Maybe Text -> VideoMessageAdvertisement
+
+-- | Unique identifier of this result
+[unique_id] :: VideoMessageAdvertisement -> Maybe Int
+
+-- | Text of the advertisement
+[text] :: VideoMessageAdvertisement -> Maybe Text
+
+-- | The minimum amount of time the advertisement must be dispalyed before
+--   it can be hidden by the user, in seconds
+[min_display_duration] :: VideoMessageAdvertisement -> Maybe Int
+
+-- | The maximum amount of time the advertisement must be dispalyed before
+--   it must be automatically hidden, in seconds
+[max_display_duration] :: VideoMessageAdvertisement -> Maybe Int
+
+-- | True, if the advertisement can be reported to Telegram moderators
+--   through reportVideoMessageAdvertisement
+[can_be_reported] :: VideoMessageAdvertisement -> Maybe Bool
+
+-- | Information about the sponsor of the advertisement
+[sponsor] :: VideoMessageAdvertisement -> Maybe AdvertisementSponsor
+
+-- | Title of the sponsored message
+[title] :: VideoMessageAdvertisement -> Maybe Text
+
+-- | If non-empty, additional information about the sponsored message to be
+--   shown along with the message
+[additional_info] :: VideoMessageAdvertisement -> Maybe Text
+instance GHC.Show.Show TD.Data.VideoMessageAdvertisement.VideoMessageAdvertisement
+instance GHC.Classes.Eq TD.Data.VideoMessageAdvertisement.VideoMessageAdvertisement
+instance TD.Lib.Internal.ShortShow TD.Data.VideoMessageAdvertisement.VideoMessageAdvertisement
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoMessageAdvertisement.VideoMessageAdvertisement
+
+module TD.Data.VideoMessageAdvertisements
+data VideoMessageAdvertisements
+
+-- | Contains a list of advertisements to be shown while a video from a
+--   message is watched
+VideoMessageAdvertisements :: Maybe [VideoMessageAdvertisement] -> Maybe Int -> Maybe Int -> VideoMessageAdvertisements
+
+-- | List of advertisements
+[advertisements] :: VideoMessageAdvertisements -> Maybe [VideoMessageAdvertisement]
+
+-- | Delay before the first advertisement is shown, in seconds
+[start_delay] :: VideoMessageAdvertisements -> Maybe Int
+
+-- | Delay between consecutive advertisements, in seconds
+[between_delay] :: VideoMessageAdvertisements -> Maybe Int
+instance GHC.Show.Show TD.Data.VideoMessageAdvertisements.VideoMessageAdvertisements
+instance GHC.Classes.Eq TD.Data.VideoMessageAdvertisements.VideoMessageAdvertisements
+instance TD.Lib.Internal.ShortShow TD.Data.VideoMessageAdvertisements.VideoMessageAdvertisements
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoMessageAdvertisements.VideoMessageAdvertisements
+
 module TD.Data.Address
 data Address
 
@@ -19609,13 +19848,16 @@ MessageSticker :: Maybe Sticker -> Maybe Bool -> MessageContent
 [is_premium] :: MessageContent -> Maybe Bool
 
 -- | A video message
-MessageVideo :: Maybe Video -> Maybe [AlternativeVideo] -> Maybe Photo -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
+MessageVideo :: Maybe Video -> Maybe [AlternativeVideo] -> Maybe [VideoStoryboard] -> Maybe Photo -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
 
 -- | The video description
 [video] :: MessageContent -> Maybe Video
 
 -- | Alternative qualities of the video
 [alternative_videos] :: MessageContent -> Maybe [AlternativeVideo]
+
+-- | Available storyboards for the video
+[storyboards] :: MessageContent -> Maybe [VideoStoryboard]
 
 -- | Cover of the video; may be null if none
 [cover] :: MessageContent -> Maybe Photo
@@ -19767,6 +20009,12 @@ MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
 -- | True, if the story was automatically forwarded because of a mention of
 --   the user
 [via_mention] :: MessageContent -> Maybe Bool
+
+-- | A message with a checklist
+MessageChecklist :: Maybe Checklist -> MessageContent
+
+-- | The checklist description
+[list] :: MessageContent -> Maybe Checklist
 
 -- | A message with an invoice from a bot. Use getInternalLink with
 --   internalLinkTypeBotStart to share the invoice
@@ -20498,6 +20746,29 @@ MessageDirectMessagePriceChanged :: Maybe Bool -> Maybe Int -> MessageContent
 --   non-administrator users of the supergroup chat for each sent message
 [paid_message_star_count] :: MessageContent -> Maybe Int
 
+-- | Some tasks from a checklist were marked as done or not done
+MessageChecklistTasksDone :: Maybe Int -> Maybe [Int] -> Maybe [Int] -> MessageContent
+
+-- | Identifier of the message with the checklist; can be 0 if the message
+--   was deleted
+[checklist_message_id] :: MessageContent -> Maybe Int
+
+-- | Identifiers of tasks that were marked as done
+[marked_as_done_task_ids] :: MessageContent -> Maybe [Int]
+
+-- | Identifiers of tasks that were marked as not done
+[marked_as_not_done_task_ids] :: MessageContent -> Maybe [Int]
+
+-- | Some tasks were added to a checklist
+MessageChecklistTasksAdded :: Maybe Int -> Maybe [ChecklistTask] -> MessageContent
+
+-- | Identifier of the message with the checklist; can be 0 if the message
+--   was deleted
+[checklist_message_id] :: MessageContent -> Maybe Int
+
+-- | List of tasks added to the checklist
+[tasks] :: MessageContent -> Maybe [ChecklistTask]
+
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
 
@@ -20579,7 +20850,7 @@ module TD.Data.SponsoredMessage
 data SponsoredMessage
 
 -- | Describes a sponsored message
-SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe MessageSponsor -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> SponsoredMessage
+SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe AdvertisementSponsor -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> SponsoredMessage
 
 -- | Message identifier; unique for the chat to which the sponsored message
 --   belongs among both ordinary and sponsored messages
@@ -20599,7 +20870,7 @@ SponsoredMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageConten
 [content] :: SponsoredMessage -> Maybe MessageContent
 
 -- | Information about the sponsor of the message
-[sponsor] :: SponsoredMessage -> Maybe MessageSponsor
+[sponsor] :: SponsoredMessage -> Maybe AdvertisementSponsor
 
 -- | Title of the sponsored message
 [title] :: SponsoredMessage -> Maybe Text
@@ -20746,12 +21017,12 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Mess
 -- | Media content of the message if the message was from another chat or
 --   topic; may be null for messages from the same chat and messages
 --   without media. Can be only one of the following types:
---   messageAnimation, messageAudio, messageContact, messageDice,
---   messageDocument, messageGame, messageGiveaway, messageGiveawayWinners,
---   messageInvoice, messageLocation, messagePaidMedia, messagePhoto,
---   messagePoll, messageSticker, messageStory, messageText (for link
---   preview), messageVenue, messageVideo, messageVideoNote, or
---   messageVoiceNote
+--   messageAnimation, messageAudio, messageChecklist, messageContact,
+--   messageDice, messageDocument, messageGame, messageGiveaway,
+--   messageGiveawayWinners, messageInvoice, messageLocation,
+--   messagePaidMedia, messagePhoto, messagePoll, messageSticker,
+--   messageStory, messageText (for link preview), messageVenue,
+--   messageVideo, messageVideoNote, or messageVoiceNote
 [content] :: MessageReplyTo -> Maybe MessageContent
 
 -- | Describes a story replied by a given message
@@ -21426,7 +21697,7 @@ data DirectMessagesChatTopic
 
 -- | Contains information about a topic in a channel direct messages chat
 --   administered by the current user
-DirectMessagesChatTopic :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Message -> Maybe DraftMessage -> DirectMessagesChatTopic
+DirectMessagesChatTopic :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Message -> Maybe DraftMessage -> DirectMessagesChatTopic
 
 -- | Identifier of the chat to which the topic belongs
 [chat_id] :: DirectMessagesChatTopic -> Maybe Int
@@ -21440,6 +21711,10 @@ DirectMessagesChatTopic :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Mayb
 -- | A parameter used to determine order of the topic in the topic list.
 --   Topics must be sorted by the order in descending order
 [order] :: DirectMessagesChatTopic -> Maybe Int
+
+-- | True, if the other party can send unpaid messages even if the chat has
+--   paid messages enabled
+[can_send_unpaid_messages] :: DirectMessagesChatTopic -> Maybe Bool
 
 -- | True, if the forum topic is marked as unread
 [is_marked_as_unread] :: DirectMessagesChatTopic -> Maybe Bool
@@ -24579,6 +24854,7 @@ UserSupportInfo :: UserSupportInfo -> GeneralResult
 Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
 VideoChatStreams :: VideoChatStreams -> GeneralResult
+VideoMessageAdvertisements :: VideoMessageAdvertisements -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
 instance GHC.Show.Show TD.GeneralResult.GeneralResult
@@ -24755,6 +25031,28 @@ instance GHC.Show.Show TD.Query.AddChatToList.AddChatToList
 instance GHC.Classes.Eq TD.Query.AddChatToList.AddChatToList
 instance TD.Lib.Internal.ShortShow TD.Query.AddChatToList.AddChatToList
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatToList.AddChatToList
+
+module TD.Query.AddChecklistTasks
+
+-- | Adds tasks to a checklist in a message. Returns <a>Ok</a>
+data AddChecklistTasks
+AddChecklistTasks :: Maybe Int -> Maybe Int -> Maybe [InputChecklistTask] -> AddChecklistTasks
+
+-- | Identifier of the chat with the message
+[chat_id] :: AddChecklistTasks -> Maybe Int
+
+-- | Identifier of the message containing the checklist. Use
+--   messageProperties.can_add_tasks to check whether the tasks can be
+--   added
+[message_id] :: AddChecklistTasks -> Maybe Int
+
+-- | List of added tasks
+[tasks] :: AddChecklistTasks -> Maybe [InputChecklistTask]
+defaultAddChecklistTasks :: AddChecklistTasks
+instance GHC.Show.Show TD.Query.AddChecklistTasks.AddChecklistTasks
+instance GHC.Classes.Eq TD.Query.AddChecklistTasks.AddChecklistTasks
+instance TD.Lib.Internal.ShortShow TD.Query.AddChecklistTasks.AddChecklistTasks
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChecklistTasks.AddChecklistTasks
 
 module TD.Query.AddContact
 
@@ -25042,7 +25340,7 @@ AddQuickReplyShortcutMessage :: Maybe Text -> Maybe Int -> Maybe InputMessageCon
 --   replied; pass 0 if none
 [reply_to_message_id] :: AddQuickReplyShortcutMessage -> Maybe Int
 
--- | The content of the message to be added; inputMessagePoll,
+-- | The content of the message to be added; inputMessagePaidMedia,
 --   inputMessageForwarded and inputMessageLocation with live_period aren't
 --   supported
 [input_message_content] :: AddQuickReplyShortcutMessage -> Maybe InputMessageContent
@@ -26093,6 +26391,20 @@ instance GHC.Show.Show TD.Query.ClickPremiumSubscriptionButton.ClickPremiumSubsc
 instance GHC.Classes.Eq TD.Query.ClickPremiumSubscriptionButton.ClickPremiumSubscriptionButton
 instance TD.Lib.Internal.ShortShow TD.Query.ClickPremiumSubscriptionButton.ClickPremiumSubscriptionButton
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ClickPremiumSubscriptionButton.ClickPremiumSubscriptionButton
+
+module TD.Query.ClickVideoMessageAdvertisement
+
+-- | Informs TDLib that the user clicked a video message advertisement.
+--   Returns <a>Ok</a>
+data ClickVideoMessageAdvertisement
+ClickVideoMessageAdvertisement :: Maybe Int -> ClickVideoMessageAdvertisement
+
+-- | Unique identifier of the advertisement
+[advertisement_unique_id] :: ClickVideoMessageAdvertisement -> Maybe Int
+instance GHC.Show.Show TD.Query.ClickVideoMessageAdvertisement.ClickVideoMessageAdvertisement
+instance GHC.Classes.Eq TD.Query.ClickVideoMessageAdvertisement.ClickVideoMessageAdvertisement
+instance TD.Lib.Internal.ShortShow TD.Query.ClickVideoMessageAdvertisement.ClickVideoMessageAdvertisement
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ClickVideoMessageAdvertisement.ClickVideoMessageAdvertisement
 
 module TD.Query.Close
 
@@ -27545,6 +27857,35 @@ instance GHC.Classes.Eq TD.Query.EditBusinessMessageCaption.EditBusinessMessageC
 instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessMessageCaption.EditBusinessMessageCaption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessMessageCaption.EditBusinessMessageCaption
 
+module TD.Query.EditBusinessMessageChecklist
+
+-- | Edits the content of a checklist in a message sent on behalf of a
+--   business account; for bots only. Returns <a>BusinessMessage</a>
+data EditBusinessMessageChecklist
+EditBusinessMessageChecklist :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputChecklist -> EditBusinessMessageChecklist
+
+-- | Unique identifier of business connection on behalf of which the
+--   message was sent
+[business_connection_id] :: EditBusinessMessageChecklist -> Maybe Text
+
+-- | The chat the message belongs to
+[chat_id] :: EditBusinessMessageChecklist -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: EditBusinessMessageChecklist -> Maybe Int
+
+-- | The new message reply markup; pass null if none
+[reply_markup] :: EditBusinessMessageChecklist -> Maybe ReplyMarkup
+
+-- | The new checklist. If some tasks were completed, this information will
+--   be kept
+[checklist] :: EditBusinessMessageChecklist -> Maybe InputChecklist
+defaultEditBusinessMessageChecklist :: EditBusinessMessageChecklist
+instance GHC.Show.Show TD.Query.EditBusinessMessageChecklist.EditBusinessMessageChecklist
+instance GHC.Classes.Eq TD.Query.EditBusinessMessageChecklist.EditBusinessMessageChecklist
+instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessMessageChecklist.EditBusinessMessageChecklist
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessMessageChecklist.EditBusinessMessageChecklist
+
 module TD.Query.EditBusinessMessageLiveLocation
 
 -- | Edits the content of a live location in a message sent on behalf of a
@@ -28012,6 +28353,32 @@ instance GHC.Classes.Eq TD.Query.EditMessageCaption.EditMessageCaption
 instance TD.Lib.Internal.ShortShow TD.Query.EditMessageCaption.EditMessageCaption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageCaption.EditMessageCaption
 
+module TD.Query.EditMessageChecklist
+
+-- | Edits the message content of a checklist. Returns the edited message
+--   after the edit is completed on the server side. Returns <a>Message</a>
+data EditMessageChecklist
+EditMessageChecklist :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputChecklist -> EditMessageChecklist
+
+-- | The chat the message belongs to
+[chat_id] :: EditMessageChecklist -> Maybe Int
+
+-- | Identifier of the message. Use messageProperties.can_be_edited to
+--   check whether the message can be edited
+[message_id] :: EditMessageChecklist -> Maybe Int
+
+-- | The new message reply markup; pass null if none; for bots only
+[reply_markup] :: EditMessageChecklist -> Maybe ReplyMarkup
+
+-- | The new checklist. If some tasks were completed, this information will
+--   be kept
+[checklist] :: EditMessageChecklist -> Maybe InputChecklist
+defaultEditMessageChecklist :: EditMessageChecklist
+instance GHC.Show.Show TD.Query.EditMessageChecklist.EditMessageChecklist
+instance GHC.Classes.Eq TD.Query.EditMessageChecklist.EditMessageChecklist
+instance TD.Lib.Internal.ShortShow TD.Query.EditMessageChecklist.EditMessageChecklist
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageChecklist.EditMessageChecklist
+
 module TD.Query.EditMessageLiveLocation
 
 -- | Edits the message content of a live location. Messages can be edited
@@ -28193,7 +28560,8 @@ module TD.Query.EditQuickReplyMessage
 -- | Asynchronously edits the text, media or caption of a quick reply
 --   message. Use quickReplyMessage.can_be_edited to check whether a
 --   message can be edited. Media message can be edited only to a media
---   message. The type of message content in an album can't be changed with
+--   message. Checklist messages can be edited only to a checklist message.
+--   The type of message content in an album can't be changed with
 --   exception of replacing a photo with a video or vice versa. Returns
 --   <a>Ok</a>
 data EditQuickReplyMessage
@@ -28206,8 +28574,9 @@ EditQuickReplyMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageContent -> 
 [message_id] :: EditQuickReplyMessage -> Maybe Int
 
 -- | New content of the message. Must be one of the following types:
---   inputMessageText, inputMessageAnimation, inputMessageAudio,
---   inputMessageDocument, inputMessagePhoto or inputMessageVideo
+--   inputMessageAnimation, inputMessageAudio, inputMessageChecklist,
+--   inputMessageDocument, inputMessagePhoto, inputMessageText, or
+--   inputMessageVideo
 [input_message_content] :: EditQuickReplyMessage -> Maybe InputMessageContent
 defaultEditQuickReplyMessage :: EditQuickReplyMessage
 instance GHC.Show.Show TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
@@ -30341,6 +30710,26 @@ instance GHC.Classes.Eq TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDire
 instance TD.Lib.Internal.ShortShow TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDirectMessagesChatTopicMessageByDate.GetDirectMessagesChatTopicMessageByDate
 
+module TD.Query.GetDirectMessagesChatTopicRevenue
+
+-- | Returns the total number of Telegram Stars received by the channel
+--   chat for direct messages from the given topic. Returns
+--   <a>StarCount</a>
+data GetDirectMessagesChatTopicRevenue
+GetDirectMessagesChatTopicRevenue :: Maybe Int -> Maybe Int -> GetDirectMessagesChatTopicRevenue
+
+-- | Chat identifier of the channel direct messages chat administered by
+--   the current user
+[chat_id] :: GetDirectMessagesChatTopicRevenue -> Maybe Int
+
+-- | Identifier of the topic
+[topic_id] :: GetDirectMessagesChatTopicRevenue -> Maybe Int
+defaultGetDirectMessagesChatTopicRevenue :: GetDirectMessagesChatTopicRevenue
+instance GHC.Show.Show TD.Query.GetDirectMessagesChatTopicRevenue.GetDirectMessagesChatTopicRevenue
+instance GHC.Classes.Eq TD.Query.GetDirectMessagesChatTopicRevenue.GetDirectMessagesChatTopicRevenue
+instance TD.Lib.Internal.ShortShow TD.Query.GetDirectMessagesChatTopicRevenue.GetDirectMessagesChatTopicRevenue
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetDirectMessagesChatTopicRevenue.GetDirectMessagesChatTopicRevenue
+
 module TD.Query.GetDisallowedChatEmojiStatuses
 
 -- | Returns the list of emoji statuses, which can't be used as chat emoji
@@ -32263,10 +32652,11 @@ module TD.Query.GetRepliedMessage
 -- | Returns information about a non-bundled message that is replied by a
 --   given message. Also, returns the pinned message, the game message, the
 --   invoice message, the message with a previously set same background,
---   the giveaway message, and the topic creation message for messages of
---   the types messagePinMessage, messageGameScore,
+--   the giveaway message, the checklist message, and the topic creation
+--   message for messages of the types messagePinMessage, messageGameScore,
 --   messagePaymentSuccessful, messageChatSetBackground,
---   messageGiveawayCompleted and topic messages without non-bundled
+--   messageGiveawayCompleted, messageChecklistTasksDone and
+--   messageChecklistTasksAdded, and topic messages without non-bundled
 --   replied message respectively. Returns a 404 error if the message
 --   doesn't exist. Returns <a>Message</a>
 data GetRepliedMessage
@@ -33379,6 +33769,26 @@ instance GHC.Classes.Eq TD.Query.GetVideoChatStreams.GetVideoChatStreams
 instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatStreams.GetVideoChatStreams
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatStreams.GetVideoChatStreams
 
+module TD.Query.GetVideoMessageAdvertisements
+
+-- | Returns advertisements to be shown while a video from a message is
+--   watched. Available only if
+--   messageProperties.can_get_video_advertisements. Returns
+--   <a>VideoMessageAdvertisements</a>
+data GetVideoMessageAdvertisements
+GetVideoMessageAdvertisements :: Maybe Int -> Maybe Int -> GetVideoMessageAdvertisements
+
+-- | Identifier of the chat with the message
+[chat_id] :: GetVideoMessageAdvertisements -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: GetVideoMessageAdvertisements -> Maybe Int
+defaultGetVideoMessageAdvertisements :: GetVideoMessageAdvertisements
+instance GHC.Show.Show TD.Query.GetVideoMessageAdvertisements.GetVideoMessageAdvertisements
+instance GHC.Classes.Eq TD.Query.GetVideoMessageAdvertisements.GetVideoMessageAdvertisements
+instance TD.Lib.Internal.ShortShow TD.Query.GetVideoMessageAdvertisements.GetVideoMessageAdvertisements
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoMessageAdvertisements.GetVideoMessageAdvertisements
+
 module TD.Query.GetWebAppLinkUrl
 
 -- | Returns an HTTPS URL of a Web App to open after a link of the type
@@ -33872,6 +34282,32 @@ instance GHC.Show.Show TD.Query.LogOut.LogOut
 instance GHC.Classes.Eq TD.Query.LogOut.LogOut
 instance TD.Lib.Internal.ShortShow TD.Query.LogOut.LogOut
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LogOut.LogOut
+
+module TD.Query.MarkChecklistTasksAsDone
+
+-- | Adds tasks of a checklist in a message as done or not done. Returns
+--   <a>Ok</a>
+data MarkChecklistTasksAsDone
+MarkChecklistTasksAsDone :: Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe [Int] -> MarkChecklistTasksAsDone
+
+-- | Identifier of the chat with the message
+[chat_id] :: MarkChecklistTasksAsDone -> Maybe Int
+
+-- | Identifier of the message containing the checklist. Use
+--   messageProperties.can_mark_tasks_as_done to check whether the tasks
+--   can be marked as done or not done
+[message_id] :: MarkChecklistTasksAsDone -> Maybe Int
+
+-- | Identifiers of tasks that were marked as done
+[marked_as_done_task_ids] :: MarkChecklistTasksAsDone -> Maybe [Int]
+
+-- | Identifiers of tasks that were marked as not done
+[marked_as_not_done_task_ids] :: MarkChecklistTasksAsDone -> Maybe [Int]
+defaultMarkChecklistTasksAsDone :: MarkChecklistTasksAsDone
+instance GHC.Show.Show TD.Query.MarkChecklistTasksAsDone.MarkChecklistTasksAsDone
+instance GHC.Classes.Eq TD.Query.MarkChecklistTasksAsDone.MarkChecklistTasksAsDone
+instance TD.Lib.Internal.ShortShow TD.Query.MarkChecklistTasksAsDone.MarkChecklistTasksAsDone
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.MarkChecklistTasksAsDone.MarkChecklistTasksAsDone
 
 module TD.Query.OpenBotSimilarBot
 
@@ -35348,6 +35784,25 @@ instance GHC.Show.Show TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
 instance GHC.Classes.Eq TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
 instance TD.Lib.Internal.ShortShow TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportSupergroupSpam.ReportSupergroupSpam
+
+module TD.Query.ReportVideoMessageAdvertisement
+
+-- | Reports a video message advertisement to Telegram moderators. Returns
+--   <a>ReportSponsoredResult</a>
+data ReportVideoMessageAdvertisement
+ReportVideoMessageAdvertisement :: Maybe Int -> Maybe ByteString -> ReportVideoMessageAdvertisement
+
+-- | Unique identifier of the advertisement
+[advertisement_unique_id] :: ReportVideoMessageAdvertisement -> Maybe Int
+
+-- | Option identifier chosen by the user; leave empty for the initial
+--   request
+[option_id] :: ReportVideoMessageAdvertisement -> Maybe ByteString
+defaultReportVideoMessageAdvertisement :: ReportVideoMessageAdvertisement
+instance GHC.Show.Show TD.Query.ReportVideoMessageAdvertisement.ReportVideoMessageAdvertisement
+instance GHC.Classes.Eq TD.Query.ReportVideoMessageAdvertisement.ReportVideoMessageAdvertisement
+instance TD.Lib.Internal.ShortShow TD.Query.ReportVideoMessageAdvertisement.ReportVideoMessageAdvertisement
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportVideoMessageAdvertisement.ReportVideoMessageAdvertisement
 
 module TD.Query.RequestAuthenticationPasswordRecovery
 
@@ -40280,6 +40735,32 @@ instance GHC.Classes.Eq TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 
+module TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+
+-- | Allows to send unpaid messages to the given topic of the channel
+--   direct messages chat administered by the current user. Returns
+--   <a>Ok</a>
+data ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+ToggleDirectMessagesChatTopicCanSendUnpaidMessages :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+
+-- | Chat identifier
+[chat_id] :: ToggleDirectMessagesChatTopicCanSendUnpaidMessages -> Maybe Int
+
+-- | Identifier of the topic
+[topic_id] :: ToggleDirectMessagesChatTopicCanSendUnpaidMessages -> Maybe Int
+
+-- | Pass true to allow unpaid messages; pass false to disallow unpaid
+--   messages
+[can_send_unpaid_messages] :: ToggleDirectMessagesChatTopicCanSendUnpaidMessages -> Maybe Bool
+
+-- | Pass true to refund the user previously paid messages
+[refund_payments] :: ToggleDirectMessagesChatTopicCanSendUnpaidMessages -> Maybe Bool
+defaultToggleDirectMessagesChatTopicCanSendUnpaidMessages :: ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+instance GHC.Show.Show TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+instance GHC.Classes.Eq TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
+
 module TD.Query.ToggleDownloadIsPaused
 
 -- | Changes pause state of a file in the file download list. Returns
@@ -41209,6 +41690,20 @@ instance GHC.Show.Show TD.Query.ViewTrendingStickerSets.ViewTrendingStickerSets
 instance GHC.Classes.Eq TD.Query.ViewTrendingStickerSets.ViewTrendingStickerSets
 instance TD.Lib.Internal.ShortShow TD.Query.ViewTrendingStickerSets.ViewTrendingStickerSets
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ViewTrendingStickerSets.ViewTrendingStickerSets
+
+module TD.Query.ViewVideoMessageAdvertisement
+
+-- | Informs TDLib that the user viewed a video message advertisement.
+--   Returns <a>Ok</a>
+data ViewVideoMessageAdvertisement
+ViewVideoMessageAdvertisement :: Maybe Int -> ViewVideoMessageAdvertisement
+
+-- | Unique identifier of the advertisement
+[advertisement_unique_id] :: ViewVideoMessageAdvertisement -> Maybe Int
+instance GHC.Show.Show TD.Query.ViewVideoMessageAdvertisement.ViewVideoMessageAdvertisement
+instance GHC.Classes.Eq TD.Query.ViewVideoMessageAdvertisement.ViewVideoMessageAdvertisement
+instance TD.Lib.Internal.ShortShow TD.Query.ViewVideoMessageAdvertisement.ViewVideoMessageAdvertisement
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ViewVideoMessageAdvertisement.ViewVideoMessageAdvertisement
 
 module TD.Query.WriteGeneratedFilePart
 

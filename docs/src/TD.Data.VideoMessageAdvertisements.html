@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.VideoMessageAdvertisements</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier">VideoMessageAdvertisements</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisement.html"><span class="hs-identifier">TD.Data.VideoMessageAdvertisement</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">VideoMessageAdvertisement</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="VideoMessageAdvertisements"><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-var">VideoMessageAdvertisements</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="VideoMessageAdvertisements"><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-var">VideoMessageAdvertisements</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains a list of advertisements to be shown while a video from a message is watched</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="advertisements"><span class="annot"><span class="annottext">VideoMessageAdvertisements -&gt; Maybe [VideoMessageAdvertisement]
+</span><a href="TD.Data.VideoMessageAdvertisements.html#advertisements"><span class="hs-identifier hs-var hs-var">advertisements</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TD.Data.VideoMessageAdvertisement.html#VideoMessageAdvertisement"><span class="hs-identifier hs-type">VideoMessageAdvertisement.VideoMessageAdvertisement</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="hs-comment">-- ^ List of advertisements</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="start_delay"><span class="annot"><span class="annottext">VideoMessageAdvertisements -&gt; Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#start_delay"><span class="hs-identifier hs-var hs-var">start_delay</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                   </span><span class="annot"><span class="hs-comment">-- ^ Delay before the first advertisement is shown, in seconds</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="between_delay"><span class="annot"><span class="annottext">VideoMessageAdvertisements -&gt; Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#between_delay"><span class="hs-identifier hs-var hs-var">between_delay</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                                   </span><span class="annot"><span class="hs-comment">-- ^ Delay between consecutive advertisements, in seconds</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679832724"><span id="local-6989586621679832732"><span class="annot"><span class="annottext">VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool
+(VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool)
+-&gt; (VideoMessageAdvertisements
+    -&gt; VideoMessageAdvertisements -&gt; Bool)
+-&gt; Eq VideoMessageAdvertisements
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool
+== :: VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool
+$c/= :: VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool
+/= :: VideoMessageAdvertisements -&gt; VideoMessageAdvertisements -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679832741"><span id="local-6989586621679832751"><span id="local-6989586621679832755"><span class="annot"><span class="annottext">Int -&gt; VideoMessageAdvertisements -&gt; ShowS
+[VideoMessageAdvertisements] -&gt; ShowS
+VideoMessageAdvertisements -&gt; String
+(Int -&gt; VideoMessageAdvertisements -&gt; ShowS)
+-&gt; (VideoMessageAdvertisements -&gt; String)
+-&gt; ([VideoMessageAdvertisements] -&gt; ShowS)
+-&gt; Show VideoMessageAdvertisements
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; VideoMessageAdvertisements -&gt; ShowS
+showsPrec :: Int -&gt; VideoMessageAdvertisements -&gt; ShowS
+$cshow :: VideoMessageAdvertisements -&gt; String
+show :: VideoMessageAdvertisements -&gt; String
+$cshowList :: [VideoMessageAdvertisements] -&gt; ShowS
+showList :: [VideoMessageAdvertisements] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-type">VideoMessageAdvertisements</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-18"></span><span>  </span><span id="local-6989586621679832775"><span class="annot"><span class="annottext">shortShow :: VideoMessageAdvertisements -&gt; String
+</span><a href="#local-6989586621679832775"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-type">VideoMessageAdvertisements</span></a></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">advertisements :: VideoMessageAdvertisements -&gt; Maybe [VideoMessageAdvertisement]
+</span><a href="TD.Data.VideoMessageAdvertisements.html#advertisements"><span class="hs-identifier hs-var">advertisements</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679832777"><span class="annot"><span class="annottext">Maybe [VideoMessageAdvertisement]
+</span><a href="#local-6989586621679832777"><span class="hs-identifier hs-var">advertisements_</span></a></span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">start_delay :: VideoMessageAdvertisements -&gt; Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#start_delay"><span class="hs-identifier hs-var">start_delay</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679832778"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832778"><span class="hs-identifier hs-var">start_delay_</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">between_delay :: VideoMessageAdvertisements -&gt; Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#between_delay"><span class="hs-identifier hs-var">between_delay</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679832779"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832779"><span class="hs-identifier hs-var">between_delay_</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;VideoMessageAdvertisements&quot;</span></span><span>
+</span><span id="line-24"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;advertisements&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe [VideoMessageAdvertisement] -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [VideoMessageAdvertisement]
+</span><a href="#local-6989586621679832777"><span class="hs-identifier hs-var">advertisements_</span></a></span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;start_delay&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832778"><span class="hs-identifier hs-var">start_delay_</span></a></span><span>
+</span><span id="line-27"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;between_delay&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832779"><span class="hs-identifier hs-var">between_delay_</span></a></span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679832784"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-type">VideoMessageAdvertisements</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-31"></span><span>  </span><span id="local-6989586621679832818"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser VideoMessageAdvertisements
+</span><a href="#local-6989586621679832818"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679832820"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679832820"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679832822"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832822"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-32"></span><span>    </span><span id="local-6989586621679832823"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679832823"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832822"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679832823"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-35"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;videoMessageAdvertisements&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser VideoMessageAdvertisements
+</span><a href="#local-6989586621679832825"><span class="hs-identifier hs-var">parseVideoMessageAdvertisements</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679832820"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-36"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser VideoMessageAdvertisements
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-37"></span><span>    </span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-39"></span><span>      </span><span class="annot"><a href="#local-6989586621679832825"><span class="hs-identifier hs-type">parseVideoMessageAdvertisements</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-type">VideoMessageAdvertisements</span></a></span><span>
+</span><span id="line-40"></span><span>      </span><span id="local-6989586621679832825"><span class="annot"><span class="annottext">parseVideoMessageAdvertisements :: Value -&gt; Parser VideoMessageAdvertisements
+</span><a href="#local-6989586621679832825"><span class="hs-identifier hs-var hs-var">parseVideoMessageAdvertisements</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser VideoMessageAdvertisements)
+-&gt; Value
+-&gt; Parser VideoMessageAdvertisements
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;VideoMessageAdvertisements&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser VideoMessageAdvertisements)
+ -&gt; Value -&gt; Parser VideoMessageAdvertisements)
+-&gt; (Object -&gt; Parser VideoMessageAdvertisements)
+-&gt; Value
+-&gt; Parser VideoMessageAdvertisements
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679832827"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832827"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-41"></span><span>        </span><span id="local-6989586621679832828"><span class="annot"><span class="annottext">Maybe [VideoMessageAdvertisement]
+</span><a href="#local-6989586621679832828"><span class="hs-identifier hs-var">advertisements_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832827"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe [VideoMessageAdvertisement])
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;advertisements&quot;</span></span><span>
+</span><span id="line-42"></span><span>        </span><span id="local-6989586621679832830"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832830"><span class="hs-identifier hs-var">start_delay_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832827"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;start_delay&quot;</span></span><span>
+</span><span id="line-43"></span><span>        </span><span id="local-6989586621679832831"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832831"><span class="hs-identifier hs-var">between_delay_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679832827"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;between_delay&quot;</span></span><span>
+</span><span id="line-44"></span><span>        </span><span class="annot"><span class="annottext">VideoMessageAdvertisements -&gt; Parser VideoMessageAdvertisements
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(VideoMessageAdvertisements -&gt; Parser VideoMessageAdvertisements)
+-&gt; VideoMessageAdvertisements -&gt; Parser VideoMessageAdvertisements
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.VideoMessageAdvertisements.html#VideoMessageAdvertisements"><span class="hs-identifier hs-type">VideoMessageAdvertisements</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">advertisements :: Maybe [VideoMessageAdvertisement]
+</span><a href="TD.Data.VideoMessageAdvertisements.html#advertisements"><span class="hs-identifier hs-var">advertisements</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [VideoMessageAdvertisement]
+</span><a href="#local-6989586621679832828"><span class="hs-identifier hs-var">advertisements_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">start_delay :: Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#start_delay"><span class="hs-identifier hs-var">start_delay</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832830"><span class="hs-identifier hs-var">start_delay_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">between_delay :: Maybe Int
+</span><a href="TD.Data.VideoMessageAdvertisements.html#between_delay"><span class="hs-identifier hs-var">between_delay</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679832831"><span class="hs-identifier hs-var">between_delay_</span></a></span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-49"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser VideoMessageAdvertisements
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span></pre></body></html>

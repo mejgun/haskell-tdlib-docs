@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.InputChecklist</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier">InputChecklist</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>    </span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#defaultInputChecklist"><span class="hs-identifier">defaultInputChecklist</span></a></span><span> </span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html"><span class="hs-identifier">TD.Data.FormattedText</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">FormattedText</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputChecklistTask.html"><span class="hs-identifier">TD.Data.InputChecklistTask</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputChecklistTask</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="InputChecklist"><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-var">InputChecklist</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="InputChecklist"><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-var">InputChecklist</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes a checklist to be sent</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="title"><span class="annot"><span class="annottext">InputChecklist -&gt; Maybe FormattedText
+</span><a href="TD.Data.InputChecklist.html#title"><span class="hs-identifier hs-var hs-var">title</span></a></span></span><span>                         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html#FormattedText"><span class="hs-identifier hs-type">FormattedText.FormattedText</span></a></span><span>             </span><span class="annot"><span class="hs-comment">-- ^ Title of the checklist; 1-getOption(&quot;checklist_title_length_max&quot;) characters. May contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="tasks"><span class="annot"><span class="annottext">InputChecklist -&gt; Maybe [InputChecklistTask]
+</span><a href="TD.Data.InputChecklist.html#tasks"><span class="hs-identifier hs-var hs-var">tasks</span></a></span></span><span>                         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TD.Data.InputChecklistTask.html#InputChecklistTask"><span class="hs-identifier hs-type">InputChecklistTask.InputChecklistTask</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="hs-comment">-- ^ List of tasks in the checklist; 1-getOption(&quot;checklist_task_count_max&quot;) tasks</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="others_can_add_tasks"><span class="annot"><span class="annottext">InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_add_tasks"><span class="hs-identifier hs-var hs-var">others_can_add_tasks</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                    </span><span class="annot"><span class="hs-comment">-- ^ True, if other users can add tasks to the list</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="others_can_mark_tasks_as_done"><span class="annot"><span class="annottext">InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_mark_tasks_as_done"><span class="hs-identifier hs-var hs-var">others_can_mark_tasks_as_done</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                    </span><span class="annot"><span class="hs-comment">-- ^ True, if other users can mark tasks as done or not done</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679767733"><span id="local-6989586621679767743"><span class="annot"><span class="annottext">InputChecklist -&gt; InputChecklist -&gt; Bool
+(InputChecklist -&gt; InputChecklist -&gt; Bool)
+-&gt; (InputChecklist -&gt; InputChecklist -&gt; Bool) -&gt; Eq InputChecklist
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: InputChecklist -&gt; InputChecklist -&gt; Bool
+== :: InputChecklist -&gt; InputChecklist -&gt; Bool
+$c/= :: InputChecklist -&gt; InputChecklist -&gt; Bool
+/= :: InputChecklist -&gt; InputChecklist -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679767753"><span id="local-6989586621679767765"><span id="local-6989586621679767769"><span class="annot"><span class="annottext">Int -&gt; InputChecklist -&gt; ShowS
+[InputChecklist] -&gt; ShowS
+InputChecklist -&gt; String
+(Int -&gt; InputChecklist -&gt; ShowS)
+-&gt; (InputChecklist -&gt; String)
+-&gt; ([InputChecklist] -&gt; ShowS)
+-&gt; Show InputChecklist
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; InputChecklist -&gt; ShowS
+showsPrec :: Int -&gt; InputChecklist -&gt; ShowS
+$cshow :: InputChecklist -&gt; String
+show :: InputChecklist -&gt; String
+$cshowList :: [InputChecklist] -&gt; ShowS
+showList :: [InputChecklist] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679767792"><span class="annot"><span class="annottext">shortShow :: InputChecklist -&gt; String
+</span><a href="#local-6989586621679767792"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">title :: InputChecklist -&gt; Maybe FormattedText
+</span><a href="TD.Data.InputChecklist.html#title"><span class="hs-identifier hs-var">title</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767794"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767794"><span class="hs-identifier hs-var">title_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">tasks :: InputChecklist -&gt; Maybe [InputChecklistTask]
+</span><a href="TD.Data.InputChecklist.html#tasks"><span class="hs-identifier hs-var">tasks</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767795"><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767795"><span class="hs-identifier hs-var">tasks_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_add_tasks :: InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_add_tasks"><span class="hs-identifier hs-var">others_can_add_tasks</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767796"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767796"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_mark_tasks_as_done :: InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_mark_tasks_as_done"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767797"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767797"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputChecklist&quot;</span></span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;title&quot;</span></span><span>                         </span><span class="annot"><span class="annottext">String -&gt; Maybe FormattedText -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767794"><span class="hs-identifier hs-var">title_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tasks&quot;</span></span><span>                         </span><span class="annot"><span class="annottext">String -&gt; Maybe [InputChecklistTask] -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767795"><span class="hs-identifier hs-var">tasks_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;others_can_add_tasks&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767796"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;others_can_mark_tasks_as_done&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767797"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679767802"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679767840"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser InputChecklist
+</span><a href="#local-6989586621679767840"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679767842"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679767842"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679767844"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767844"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-38"></span><span>    </span><span id="local-6989586621679767845"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679767845"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767844"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679767845"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;inputChecklist&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser InputChecklist
+</span><a href="#local-6989586621679767847"><span class="hs-identifier hs-var">parseInputChecklist</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679767842"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser InputChecklist
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-43"></span><span>    </span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-45"></span><span>      </span><span class="annot"><a href="#local-6989586621679767847"><span class="hs-identifier hs-type">parseInputChecklist</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-46"></span><span>      </span><span id="local-6989586621679767847"><span class="annot"><span class="annottext">parseInputChecklist :: Value -&gt; Parser InputChecklist
+</span><a href="#local-6989586621679767847"><span class="hs-identifier hs-var hs-var">parseInputChecklist</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser InputChecklist)
+-&gt; Value
+-&gt; Parser InputChecklist
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;InputChecklist&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser InputChecklist)
+ -&gt; Value -&gt; Parser InputChecklist)
+-&gt; (Object -&gt; Parser InputChecklist)
+-&gt; Value
+-&gt; Parser InputChecklist
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679767849"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767849"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679767850"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767850"><span class="hs-identifier hs-var">title_</span></a></span></span><span>                         </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767849"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe FormattedText)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;title&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679767852"><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767852"><span class="hs-identifier hs-var">tasks_</span></a></span></span><span>                         </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767849"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe [InputChecklistTask])
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;tasks&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679767853"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767853"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767849"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;others_can_add_tasks&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679767854"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767854"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679767849"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;others_can_mark_tasks_as_done&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span class="annot"><span class="annottext">InputChecklist -&gt; Parser InputChecklist
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(InputChecklist -&gt; Parser InputChecklist)
+-&gt; InputChecklist -&gt; Parser InputChecklist
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">title :: Maybe FormattedText
+</span><a href="TD.Data.InputChecklist.html#title"><span class="hs-identifier hs-var">title</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767850"><span class="hs-identifier hs-var">title_</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">tasks :: Maybe [InputChecklistTask]
+</span><a href="TD.Data.InputChecklist.html#tasks"><span class="hs-identifier hs-var">tasks</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767852"><span class="hs-identifier hs-var">tasks_</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_add_tasks :: Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_add_tasks"><span class="hs-identifier hs-var">others_can_add_tasks</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767853"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_mark_tasks_as_done :: Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_mark_tasks_as_done"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767854"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-57"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser InputChecklist
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679767857"><span id="local-6989586621679767861"><span id="local-6989586621679767864"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>  </span><span id="local-6989586621679767897"><span class="annot"><span class="annottext">toJSON :: InputChecklist -&gt; Value
+</span><a href="#local-6989586621679767897"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">title :: InputChecklist -&gt; Maybe FormattedText
+</span><a href="TD.Data.InputChecklist.html#title"><span class="hs-identifier hs-var">title</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767899"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767899"><span class="hs-identifier hs-var">title_</span></a></span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">tasks :: InputChecklist -&gt; Maybe [InputChecklistTask]
+</span><a href="TD.Data.InputChecklist.html#tasks"><span class="hs-identifier hs-var">tasks</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767900"><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767900"><span class="hs-identifier hs-var">tasks_</span></a></span></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_add_tasks :: InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_add_tasks"><span class="hs-identifier hs-var">others_can_add_tasks</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767901"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767901"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_mark_tasks_as_done :: InputChecklist -&gt; Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_mark_tasks_as_done"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679767902"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767902"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-66"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-67"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                         </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;inputChecklist&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;title&quot;</span></span><span>                         </span><span class="annot"><span class="annottext">Key -&gt; Maybe FormattedText -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679767899"><span class="hs-identifier hs-var">title_</span></a></span><span>
+</span><span id="line-69"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;tasks&quot;</span></span><span>                         </span><span class="annot"><span class="annottext">Key -&gt; Maybe [InputChecklistTask] -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+</span><a href="#local-6989586621679767900"><span class="hs-identifier hs-var">tasks_</span></a></span><span>
+</span><span id="line-70"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;others_can_add_tasks&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767901"><span class="hs-identifier hs-var">others_can_add_tasks_</span></a></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;others_can_mark_tasks_as_done&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679767902"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done_</span></a></span><span>
+</span><span id="line-72"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span class="annot"><a href="TD.Data.InputChecklist.html#defaultInputChecklist"><span class="hs-identifier hs-type">defaultInputChecklist</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-75"></span><span id="defaultInputChecklist"><span class="annot"><span class="annottext">defaultInputChecklist :: InputChecklist
+</span><a href="TD.Data.InputChecklist.html#defaultInputChecklist"><span class="hs-identifier hs-var hs-var">defaultInputChecklist</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-76"></span><span>  </span><span class="annot"><a href="TD.Data.InputChecklist.html#InputChecklist"><span class="hs-identifier hs-type">InputChecklist</span></a></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">title :: Maybe FormattedText
+</span><a href="TD.Data.InputChecklist.html#title"><span class="hs-identifier hs-var">title</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">tasks :: Maybe [InputChecklistTask]
+</span><a href="TD.Data.InputChecklist.html#tasks"><span class="hs-identifier hs-var">tasks</span></a></span><span>                         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [InputChecklistTask]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_add_tasks :: Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_add_tasks"><span class="hs-identifier hs-var">others_can_add_tasks</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">others_can_mark_tasks_as_done :: Maybe Bool
+</span><a href="TD.Data.InputChecklist.html#others_can_mark_tasks_as_done"><span class="hs-identifier hs-var">others_can_mark_tasks_as_done</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-81"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-82"></span><span>
+</span><span id="line-83"></span></pre></body></html>
