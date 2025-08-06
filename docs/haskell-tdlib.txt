@@ -5,7 +5,7 @@
 -- | Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.0.66.0
+@version 2.0.67.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -436,6 +436,31 @@ instance GHC.Classes.Eq TD.Data.UserLink.UserLink
 instance TD.Lib.Internal.ShortShow TD.Data.UserLink.UserLink
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserLink.UserLink
 
+module TD.Data.UpgradedGiftOrigin
+
+-- | Describes origin from which the upgraded gift was obtained
+data UpgradedGiftOrigin
+
+-- | The gift was obtained by upgrading of a previously received gift
+UpgradedGiftOriginUpgrade :: Maybe Int -> UpgradedGiftOrigin
+
+-- | Identifier of the message with the regular gift that was upgraded; can
+--   be 0 or an identifier of a deleted message
+[gift_message_id] :: UpgradedGiftOrigin -> Maybe Int
+
+-- | The gift was transferred from another owner
+UpgradedGiftOriginTransfer :: UpgradedGiftOrigin
+
+-- | The gift was bought from another user
+UpgradedGiftOriginResale :: Maybe Int -> UpgradedGiftOrigin
+
+-- | Number of Telegram Stars that were paid by the sender for the gift
+[star_count] :: UpgradedGiftOrigin -> Maybe Int
+instance GHC.Show.Show TD.Data.UpgradedGiftOrigin.UpgradedGiftOrigin
+instance GHC.Classes.Eq TD.Data.UpgradedGiftOrigin.UpgradedGiftOrigin
+instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftOrigin.UpgradedGiftOrigin
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftOrigin.UpgradedGiftOrigin
+
 module TD.Data.UpgradedGiftBackdropColors
 data UpgradedGiftBackdropColors
 
@@ -550,6 +575,22 @@ instance GHC.Show.Show TD.Data.UnconfirmedSession.UnconfirmedSession
 instance GHC.Classes.Eq TD.Data.UnconfirmedSession.UnconfirmedSession
 instance TD.Lib.Internal.ShortShow TD.Data.UnconfirmedSession.UnconfirmedSession
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UnconfirmedSession.UnconfirmedSession
+
+module TD.Data.TransactionDirection
+
+-- | Describes direction of transactions in a transaction list
+data TransactionDirection
+
+-- | The transaction is incoming and increases the amount of owned currency
+TransactionDirectionIncoming :: TransactionDirection
+
+-- | The transaction is outgoing and decreases the amount of owned currency
+TransactionDirectionOutgoing :: TransactionDirection
+instance GHC.Show.Show TD.Data.TransactionDirection.TransactionDirection
+instance GHC.Classes.Eq TD.Data.TransactionDirection.TransactionDirection
+instance TD.Lib.Internal.ShortShow TD.Data.TransactionDirection.TransactionDirection
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TransactionDirection.TransactionDirection
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TransactionDirection.TransactionDirection
 
 module TD.Data.TopChatCategory
 
@@ -1099,6 +1140,99 @@ instance TD.Lib.Internal.ShortShow TD.Data.SupergroupMembersFilter.SupergroupMem
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SupergroupMembersFilter.SupergroupMembersFilter
 
+module TD.Data.SuggestedPostState
+
+-- | Describes state of a suggested post
+data SuggestedPostState
+
+-- | The post must be approved or declined
+SuggestedPostStatePending :: SuggestedPostState
+
+-- | The post was approved
+SuggestedPostStateApproved :: SuggestedPostState
+
+-- | The post was declined
+SuggestedPostStateDeclined :: SuggestedPostState
+instance GHC.Show.Show TD.Data.SuggestedPostState.SuggestedPostState
+instance GHC.Classes.Eq TD.Data.SuggestedPostState.SuggestedPostState
+instance TD.Lib.Internal.ShortShow TD.Data.SuggestedPostState.SuggestedPostState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedPostState.SuggestedPostState
+
+module TD.Data.SuggestedPostRefundReason
+
+-- | Describes reason for refund of the payment for a suggested post
+data SuggestedPostRefundReason
+
+-- | The post was refunded, because it was deleted by channel
+--   administrators in less than getOption("suggested_post_lifetime_min")
+--   seconds
+SuggestedPostRefundReasonPostDeleted :: SuggestedPostRefundReason
+
+-- | The post was refunded, because the payment for the post was refunded
+SuggestedPostRefundReasonPaymentRefunded :: SuggestedPostRefundReason
+instance GHC.Show.Show TD.Data.SuggestedPostRefundReason.SuggestedPostRefundReason
+instance GHC.Classes.Eq TD.Data.SuggestedPostRefundReason.SuggestedPostRefundReason
+instance TD.Lib.Internal.ShortShow TD.Data.SuggestedPostRefundReason.SuggestedPostRefundReason
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedPostRefundReason.SuggestedPostRefundReason
+
+module TD.Data.SuggestedPostPrice
+
+-- | Describes price of a suggested post
+data SuggestedPostPrice
+
+-- | Describes price of a suggested post in Telegram Stars
+SuggestedPostPriceStar :: Maybe Int -> SuggestedPostPrice
+
+-- | The amount of Telegram Stars agreed to pay for the post;
+--   getOption("suggested_post_star_count_min")-getOption("suggested_post_star_count_max")
+[star_count] :: SuggestedPostPrice -> Maybe Int
+
+-- | Describes price of a suggested post in Toncoins
+SuggestedPostPriceTon :: Maybe Int -> SuggestedPostPrice
+
+-- | The amount of 1/100 of Toncoin agreed to pay for the post;
+--   getOption("suggested_post_toncoin_cent_count_min")-getOption("suggested_post_toncoin_cent_count_max")
+[toncoin_cent_count] :: SuggestedPostPrice -> Maybe Int
+instance GHC.Show.Show TD.Data.SuggestedPostPrice.SuggestedPostPrice
+instance GHC.Classes.Eq TD.Data.SuggestedPostPrice.SuggestedPostPrice
+instance TD.Lib.Internal.ShortShow TD.Data.SuggestedPostPrice.SuggestedPostPrice
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedPostPrice.SuggestedPostPrice
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SuggestedPostPrice.SuggestedPostPrice
+
+module TD.Data.SuggestedPostInfo
+data SuggestedPostInfo
+
+-- | Contains information about a suggested post. If the post can be
+--   approved or declined, then changes to the post can be also suggested.
+--   Use sendMessage with reply to the message and suggested post
+--   information to suggest message changes. Use addOffer to suggest price
+--   or time changes
+SuggestedPostInfo :: Maybe SuggestedPostPrice -> Maybe Int -> Maybe SuggestedPostState -> Maybe Bool -> Maybe Bool -> SuggestedPostInfo
+
+-- | Price of the suggested post; may be null if the post is non-paid
+[price] :: SuggestedPostInfo -> Maybe SuggestedPostPrice
+
+-- | Point in time (Unix timestamp) when the post is expected to be
+--   published; 0 if the specific date isn't set yet
+[send_date] :: SuggestedPostInfo -> Maybe Int
+
+-- | State of the post
+[state] :: SuggestedPostInfo -> Maybe SuggestedPostState
+
+-- | True, if the suggested post can be approved by the current user using
+--   approveSuggestedPost; updates aren't sent when value of this field
+--   changes
+[can_be_approved] :: SuggestedPostInfo -> Maybe Bool
+
+-- | True, if the suggested post can be declined by the current user using
+--   declineSuggestedPost; updates aren't sent when value of this field
+--   changes
+[can_be_declined] :: SuggestedPostInfo -> Maybe Bool
+instance GHC.Show.Show TD.Data.SuggestedPostInfo.SuggestedPostInfo
+instance GHC.Classes.Eq TD.Data.SuggestedPostInfo.SuggestedPostInfo
+instance TD.Lib.Internal.ShortShow TD.Data.SuggestedPostInfo.SuggestedPostInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SuggestedPostInfo.SuggestedPostInfo
+
 module TD.Data.StoryPrivacySettings
 
 -- | Describes privacy settings of a story
@@ -1440,24 +1574,6 @@ instance GHC.Show.Show TD.Data.StoryStatistics.StoryStatistics
 instance GHC.Classes.Eq TD.Data.StoryStatistics.StoryStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.StoryStatistics.StoryStatistics
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StoryStatistics.StoryStatistics
-
-module TD.Data.StarTransactionDirection
-
--- | Describes direction of a transaction with Telegram Stars
-data StarTransactionDirection
-
--- | The transaction is incoming and increases the number of owned Telegram
---   Stars
-StarTransactionDirectionIncoming :: StarTransactionDirection
-
--- | The transaction is outgoing and decreases the number of owned Telegram
---   Stars
-StarTransactionDirectionOutgoing :: StarTransactionDirection
-instance GHC.Show.Show TD.Data.StarTransactionDirection.StarTransactionDirection
-instance GHC.Classes.Eq TD.Data.StarTransactionDirection.StarTransactionDirection
-instance TD.Lib.Internal.ShortShow TD.Data.StarTransactionDirection.StarTransactionDirection
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarTransactionDirection.StarTransactionDirection
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.StarTransactionDirection.StarTransactionDirection
 
 module TD.Data.StarSubscriptionPricing
 data StarSubscriptionPricing
@@ -3870,64 +3986,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.MessageSchedulingState.MessageSchedul
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSchedulingState.MessageSchedulingState
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageSchedulingState.MessageSchedulingState
 
-module TD.Data.MessageSendOptions
-data MessageSendOptions
-
--- | Options to be used when a message is sent
-MessageSendOptions :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
-
--- | Unique identifier of the topic in a channel direct messages chat
---   administered by the current user; pass 0 if the chat isn't a channel
---   direct messages chat administered by the current user
-[direct_messages_chat_topic_id] :: MessageSendOptions -> Maybe Int
-
--- | Pass true to disable notification for the message
-[disable_notification] :: MessageSendOptions -> Maybe Bool
-
--- | Pass true if the message is sent from the background
-[from_background] :: MessageSendOptions -> Maybe Bool
-
--- | Pass true if the content of the message must be protected from
---   forwarding and saving; for bots only
-[protect_content] :: MessageSendOptions -> Maybe Bool
-
--- | Pass true to allow the message to ignore regular broadcast limits for
---   a small fee; for bots only
-[allow_paid_broadcast] :: MessageSendOptions -> Maybe Bool
-
--- | The number of Telegram Stars the user agreed to pay to send the
---   messages
-[paid_message_star_count] :: MessageSendOptions -> Maybe Int
-
--- | Pass true if the user explicitly chosen a sticker or a custom emoji
---   from an installed sticker set; applicable only to sendMessage and
---   sendMessageAlbum
-[update_order_of_installed_sticker_sets] :: MessageSendOptions -> Maybe Bool
-
--- | Message scheduling state; pass null to send message immediately.
---   Messages sent to a secret chat, to a chat with paid messages, to a
---   channel direct messages chat, live location messages and
---   self-destructing messages can't be scheduled
-[scheduling_state] :: MessageSendOptions -> Maybe MessageSchedulingState
-
--- | Identifier of the effect to apply to the message; pass 0 if none;
---   applicable only to sendMessage and sendMessageAlbum in private chats
-[effect_id] :: MessageSendOptions -> Maybe Int
-
--- | Non-persistent identifier, which will be returned back in
---   messageSendingStatePending object and can be used to match sent
---   messages and corresponding updateNewMessage updates
-[sending_id] :: MessageSendOptions -> Maybe Int
-
--- | Pass true to get a fake message instead of actually sending them
-[only_preview] :: MessageSendOptions -> Maybe Bool
-defaultMessageSendOptions :: MessageSendOptions
-instance GHC.Show.Show TD.Data.MessageSendOptions.MessageSendOptions
-instance GHC.Classes.Eq TD.Data.MessageSendOptions.MessageSendOptions
-instance TD.Lib.Internal.ShortShow TD.Data.MessageSendOptions.MessageSendOptions
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSendOptions.MessageSendOptions
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageSendOptions.MessageSendOptions
-
 module TD.Data.MessageReplyInfo
 data MessageReplyInfo
 
@@ -4041,12 +4099,19 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+
+-- | True, if an offer can be added to the message using addOffer
+[can_add_offer] :: MessageProperties -> Maybe Bool
 
 -- | True, if tasks can be added to the message's checklist using
 --   addChecklistTasks if the current user has Telegram Premium
 --   subscription
 [can_add_tasks] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message is a suggested post that can be approved by the
+--   user using approveSuggestedPost
+[can_be_approved] :: MessageProperties -> Maybe Bool
 
 -- | True, if content of the message can be copied using
 --   inputMessageForwarded or forwardMessages with copy options
@@ -4055,6 +4120,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 -- | True, if content of the message can be copied to a secret chat using
 --   inputMessageForwarded or forwardMessages with copy options
 [can_be_copied_to_secret_chat] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message is a suggested post that can be declined by the
+--   user using declineSuggestedPost
+[can_be_declined] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be deleted only for the current user while
 --   other users will continue to see it using the method deleteMessages
@@ -4103,6 +4172,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 
 -- | True, if scheduling state of the message can be edited
 [can_edit_scheduling_state] :: MessageProperties -> Maybe Bool
+
+-- | True, if another price or post send time can be suggested using
+--   addOffer
+[can_edit_suggested_post_info] :: MessageProperties -> Maybe Bool
 
 -- | True, if author of the message sent on behalf of a chat can be
 --   received through getMessageAuthor
@@ -5149,6 +5222,94 @@ instance GHC.Classes.Eq TD.Data.TargetChat.TargetChat
 instance TD.Lib.Internal.ShortShow TD.Data.TargetChat.TargetChat
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TargetChat.TargetChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TargetChat.TargetChat
+
+module TD.Data.InputSuggestedPostInfo
+data InputSuggestedPostInfo
+
+-- | Contains information about a post to suggest
+InputSuggestedPostInfo :: Maybe SuggestedPostPrice -> Maybe Int -> InputSuggestedPostInfo
+
+-- | Price of the suggested post; pass null to suggest a post without
+--   payment. If the current user isn't an administrator of the channel
+--   direct messages chat and has no enough funds to pay for the post, then
+--   the error <a>BALANCE_TOO_LOW</a> will be returned immediately
+[price] :: InputSuggestedPostInfo -> Maybe SuggestedPostPrice
+
+-- | Point in time (Unix timestamp) when the post is expected to be
+--   published; pass 0 if the date isn't restricted. If specified, then the
+--   date must be
+--   getOption("suggested_post_send_delay_min")-getOption("suggested_post_send_delay_max")
+--   seconds in the future
+[send_date] :: InputSuggestedPostInfo -> Maybe Int
+defaultInputSuggestedPostInfo :: InputSuggestedPostInfo
+instance GHC.Show.Show TD.Data.InputSuggestedPostInfo.InputSuggestedPostInfo
+instance GHC.Classes.Eq TD.Data.InputSuggestedPostInfo.InputSuggestedPostInfo
+instance TD.Lib.Internal.ShortShow TD.Data.InputSuggestedPostInfo.InputSuggestedPostInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputSuggestedPostInfo.InputSuggestedPostInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputSuggestedPostInfo.InputSuggestedPostInfo
+
+module TD.Data.MessageSendOptions
+data MessageSendOptions
+
+-- | Options to be used when a message is sent
+MessageSendOptions :: Maybe Int -> Maybe InputSuggestedPostInfo -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe MessageSchedulingState -> Maybe Int -> Maybe Int -> Maybe Bool -> MessageSendOptions
+
+-- | Unique identifier of the topic in a channel direct messages chat
+--   administered by the current user; pass 0 if the chat isn't a channel
+--   direct messages chat administered by the current user
+[direct_messages_chat_topic_id] :: MessageSendOptions -> Maybe Int
+
+-- | Information about the suggested post; pass null if none. For messages
+--   to channel direct messages chat only. Applicable only to sendMessage
+--   and addOffer
+[suggested_post_info] :: MessageSendOptions -> Maybe InputSuggestedPostInfo
+
+-- | Pass true to disable notification for the message
+[disable_notification] :: MessageSendOptions -> Maybe Bool
+
+-- | Pass true if the message is sent from the background
+[from_background] :: MessageSendOptions -> Maybe Bool
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving; for bots only
+[protect_content] :: MessageSendOptions -> Maybe Bool
+
+-- | Pass true to allow the message to ignore regular broadcast limits for
+--   a small fee; for bots only
+[allow_paid_broadcast] :: MessageSendOptions -> Maybe Bool
+
+-- | The number of Telegram Stars the user agreed to pay to send the
+--   messages
+[paid_message_star_count] :: MessageSendOptions -> Maybe Int
+
+-- | Pass true if the user explicitly chosen a sticker or a custom emoji
+--   from an installed sticker set; applicable only to sendMessage and
+--   sendMessageAlbum
+[update_order_of_installed_sticker_sets] :: MessageSendOptions -> Maybe Bool
+
+-- | Message scheduling state; pass null to send message immediately.
+--   Messages sent to a secret chat, to a chat with paid messages, to a
+--   channel direct messages chat, live location messages and
+--   self-destructing messages can't be scheduled
+[scheduling_state] :: MessageSendOptions -> Maybe MessageSchedulingState
+
+-- | Identifier of the effect to apply to the message; pass 0 if none;
+--   applicable only to sendMessage and sendMessageAlbum in private chats
+[effect_id] :: MessageSendOptions -> Maybe Int
+
+-- | Non-persistent identifier, which will be returned back in
+--   messageSendingStatePending object and can be used to match sent
+--   messages and corresponding updateNewMessage updates
+[sending_id] :: MessageSendOptions -> Maybe Int
+
+-- | Pass true to get a fake message instead of actually sending them
+[only_preview] :: MessageSendOptions -> Maybe Bool
+defaultMessageSendOptions :: MessageSendOptions
+instance GHC.Show.Show TD.Data.MessageSendOptions.MessageSendOptions
+instance GHC.Classes.Eq TD.Data.MessageSendOptions.MessageSendOptions
+instance TD.Lib.Internal.ShortShow TD.Data.MessageSendOptions.MessageSendOptions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageSendOptions.MessageSendOptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.MessageSendOptions.MessageSendOptions
 
 module TD.Data.InputStoryAreaType
 
@@ -6337,9 +6498,9 @@ GiveawayParameters :: Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Bool -> May
 -- | Identifier of the supergroup or channel chat, which will be
 --   automatically boosted by the winners of the giveaway for duration of
 --   the Telegram Premium subscription, or for the specified time. If the
---   chat is a channel, then can_post_messages right is required in the
---   channel, otherwise, the user must be an administrator in the
---   supergroup
+--   chat is a channel, then can_post_messages administrator right is
+--   required in the channel, otherwise, the user must be an administrator
+--   in the supergroup
 [boosted_chat_id] :: GiveawayParameters -> Maybe Int
 
 -- | Identifiers of other supergroup or channel chats that must be
@@ -6642,7 +6803,9 @@ ForumTopicInfo :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe For
 -- | True, if the topic was created by the current user
 [is_outgoing] :: ForumTopicInfo -> Maybe Bool
 
--- | True, if the topic is closed
+-- | True, if the topic is closed. If the topic is closed, then the user
+--   must have can_manage_topics administrator right in the supergroup or
+--   must be the creator of the topic to send messages there
 [is_closed] :: ForumTopicInfo -> Maybe Bool
 
 -- | True, if the topic is hidden above the topic list and closed; for
@@ -7300,7 +7463,7 @@ module TD.Data.InputMessageReplyTo
 data InputMessageReplyTo
 
 -- | Describes a message to be replied in the same chat and forum topic
-InputMessageReplyToMessage :: Maybe Int -> Maybe InputTextQuote -> InputMessageReplyTo
+InputMessageReplyToMessage :: Maybe Int -> Maybe InputTextQuote -> Maybe Int -> InputMessageReplyTo
 
 -- | The identifier of the message to be replied in the same chat and forum
 --   topic. A message can be replied in the same chat and forum topic only
@@ -7311,9 +7474,13 @@ InputMessageReplyToMessage :: Maybe Int -> Maybe InputTextQuote -> InputMessageR
 --   be null for replies in secret chats
 [quote] :: InputMessageReplyTo -> Maybe InputTextQuote
 
+-- | Identifier of the checklist task in the message to be replied; pass 0
+--   to reply to the whole message
+[checklist_task_id] :: InputMessageReplyTo -> Maybe Int
+
 -- | Describes a message to be replied that is from a different chat or a
 --   forum topic; not supported in secret chats
-InputMessageReplyToExternalMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQuote -> InputMessageReplyTo
+InputMessageReplyToExternalMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQuote -> Maybe Int -> InputMessageReplyTo
 
 -- | The identifier of the chat to which the message to be replied belongs
 [chat_id] :: InputMessageReplyTo -> Maybe Int
@@ -7326,6 +7493,10 @@ InputMessageReplyToExternalMessage :: Maybe Int -> Maybe Int -> Maybe InputTextQ
 -- | Quote from the message to be replied; pass null if none. Must always
 --   be null for replies in secret chats
 [quote] :: InputMessageReplyTo -> Maybe InputTextQuote
+
+-- | Identifier of the checklist task in the message to be replied; pass 0
+--   to reply to the whole message
+[checklist_task_id] :: InputMessageReplyTo -> Maybe Int
 
 -- | Describes a story to be replied
 InputMessageReplyToStory :: Maybe Int -> Maybe Int -> InputMessageReplyTo
@@ -8021,10 +8192,13 @@ data UpgradedGift
 
 -- | Describes an upgraded gift that can be transferred to another owner or
 --   transferred to the TON blockchain as an NFT
-UpgradedGift :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> Maybe Int -> UpgradedGift
+UpgradedGift :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe UpgradedGiftModel -> Maybe UpgradedGiftSymbol -> Maybe UpgradedGiftBackdrop -> Maybe UpgradedGiftOriginalDetails -> Maybe Int -> UpgradedGift
 
 -- | Unique identifier of the gift
 [_id] :: UpgradedGift -> Maybe Int
+
+-- | Identifier of the chat that published the gift; 0 if none
+[publisher_chat_id] :: UpgradedGift -> Maybe Int
 
 -- | The title of the upgraded gift
 [title] :: UpgradedGift -> Maybe Text
@@ -8193,6 +8367,79 @@ instance GHC.Classes.Eq TD.Data.GiftUpgradePreview.GiftUpgradePreview
 instance TD.Lib.Internal.ShortShow TD.Data.GiftUpgradePreview.GiftUpgradePreview
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftUpgradePreview.GiftUpgradePreview
 
+module TD.Data.TonTransactionType
+
+-- | Describes type of transaction with Toncoins
+data TonTransactionType
+
+-- | The transaction is a deposit of Toncoins from Fragment
+TonTransactionTypeFragmentDeposit :: Maybe Bool -> Maybe Sticker -> TonTransactionType
+
+-- | True, if the transaction is a gift from another user
+[is_gift] :: TonTransactionType -> Maybe Bool
+
+-- | The sticker to be shown in the transaction information; may be null if
+--   unknown
+[sticker] :: TonTransactionType -> Maybe Sticker
+
+-- | The transaction is a payment for a suggested post
+TonTransactionTypeSuggestedPostPayment :: Maybe Int -> TonTransactionType
+
+-- | Identifier of the channel chat that posted the post
+[chat_id] :: TonTransactionType -> Maybe Int
+
+-- | The transaction is a transaction of an unsupported type
+TonTransactionTypeUnsupported :: TonTransactionType
+instance GHC.Show.Show TD.Data.TonTransactionType.TonTransactionType
+instance GHC.Classes.Eq TD.Data.TonTransactionType.TonTransactionType
+instance TD.Lib.Internal.ShortShow TD.Data.TonTransactionType.TonTransactionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonTransactionType.TonTransactionType
+
+module TD.Data.TonTransaction
+data TonTransaction
+
+-- | Represents a transaction changing the amount of owned Toncoins
+TonTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe TonTransactionType -> TonTransaction
+
+-- | Unique identifier of the transaction
+[_id] :: TonTransaction -> Maybe Text
+
+-- | The amount of added owned Toncoins; negative for outgoing transactions
+[ton_amount] :: TonTransaction -> Maybe Int
+
+-- | True, if the transaction is a refund of a previous transaction
+[is_refund] :: TonTransaction -> Maybe Bool
+
+-- | Point in time (Unix timestamp) when the transaction was completed
+[date] :: TonTransaction -> Maybe Int
+
+-- | Type of the transaction
+[_type] :: TonTransaction -> Maybe TonTransactionType
+instance GHC.Show.Show TD.Data.TonTransaction.TonTransaction
+instance GHC.Classes.Eq TD.Data.TonTransaction.TonTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.TonTransaction.TonTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonTransaction.TonTransaction
+
+module TD.Data.TonTransactions
+data TonTransactions
+
+-- | Represents a list of Toncoin transactions
+TonTransactions :: Maybe Int -> Maybe [TonTransaction] -> Maybe Text -> TonTransactions
+
+-- | The total amount of owned Toncoins
+[ton_amount] :: TonTransactions -> Maybe Int
+
+-- | List of Toncoin transactions
+[transactions] :: TonTransactions -> Maybe [TonTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: TonTransactions -> Maybe Text
+instance GHC.Show.Show TD.Data.TonTransactions.TonTransactions
+instance GHC.Classes.Eq TD.Data.TonTransactions.TonTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.TonTransactions.TonTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonTransactions.TonTransactions
+
 module TD.Data.Stickers
 data Stickers
 
@@ -8308,10 +8555,13 @@ module TD.Data.Gift
 data Gift
 
 -- | Describes a gift that can be sent to another user or channel chat
-Gift :: Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
+Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Gift
 
 -- | Unique identifier of the gift
 [_id] :: Gift -> Maybe Int
+
+-- | Identifier of the chat that published the gift; 0 if none
+[publisher_chat_id] :: Gift -> Maybe Int
 
 -- | The sticker representing the gift
 [sticker] :: Gift -> Maybe Sticker
@@ -10917,7 +11167,7 @@ module TD.Data.DraftMessage
 data DraftMessage
 
 -- | Contains information about a message draft
-DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe InputMessageContent -> Maybe Int -> DraftMessage
+DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe InputMessageContent -> Maybe Int -> Maybe InputSuggestedPostInfo -> DraftMessage
 
 -- | Information about the message to be replied; must be of the type
 --   inputMessageReplyToMessage; may be null if none
@@ -10933,6 +11183,9 @@ DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe InputMessageCont
 -- | Identifier of the effect to apply to the message when it is sent; 0 if
 --   none
 [effect_id] :: DraftMessage -> Maybe Int
+
+-- | Information about the suggested post; may be null if none
+[suggested_post_info] :: DraftMessage -> Maybe InputSuggestedPostInfo
 defaultDraftMessage :: DraftMessage
 instance GHC.Show.Show TD.Data.DraftMessage.DraftMessage
 instance GHC.Classes.Eq TD.Data.DraftMessage.DraftMessage
@@ -11683,9 +11936,12 @@ module TD.Data.ChatRevenueTransactionType
 --   messages in a chat
 data ChatRevenueTransactionType
 
+-- | Describes an unsupported transaction
+ChatRevenueTransactionTypeUnsupported :: ChatRevenueTransactionType
+
 -- | Describes earnings from sponsored messages in a chat in some time
 --   frame
-ChatRevenueTransactionTypeEarnings :: Maybe Int -> Maybe Int -> ChatRevenueTransactionType
+ChatRevenueTransactionTypeSponsoredMessageEarnings :: Maybe Int -> Maybe Int -> ChatRevenueTransactionType
 
 -- | Point in time (Unix timestamp) when the earnings started
 [start_date] :: ChatRevenueTransactionType -> Maybe Int
@@ -11693,26 +11949,26 @@ ChatRevenueTransactionTypeEarnings :: Maybe Int -> Maybe Int -> ChatRevenueTrans
 -- | Point in time (Unix timestamp) when the earnings ended
 [end_date] :: ChatRevenueTransactionType -> Maybe Int
 
--- | Describes a withdrawal of earnings
-ChatRevenueTransactionTypeWithdrawal :: Maybe Int -> Maybe Text -> Maybe RevenueWithdrawalState -> ChatRevenueTransactionType
+-- | Describes earnings from a published suggested post
+ChatRevenueTransactionTypeSuggestedPostEarnings :: Maybe Int -> ChatRevenueTransactionType
+
+-- | Identifier of the user that paid for the suggested post
+[user_id] :: ChatRevenueTransactionType -> Maybe Int
+
+-- | Describes a withdrawal of earnings through Fragment
+ChatRevenueTransactionTypeFragmentWithdrawal :: Maybe Int -> Maybe RevenueWithdrawalState -> ChatRevenueTransactionType
 
 -- | Point in time (Unix timestamp) when the earnings withdrawal started
 [withdrawal_date] :: ChatRevenueTransactionType -> Maybe Int
 
--- | Name of the payment provider
-[provider] :: ChatRevenueTransactionType -> Maybe Text
-
 -- | State of the withdrawal
 [state] :: ChatRevenueTransactionType -> Maybe RevenueWithdrawalState
 
--- | Describes a refund for failed withdrawal of earnings
-ChatRevenueTransactionTypeRefund :: Maybe Int -> Maybe Text -> ChatRevenueTransactionType
+-- | Describes a refund for failed withdrawal of earnings through Fragment
+ChatRevenueTransactionTypeFragmentRefund :: Maybe Int -> ChatRevenueTransactionType
 
 -- | Point in time (Unix timestamp) when the transaction was refunded
 [refund_date] :: ChatRevenueTransactionType -> Maybe Int
-
--- | Name of the payment provider
-[provider] :: ChatRevenueTransactionType -> Maybe Text
 instance GHC.Show.Show TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
 instance GHC.Classes.Eq TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
 instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransactionType.ChatRevenueTransactionType
@@ -11741,13 +11997,18 @@ module TD.Data.ChatRevenueTransactions
 data ChatRevenueTransactions
 
 -- | Contains a list of chat revenue transactions
-ChatRevenueTransactions :: Maybe Int -> Maybe [ChatRevenueTransaction] -> ChatRevenueTransactions
+ChatRevenueTransactions :: Maybe Int -> Maybe [ChatRevenueTransaction] -> Maybe Text -> ChatRevenueTransactions
 
--- | Total number of transactions
-[total_count] :: ChatRevenueTransactions -> Maybe Int
+-- | The amount of owned Toncoins; in the smallest units of the
+--   cryptocurrency
+[ton_amount] :: ChatRevenueTransactions -> Maybe Int
 
 -- | List of transactions
 [transactions] :: ChatRevenueTransactions -> Maybe [ChatRevenueTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: ChatRevenueTransactions -> Maybe Text
 instance GHC.Show.Show TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
 instance GHC.Classes.Eq TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
 instance TD.Lib.Internal.ShortShow TD.Data.ChatRevenueTransactions.ChatRevenueTransactions
@@ -13105,7 +13366,7 @@ module TD.Data.ChatAdministratorRights
 data ChatAdministratorRights
 
 -- | Describes rights of the administrator
-ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatAdministratorRights
+ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatAdministratorRights
 
 -- | True, if the administrator can access the chat event log, get boost
 --   list, see hidden supergroup and channel members, report supergroup
@@ -13118,9 +13379,8 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 --   settings
 [can_change_info] :: ChatAdministratorRights -> Maybe Bool
 
--- | True, if the administrator can create channel posts, answer to channel
---   direct messages, or view channel statistics; applicable to channels
---   only
+-- | True, if the administrator can create channel posts, approve suggested
+--   channel posts, or view channel statistics; applicable to channels only
 [can_post_messages] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can edit messages of other users and pin
@@ -13165,6 +13425,10 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 -- | True, if the administrator can delete stories posted by other users;
 --   applicable to supergroups and channels only
 [can_delete_stories] :: ChatAdministratorRights -> Maybe Bool
+
+-- | True, if the administrator can answer to channel direct messages;
+--   applicable to channels only
+[can_manage_direct_messages] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator isn't shown in the chat member list and
 --   sends messages anonymously; applicable to supergroups only
@@ -14042,6 +14306,10 @@ InternalLinkTypeMessageDraft :: Maybe FormattedText -> Maybe Bool -> InternalLin
 --   balance and transactions of the current user
 InternalLinkTypeMyStars :: InternalLinkType
 
+-- | The link is a link to the screen with information about Toncoin
+--   balance and transactions of the current user
+InternalLinkTypeMyToncoins :: InternalLinkType
+
 -- | The link contains a request of Telegram passport data. Call
 --   getPassportAuthorizationForm with the given parameters to process the
 --   link if the link was received from outside of the application;
@@ -14497,7 +14765,8 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 [show_message_sender] :: Supergroup -> Maybe Bool
 
 -- | True, if users need to join the supergroup before they can send
---   messages. Always true for channels and non-discussion supergroups
+--   messages. May be false only for discussion supergroups and channel
+--   direct messages groups
 [join_to_send_messages] :: Supergroup -> Maybe Bool
 
 -- | True, if all users directly joining the supergroup need to be approved
@@ -18481,7 +18750,7 @@ LinkPreviewTypeVideo :: Maybe Video -> Maybe Photo -> Maybe Int -> LinkPreviewTy
 [start_timestamp] :: LinkPreviewType -> Maybe Int
 
 -- | The link is a link to a video chat
-LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
+LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> Maybe Bool -> LinkPreviewType
 
 -- | Photo of the chat; may be null
 [_photo] :: LinkPreviewType -> Maybe ChatPhoto
@@ -18489,6 +18758,10 @@ LinkPreviewTypeVideoChat :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
 -- | True, if the video chat is expected to be a live stream in a channel
 --   or a broadcast group
 [is_live_stream] :: LinkPreviewType -> Maybe Bool
+
+-- | True, if the user can use the link to join the video chat without
+--   being muted by administrators
+[joins_as_speaker] :: LinkPreviewType -> Maybe Bool
 
 -- | The link is a link to a video note message
 LinkPreviewTypeVideoNote :: Maybe VideoNote -> LinkPreviewType
@@ -19275,6 +19548,21 @@ StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> May
 -- | The amount of Telegram Stars that were received by Telegram; can be
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
+
+-- | The transaction is a payment for a suggested post; for regular users
+--   only
+StarTransactionTypeSuggestedPostPaymentSend :: Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a payment for a suggested post by
+--   the channel chat; for channel chats only
+StarTransactionTypeSuggestedPostPaymentReceive :: Maybe Int -> StarTransactionType
+
+-- | Identifier of the user that gifted Telegram Stars; 0 if the user was
+--   anonymous
+[user_id] :: StarTransactionType -> Maybe Int
 
 -- | The transaction is a purchase of Telegram Premium subscription; for
 --   regular users and bots only
@@ -20567,6 +20855,28 @@ MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
+-- | Toncoins were gifted to a user
+MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> MessageContent
+
+-- | The identifier of a user that gifted Telegram Premium; 0 if the gift
+--   was anonymous or is outgoing
+[gifter_user_id] :: MessageContent -> Maybe Int
+
+-- | The identifier of a user that received Telegram Premium; 0 if the gift
+--   is incoming
+[receiver_user_id] :: MessageContent -> Maybe Int
+
+-- | The received amount of Toncoins, in the smallest units of the
+--   cryptocurrency
+[ton_amount] :: MessageContent -> Maybe Int
+
+-- | Identifier of the transaction for Telegram Stars purchase; for
+--   receiver only
+[transaction_id] :: MessageContent -> Maybe Text
+
+-- | The sticker description
+[sticker] :: MessageContent -> Maybe Sticker
+
 -- | A Telegram Stars were received by the current user from a giveaway
 MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Sticker -> MessageContent
 
@@ -20649,7 +20959,7 @@ MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe
 
 -- | An upgraded gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe MessageSender -> Maybe UpgradedGiftOrigin -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 
 -- | The gift
 [_gift] :: MessageContent -> Maybe UpgradedGift
@@ -20660,13 +20970,12 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Messag
 -- | Receiver of the gift
 [receiver_id] :: MessageContent -> Maybe MessageSender
 
+-- | Origin of the upgraded gift
+[origin] :: MessageContent -> Maybe UpgradedGiftOrigin
+
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
 [received_gift_id] :: MessageContent -> Maybe Text
-
--- | True, if the gift was obtained by upgrading of a previously received
---   gift; otherwise, this is a transferred or resold gift
-[is_upgrade] :: MessageContent -> Maybe Bool
 
 -- | True, if the gift is displayed on the user's or the channel's profile
 --   page; only for the receiver of the gift
@@ -20676,13 +20985,9 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Messag
 --   receiver of the gift
 [can_be_transferred] :: MessageContent -> Maybe Bool
 
--- | True, if the gift was transferred to another owner; only for the
---   receiver of the gift
+-- | True, if the gift has already been transferred to another owner; only
+--   for the receiver of the gift
 [was_transferred] :: MessageContent -> Maybe Bool
-
--- | Number of Telegram Stars that were paid by the sender for the gift; 0
---   if the gift was upgraded or transferred
-[last_resale_star_count] :: MessageContent -> Maybe Int
 
 -- | Number of Telegram Stars that must be paid to transfer the upgraded
 --   gift; only for the receiver of the gift
@@ -20769,6 +21074,68 @@ MessageChecklistTasksAdded :: Maybe Int -> Maybe [ChecklistTask] -> MessageConte
 -- | List of tasks added to the checklist
 [tasks] :: MessageContent -> Maybe [ChecklistTask]
 
+-- | Approval of suggested post has failed, because the user which proposed
+--   the post had no enough funds
+MessageSuggestedPostApprovalFailed :: Maybe Int -> Maybe SuggestedPostPrice -> MessageContent
+
+-- | Identifier of the message with the suggested post; can be 0 if the
+--   message was deleted
+[suggested_post_message_id] :: MessageContent -> Maybe Int
+
+-- | Price of the suggested post
+[price] :: MessageContent -> Maybe SuggestedPostPrice
+
+-- | A suggested post was approved
+MessageSuggestedPostApproved :: Maybe Int -> Maybe SuggestedPostPrice -> Maybe Int -> MessageContent
+
+-- | Identifier of the message with the suggested post; can be 0 if the
+--   message was deleted
+[suggested_post_message_id] :: MessageContent -> Maybe Int
+
+-- | Price of the suggested post
+[price] :: MessageContent -> Maybe SuggestedPostPrice
+
+-- | Point in time (Unix timestamp) when the post is expected to be
+--   published
+[send_date] :: MessageContent -> Maybe Int
+
+-- | A suggested post was declined
+MessageSuggestedPostDeclined :: Maybe Int -> Maybe Text -> MessageContent
+
+-- | Identifier of the message with the suggested post; can be 0 if the
+--   message was deleted
+[suggested_post_message_id] :: MessageContent -> Maybe Int
+
+-- | Comment added by administrator of the channel when the post was
+--   declined
+[comment] :: MessageContent -> Maybe Text
+
+-- | A suggested post was published for
+--   getOption("suggested_post_lifetime_min") seconds and payment for the
+--   post was received
+MessageSuggestedPostPaid :: Maybe Int -> Maybe StarAmount -> Maybe Int -> MessageContent
+
+-- | Identifier of the message with the suggested post; can be 0 if the
+--   message was deleted
+[suggested_post_message_id] :: MessageContent -> Maybe Int
+
+-- | The amount of received Telegram Stars
+[star_amount] :: MessageContent -> Maybe StarAmount
+
+-- | The received amount of Toncoins, in the smallest units of the
+--   cryptocurrency
+[ton_amount] :: MessageContent -> Maybe Int
+
+-- | A suggested post was refunded
+MessageSuggestedPostRefunded :: Maybe Int -> Maybe SuggestedPostRefundReason -> MessageContent
+
+-- | Identifier of the message with the suggested post; can be 0 if the
+--   message was deleted
+[suggested_post_message_id] :: MessageContent -> Maybe Int
+
+-- | Reason of the refund
+[reason] :: MessageContent -> Maybe SuggestedPostRefundReason
+
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
 
@@ -20794,7 +21161,7 @@ MessageChatShared :: Maybe SharedChat -> Maybe Int -> MessageContent
 MessageBotWriteAccessAllowed :: Maybe BotWriteAccessAllowReason -> MessageContent
 
 -- | The reason why the bot was allowed to write messages
-[reason] :: MessageContent -> Maybe BotWriteAccessAllowReason
+[_reason] :: MessageContent -> Maybe BotWriteAccessAllowReason
 
 -- | Data from a Web App has been sent to a bot
 MessageWebAppDataSent :: Maybe Text -> MessageContent
@@ -20992,7 +21359,7 @@ module TD.Data.MessageReplyTo
 data MessageReplyTo
 
 -- | Describes a message replied by a given message
-MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe MessageOrigin -> Maybe Int -> Maybe MessageContent -> MessageReplyTo
+MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Int -> Maybe MessageOrigin -> Maybe Int -> Maybe MessageContent -> MessageReplyTo
 
 -- | The identifier of the chat to which the message belongs; may be 0 if
 --   the replied message is in unknown chat
@@ -21004,6 +21371,10 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Mess
 
 -- | Chosen quote from the replied message; may be null if none
 [quote] :: MessageReplyTo -> Maybe TextQuote
+
+-- | Identifier of the checklist task in the original message that was
+--   replied; 0 if none
+[checklist_task_id] :: MessageReplyTo -> Maybe Int
 
 -- | Information about origin of the message if the message was from
 --   another chat or topic; may be null for messages from the same chat
@@ -21042,7 +21413,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe MessageReplyTo -> Maybe Int -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe Int -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -21082,6 +21453,17 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   channel posts, all other messages are not channel posts
 [is_channel_post] :: Message -> Maybe Bool
 
+-- | True, if the message is a suggested channel post which was paid in
+--   Telegram Stars; a warning must be shown if the message is deleted in
+--   less than getOption("suggested_post_lifetime_min") seconds after
+--   sending
+[is_paid_star_suggested_post] :: Message -> Maybe Bool
+
+-- | True, if the message is a suggested channel post which was paid in
+--   Toncoins; a warning must be shown if the message is deleted in less
+--   than getOption("suggested_post_lifetime_min") seconds after sending
+[is_paid_ton_suggested_post] :: Message -> Maybe Bool
+
 -- | True, if the message contains an unread mention for the current user
 [contains_unread_mention] :: Message -> Maybe Bool
 
@@ -21109,6 +21491,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 
 -- | Information about fact-check added to the message; may be null if none
 [fact_check] :: Message -> Maybe FactCheck
+
+-- | Information about the suggested post; may be null if the message isn't
+--   a suggested post
+[suggested_post_info] :: Message -> Maybe SuggestedPostInfo
 
 -- | Information about the message or the story this message is replying
 --   to; may be null if none
@@ -22985,6 +23371,18 @@ UpdateMessageFactCheck :: Maybe Int -> Maybe Int -> Maybe FactCheck -> Update
 -- | The new fact-check
 [fact_check] :: Update -> Maybe FactCheck
 
+-- | Information about suggested post of a message was changed
+UpdateMessageSuggestedPostInfo :: Maybe Int -> Maybe Int -> Maybe SuggestedPostInfo -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | A temporary message identifier
+[message_id] :: Update -> Maybe Int
+
+-- | The new information about the suggested post
+[suggested_post_info] :: Update -> Maybe SuggestedPostInfo
+
 -- | A message with a live location was viewed. When the update is
 --   received, the application is expected to update the live location
 UpdateMessageLiveLocationViewed :: Maybe Int -> Maybe Int -> Update
@@ -24162,6 +24560,13 @@ UpdateOwnedStarCount :: Maybe StarAmount -> Update
 -- | The new amount of owned Telegram Stars
 [star_amount] :: Update -> Maybe StarAmount
 
+-- | The number of Toncoins owned by the current user has changed
+UpdateOwnedTonCount :: Maybe Int -> Update
+
+-- | The new amount of owned Toncoins; in the smallest units of the
+--   cryptocurrency
+[ton_amount] :: Update -> Maybe Int
+
 -- | The revenue earned from sponsored messages in a chat has changed. If
 --   chat revenue screen is opened, then getChatRevenueTransactions may be
 --   called to fetch new transactions
@@ -24841,6 +25246,7 @@ TestVectorStringObject :: TestVectorStringObject -> GeneralResult
 Text :: Text -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
 TimeZones :: TimeZones -> GeneralResult
+TonTransactions :: TonTransactions -> GeneralResult
 TrendingStickerSets :: TrendingStickerSets -> GeneralResult
 Update :: Update -> GeneralResult
 Updates :: Updates -> GeneralResult
@@ -25232,6 +25638,33 @@ instance GHC.Show.Show TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance GHC.Classes.Eq TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance TD.Lib.Internal.ShortShow TD.Query.AddNetworkStatistics.AddNetworkStatistics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddNetworkStatistics.AddNetworkStatistics
+
+module TD.Query.AddOffer
+
+-- | Sent a suggested post based on a previously sent message in a channel
+--   direct messages chat. Can be also used to suggest price or time change
+--   for an existing suggested post. Returns the sent message. Returns
+--   <a>Message</a>
+data AddOffer
+AddOffer :: Maybe Int -> Maybe Int -> Maybe MessageSendOptions -> AddOffer
+
+-- | Identifier of the channel direct messages chat
+[chat_id] :: AddOffer -> Maybe Int
+
+-- | Identifier of the message in the chat which will be sent as suggested
+--   post. Use messageProperties.can_add_offer to check whether an offer
+--   can be added or messageProperties.can_edit_suggested_post_info to
+--   check whether price or time of sending of the post can be changed
+[message_id] :: AddOffer -> Maybe Int
+
+-- | Options to be used to send the message. New information about the
+--   suggested post must always be specified
+[options] :: AddOffer -> Maybe MessageSendOptions
+defaultAddOffer :: AddOffer
+instance GHC.Show.Show TD.Query.AddOffer.AddOffer
+instance GHC.Classes.Eq TD.Query.AddOffer.AddOffer
+instance TD.Lib.Internal.ShortShow TD.Query.AddOffer.AddOffer
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddOffer.AddOffer
 
 module TD.Query.AddPendingPaidMessageReaction
 
@@ -25649,6 +26082,30 @@ instance GHC.Show.Show TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 instance GHC.Classes.Eq TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 instance TD.Lib.Internal.ShortShow TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ApplyPremiumGiftCode.ApplyPremiumGiftCode
+
+module TD.Query.ApproveSuggestedPost
+
+-- | Approves a suggested post in a channel direct messages chat. Returns
+--   <a>Ok</a>
+data ApproveSuggestedPost
+ApproveSuggestedPost :: Maybe Int -> Maybe Int -> Maybe Int -> ApproveSuggestedPost
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: ApproveSuggestedPost -> Maybe Int
+
+-- | Identifier of the message with the suggested post. Use
+--   messageProperties.can_be_approved to check whether the suggested post
+--   can be approved
+[message_id] :: ApproveSuggestedPost -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the post is expected to be
+--   published; pass 0 if the date has already been chosen
+[send_date] :: ApproveSuggestedPost -> Maybe Int
+defaultApproveSuggestedPost :: ApproveSuggestedPost
+instance GHC.Show.Show TD.Query.ApproveSuggestedPost.ApproveSuggestedPost
+instance GHC.Classes.Eq TD.Query.ApproveSuggestedPost.ApproveSuggestedPost
+instance TD.Lib.Internal.ShortShow TD.Query.ApproveSuggestedPost.ApproveSuggestedPost
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ApproveSuggestedPost.ApproveSuggestedPost
 
 module TD.Query.AssignStoreTransaction
 
@@ -26989,6 +27446,29 @@ instance GHC.Classes.Eq TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvi
 instance TD.Lib.Internal.ShortShow TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeclineGroupCallInvitation.DeclineGroupCallInvitation
 
+module TD.Query.DeclineSuggestedPost
+
+-- | Declines a suggested post in a channel direct messages chat. Returns
+--   <a>Ok</a>
+data DeclineSuggestedPost
+DeclineSuggestedPost :: Maybe Int -> Maybe Int -> Maybe Text -> DeclineSuggestedPost
+
+-- | Chat identifier of the channel direct messages chat
+[chat_id] :: DeclineSuggestedPost -> Maybe Int
+
+-- | Identifier of the message with the suggested post. Use
+--   messageProperties.can_be_declined to check whether the suggested post
+--   can be declined
+[message_id] :: DeclineSuggestedPost -> Maybe Int
+
+-- | Comment for the creator of the suggested post; 0-128 characters
+[comment] :: DeclineSuggestedPost -> Maybe Text
+defaultDeclineSuggestedPost :: DeclineSuggestedPost
+instance GHC.Show.Show TD.Query.DeclineSuggestedPost.DeclineSuggestedPost
+instance GHC.Classes.Eq TD.Query.DeclineSuggestedPost.DeclineSuggestedPost
+instance TD.Lib.Internal.ShortShow TD.Query.DeclineSuggestedPost.DeclineSuggestedPost
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeclineSuggestedPost.DeclineSuggestedPost
+
 module TD.Query.DecryptGroupCallData
 
 -- | Decrypts group call data received by tgcalls. Returns <a>Data</a>
@@ -28165,8 +28645,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCustomLanguagePackInfo.Edit
 module TD.Query.EditForumTopic
 
 -- | Edits title and icon of a topic in a forum supergroup chat; requires
---   can_manage_topics right in the supergroup unless the user is creator
---   of the topic. Returns <a>Ok</a>
+--   can_manage_topics administrator right in the supergroup unless the
+--   user is creator of the topic. Returns <a>Ok</a>
 data EditForumTopic
 EditForumTopic :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Int -> EditForumTopic
 
@@ -30086,15 +30566,16 @@ module TD.Query.GetChatRevenueTransactions
 --   userFullInfo.bot_info.can_get_revenue_statistics == true. Returns
 --   <a>ChatRevenueTransactions</a>
 data GetChatRevenueTransactions
-GetChatRevenueTransactions :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatRevenueTransactions
+GetChatRevenueTransactions :: Maybe Int -> Maybe Text -> Maybe Int -> GetChatRevenueTransactions
 
 -- | Chat identifier
 [chat_id] :: GetChatRevenueTransactions -> Maybe Int
 
--- | Number of transactions to skip
-[offset] :: GetChatRevenueTransactions -> Maybe Int
+-- | Offset of the first transaction to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: GetChatRevenueTransactions -> Maybe Text
 
--- | The maximum number of transactions to be returned; up to 200
+-- | The maximum number of transactions to be returned; up to 100
 [limit] :: GetChatRevenueTransactions -> Maybe Int
 defaultGetChatRevenueTransactions :: GetChatRevenueTransactions
 instance GHC.Show.Show TD.Query.GetChatRevenueTransactions.GetChatRevenueTransactions
@@ -32650,15 +33131,20 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetRemoteFile.GetRemoteFile
 module TD.Query.GetRepliedMessage
 
 -- | Returns information about a non-bundled message that is replied by a
---   given message. Also, returns the pinned message, the game message, the
---   invoice message, the message with a previously set same background,
---   the giveaway message, the checklist message, and the topic creation
---   message for messages of the types messagePinMessage, messageGameScore,
---   messagePaymentSuccessful, messageChatSetBackground,
---   messageGiveawayCompleted, messageChecklistTasksDone and
---   messageChecklistTasksAdded, and topic messages without non-bundled
---   replied message respectively. Returns a 404 error if the message
---   doesn't exist. Returns <a>Message</a>
+--   given message. Also, returns the pinned message for messagePinMessage,
+--   the game message for messageGameScore, the invoice message for
+--   messagePaymentSuccessful, the message with a previously set same
+--   background for messageChatSetBackground, the giveaway message for
+--   messageGiveawayCompleted, the checklist message for
+--   messageChecklistTasksDone, messageChecklistTasksAdded, the message
+--   with suggested post information for
+--   messageSuggestedPostApprovalFailed, messageSuggestedPostApproved,
+--   messageSuggestedPostDeclined, messageSuggestedPostPaid,
+--   messageSuggestedPostRefunded, the message with the regular gift that
+--   was upgraded for messageUpgradedGift with origin of the type
+--   upgradedGiftOriginUpgrade, and the topic creation message for topic
+--   messages without non-bundled replied message. Returns a 404 error if
+--   the message doesn't exist. Returns <a>Message</a>
 data GetRepliedMessage
 GetRepliedMessage :: Maybe Int -> Maybe Int -> GetRepliedMessage
 
@@ -32945,7 +33431,7 @@ module TD.Query.GetStarTransactions
 -- | Returns the list of Telegram Star transactions for the specified
 --   owner. Returns <a>StarTransactions</a>
 data GetStarTransactions
-GetStarTransactions :: Maybe MessageSender -> Maybe Text -> Maybe StarTransactionDirection -> Maybe Text -> Maybe Int -> GetStarTransactions
+GetStarTransactions :: Maybe MessageSender -> Maybe Text -> Maybe TransactionDirection -> Maybe Text -> Maybe Int -> GetStarTransactions
 
 -- | Identifier of the owner of the Telegram Stars; can be the identifier
 --   of the current user, identifier of an owned bot, or identifier of a
@@ -32959,7 +33445,7 @@ GetStarTransactions :: Maybe MessageSender -> Maybe Text -> Maybe StarTransactio
 
 -- | Direction of the transactions to receive; pass null to get all
 --   transactions
-[direction] :: GetStarTransactions -> Maybe StarTransactionDirection
+[direction] :: GetStarTransactions -> Maybe TransactionDirection
 
 -- | Offset of the first transaction to return as received from the
 --   previous request; use empty string to get the first chunk of results
@@ -32983,8 +33469,9 @@ GetStarWithdrawalUrl :: Maybe MessageSender -> Maybe Int -> Maybe Text -> GetSta
 --   the current user, an owned bot, or an owned supergroup or channel chat
 [owner_id] :: GetStarWithdrawalUrl -> Maybe MessageSender
 
--- | The number of Telegram Stars to withdraw. Must be at least
---   getOption("star_withdrawal_count_min")
+-- | The number of Telegram Stars to withdraw; must be between
+--   getOption("star_withdrawal_count_min") and
+--   getOption("star_withdrawal_count_max")
 [star_count] :: GetStarWithdrawalUrl -> Maybe Int
 
 -- | The 2-step verification password of the current user
@@ -33483,6 +33970,29 @@ instance GHC.Show.Show TD.Query.GetTimeZones.GetTimeZones
 instance GHC.Classes.Eq TD.Query.GetTimeZones.GetTimeZones
 instance TD.Lib.Internal.ShortShow TD.Query.GetTimeZones.GetTimeZones
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTimeZones.GetTimeZones
+
+module TD.Query.GetTonTransactions
+
+-- | Returns the list of Toncoin transactions of the current user. Returns
+--   <a>TonTransactions</a>
+data GetTonTransactions
+GetTonTransactions :: Maybe TransactionDirection -> Maybe Text -> Maybe Int -> GetTonTransactions
+
+-- | Direction of the transactions to receive; pass null to get all
+--   transactions
+[direction] :: GetTonTransactions -> Maybe TransactionDirection
+
+-- | Offset of the first transaction to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: GetTonTransactions -> Maybe Text
+
+-- | The maximum number of transactions to return
+[limit] :: GetTonTransactions -> Maybe Int
+defaultGetTonTransactions :: GetTonTransactions
+instance GHC.Show.Show TD.Query.GetTonTransactions.GetTonTransactions
+instance GHC.Classes.Eq TD.Query.GetTonTransactions.GetTonTransactions
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonTransactions.GetTonTransactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonTransactions.GetTonTransactions
 
 module TD.Query.GetTopChats
 
@@ -36390,8 +36900,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchFileDownloads.SearchFileD
 
 module TD.Query.SearchGiftsForResale
 
--- | Returns upgraded gifts that can be bought from other owners. Returns
---   <a>GiftsForResale</a>
+-- | Returns upgraded gifts that can be bought from other owners using
+--   sendResoldGift. Returns <a>GiftsForResale</a>
 data SearchGiftsForResale
 SearchGiftsForResale :: Maybe Int -> Maybe GiftForResaleOrder -> Maybe [UpgradedGiftAttributeId] -> Maybe Text -> Maybe Int -> SearchGiftsForResale
 
@@ -36927,7 +37437,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchWebApp.SearchWebApp
 
 module TD.Query.SellGift
 
--- | Sells a gift for Telegram Stars. Returns <a>Ok</a>
+-- | Sells a gift for Telegram Stars; requires owner privileges for gifts
+--   owned by a chat. Returns <a>Ok</a>
 data SellGift
 SellGift :: Maybe Text -> Maybe Text -> SellGift
 
@@ -39415,7 +39926,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPinnedChats.SetPinnedChats
 module TD.Query.SetPinnedForumTopics
 
 -- | Changes the order of pinned forum topics; requires can_manage_topics
---   right in the supergroup. Returns <a>Ok</a>
+--   administrator right in the supergroup. Returns <a>Ok</a>
 data SetPinnedForumTopics
 SetPinnedForumTopics :: Maybe Int -> Maybe [Int] -> SetPinnedForumTopics
 
@@ -40782,8 +41293,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleDownloadIsPaused.ToggleDo
 module TD.Query.ToggleForumTopicIsClosed
 
 -- | Toggles whether a topic is closed in a forum supergroup chat; requires
---   can_manage_topics right in the supergroup unless the user is creator
---   of the topic. Returns <a>Ok</a>
+--   can_manage_topics administrator right in the supergroup unless the
+--   user is creator of the topic. Returns <a>Ok</a>
 data ToggleForumTopicIsClosed
 ToggleForumTopicIsClosed :: Maybe Int -> Maybe Int -> Maybe Bool -> ToggleForumTopicIsClosed
 
@@ -40804,7 +41315,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleForumTopicIsClosed.Toggle
 module TD.Query.ToggleForumTopicIsPinned
 
 -- | Changes the pinned state of a forum topic; requires can_manage_topics
---   right in the supergroup. There can be up to
+--   administrator right in the supergroup. There can be up to
 --   getOption("pinned_forum_topic_count_max") pinned forum topics. Returns
 --   <a>Ok</a>
 data ToggleForumTopicIsPinned
@@ -40827,7 +41338,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleForumTopicIsPinned.Toggle
 module TD.Query.ToggleGeneralForumTopicIsHidden
 
 -- | Toggles whether a General topic is hidden in a forum supergroup chat;
---   requires can_manage_topics right in the supergroup. Returns <a>Ok</a>
+--   requires can_manage_topics administrator right in the supergroup.
+--   Returns <a>Ok</a>
 data ToggleGeneralForumTopicIsHidden
 ToggleGeneralForumTopicIsHidden :: Maybe Int -> Maybe Bool -> ToggleGeneralForumTopicIsHidden
 
