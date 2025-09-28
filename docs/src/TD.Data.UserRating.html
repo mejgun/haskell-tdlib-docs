@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.UserRating</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier">UserRating</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">data</span><span> </span><span id="UserRating"><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-var">UserRating</span></a></span></span><span>
+</span><span id="line-9"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="UserRating"><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-var">UserRating</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains description of user rating</span></span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="level"><span class="annot"><span class="annottext">UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#level"><span class="hs-identifier hs-var hs-var">level</span></a></span></span><span>                    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ The level of the user; may be negative</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_maximum_level_reached"><span class="annot"><span class="annottext">UserRating -&gt; Maybe Bool
+</span><a href="TD.Data.UserRating.html#is_maximum_level_reached"><span class="hs-identifier hs-var hs-var">is_maximum_level_reached</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ True, if the maximum level is reached</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="rating"><span class="annot"><span class="annottext">UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#rating"><span class="hs-identifier hs-var hs-var">rating</span></a></span></span><span>                   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ Numerical value of the rating</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="current_level_rating"><span class="annot"><span class="annottext">UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#current_level_rating"><span class="hs-identifier hs-var hs-var">current_level_rating</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ The rating required for the current level</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="next_level_rating"><span class="annot"><span class="annottext">UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#next_level_rating"><span class="hs-identifier hs-var hs-var">next_level_rating</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>  </span><span class="annot"><span class="hs-comment">-- ^ The rating required for the next level; 0 if the maximum level is reached</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679753553"><span id="local-6989586621679753563"><span class="annot"><span class="annottext">UserRating -&gt; UserRating -&gt; Bool
+(UserRating -&gt; UserRating -&gt; Bool)
+-&gt; (UserRating -&gt; UserRating -&gt; Bool) -&gt; Eq UserRating
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: UserRating -&gt; UserRating -&gt; Bool
+== :: UserRating -&gt; UserRating -&gt; Bool
+$c/= :: UserRating -&gt; UserRating -&gt; Bool
+/= :: UserRating -&gt; UserRating -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679753570"><span id="local-6989586621679753582"><span id="local-6989586621679753586"><span class="annot"><span class="annottext">Int -&gt; UserRating -&gt; ShowS
+[UserRating] -&gt; ShowS
+UserRating -&gt; String
+(Int -&gt; UserRating -&gt; ShowS)
+-&gt; (UserRating -&gt; String)
+-&gt; ([UserRating] -&gt; ShowS)
+-&gt; Show UserRating
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; UserRating -&gt; ShowS
+showsPrec :: Int -&gt; UserRating -&gt; ShowS
+$cshow :: UserRating -&gt; String
+show :: UserRating -&gt; String
+$cshowList :: [UserRating] -&gt; ShowS
+showList :: [UserRating] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-type">UserRating</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-19"></span><span>  </span><span id="local-6989586621679753604"><span class="annot"><span class="annottext">shortShow :: UserRating -&gt; String
+</span><a href="#local-6989586621679753604"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-type">UserRating</span></a></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">level :: UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#level"><span class="hs-identifier hs-var">level</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679753606"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753606"><span class="hs-identifier hs-var">level_</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_maximum_level_reached :: UserRating -&gt; Maybe Bool
+</span><a href="TD.Data.UserRating.html#is_maximum_level_reached"><span class="hs-identifier hs-var">is_maximum_level_reached</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679753607"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679753607"><span class="hs-identifier hs-var">is_maximum_level_reached_</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">rating :: UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#rating"><span class="hs-identifier hs-var">rating</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679753608"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753608"><span class="hs-identifier hs-var">rating_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_level_rating :: UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#current_level_rating"><span class="hs-identifier hs-var">current_level_rating</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679753609"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753609"><span class="hs-identifier hs-var">current_level_rating_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">next_level_rating :: UserRating -&gt; Maybe Int
+</span><a href="TD.Data.UserRating.html#next_level_rating"><span class="hs-identifier hs-var">next_level_rating</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679753610"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753610"><span class="hs-identifier hs-var">next_level_rating_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserRating&quot;</span></span><span>
+</span><span id="line-27"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;level&quot;</span></span><span>                    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753606"><span class="hs-identifier hs-var">level_</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_maximum_level_reached&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679753607"><span class="hs-identifier hs-var">is_maximum_level_reached_</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;rating&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753608"><span class="hs-identifier hs-var">rating_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;current_level_rating&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753609"><span class="hs-identifier hs-var">current_level_rating_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;next_level_rating&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753610"><span class="hs-identifier hs-var">next_level_rating_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679753615"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-type">UserRating</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679753655"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser UserRating
+</span><a href="#local-6989586621679753655"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679753657"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679753657"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679753659"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753659"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-37"></span><span>    </span><span id="local-6989586621679753660"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679753660"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753659"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679753660"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-40"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;userRating&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UserRating
+</span><a href="#local-6989586621679753662"><span class="hs-identifier hs-var">parseUserRating</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679753657"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser UserRating
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-42"></span><span>    </span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-44"></span><span>      </span><span class="annot"><a href="#local-6989586621679753662"><span class="hs-identifier hs-type">parseUserRating</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-type">UserRating</span></a></span><span>
+</span><span id="line-45"></span><span>      </span><span id="local-6989586621679753662"><span class="annot"><span class="annottext">parseUserRating :: Value -&gt; Parser UserRating
+</span><a href="#local-6989586621679753662"><span class="hs-identifier hs-var hs-var">parseUserRating</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser UserRating) -&gt; Value -&gt; Parser UserRating
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UserRating&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser UserRating) -&gt; Value -&gt; Parser UserRating)
+-&gt; (Object -&gt; Parser UserRating) -&gt; Value -&gt; Parser UserRating
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679753664"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-46"></span><span>        </span><span id="local-6989586621679753665"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753665"><span class="hs-identifier hs-var">level_</span></a></span></span><span>                    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;level&quot;</span></span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679753667"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679753667"><span class="hs-identifier hs-var">is_maximum_level_reached_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_maximum_level_reached&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679753668"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753668"><span class="hs-identifier hs-var">rating_</span></a></span></span><span>                   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;rating&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679753669"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753669"><span class="hs-identifier hs-var">current_level_rating_</span></a></span></span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;current_level_rating&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span id="local-6989586621679753670"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753670"><span class="hs-identifier hs-var">next_level_rating_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679753664"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;next_level_rating&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span class="annot"><span class="annottext">UserRating -&gt; Parser UserRating
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(UserRating -&gt; Parser UserRating)
+-&gt; UserRating -&gt; Parser UserRating
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.UserRating.html#UserRating"><span class="hs-identifier hs-type">UserRating</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">level :: Maybe Int
+</span><a href="TD.Data.UserRating.html#level"><span class="hs-identifier hs-var">level</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753665"><span class="hs-identifier hs-var">level_</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_maximum_level_reached :: Maybe Bool
+</span><a href="TD.Data.UserRating.html#is_maximum_level_reached"><span class="hs-identifier hs-var">is_maximum_level_reached</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679753667"><span class="hs-identifier hs-var">is_maximum_level_reached_</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">rating :: Maybe Int
+</span><a href="TD.Data.UserRating.html#rating"><span class="hs-identifier hs-var">rating</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753668"><span class="hs-identifier hs-var">rating_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_level_rating :: Maybe Int
+</span><a href="TD.Data.UserRating.html#current_level_rating"><span class="hs-identifier hs-var">current_level_rating</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753669"><span class="hs-identifier hs-var">current_level_rating_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">next_level_rating :: Maybe Int
+</span><a href="TD.Data.UserRating.html#next_level_rating"><span class="hs-identifier hs-var">next_level_rating</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679753670"><span class="hs-identifier hs-var">next_level_rating_</span></a></span><span>
+</span><span id="line-57"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-58"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser UserRating
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span></pre></body></html>
