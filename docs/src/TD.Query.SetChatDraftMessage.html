@@ -6,19 +6,20 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.DraftMessage.html"><span class="hs-identifier">TD.Data.DraftMessage</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">DraftMessage</span></span><span>
-</span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Changes the draft message in a chat. Returns 'TD.Data.Ok.Ok'</span></span><span>
-</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="SetChatDraftMessage"><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-var">SetChatDraftMessage</span></a></span></span><span>
-</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SetChatDraftMessage"><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-var">SetChatDraftMessage</span></a></span></span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                       </span><span class="annot"><span class="hs-comment">-- ^ Chat identifier</span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_thread_id"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#message_thread_id"><span class="hs-identifier hs-var hs-var">message_thread_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                       </span><span class="annot"><span class="hs-comment">-- ^ If not 0, the message thread identifier in which the draft was changed</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="draft_message"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe DraftMessage
-</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var hs-var">draft_message</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessage.html#DraftMessage"><span class="hs-identifier hs-type">DraftMessage.DraftMessage</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ New draft message; pass null to remove the draft. All files in draft message content must be of the type inputFileLocal. Media thumbnails and captions are ignored</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679977300"><span id="local-6989586621679977308"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html"><span class="hs-identifier">TD.Data.MessageTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageTopic</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.DraftMessage.html"><span class="hs-identifier">TD.Data.DraftMessage</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">DraftMessage</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Changes the draft message in a chat or a topic. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="SetChatDraftMessage"><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-var">SetChatDraftMessage</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SetChatDraftMessage"><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-var">SetChatDraftMessage</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                       </span><span class="annot"><span class="hs-comment">-- ^ Chat identifier</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="topic_id"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SetChatDraftMessage.html#topic_id"><span class="hs-identifier hs-var hs-var">topic_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html#MessageTopic"><span class="hs-identifier hs-type">MessageTopic.MessageTopic</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Topic in which the draft will be changed; pass null to change the draft for the chat itself</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="draft_message"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; Maybe DraftMessage
+</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var hs-var">draft_message</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessage.html#DraftMessage"><span class="hs-identifier hs-type">DraftMessage.DraftMessage</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ New draft message; pass null to remove the draft. All files in draft message content must be of the type inputFileLocal. Media thumbnails and captions are ignored</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679984261"><span id="local-6989586621679984270"><span class="annot"><span class="annottext">SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
 (SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool)
 -&gt; (SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool)
 -&gt; Eq SetChatDraftMessage
@@ -27,7 +28,7 @@ $c== :: SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
 == :: SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
 $c/= :: SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
 /= :: SetChatDraftMessage -&gt; SetChatDraftMessage -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679977315"><span id="local-6989586621679977325"><span id="local-6989586621679977329"><span class="annot"><span class="annottext">Int -&gt; SetChatDraftMessage -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679984278"><span id="local-6989586621679984289"><span id="local-6989586621679984293"><span class="annot"><span class="annottext">Int -&gt; SetChatDraftMessage -&gt; ShowS
 [SetChatDraftMessage] -&gt; ShowS
 SetChatDraftMessage -&gt; String
 (Int -&gt; SetChatDraftMessage -&gt; ShowS)
@@ -43,103 +44,103 @@ show :: SetChatDraftMessage -&gt; String
 $cshowList :: [SetChatDraftMessage] -&gt; ShowS
 showList :: [SetChatDraftMessage] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-19"></span><span>
-</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-21"></span><span>  </span><span id="local-6989586621679977345"><span class="annot"><span class="annottext">shortShow :: SetChatDraftMessage -&gt; String
-</span><a href="#local-6989586621679977345"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
-</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977347"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977347"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977348"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977348"><span class="hs-identifier hs-var">message_thread_id_</span></a></span></span><span>
-</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: SetChatDraftMessage -&gt; Maybe DraftMessage
-</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977349"><span class="annot"><span class="annottext">Maybe DraftMessage
-</span><a href="#local-6989586621679977349"><span class="hs-identifier hs-var">draft_message_</span></a></span></span><span>
-</span><span id="line-26"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-27"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679984311"><span class="annot"><span class="annottext">shortShow :: SetChatDraftMessage -&gt; String
+</span><a href="#local-6989586621679984311"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDraftMessage -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984313"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679984313"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: SetChatDraftMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SetChatDraftMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984314"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679984314"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: SetChatDraftMessage -&gt; Maybe DraftMessage
+</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984315"><span class="annot"><span class="annottext">Maybe DraftMessage
+</span><a href="#local-6989586621679984315"><span class="hs-identifier hs-var">draft_message_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;SetChatDraftMessage&quot;</span></span><span>
-</span><span id="line-28"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span id="line-29"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
-</span><span id="line-29"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span id="line-30"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977347"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
-</span><span id="line-30"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;message_thread_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977348"><span class="hs-identifier hs-var">message_thread_id_</span></a></span><span>
+</span><a href="#local-6989586621679984313"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;draft_message&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe DraftMessage -&gt; String
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageTopic -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679984314"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;draft_message&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe DraftMessage -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe DraftMessage
-</span><a href="#local-6989586621679977349"><span class="hs-identifier hs-var">draft_message_</span></a></span><span>
-</span><span id="line-32"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-33"></span><span>
-</span><span id="line-34"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679977354"><span id="local-6989586621679977358"><span id="local-6989586621679977361"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-35"></span><span>  </span><span id="local-6989586621679977388"><span class="annot"><span class="annottext">toJSON :: SetChatDraftMessage -&gt; Value
-</span><a href="#local-6989586621679977388"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-36"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
-</span><span id="line-37"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977390"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977390"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-38"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: SetChatDraftMessage -&gt; Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977391"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977391"><span class="hs-identifier hs-var">message_thread_id_</span></a></span></span><span>
-</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: SetChatDraftMessage -&gt; Maybe DraftMessage
-</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679977392"><span class="annot"><span class="annottext">Maybe DraftMessage
-</span><a href="#local-6989586621679977392"><span class="hs-identifier hs-var">draft_message_</span></a></span></span><span>
-</span><span id="line-40"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-41"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679984315"><span class="hs-identifier hs-var">draft_message_</span></a></span><span>
+</span><span id="line-33"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679984320"><span id="local-6989586621679984324"><span id="local-6989586621679984327"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679984356"><span class="annot"><span class="annottext">toJSON :: SetChatDraftMessage -&gt; Value
+</span><a href="#local-6989586621679984356"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-37"></span><span>    </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SetChatDraftMessage -&gt; Maybe Int
+</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984358"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679984358"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: SetChatDraftMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SetChatDraftMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984359"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679984359"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: SetChatDraftMessage -&gt; Maybe DraftMessage
+</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679984360"><span class="annot"><span class="annottext">Maybe DraftMessage
+</span><a href="#local-6989586621679984360"><span class="hs-identifier hs-var">draft_message_</span></a></span></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-42"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;@type&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+</span><span id="line-43"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;setChatDraftMessage&quot;</span></span><span>
-</span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977390"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;message_thread_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679977391"><span class="hs-identifier hs-var">message_thread_id_</span></a></span><span>
+</span><a href="#local-6989586621679984358"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;draft_message&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe DraftMessage -&gt; Pair
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageTopic -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679984359"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;draft_message&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe DraftMessage -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe DraftMessage
-</span><a href="#local-6989586621679977392"><span class="hs-identifier hs-var">draft_message_</span></a></span><span>
-</span><span id="line-46"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-47"></span><span>
-</span><span id="line-48"></span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#defaultSetChatDraftMessage"><span class="hs-identifier hs-type">defaultSetChatDraftMessage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
-</span><span id="line-49"></span><span id="defaultSetChatDraftMessage"><span class="annot"><span class="annottext">defaultSetChatDraftMessage :: SetChatDraftMessage
+</span><a href="#local-6989586621679984360"><span class="hs-identifier hs-var">draft_message_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#defaultSetChatDraftMessage"><span class="hs-identifier hs-type">defaultSetChatDraftMessage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
+</span><span id="line-50"></span><span id="defaultSetChatDraftMessage"><span class="annot"><span class="annottext">defaultSetChatDraftMessage :: SetChatDraftMessage
 </span><a href="TD.Query.SetChatDraftMessage.html#defaultSetChatDraftMessage"><span class="hs-identifier hs-var hs-var">defaultSetChatDraftMessage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-50"></span><span>  </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
-</span><span id="line-51"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-51"></span><span>  </span><span class="annot"><a href="TD.Query.SetChatDraftMessage.html#SetChatDraftMessage"><span class="hs-identifier hs-type">SetChatDraftMessage</span></a></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.SetChatDraftMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: Maybe Int
-</span><a href="TD.Query.SetChatDraftMessage.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: Maybe MessageTopic
+</span><a href="TD.Query.SetChatDraftMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: Maybe DraftMessage
-</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DraftMessage
+</span><span id="line-54"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">draft_message :: Maybe DraftMessage
+</span><a href="TD.Query.SetChatDraftMessage.html#draft_message"><span class="hs-identifier hs-var">draft_message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe DraftMessage
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-54"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-55"></span><span>
-</span><span id="line-56"></span></pre></body></html>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-56"></span><span>
+</span><span id="line-57"></span></pre></body></html>

@@ -6,27 +6,28 @@
 </span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
 </span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
 </span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
-</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSendOptions.html"><span class="hs-identifier">TD.Data.MessageSendOptions</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSendOptions</span></span><span>
-</span><span id="line-10"></span><span>
-</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Forwards previously sent messages. Returns the forwarded messages in the same order as the message identifiers passed in message_ids. If a message can't be forwarded, null will be returned instead of the message. Returns 'TD.Data.Messages.Messages'</span></span><span>
-</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="ForwardMessages"><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-var">ForwardMessages</span></a></span></span><span>
-</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ForwardMessages"><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-var">ForwardMessages</span></a></span></span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat to which to forward messages</span></span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_thread_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#message_thread_id"><span class="hs-identifier hs-var hs-var">message_thread_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ If not 0, the message thread identifier in which the message will be sent; for forum threads only</span></span><span>
-</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="from_chat_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var hs-var">from_chat_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat from which to forward messages</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_ids"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe [Int]
-</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var hs-var">message_ids</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>                                 </span><span class="annot"><span class="hs-comment">-- ^ Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order. At most 100 messages can be forwarded simultaneously. A message can be forwarded only if messageProperties.can_be_forwarded</span></span><span>
-</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="options"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe MessageSendOptions
-</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var hs-var">options</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSendOptions.html#MessageSendOptions"><span class="hs-identifier hs-type">MessageSendOptions.MessageSendOptions</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Options to be used to send the messages; pass null to use default options</span></span><span>
-</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="send_copy"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var hs-var">send_copy</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                  </span><span class="annot"><span class="hs-comment">-- ^ Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local. Use messageProperties.can_be_copied and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable</span></span><span>
-</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="remove_caption"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var hs-var">remove_caption</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                  </span><span class="annot"><span class="hs-comment">-- ^ Pass true to remove media captions of message copies. Ignored if send_copy is false</span></span><span>
-</span><span id="line-21"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-22"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679918944"><span id="local-6989586621679918958"><span class="annot"><span class="annottext">ForwardMessages -&gt; ForwardMessages -&gt; Bool
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html"><span class="hs-identifier">TD.Data.MessageTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageTopic</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSendOptions.html"><span class="hs-identifier">TD.Data.MessageSendOptions</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSendOptions</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Forwards previously sent messages. Returns the forwarded messages in the same order as the message identifiers passed in message_ids. If a message can't be forwarded, null will be returned instead of the message. Returns 'TD.Data.Messages.Messages'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="ForwardMessages"><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-var">ForwardMessages</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ForwardMessages"><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-var">ForwardMessages</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat to which to forward messages</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="topic_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe MessageTopic
+</span><a href="TD.Query.ForwardMessages.html#topic_id"><span class="hs-identifier hs-var hs-var">topic_id</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html#MessageTopic"><span class="hs-identifier hs-type">MessageTopic.MessageTopic</span></a></span><span>             </span><span class="annot"><span class="hs-comment">-- ^ Topic in which the messages will be forwarded; message threads aren't supported; pass null if none</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="from_chat_id"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var hs-var">from_chat_id</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the chat from which to forward messages</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_ids"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe [Int]
+</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var hs-var">message_ids</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>                                 </span><span class="annot"><span class="hs-comment">-- ^ Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order. At most 100 messages can be forwarded simultaneously. A message can be forwarded only if messageProperties.can_be_forwarded</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="options"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe MessageSendOptions
+</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var hs-var">options</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSendOptions.html#MessageSendOptions"><span class="hs-identifier hs-type">MessageSendOptions.MessageSendOptions</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Options to be used to send the messages; pass null to use default options</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="send_copy"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var hs-var">send_copy</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                  </span><span class="annot"><span class="hs-comment">-- ^ Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local. Use messageProperties.can_be_copied and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="remove_caption"><span class="annot"><span class="annottext">ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var hs-var">remove_caption</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                  </span><span class="annot"><span class="hs-comment">-- ^ Pass true to remove media captions of message copies. Ignored if send_copy is false</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679925448"><span id="local-6989586621679925463"><span class="annot"><span class="annottext">ForwardMessages -&gt; ForwardMessages -&gt; Bool
 (ForwardMessages -&gt; ForwardMessages -&gt; Bool)
 -&gt; (ForwardMessages -&gt; ForwardMessages -&gt; Bool)
 -&gt; Eq ForwardMessages
@@ -35,7 +36,7 @@ $c== :: ForwardMessages -&gt; ForwardMessages -&gt; Bool
 == :: ForwardMessages -&gt; ForwardMessages -&gt; Bool
 $c/= :: ForwardMessages -&gt; ForwardMessages -&gt; Bool
 /= :: ForwardMessages -&gt; ForwardMessages -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679918967"><span id="local-6989586621679918983"><span id="local-6989586621679918987"><span class="annot"><span class="annottext">Int -&gt; ForwardMessages -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679925473"><span id="local-6989586621679925490"><span id="local-6989586621679925494"><span class="annot"><span class="annottext">Int -&gt; ForwardMessages -&gt; ShowS
 [ForwardMessages] -&gt; ShowS
 ForwardMessages -&gt; String
 (Int -&gt; ForwardMessages -&gt; ShowS)
@@ -51,187 +52,187 @@ show :: ForwardMessages -&gt; String
 $cshowList :: [ForwardMessages] -&gt; ShowS
 showList :: [ForwardMessages] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
-</span><span id="line-23"></span><span>
-</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-25"></span><span>  </span><span id="local-6989586621679919011"><span class="annot"><span class="annottext">shortShow :: ForwardMessages -&gt; String
-</span><a href="#local-6989586621679919011"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
-</span><span id="line-26"></span><span>    </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
-</span><span id="line-27"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919013"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919013"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-28"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919014"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919014"><span class="hs-identifier hs-var">message_thread_id_</span></a></span></span><span>
-</span><span id="line-29"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919015"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919015"><span class="hs-identifier hs-var">from_chat_id_</span></a></span></span><span>
-</span><span id="line-30"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ForwardMessages -&gt; Maybe [Int]
-</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919016"><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679919016"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
-</span><span id="line-31"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: ForwardMessages -&gt; Maybe MessageSendOptions
-</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919017"><span class="annot"><span class="annottext">Maybe MessageSendOptions
-</span><a href="#local-6989586621679919017"><span class="hs-identifier hs-var">options_</span></a></span></span><span>
-</span><span id="line-32"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919018"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919018"><span class="hs-identifier hs-var">send_copy_</span></a></span></span><span>
-</span><span id="line-33"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919019"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919019"><span class="hs-identifier hs-var">remove_caption_</span></a></span></span><span>
-</span><span id="line-34"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-35"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>  </span><span id="local-6989586621679925520"><span class="annot"><span class="annottext">shortShow :: ForwardMessages -&gt; String
+</span><a href="#local-6989586621679925520"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925522"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679925522"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: ForwardMessages -&gt; Maybe MessageTopic
+</span><a href="TD.Query.ForwardMessages.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925523"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679925523"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925524"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679925524"><span class="hs-identifier hs-var">from_chat_id_</span></a></span></span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ForwardMessages -&gt; Maybe [Int]
+</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925525"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679925525"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
+</span><span id="line-32"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: ForwardMessages -&gt; Maybe MessageSendOptions
+</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925526"><span class="annot"><span class="annottext">Maybe MessageSendOptions
+</span><a href="#local-6989586621679925526"><span class="hs-identifier hs-var">options_</span></a></span></span><span>
+</span><span id="line-33"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925527"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925527"><span class="hs-identifier hs-var">send_copy_</span></a></span></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925528"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925528"><span class="hs-identifier hs-var">remove_caption_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;ForwardMessages&quot;</span></span><span>
-</span><span id="line-36"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+</span><span id="line-37"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
 </span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
-</span><span id="line-37"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span id="line-38"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919013"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
-</span><span id="line-38"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;message_thread_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919014"><span class="hs-identifier hs-var">message_thread_id_</span></a></span><span>
+</span><a href="#local-6989586621679925522"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;from_chat_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageTopic -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679925523"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;from_chat_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919015"><span class="hs-identifier hs-var">from_chat_id_</span></a></span><span>
-</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;message_ids&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe [Int] -&gt; String
+</span><a href="#local-6989586621679925524"><span class="hs-identifier hs-var">from_chat_id_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message_ids&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe [Int] -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679919016"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
-</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;options&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSendOptions -&gt; String
+</span><a href="#local-6989586621679925525"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;options&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSendOptions -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSendOptions
-</span><a href="#local-6989586621679919017"><span class="hs-identifier hs-var">options_</span></a></span><span>
-</span><span id="line-42"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;send_copy&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
-forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
-</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919018"><span class="hs-identifier hs-var">send_copy_</span></a></span><span>
+</span><a href="#local-6989586621679925526"><span class="hs-identifier hs-var">options_</span></a></span><span>
 </span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><span class="hs-string">&quot;remove_caption&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+</span><span class="hs-string">&quot;send_copy&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
 forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
 </span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919019"><span class="hs-identifier hs-var">remove_caption_</span></a></span><span>
-</span><span id="line-44"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-45"></span><span>
-</span><span id="line-46"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679919024"><span id="local-6989586621679919028"><span id="local-6989586621679919031"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-47"></span><span>  </span><span id="local-6989586621679919074"><span class="annot"><span class="annottext">toJSON :: ForwardMessages -&gt; Value
-</span><a href="#local-6989586621679919074"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
-</span><span id="line-48"></span><span>    </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
-</span><span id="line-49"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919076"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919076"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
-</span><span id="line-50"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919077"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919077"><span class="hs-identifier hs-var">message_thread_id_</span></a></span></span><span>
-</span><span id="line-51"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: ForwardMessages -&gt; Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919078"><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919078"><span class="hs-identifier hs-var">from_chat_id_</span></a></span></span><span>
-</span><span id="line-52"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ForwardMessages -&gt; Maybe [Int]
-</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919079"><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679919079"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
-</span><span id="line-53"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: ForwardMessages -&gt; Maybe MessageSendOptions
-</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919080"><span class="annot"><span class="annottext">Maybe MessageSendOptions
-</span><a href="#local-6989586621679919080"><span class="hs-identifier hs-var">options_</span></a></span></span><span>
-</span><span id="line-54"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919081"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919081"><span class="hs-identifier hs-var">send_copy_</span></a></span></span><span>
-</span><span id="line-55"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: ForwardMessages -&gt; Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679919082"><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919082"><span class="hs-identifier hs-var">remove_caption_</span></a></span></span><span>
-</span><span id="line-56"></span><span>      </span><span class="hs-special">}</span><span>
-</span><span id="line-57"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><a href="#local-6989586621679925527"><span class="hs-identifier hs-var">send_copy_</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;remove_caption&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925528"><span class="hs-identifier hs-var">remove_caption_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679925533"><span id="local-6989586621679925537"><span id="local-6989586621679925540"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-48"></span><span>  </span><span id="local-6989586621679925585"><span class="annot"><span class="annottext">toJSON :: ForwardMessages -&gt; Value
+</span><a href="#local-6989586621679925585"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
+</span><span id="line-50"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925587"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679925587"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-51"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: ForwardMessages -&gt; Maybe MessageTopic
+</span><a href="TD.Query.ForwardMessages.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925588"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679925588"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-52"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: ForwardMessages -&gt; Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925589"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679925589"><span class="hs-identifier hs-var">from_chat_id_</span></a></span></span><span>
+</span><span id="line-53"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: ForwardMessages -&gt; Maybe [Int]
+</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925590"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679925590"><span class="hs-identifier hs-var">message_ids_</span></a></span></span><span>
+</span><span id="line-54"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: ForwardMessages -&gt; Maybe MessageSendOptions
+</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925591"><span class="annot"><span class="annottext">Maybe MessageSendOptions
+</span><a href="#local-6989586621679925591"><span class="hs-identifier hs-var">options_</span></a></span></span><span>
+</span><span id="line-55"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925592"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925592"><span class="hs-identifier hs-var">send_copy_</span></a></span></span><span>
+</span><span id="line-56"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: ForwardMessages -&gt; Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679925593"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925593"><span class="hs-identifier hs-var">remove_caption_</span></a></span></span><span>
+</span><span id="line-57"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-58"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
 </span><span class="hs-identifier hs-var">A.object</span></span><span>
-</span><span id="line-58"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;@type&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+</span><span id="line-59"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
 </span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
 </span><span class="hs-string">&quot;forwardMessages&quot;</span></span><span>
-</span><span id="line-59"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919076"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-60"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;message_thread_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919077"><span class="hs-identifier hs-var">message_thread_id_</span></a></span><span>
+</span><a href="#local-6989586621679925587"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
 </span><span id="line-61"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;from_chat_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageTopic -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621679925588"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;from_chat_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
-</span><a href="#local-6989586621679919078"><span class="hs-identifier hs-var">from_chat_id_</span></a></span><span>
-</span><span id="line-62"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;message_ids&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Maybe [Int] -&gt; Pair
+</span><a href="#local-6989586621679925589"><span class="hs-identifier hs-var">from_chat_id_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message_ids&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe [Int] -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
-</span><a href="#local-6989586621679919079"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
-</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;options&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSendOptions -&gt; Pair
+</span><a href="#local-6989586621679925590"><span class="hs-identifier hs-var">message_ids_</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;options&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSendOptions -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSendOptions
-</span><a href="#local-6989586621679919080"><span class="hs-identifier hs-var">options_</span></a></span><span>
-</span><span id="line-64"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;send_copy&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
-forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
-forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
-</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919081"><span class="hs-identifier hs-var">send_copy_</span></a></span><span>
+</span><a href="#local-6989586621679925591"><span class="hs-identifier hs-var">options_</span></a></span><span>
 </span><span id="line-65"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
-</span><span class="hs-string">&quot;remove_caption&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+</span><span class="hs-string">&quot;send_copy&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
 forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
 forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
 </span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
-</span><a href="#local-6989586621679919082"><span class="hs-identifier hs-var">remove_caption_</span></a></span><span>
-</span><span id="line-66"></span><span>          </span><span class="hs-special">]</span><span>
-</span><span id="line-67"></span><span>
-</span><span id="line-68"></span><span class="annot"><a href="TD.Query.ForwardMessages.html#defaultForwardMessages"><span class="hs-identifier hs-type">defaultForwardMessages</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
-</span><span id="line-69"></span><span id="defaultForwardMessages"><span class="annot"><span class="annottext">defaultForwardMessages :: ForwardMessages
+</span><a href="#local-6989586621679925592"><span class="hs-identifier hs-var">send_copy_</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;remove_caption&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679925593"><span class="hs-identifier hs-var">remove_caption_</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="annot"><a href="TD.Query.ForwardMessages.html#defaultForwardMessages"><span class="hs-identifier hs-type">defaultForwardMessages</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
+</span><span id="line-70"></span><span id="defaultForwardMessages"><span class="annot"><span class="annottext">defaultForwardMessages :: ForwardMessages
 </span><a href="TD.Query.ForwardMessages.html#defaultForwardMessages"><span class="hs-identifier hs-var hs-var">defaultForwardMessages</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
-</span><span id="line-70"></span><span>  </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
-</span><span id="line-71"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-71"></span><span>  </span><span class="annot"><a href="TD.Query.ForwardMessages.html#ForwardMessages"><span class="hs-identifier hs-type">ForwardMessages</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-72"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_thread_id :: Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#message_thread_id"><span class="hs-identifier hs-var">message_thread_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: Maybe MessageTopic
+</span><a href="TD.Query.ForwardMessages.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: Maybe Int
-</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">from_chat_id :: Maybe Int
+</span><a href="TD.Query.ForwardMessages.html#from_chat_id"><span class="hs-identifier hs-var">from_chat_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: Maybe [Int]
-</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
+</span><span id="line-75"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_ids :: Maybe [Int]
+</span><a href="TD.Query.ForwardMessages.html#message_ids"><span class="hs-identifier hs-var">message_ids</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-75"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: Maybe MessageSendOptions
-</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSendOptions
+</span><span id="line-76"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">options :: Maybe MessageSendOptions
+</span><a href="TD.Query.ForwardMessages.html#options"><span class="hs-identifier hs-var">options</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSendOptions
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-76"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">send_copy :: Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#send_copy"><span class="hs-identifier hs-var">send_copy</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: Maybe Bool
-</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">remove_caption :: Maybe Bool
+</span><a href="TD.Query.ForwardMessages.html#remove_caption"><span class="hs-identifier hs-var">remove_caption</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
 forall a. Maybe a
 </span><span class="hs-identifier hs-var">Nothing</span></span><span>
-</span><span id="line-78"></span><span>    </span><span class="hs-special">}</span><span>
-</span><span id="line-79"></span><span>
-</span><span id="line-80"></span></pre></body></html>
+</span><span id="line-79"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span></pre></body></html>
