@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.2.0
+@version 2.1.3.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -69,40 +69,6 @@ instance GHC.Classes.Eq TD.Data.WebAppInfo.WebAppInfo
 instance TD.Lib.Internal.ShortShow TD.Data.WebAppInfo.WebAppInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppInfo.WebAppInfo
 
-module TD.Data.VideoChatStream
-data VideoChatStream
-
--- | Describes an available stream in a video chat
-VideoChatStream :: Maybe Int -> Maybe Int -> Maybe Int -> VideoChatStream
-
--- | Identifier of an audio/video channel
-[channel_id] :: VideoChatStream -> Maybe Int
-
--- | Scale of segment durations in the stream. The duration is
---   1000/(2**scale) milliseconds
-[scale] :: VideoChatStream -> Maybe Int
-
--- | Point in time when the stream currently ends; Unix timestamp in
---   milliseconds
-[time_offset] :: VideoChatStream -> Maybe Int
-instance GHC.Show.Show TD.Data.VideoChatStream.VideoChatStream
-instance GHC.Classes.Eq TD.Data.VideoChatStream.VideoChatStream
-instance TD.Lib.Internal.ShortShow TD.Data.VideoChatStream.VideoChatStream
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoChatStream.VideoChatStream
-
-module TD.Data.VideoChatStreams
-data VideoChatStreams
-
--- | Represents a list of video chat streams
-VideoChatStreams :: Maybe [VideoChatStream] -> VideoChatStreams
-
--- | A list of video chat streams
-[streams] :: VideoChatStreams -> Maybe [VideoChatStream]
-instance GHC.Show.Show TD.Data.VideoChatStreams.VideoChatStreams
-instance GHC.Classes.Eq TD.Data.VideoChatStreams.VideoChatStreams
-instance TD.Lib.Internal.ShortShow TD.Data.VideoChatStreams.VideoChatStreams
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoChatStreams.VideoChatStreams
-
 module TD.Data.VerificationStatus
 data VerificationStatus
 
@@ -146,7 +112,7 @@ module TD.Data.Usernames
 data Usernames
 
 -- | Describes usernames assigned to a user, a supergroup, or a channel
-Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Usernames
+Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Maybe [Text] -> Usernames
 
 -- | List of active usernames; the first one must be shown as the primary
 --   username. The order of active usernames can be changed with
@@ -160,9 +126,13 @@ Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Usernames
 [disabled_usernames] :: Usernames -> Maybe [Text]
 
 -- | Active or disabled username, which may be changed with setUsername or
---   setSupergroupUsername. Information about other active usernames can be
---   received using getCollectibleItemInfo
+--   setSupergroupUsername
 [editable_username] :: Usernames -> Maybe Text
+
+-- | Collectible usernames that were purchased at
+--   <a>https://fragment.com</a> and can be passed to
+--   getCollectibleItemInfo for more details
+[collectible_usernames] :: Usernames -> Maybe [Text]
 instance GHC.Show.Show TD.Data.Usernames.Usernames
 instance GHC.Classes.Eq TD.Data.Usernames.Usernames
 instance TD.Lib.Internal.ShortShow TD.Data.Usernames.Usernames
@@ -415,6 +385,10 @@ UserPrivacySettingShowBio :: UserPrivacySetting
 
 -- | A privacy setting for managing whether the user's birthdate is visible
 UserPrivacySettingShowBirthdate :: UserPrivacySetting
+
+-- | A privacy setting for managing whether the user's profile audio files
+--   are visible
+UserPrivacySettingShowProfileAudio :: UserPrivacySetting
 
 -- | A privacy setting for managing whether the user can be invited to
 --   chats
@@ -1421,7 +1395,7 @@ module TD.Data.StoryInfo
 data StoryInfo
 
 -- | Contains basic information about a story
-StoryInfo :: Maybe Int -> Maybe Int -> Maybe Bool -> StoryInfo
+StoryInfo :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> StoryInfo
 
 -- | Unique story identifier among stories of the chat
 [story_id] :: StoryInfo -> Maybe Int
@@ -1431,6 +1405,9 @@ StoryInfo :: Maybe Int -> Maybe Int -> Maybe Bool -> StoryInfo
 
 -- | True, if the story is available only to close friends
 [is_for_close_friends] :: StoryInfo -> Maybe Bool
+
+-- | True, if the story is a live story
+[is_live] :: StoryInfo -> Maybe Bool
 instance GHC.Show.Show TD.Data.StoryInfo.StoryInfo
 instance GHC.Classes.Eq TD.Data.StoryInfo.StoryInfo
 instance TD.Lib.Internal.ShortShow TD.Data.StoryInfo.StoryInfo
@@ -4097,7 +4074,7 @@ module TD.Data.PremiumGiftCodeInfo
 data PremiumGiftCodeInfo
 
 -- | Contains information about a Telegram Premium gift code
-PremiumGiftCodeInfo :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> PremiumGiftCodeInfo
+PremiumGiftCodeInfo :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> PremiumGiftCodeInfo
 
 -- | Identifier of a chat or a user that created the gift code; may be null
 --   if unknown. If null and the code is from messagePremiumGiftCode
@@ -4115,8 +4092,12 @@ PremiumGiftCodeInfo :: Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe I
 [giveaway_message_id] :: PremiumGiftCodeInfo -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
---   after code activation
+--   after code activation; 0 if the number of months isn't integer
 [month_count] :: PremiumGiftCodeInfo -> Maybe Int
+
+-- | Number of days the Telegram Premium subscription will be active after
+--   code activation
+[day_count] :: PremiumGiftCodeInfo -> Maybe Int
 
 -- | Identifier of a user for which the code was created; 0 if none
 [user_id] :: PremiumGiftCodeInfo -> Maybe Int
@@ -4200,11 +4181,18 @@ module TD.Data.MessageSchedulingState
 data MessageSchedulingState
 
 -- | The message will be sent at the specified date
-MessageSchedulingStateSendAtDate :: Maybe Int -> MessageSchedulingState
+MessageSchedulingStateSendAtDate :: Maybe Int -> Maybe Int -> MessageSchedulingState
 
 -- | Point in time (Unix timestamp) when the message will be sent. The date
 --   must be within 367 days in the future
 [send_date] :: MessageSchedulingState -> Maybe Int
+
+-- | Period after which the message will be sent again; in seconds; 0 if
+--   never; for Telegram Premium users only; may be non-zero only in
+--   sendMessage and forwardMessages with one message requests; must be one
+--   of 0, 86400, 7 * 86400, 14 * 86400, 30 * 86400, 91 * 86400, 182 *
+--   86400, 365 * 86400, or additionally 60, or 300 in the Test DC
+[repeat_period] :: MessageSchedulingState -> Maybe Int
 
 -- | The message will be sent when the other user is online. Applicable to
 --   private chats only and when the exact online status of the other user
@@ -5026,6 +5014,23 @@ instance GHC.Show.Show TD.Data.LocalFile.LocalFile
 instance GHC.Classes.Eq TD.Data.LocalFile.LocalFile
 instance TD.Lib.Internal.ShortShow TD.Data.LocalFile.LocalFile
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LocalFile.LocalFile
+
+module TD.Data.LiveStoryDonors
+data LiveStoryDonors
+
+-- | Contains a list of users and chats that spend most money on paid
+--   messages and reactions in a live story
+LiveStoryDonors :: Maybe Int -> Maybe [PaidReactor] -> LiveStoryDonors
+
+-- | Total amount of spend Telegram Stars
+[total_star_count] :: LiveStoryDonors -> Maybe Int
+
+-- | List of top donors in the live story
+[top_donors] :: LiveStoryDonors -> Maybe [PaidReactor]
+instance GHC.Show.Show TD.Data.LiveStoryDonors.LiveStoryDonors
+instance GHC.Classes.Eq TD.Data.LiveStoryDonors.LiveStoryDonors
+instance TD.Lib.Internal.ShortShow TD.Data.LiveStoryDonors.LiveStoryDonors
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LiveStoryDonors.LiveStoryDonors
 
 module TD.Data.LinkPreviewOptions
 data LinkPreviewOptions
@@ -6369,6 +6374,40 @@ instance TD.Lib.Internal.ShortShow TD.Data.GroupCallVideoQuality.GroupCallVideoQ
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallVideoQuality.GroupCallVideoQuality
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GroupCallVideoQuality.GroupCallVideoQuality
 
+module TD.Data.GroupCallStream
+data GroupCallStream
+
+-- | Describes an available stream in a video chat or a live story
+GroupCallStream :: Maybe Int -> Maybe Int -> Maybe Int -> GroupCallStream
+
+-- | Identifier of an audio/video channel
+[channel_id] :: GroupCallStream -> Maybe Int
+
+-- | Scale of segment durations in the stream. The duration is
+--   1000/(2**scale) milliseconds
+[scale] :: GroupCallStream -> Maybe Int
+
+-- | Point in time when the stream currently ends; Unix timestamp in
+--   milliseconds
+[time_offset] :: GroupCallStream -> Maybe Int
+instance GHC.Show.Show TD.Data.GroupCallStream.GroupCallStream
+instance GHC.Classes.Eq TD.Data.GroupCallStream.GroupCallStream
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallStream.GroupCallStream
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallStream.GroupCallStream
+
+module TD.Data.GroupCallStreams
+data GroupCallStreams
+
+-- | Represents a list of group call streams
+GroupCallStreams :: Maybe [GroupCallStream] -> GroupCallStreams
+
+-- | A list of group call streams
+[streams] :: GroupCallStreams -> Maybe [GroupCallStream]
+instance GHC.Show.Show TD.Data.GroupCallStreams.GroupCallStreams
+instance GHC.Classes.Eq TD.Data.GroupCallStreams.GroupCallStreams
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallStreams.GroupCallStreams
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallStreams.GroupCallStreams
+
 module TD.Data.GroupCallRecentSpeaker
 data GroupCallRecentSpeaker
 
@@ -6495,6 +6534,40 @@ instance GHC.Classes.Eq TD.Data.GroupCallParticipant.GroupCallParticipant
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCallParticipant.GroupCallParticipant
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallParticipant.GroupCallParticipant
 
+module TD.Data.GroupCallMessageLevel
+data GroupCallMessageLevel
+
+-- | Represents a level of features for a message sent in a live story
+--   group call
+GroupCallMessageLevel :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GroupCallMessageLevel
+
+-- | The minimum number of Telegram Stars required to get features of the
+--   level
+[min_star_count] :: GroupCallMessageLevel -> Maybe Int
+
+-- | The amount of time the message of this level will be pinned, in
+--   seconds
+[pin_duration] :: GroupCallMessageLevel -> Maybe Int
+
+-- | The maximum allowed length of the message text
+[max_text_length] :: GroupCallMessageLevel -> Maybe Int
+
+-- | The maximum allowed number of custom emoji in the message text
+[max_custom_emoji_count] :: GroupCallMessageLevel -> Maybe Int
+
+-- | The first color used to show the message text in the RGB format
+[first_color] :: GroupCallMessageLevel -> Maybe Int
+
+-- | The second color used to show the message text in the RGB format
+[second_color] :: GroupCallMessageLevel -> Maybe Int
+
+-- | Background color for the message the RGB format
+[background_color] :: GroupCallMessageLevel -> Maybe Int
+instance GHC.Show.Show TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
+instance GHC.Classes.Eq TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
+
 module TD.Data.GroupCallJoinParameters
 data GroupCallJoinParameters
 
@@ -6568,7 +6641,7 @@ module TD.Data.GroupCall
 data GroupCall
 
 -- | Describes a group call
-GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
+GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageSender -> Maybe [GroupCallRecentSpeaker] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> GroupCall
 
 -- | Group call identifier
 [_id] :: GroupCall -> Maybe Int
@@ -6577,8 +6650,14 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool ->
 [title] :: GroupCall -> Maybe Text
 
 -- | Invite link for the group call; for group calls that aren't bound to a
---   chat. For video chats call getVideoChatInviteLink to get the link
+--   chat. For video chats call getVideoChatInviteLink to get the link. For
+--   live stories in chats with username call getInternalLink with
+--   internalLinkTypeLiveStory
 [invite_link] :: GroupCall -> Maybe Text
+
+-- | The minimum number of Telegram Stars that must be paid by general
+--   participant for each sent message to the call; for live stories only
+[paid_message_star_count] :: GroupCall -> Maybe Int
 
 -- | Point in time (Unix timestamp) when the group call is expected to be
 --   started by an administrator; 0 if it is already active or was ended;
@@ -6595,8 +6674,11 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool ->
 -- | True, if the call is bound to a chat
 [is_video_chat] :: GroupCall -> Maybe Bool
 
+-- | True, if the call is a live story of a chat
+[is_live_story] :: GroupCall -> Maybe Bool
+
 -- | True, if the call is an RTMP stream instead of an ordinary video chat;
---   for video chats only
+--   for video chats and live stories only
 [is_rtmp_stream] :: GroupCall -> Maybe Bool
 
 -- | True, if the call is joined
@@ -6612,7 +6694,7 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool ->
 [is_owned] :: GroupCall -> Maybe Bool
 
 -- | True, if the current user can manage the group call; for video chats
---   only
+--   and live stories only
 [can_be_managed] :: GroupCall -> Maybe Bool
 
 -- | Number of participants in the group call
@@ -6624,6 +6706,10 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool ->
 
 -- | True, if all group call participants are loaded
 [loaded_all_participants] :: GroupCall -> Maybe Bool
+
+-- | Message sender chosen to send messages to the group call; for live
+--   stories only; may be null if the call isn't a live story
+[message_sender_id] :: GroupCall -> Maybe MessageSender
 
 -- | At most 3 recently speaking users in the group call
 [recent_speakers] :: GroupCall -> Maybe [GroupCallRecentSpeaker]
@@ -6645,12 +6731,18 @@ GroupCall :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Bool ->
 --   setting; for video chats only
 [can_toggle_mute_new_participants] :: GroupCall -> Maybe Bool
 
--- | True, if users can send messages to the group call
+-- | True, if the current user can send messages to the group call
 [can_send_messages] :: GroupCall -> Maybe Bool
 
--- | True, if the current user can enable or disable sending messages in
+-- | True, if sending of messages is allowed in the group call
+[are_messages_allowed] :: GroupCall -> Maybe Bool
+
+-- | True, if the current user can enable or disable sending of messages in
 --   the group call
-[can_toggle_can_send_messages] :: GroupCall -> Maybe Bool
+[can_toggle_are_messages_allowed] :: GroupCall -> Maybe Bool
+
+-- | True, if the user can delete messages in the group call
+[can_delete_messages] :: GroupCall -> Maybe Bool
 
 -- | Duration of the ongoing group call recording, in seconds; 0 if none.
 --   An updateGroupCall update is not triggered when value of this field
@@ -7576,6 +7668,16 @@ SuggestedActionCustom :: Maybe Text -> Maybe FormattedText -> Maybe FormattedTex
 
 -- | The link to open when the suggestion is clicked
 [url] :: SuggestedAction -> Maybe Text
+
+-- | Suggests the user to add login email address. Call
+--   isLoginEmailAddressRequired, and then setLoginEmailAddress or
+--   checkLoginEmailAddressCode to change the login email address
+SuggestedActionSetLoginEmailAddress :: Maybe Bool -> SuggestedAction
+
+-- | True, if the suggested action can be hidden using hideSuggestedAction.
+--   Otherwise, the user must not be able to use the app without setting up
+--   the email address
+[can_be_hidden] :: SuggestedAction -> Maybe Bool
 instance GHC.Show.Show TD.Data.SuggestedAction.SuggestedAction
 instance GHC.Classes.Eq TD.Data.SuggestedAction.SuggestedAction
 instance TD.Lib.Internal.ShortShow TD.Data.SuggestedAction.SuggestedAction
@@ -8007,6 +8109,41 @@ instance GHC.Classes.Eq TD.Data.ImportedContact.ImportedContact
 instance TD.Lib.Internal.ShortShow TD.Data.ImportedContact.ImportedContact
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ImportedContact.ImportedContact
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ImportedContact.ImportedContact
+
+module TD.Data.GroupCallMessage
+data GroupCallMessage
+
+-- | Represents a message sent in a group call
+GroupCallMessage :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe FormattedText -> Maybe Int -> Maybe Bool -> Maybe Bool -> GroupCallMessage
+
+-- | Unique message identifier within the group call
+[message_id] :: GroupCallMessage -> Maybe Int
+
+-- | Identifier of the sender of the message
+[sender_id] :: GroupCallMessage -> Maybe MessageSender
+
+-- | Point in time (Unix timestamp) when the message was sent
+[date] :: GroupCallMessage -> Maybe Int
+
+-- | Text of the message. If empty, then the message is a paid reaction in
+--   a live story
+[text] :: GroupCallMessage -> Maybe FormattedText
+
+-- | The number of Telegram Stars that were paid to send the message; for
+--   live stories only
+[paid_message_star_count] :: GroupCallMessage -> Maybe Int
+
+-- | True, if the message is sent by the owner of the call and must be
+--   treated as a message of the maximum level; for live stories only
+[is_from_owner] :: GroupCallMessage -> Maybe Bool
+
+-- | True, if the message can be deleted by the current user; for live
+--   stories only
+[can_be_deleted] :: GroupCallMessage -> Maybe Bool
+instance GHC.Show.Show TD.Data.GroupCallMessage.GroupCallMessage
+instance GHC.Classes.Eq TD.Data.GroupCallMessage.GroupCallMessage
+instance TD.Lib.Internal.ShortShow TD.Data.GroupCallMessage.GroupCallMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallMessage.GroupCallMessage
 
 module TD.Data.FirebaseDeviceVerificationParameters
 
@@ -9386,6 +9523,16 @@ StoryContentVideo :: Maybe StoryVideo -> Maybe StoryVideo -> StoryContent
 --   codec; may be null
 [alternative_video] :: StoryContent -> Maybe StoryVideo
 
+-- | A live story
+StoryContentLive :: Maybe Int -> Maybe Bool -> StoryContent
+
+-- | Identifier of the corresponding group call. The group call can be
+--   received through the method getGroupCall
+[group_call_id] :: StoryContent -> Maybe Int
+
+-- | True, if the call is an RTMP stream instead of an ordinary group call
+[is_rtmp_stream] :: StoryContent -> Maybe Bool
+
 -- | A story content that is not supported in the current TDLib version
 StoryContentUnsupported :: StoryContent
 instance GHC.Show.Show TD.Data.StoryContent.StoryContent
@@ -9397,7 +9544,7 @@ module TD.Data.Story
 data Story
 
 -- | Represents a story
-Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Maybe [Int] -> Story
+Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Maybe [Int] -> Story
 
 -- | Unique story identifier among stories posted by the given chat
 [_id] :: Story -> Maybe Int
@@ -9428,7 +9575,8 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 -- | True, if the story is visible only for the current user
 [is_visible_only_for_self] :: Story -> Maybe Bool
 
--- | True, if the story can be added to an album
+-- | True, if the story can be added to an album using createStoryAlbum and
+--   addStoryAlbumStories
 [can_be_added_to_album] :: Story -> Maybe Bool
 
 -- | True, if the story can be deleted
@@ -9445,6 +9593,9 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 -- | True, if the story can be replied in the chat with the user that
 --   posted the story
 [can_be_replied] :: Story -> Maybe Bool
+
+-- | True, if the story privacy settings can be changed
+[can_set_privacy_settings] :: Story -> Maybe Bool
 
 -- | True, if the story's is_posted_to_chat_page value can be changed
 [can_toggle_is_posted_to_chat_page] :: Story -> Maybe Bool
@@ -10172,117 +10323,6 @@ instance GHC.Classes.Eq TD.Data.EmojiStatus.EmojiStatus
 instance TD.Lib.Internal.ShortShow TD.Data.EmojiStatus.EmojiStatus
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EmojiStatus.EmojiStatus
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.EmojiStatus.EmojiStatus
-
-module TD.Data.User
-data User
-
--- | Represents a user
-User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe UpgradedGiftColors -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
-
--- | User identifier
-[_id] :: User -> Maybe Int
-
--- | First name of the user
-[first_name] :: User -> Maybe Text
-
--- | Last name of the user
-[last_name] :: User -> Maybe Text
-
--- | Usernames of the user; may be null
-[usernames] :: User -> Maybe Usernames
-
--- | Phone number of the user
-[phone_number] :: User -> Maybe Text
-
--- | Current online status of the user
-[status] :: User -> Maybe UserStatus
-
--- | Profile photo of the user; may be null
-[profile_photo] :: User -> Maybe ProfilePhoto
-
--- | Identifier of the accent color for name, and backgrounds of profile
---   photo, reply header, and link preview
-[accent_color_id] :: User -> Maybe Int
-
--- | Identifier of a custom emoji to be shown on the reply header and link
---   preview background; 0 if none
-[background_custom_emoji_id] :: User -> Maybe Int
-
--- | Color scheme based on an upgraded gift to be used for the user instead
---   of accent_color_id and background_custom_emoji_id; may be null if none
-[upgraded_gift_colors] :: User -> Maybe UpgradedGiftColors
-
--- | Identifier of the accent color for the user's profile; -1 if none
-[profile_accent_color_id] :: User -> Maybe Int
-
--- | Identifier of a custom emoji to be shown on the background of the
---   user's profile; 0 if none
-[profile_background_custom_emoji_id] :: User -> Maybe Int
-
--- | Emoji status to be shown instead of the default Telegram Premium
---   badge; may be null
-[emoji_status] :: User -> Maybe EmojiStatus
-
--- | The user is a contact of the current user
-[is_contact] :: User -> Maybe Bool
-
--- | The user is a contact of the current user and the current user is a
---   contact of the user
-[is_mutual_contact] :: User -> Maybe Bool
-
--- | The user is a close friend of the current user; implies that the user
---   is a contact
-[is_close_friend] :: User -> Maybe Bool
-
--- | Information about verification status of the user; may be null if none
-[verification_status] :: User -> Maybe VerificationStatus
-
--- | True, if the user is a Telegram Premium user
-[is_premium] :: User -> Maybe Bool
-
--- | True, if the user is Telegram support account
-[is_support] :: User -> Maybe Bool
-
--- | Information about restrictions that must be applied to the
---   corresponding private chat; may be null if none
-[restriction_info] :: User -> Maybe RestrictionInfo
-
--- | True, if the user has non-expired stories available to the current
---   user
-[has_active_stories] :: User -> Maybe Bool
-
--- | True, if the user has unread non-expired stories available to the
---   current user
-[has_unread_active_stories] :: User -> Maybe Bool
-
--- | True, if the user may restrict new chats with non-contacts. Use
---   canSendMessageToUser to check whether the current user can message the
---   user or try to create a chat with them
-[restricts_new_chats] :: User -> Maybe Bool
-
--- | Number of Telegram Stars that must be paid by general user for each
---   sent message to the user. If positive and userFullInfo is unknown, use
---   canSendMessageToUser to check whether the current user must pay
-[paid_message_star_count] :: User -> Maybe Int
-
--- | If false, the user is inaccessible, and the only information known
---   about the user is inside this class. Identifier of the user can't be
---   passed to any method
-[have_access] :: User -> Maybe Bool
-
--- | Type of the user
-[_type] :: User -> Maybe UserType
-
--- | IETF language tag of the user's language; only available to bots
-[language_code] :: User -> Maybe Text
-
--- | True, if the user added the current bot to attachment menu; only
---   available to bots
-[added_to_attachment_menu] :: User -> Maybe Bool
-instance GHC.Show.Show TD.Data.User.User
-instance GHC.Classes.Eq TD.Data.User.User
-instance TD.Lib.Internal.ShortShow TD.Data.User.User
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.User.User
 
 module TD.Data.EmojiStatuses
 data EmojiStatuses
@@ -12130,7 +12170,7 @@ module TD.Data.ChecklistTask
 data ChecklistTask
 
 -- | Describes a task in a checklist
-ChecklistTask :: Maybe Int -> Maybe FormattedText -> Maybe Int -> Maybe Int -> ChecklistTask
+ChecklistTask :: Maybe Int -> Maybe FormattedText -> Maybe MessageSender -> Maybe Int -> ChecklistTask
 
 -- | Unique identifier of the task
 [_id] :: ChecklistTask -> Maybe Int
@@ -12140,9 +12180,9 @@ ChecklistTask :: Maybe Int -> Maybe FormattedText -> Maybe Int -> Maybe Int -> C
 --   Hashtag, Cashtag and PhoneNumber entities
 [text] :: ChecklistTask -> Maybe FormattedText
 
--- | Identifier of the user that completed the task; 0 if the task isn't
---   completed
-[completed_by_user_id] :: ChecklistTask -> Maybe Int
+-- | Identifier of the user or chat that completed the task; may be null if
+--   the task isn't completed yet
+[completed_by] :: ChecklistTask -> Maybe MessageSender
 
 -- | Point in time (Unix timestamp) when the task was completed; 0 if the
 --   task isn't completed
@@ -14896,6 +14936,19 @@ InternalLinkTypeLanguagePack :: Maybe Text -> InternalLinkType
 -- | The link is a link to the language section of the application settings
 InternalLinkTypeLanguageSettings :: InternalLinkType
 
+-- | The link is a link to a live story. Call searchPublicChat with the
+--   given chat username, then getChatActiveStories to get active stories
+--   in the chat, then find a live story among active stories of the chat,
+--   and then joinLiveStory to join the live story
+InternalLinkTypeLiveStory :: Maybe Text -> InternalLinkType
+
+-- | Username of the poster of the story
+[story_poster_username] :: InternalLinkType -> Maybe Text
+
+-- | The link is a link to the login email set up section of the
+--   application settings, forcing set up of the login email
+InternalLinkTypeLoginEmailSettings :: InternalLinkType
+
 -- | The link is a link to the main Web App of a bot. Call searchPublicChat
 --   with the given bot username, check that the user is a bot and has the
 --   main Web App. If the bot can be added to attachment menu, then use
@@ -14974,6 +15027,9 @@ InternalLinkTypePassportDataRequest :: Maybe Int -> Maybe Text -> Maybe Text -> 
 --   tgbot{bot_user_id}:/<i>passport</i>cancel must be opened otherwise
 [callback_url] :: InternalLinkType -> Maybe Text
 
+-- | The link is a link to the password section of the application settings
+InternalLinkTypePasswordSettings :: InternalLinkType
+
 -- | The link can be used to confirm ownership of a phone number to prevent
 --   account deletion. Call sendPhoneNumberCode with the given phone number
 --   and with phoneNumberCodeTypeConfirmOwnership with the given hash to
@@ -14986,6 +15042,10 @@ InternalLinkTypePhoneNumberConfirmation :: Maybe Text -> Maybe Text -> InternalL
 
 -- | Phone number value from the link
 [phone_number] :: InternalLinkType -> Maybe Text
+
+-- | The link is a link to the phone number privacy settings section of the
+--   application settings
+InternalLinkTypePhoneNumberPrivacySettings :: InternalLinkType
 
 -- | The link is a link to the Premium features screen of the application
 --   from which the user can subscribe to Telegram Premium. Call
@@ -15352,128 +15412,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.ChatMemberStatus.ChatMemberStatus
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatMemberStatus.ChatMemberStatus
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatMemberStatus.ChatMemberStatus
 
-module TD.Data.Supergroup
-data Supergroup
-
--- | Represents a supergroup or channel with zero or more members
---   (subscribers in the case of channels). From the point of view of the
---   system, a channel is a special kind of a supergroup: only
---   administrators can post and see the list of members, and posts from
---   all administrators use the name and photo of the channel instead of
---   individual names and profile photos. Unlike supergroups, channels can
---   have an unlimited number of subscribers
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Int -> Maybe Bool -> Maybe Bool -> Supergroup
-
--- | Supergroup or channel identifier
-[_id] :: Supergroup -> Maybe Int
-
--- | Usernames of the supergroup or channel; may be null
-[usernames] :: Supergroup -> Maybe Usernames
-
--- | Point in time (Unix timestamp) when the current user joined, or the
---   point in time when the supergroup or channel was created, in case the
---   user is not a member
-[date] :: Supergroup -> Maybe Int
-
--- | Status of the current user in the supergroup or channel; custom title
---   will always be empty
-[status] :: Supergroup -> Maybe ChatMemberStatus
-
--- | Number of members in the supergroup or channel; 0 if unknown.
---   Currently, it is guaranteed to be known only if the supergroup or
---   channel was received through getChatSimilarChats,
---   getChatsToPostStories, getCreatedPublicChats, getGroupsInCommon,
---   getInactiveSupergroupChats, getRecommendedChats,
---   getSuitableDiscussionChats, getUserPrivacySettingRules,
---   getVideoChatAvailableParticipants, searchPublicChats, or in
---   chatFolderInviteLinkInfo.missing_chat_ids, or in
---   userFullInfo.personal_chat_id, or for chats with messages or stories
---   from publicForwards and foundStories
-[member_count] :: Supergroup -> Maybe Int
-
--- | Approximate boost level for the chat
-[boost_level] :: Supergroup -> Maybe Int
-
--- | True, if automatic translation of messages is enabled in the channel
-[has_automatic_translation] :: Supergroup -> Maybe Bool
-
--- | True, if the channel has a discussion group, or the supergroup is the
---   designated discussion group for a channel
-[has_linked_chat] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is connected to a location, i.e. the
---   supergroup is a location-based supergroup
-[has_location] :: Supergroup -> Maybe Bool
-
--- | True, if messages sent to the channel contains name of the sender.
---   This field is only applicable to channels
-[sign_messages] :: Supergroup -> Maybe Bool
-
--- | True, if messages sent to the channel have information about the
---   sender user. This field is only applicable to channels
-[show_message_sender] :: Supergroup -> Maybe Bool
-
--- | True, if users need to join the supergroup before they can send
---   messages. May be false only for discussion supergroups and channel
---   direct messages groups
-[join_to_send_messages] :: Supergroup -> Maybe Bool
-
--- | True, if all users directly joining the supergroup need to be approved
---   by supergroup administrators. May be true only for non-broadcast
---   supergroups with username, location, or a linked chat
-[join_by_request] :: Supergroup -> Maybe Bool
-
--- | True, if the slow mode is enabled in the supergroup
-[is_slow_mode_enabled] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a channel
-[is_channel] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a broadcast group, i.e. only administrators
---   can send messages and there is no limit on the number of members
-[is_broadcast_group] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a forum with topics
-[is_forum] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a direct message group for a channel chat
-[is_direct_messages_group] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a direct messages group for a channel chat
---   that is administered by the current user
-[is_administered_direct_messages_group] :: Supergroup -> Maybe Bool
-
--- | Information about verification status of the supergroup or channel;
---   may be null if none
-[verification_status] :: Supergroup -> Maybe VerificationStatus
-
--- | True, if the channel has direct messages group
-[has_direct_messages_group] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup is a forum, which topics are shown in the same
---   way as in channel direct messages groups
-[has_forum_tabs] :: Supergroup -> Maybe Bool
-
--- | Information about the restrictions that must be applied to the
---   corresponding supergroup or channel chat; may be null if none
-[restriction_info] :: Supergroup -> Maybe RestrictionInfo
-
--- | Number of Telegram Stars that must be paid by non-administrator users
---   of the supergroup chat for each sent message
-[paid_message_star_count] :: Supergroup -> Maybe Int
-
--- | True, if the supergroup or channel has non-expired stories available
---   to the current user
-[has_active_stories] :: Supergroup -> Maybe Bool
-
--- | True, if the supergroup or channel has unread non-expired stories
---   available to the current user
-[has_unread_active_stories] :: Supergroup -> Maybe Bool
-instance GHC.Show.Show TD.Data.Supergroup.Supergroup
-instance GHC.Classes.Eq TD.Data.Supergroup.Supergroup
-instance TD.Lib.Internal.ShortShow TD.Data.Supergroup.Supergroup
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Supergroup.Supergroup
-
 module TD.Data.ChatMember
 data ChatMember
 
@@ -15772,10 +15710,38 @@ CanPostStoryResultMonthlyLimitExceeded :: Maybe Int -> CanPostStoryResult
 
 -- | Time left before the user can post the next story
 [retry_after] :: CanPostStoryResult -> Maybe Int
+
+-- | The user or the chat has an active live story. The live story must be
+--   deleted first
+CanPostStoryResultLiveStoryIsActive :: Maybe Int -> CanPostStoryResult
+
+-- | Identifier of the active live story
+[story_id] :: CanPostStoryResult -> Maybe Int
 instance GHC.Show.Show TD.Data.CanPostStoryResult.CanPostStoryResult
 instance GHC.Classes.Eq TD.Data.CanPostStoryResult.CanPostStoryResult
 instance TD.Lib.Internal.ShortShow TD.Data.CanPostStoryResult.CanPostStoryResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CanPostStoryResult.CanPostStoryResult
+
+module TD.Data.StartLiveStoryResult
+
+-- | Represents result of starting a live story
+data StartLiveStoryResult
+
+-- | The live story was successfully posted
+StartLiveStoryResultOk :: Maybe Story -> StartLiveStoryResult
+
+-- | The live story
+[story] :: StartLiveStoryResult -> Maybe Story
+
+-- | The live story failed to post with an error to be handled
+StartLiveStoryResultFail :: Maybe CanPostStoryResult -> StartLiveStoryResult
+
+-- | Type of the error; other error types may be returned as regular errors
+[error_type] :: StartLiveStoryResult -> Maybe CanPostStoryResult
+instance GHC.Show.Show TD.Data.StartLiveStoryResult.StartLiveStoryResult
+instance GHC.Classes.Eq TD.Data.StartLiveStoryResult.StartLiveStoryResult
+instance TD.Lib.Internal.ShortShow TD.Data.StartLiveStoryResult.StartLiveStoryResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StartLiveStoryResult.StartLiveStoryResult
 
 module TD.Data.CallbackQueryPayload
 
@@ -16716,7 +16682,8 @@ BotMediaPreview :: Maybe Int -> Maybe StoryContent -> BotMediaPreview
 --   last time
 [date] :: BotMediaPreview -> Maybe Int
 
--- | Content of the preview
+-- | Content of the preview; may only be of the types storyContentPhoto,
+--   storyContentVideo, or storyContentUnsupported
 [content] :: BotMediaPreview -> Maybe StoryContent
 instance GHC.Show.Show TD.Data.BotMediaPreview.BotMediaPreview
 instance GHC.Classes.Eq TD.Data.BotMediaPreview.BotMediaPreview
@@ -19476,6 +19443,15 @@ LinkPreviewTypeGroupCall :: LinkPreviewType
 -- | The link is a link to an invoice
 LinkPreviewTypeInvoice :: LinkPreviewType
 
+-- | The link is a link to a live story group call
+LinkPreviewTypeLiveStory :: Maybe Int -> Maybe Int -> LinkPreviewType
+
+-- | The identifier of the chat that posted the story
+[story_poster_chat_id] :: LinkPreviewType -> Maybe Int
+
+-- | Story identifier
+[story_id] :: LinkPreviewType -> Maybe Int
+
 -- | The link is a link to a text or a poll Telegram message
 LinkPreviewTypeMessage :: LinkPreviewType
 
@@ -20403,6 +20379,50 @@ StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> May
 
 -- | Number of sent paid messages
 [message_count] :: StarTransactionType -> Maybe Int
+
+-- | The number of Telegram Stars received by the Telegram for each 1000
+--   Telegram Stars received by the seller of the gift
+[commission_per_mille] :: StarTransactionType -> Maybe Int
+
+-- | The amount of Telegram Stars that were received by Telegram; can be
+--   negative for refunds
+[commission_star_amount] :: StarTransactionType -> Maybe StarAmount
+
+-- | The transaction is a sending of a paid group call message; for regular
+--   users only
+StarTransactionTypePaidGroupCallMessageSend :: Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a paid group call message; for
+--   regular users and channel chats only
+StarTransactionTypePaidGroupCallMessageReceive :: Maybe MessageSender -> Maybe Int -> Maybe StarAmount -> StarTransactionType
+
+-- | Identifier of the sender of the message
+[sender_id] :: StarTransactionType -> Maybe MessageSender
+
+-- | The number of Telegram Stars received by the Telegram for each 1000
+--   Telegram Stars received by the seller of the gift
+[commission_per_mille] :: StarTransactionType -> Maybe Int
+
+-- | The amount of Telegram Stars that were received by Telegram; can be
+--   negative for refunds
+[commission_star_amount] :: StarTransactionType -> Maybe StarAmount
+
+-- | The transaction is a sending of a paid group reaction; for regular
+--   users only
+StarTransactionTypePaidGroupCallReactionSend :: Maybe Int -> StarTransactionType
+
+-- | Identifier of a supergroup or a channel chat that created the giveaway
+[chat_id] :: StarTransactionType -> Maybe Int
+
+-- | The transaction is a receiving of a paid group call reaction; for
+--   regular users and channel chats only
+StarTransactionTypePaidGroupCallReactionReceive :: Maybe MessageSender -> Maybe Int -> Maybe StarAmount -> StarTransactionType
+
+-- | Identifier of the sender of the message
+[sender_id] :: StarTransactionType -> Maybe MessageSender
 
 -- | The number of Telegram Stars received by the Telegram for each 1000
 --   Telegram Stars received by the seller of the gift
@@ -21541,7 +21561,7 @@ MessagePaymentRefunded :: Maybe MessageSender -> Maybe Text -> Maybe Int -> Mayb
 [provider_payment_charge_id] :: MessageContent -> Maybe Text
 
 -- | Telegram Premium was gifted to a user
-MessageGiftedPremium :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
+MessageGiftedPremium :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Sticker -> MessageContent
 
 -- | The identifier of a user that gifted Telegram Premium; 0 if the gift
 --   was anonymous or is outgoing
@@ -21568,13 +21588,17 @@ MessageGiftedPremium :: Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe T
 [cryptocurrency_amount] :: MessageContent -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
+--   after code activation; 0 if the number of months isn't integer
 [month_count] :: MessageContent -> Maybe Int
+
+-- | Number of days the Telegram Premium subscription will be active
+[day_count] :: MessageContent -> Maybe Int
 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
 -- | A Telegram Premium gift code was created for the user
-MessagePremiumGiftCode :: Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Text -> MessageContent
+MessagePremiumGiftCode :: Maybe MessageSender -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Text -> MessageContent
 
 -- | Identifier of a chat or a user that created the gift code; may be null
 --   if unknown
@@ -21604,7 +21628,11 @@ MessagePremiumGiftCode :: Maybe MessageSender -> Maybe FormattedText -> Maybe Bo
 [cryptocurrency_amount] :: MessageContent -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
+--   after code activation; 0 if the number of months isn't integer
 [month_count] :: MessageContent -> Maybe Int
+
+-- | Number of days the Telegram Premium subscription will be active
+[day_count] :: MessageContent -> Maybe Int
 
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
@@ -22399,7 +22427,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 [reply_to] :: Message -> Maybe MessageReplyTo
 
 -- | Identifier of the topic within the chat to which the message belongs;
---   may be null if none
+--   may be null if none; may change when the chat is converted to a forum
+--   or back
 [topic_id] :: Message -> Maybe MessageTopic
 
 -- | The message's self-destruct type; may be null if none
@@ -23684,6 +23713,252 @@ instance GHC.Classes.Eq TD.Data.AddedReactions.AddedReactions
 instance TD.Lib.Internal.ShortShow TD.Data.AddedReactions.AddedReactions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AddedReactions.AddedReactions
 
+module TD.Data.ActiveStoryState
+
+-- | Describes state of active stories posted by a chat
+data ActiveStoryState
+
+-- | The chat has an active live story
+ActiveStoryStateLive :: Maybe Int -> ActiveStoryState
+
+-- | Identifier of the active live story
+[story_id] :: ActiveStoryState -> Maybe Int
+
+-- | The chat has some unread active stories
+ActiveStoryStateUnread :: ActiveStoryState
+
+-- | The chat has active stories, all of which were read
+ActiveStoryStateRead :: ActiveStoryState
+instance GHC.Show.Show TD.Data.ActiveStoryState.ActiveStoryState
+instance GHC.Classes.Eq TD.Data.ActiveStoryState.ActiveStoryState
+instance TD.Lib.Internal.ShortShow TD.Data.ActiveStoryState.ActiveStoryState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ActiveStoryState.ActiveStoryState
+
+module TD.Data.User
+data User
+
+-- | Represents a user
+User :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Usernames -> Maybe Text -> Maybe UserStatus -> Maybe ProfilePhoto -> Maybe Int -> Maybe Int -> Maybe UpgradedGiftColors -> Maybe Int -> Maybe Int -> Maybe EmojiStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe ActiveStoryState -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe UserType -> Maybe Text -> Maybe Bool -> User
+
+-- | User identifier
+[_id] :: User -> Maybe Int
+
+-- | First name of the user
+[first_name] :: User -> Maybe Text
+
+-- | Last name of the user
+[last_name] :: User -> Maybe Text
+
+-- | Usernames of the user; may be null
+[usernames] :: User -> Maybe Usernames
+
+-- | Phone number of the user
+[phone_number] :: User -> Maybe Text
+
+-- | Current online status of the user
+[status] :: User -> Maybe UserStatus
+
+-- | Profile photo of the user; may be null
+[profile_photo] :: User -> Maybe ProfilePhoto
+
+-- | Identifier of the accent color for name, and backgrounds of profile
+--   photo, reply header, and link preview
+[accent_color_id] :: User -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the reply header and link
+--   preview background; 0 if none
+[background_custom_emoji_id] :: User -> Maybe Int
+
+-- | Color scheme based on an upgraded gift to be used for the user instead
+--   of accent_color_id and background_custom_emoji_id; may be null if none
+[upgraded_gift_colors] :: User -> Maybe UpgradedGiftColors
+
+-- | Identifier of the accent color for the user's profile; -1 if none
+[profile_accent_color_id] :: User -> Maybe Int
+
+-- | Identifier of a custom emoji to be shown on the background of the
+--   user's profile; 0 if none
+[profile_background_custom_emoji_id] :: User -> Maybe Int
+
+-- | Emoji status to be shown instead of the default Telegram Premium
+--   badge; may be null
+[emoji_status] :: User -> Maybe EmojiStatus
+
+-- | The user is a contact of the current user
+[is_contact] :: User -> Maybe Bool
+
+-- | The user is a contact of the current user and the current user is a
+--   contact of the user
+[is_mutual_contact] :: User -> Maybe Bool
+
+-- | The user is a close friend of the current user; implies that the user
+--   is a contact
+[is_close_friend] :: User -> Maybe Bool
+
+-- | Information about verification status of the user; may be null if none
+[verification_status] :: User -> Maybe VerificationStatus
+
+-- | True, if the user is a Telegram Premium user
+[is_premium] :: User -> Maybe Bool
+
+-- | True, if the user is Telegram support account
+[is_support] :: User -> Maybe Bool
+
+-- | Information about restrictions that must be applied to the
+--   corresponding private chat; may be null if none
+[restriction_info] :: User -> Maybe RestrictionInfo
+
+-- | State of active stories of the user; may be null if the user has no
+--   active stories
+[active_story_state] :: User -> Maybe ActiveStoryState
+
+-- | True, if the user may restrict new chats with non-contacts. Use
+--   canSendMessageToUser to check whether the current user can message the
+--   user or try to create a chat with them
+[restricts_new_chats] :: User -> Maybe Bool
+
+-- | Number of Telegram Stars that must be paid by general user for each
+--   sent message to the user. If positive and userFullInfo is unknown, use
+--   canSendMessageToUser to check whether the current user must pay
+[paid_message_star_count] :: User -> Maybe Int
+
+-- | If false, the user is inaccessible, and the only information known
+--   about the user is inside this class. Identifier of the user can't be
+--   passed to any method
+[have_access] :: User -> Maybe Bool
+
+-- | Type of the user
+[_type] :: User -> Maybe UserType
+
+-- | IETF language tag of the user's language; only available to bots
+[language_code] :: User -> Maybe Text
+
+-- | True, if the user added the current bot to attachment menu; only
+--   available to bots
+[added_to_attachment_menu] :: User -> Maybe Bool
+instance GHC.Show.Show TD.Data.User.User
+instance GHC.Classes.Eq TD.Data.User.User
+instance TD.Lib.Internal.ShortShow TD.Data.User.User
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.User.User
+
+module TD.Data.Supergroup
+data Supergroup
+
+-- | Represents a supergroup or channel with zero or more members
+--   (subscribers in the case of channels). From the point of view of the
+--   system, a channel is a special kind of a supergroup: only
+--   administrators can post and see the list of members, and posts from
+--   all administrators use the name and photo of the channel instead of
+--   individual names and profile photos. Unlike supergroups, channels can
+--   have an unlimited number of subscribers
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Int -> Maybe ActiveStoryState -> Supergroup
+
+-- | Supergroup or channel identifier
+[_id] :: Supergroup -> Maybe Int
+
+-- | Usernames of the supergroup or channel; may be null
+[usernames] :: Supergroup -> Maybe Usernames
+
+-- | Point in time (Unix timestamp) when the current user joined, or the
+--   point in time when the supergroup or channel was created, in case the
+--   user is not a member
+[date] :: Supergroup -> Maybe Int
+
+-- | Status of the current user in the supergroup or channel; custom title
+--   will always be empty
+[status] :: Supergroup -> Maybe ChatMemberStatus
+
+-- | Number of members in the supergroup or channel; 0 if unknown.
+--   Currently, it is guaranteed to be known only if the supergroup or
+--   channel was received through getChatSimilarChats,
+--   getChatsToPostStories, getCreatedPublicChats, getGroupsInCommon,
+--   getInactiveSupergroupChats, getRecommendedChats,
+--   getSuitableDiscussionChats, getUserPrivacySettingRules,
+--   getVideoChatAvailableParticipants, searchPublicChats, or in
+--   chatFolderInviteLinkInfo.missing_chat_ids, or in
+--   userFullInfo.personal_chat_id, or for chats with messages or stories
+--   from publicForwards and foundStories
+[member_count] :: Supergroup -> Maybe Int
+
+-- | Approximate boost level for the chat
+[boost_level] :: Supergroup -> Maybe Int
+
+-- | True, if automatic translation of messages is enabled in the channel
+[has_automatic_translation] :: Supergroup -> Maybe Bool
+
+-- | True, if the channel has a discussion group, or the supergroup is the
+--   designated discussion group for a channel
+[has_linked_chat] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is connected to a location, i.e. the
+--   supergroup is a location-based supergroup
+[has_location] :: Supergroup -> Maybe Bool
+
+-- | True, if messages sent to the channel contains name of the sender.
+--   This field is only applicable to channels
+[sign_messages] :: Supergroup -> Maybe Bool
+
+-- | True, if messages sent to the channel have information about the
+--   sender user. This field is only applicable to channels
+[show_message_sender] :: Supergroup -> Maybe Bool
+
+-- | True, if users need to join the supergroup before they can send
+--   messages. May be false only for discussion supergroups and channel
+--   direct messages groups
+[join_to_send_messages] :: Supergroup -> Maybe Bool
+
+-- | True, if all users directly joining the supergroup need to be approved
+--   by supergroup administrators. May be true only for non-broadcast
+--   supergroups with username, location, or a linked chat
+[join_by_request] :: Supergroup -> Maybe Bool
+
+-- | True, if the slow mode is enabled in the supergroup
+[is_slow_mode_enabled] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a channel
+[is_channel] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a broadcast group, i.e. only administrators
+--   can send messages and there is no limit on the number of members
+[is_broadcast_group] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a forum with topics
+[is_forum] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a direct message group for a channel chat
+[is_direct_messages_group] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a direct messages group for a channel chat
+--   that is administered by the current user
+[is_administered_direct_messages_group] :: Supergroup -> Maybe Bool
+
+-- | Information about verification status of the supergroup or channel;
+--   may be null if none
+[verification_status] :: Supergroup -> Maybe VerificationStatus
+
+-- | True, if the channel has direct messages group
+[has_direct_messages_group] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a forum, which topics are shown in the same
+--   way as in channel direct messages groups
+[has_forum_tabs] :: Supergroup -> Maybe Bool
+
+-- | Information about the restrictions that must be applied to the
+--   corresponding supergroup or channel chat; may be null if none
+[restriction_info] :: Supergroup -> Maybe RestrictionInfo
+
+-- | Number of Telegram Stars that must be paid by non-administrator users
+--   of the supergroup chat for each sent message
+[paid_message_star_count] :: Supergroup -> Maybe Int
+
+-- | State of active stories of the supergroup or channel; may be null if
+--   there are no active stories
+[active_story_state] :: Supergroup -> Maybe ActiveStoryState
+instance GHC.Show.Show TD.Data.Supergroup.Supergroup
+instance GHC.Classes.Eq TD.Data.Supergroup.Supergroup
+instance TD.Lib.Internal.ShortShow TD.Data.Supergroup.Supergroup
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Supergroup.Supergroup
+
 module TD.Data.AccountTtl
 data AccountTtl
 
@@ -23962,7 +24237,7 @@ module TD.Data.AcceptedGiftTypes
 data AcceptedGiftTypes
 
 -- | Describes gift types that are accepted by a user
-AcceptedGiftTypes :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> AcceptedGiftTypes
+AcceptedGiftTypes :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> AcceptedGiftTypes
 
 -- | True, if unlimited regular gifts are accepted
 [unlimited_gifts] :: AcceptedGiftTypes -> Maybe Bool
@@ -23973,6 +24248,10 @@ AcceptedGiftTypes :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Acc
 -- | True, if upgraded gifts and regular gifts that can be upgraded for
 --   free are accepted
 [upgraded_gifts] :: AcceptedGiftTypes -> Maybe Bool
+
+-- | True, if gifts from channels are accepted subject to other
+--   restrictions
+[gifts_from_channels] :: AcceptedGiftTypes -> Maybe Bool
 
 -- | True, if Telegram Premium subscription is accepted
 [premium_subscription] :: AcceptedGiftTypes -> Maybe Bool
@@ -24777,7 +25056,7 @@ UpdateForumTopicInfo :: Maybe ForumTopicInfo -> Update
 [info] :: Update -> Maybe ForumTopicInfo
 
 -- | Information about a topic in a forum chat was changed
-UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Update
+UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe DraftMessage -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -24802,6 +25081,9 @@ UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe I
 
 -- | The new notification settings
 [notification_settings] :: Update -> Maybe ChatNotificationSettings
+
+-- | The new draft message; may be null if none
+[draft_message] :: Update -> Maybe DraftMessage
 
 -- | Notification settings for some type of chats were updated
 UpdateScopeNotificationSettings :: Maybe NotificationSettingsScope -> Maybe ScopeNotificationSettings -> Update
@@ -25180,10 +25462,17 @@ UpdateGroupCallVerificationState :: Maybe Int -> Maybe Int -> Maybe [Text] -> Up
 --   the state isn't verified yet
 [emojis] :: Update -> Maybe [Text]
 
--- | A new message was received in a group call. It must be shown for at
---   most getOption("group_call_message_show_time_max") seconds after
---   receiving
-UpdateGroupCallNewMessage :: Maybe Int -> Maybe MessageSender -> Maybe FormattedText -> Update
+-- | A new message was received in a group call
+UpdateNewGroupCallMessage :: Maybe Int -> Maybe GroupCallMessage -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | The message
+[_message] :: Update -> Maybe GroupCallMessage
+
+-- | A new paid reaction was received in a live story group call
+UpdateNewGroupCallPaidReaction :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Update
 
 -- | Identifier of the group call
 [group_call_id] :: Update -> Maybe Int
@@ -25191,8 +25480,38 @@ UpdateGroupCallNewMessage :: Maybe Int -> Maybe MessageSender -> Maybe Formatted
 -- | Identifier of a message sender performing the action
 [sender_id] :: Update -> Maybe MessageSender
 
--- | Text of the pending message
-[text] :: Update -> Maybe FormattedText
+-- | The number of Telegram Stars that were paid to send the reaction
+[star_count] :: Update -> Maybe Int
+
+-- | A group call message failed to send
+UpdateGroupCallMessageSendFailed :: Maybe Int -> Maybe Int -> Maybe Error -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | Message identifier
+[_message_id] :: Update -> Maybe Int
+
+-- | The cause of the message sending failure
+[_error] :: Update -> Maybe Error
+
+-- | Some group call messages were deleted
+UpdateGroupCallMessagesDeleted :: Maybe Int -> Maybe [Int] -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | Identifiers of the deleted messages
+[_message_ids] :: Update -> Maybe [Int]
+
+-- | The list of top donors in live story group call has changed
+UpdateLiveStoryTopDonors :: Maybe Int -> Maybe LiveStoryDonors -> Update
+
+-- | Identifier of the group call
+[group_call_id] :: Update -> Maybe Int
+
+-- | New list of live story donors
+[donors] :: Update -> Maybe LiveStoryDonors
 
 -- | New call signaling data arrived
 UpdateNewCallSignalingData :: Maybe Int -> Maybe ByteString -> Update
@@ -25310,6 +25629,14 @@ UpdateStoryStealthMode :: Maybe Int -> Maybe Int -> Update
 -- | Point in time (Unix timestamp) when stealth mode can be enabled again;
 --   0 if there is no active cooldown
 [cooldown_until_date] :: Update -> Maybe Int
+
+-- | Lists of bots which Mini Apps must be allowed to read text from
+--   clipboard and must be opened without a warning
+UpdateTrustedMiniAppBots :: Maybe [Int] -> Update
+
+-- | List of user identifiers of the bots; the corresponding users may not
+--   be sent using updateUser updates and may not be accessible
+[bot_user_ids] :: Update -> Maybe [Int]
 
 -- | An option changed its value
 UpdateOption :: Maybe Text -> Maybe OptionValue -> Update
@@ -25600,6 +25927,13 @@ UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
 --   reset; 0 if unknown
 [next_reset_date] :: Update -> Maybe Int
 
+-- | The levels of live story group call messages have changed
+UpdateGroupCallMessageLevels :: Maybe [GroupCallMessageLevel] -> Update
+
+-- | New description of the levels in decreasing order of
+--   groupCallMessageLevel.min_star_count
+[levels] :: Update -> Maybe [GroupCallMessageLevel]
+
 -- | The list of supported dice emojis has changed
 UpdateDiceEmojis :: Maybe [Text] -> Update
 
@@ -25684,7 +26018,7 @@ UpdateNewBusinessMessage :: Maybe Text -> Maybe BusinessMessage -> Update
 [connection_id] :: Update -> Maybe Text
 
 -- | The new message
-[_message] :: Update -> Maybe BusinessMessage
+[__message] :: Update -> Maybe BusinessMessage
 
 -- | A message in a business account was edited; for bots only
 UpdateBusinessMessageEdited :: Maybe Text -> Maybe BusinessMessage -> Update
@@ -25693,7 +26027,7 @@ UpdateBusinessMessageEdited :: Maybe Text -> Maybe BusinessMessage -> Update
 [connection_id] :: Update -> Maybe Text
 
 -- | The new message
-[_message] :: Update -> Maybe BusinessMessage
+[__message] :: Update -> Maybe BusinessMessage
 
 -- | Messages in a business account were deleted; for bots only
 UpdateBusinessMessagesDeleted :: Maybe Text -> Maybe Int -> Maybe [Int] -> Update
@@ -25802,7 +26136,7 @@ UpdateNewBusinessCallbackQuery :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe 
 [connection_id] :: Update -> Maybe Text
 
 -- | The new message
-[_message] :: Update -> Maybe BusinessMessage
+[__message] :: Update -> Maybe BusinessMessage
 
 -- | Identifier that uniquely corresponds to the chat to which the message
 --   was sent
@@ -26130,7 +26464,9 @@ GiveawayInfo :: GiveawayInfo -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
 GroupCallInfo :: GroupCallInfo -> GeneralResult
+GroupCallParticipant :: GroupCallParticipant -> GeneralResult
 GroupCallParticipants :: GroupCallParticipants -> GeneralResult
+GroupCallStreams :: GroupCallStreams -> GeneralResult
 Hashtags :: Hashtags -> GeneralResult
 HttpUrl :: HttpUrl -> GeneralResult
 ImportedContacts :: ImportedContacts -> GeneralResult
@@ -26142,6 +26478,7 @@ LanguagePackInfo :: LanguagePackInfo -> GeneralResult
 LanguagePackStringValue :: LanguagePackStringValue -> GeneralResult
 LanguagePackStrings :: LanguagePackStrings -> GeneralResult
 LinkPreview :: LinkPreview -> GeneralResult
+LiveStoryDonors :: LiveStoryDonors -> GeneralResult
 LocalizationTargetInfo :: LocalizationTargetInfo -> GeneralResult
 LogStream :: LogStream -> GeneralResult
 LogTags :: LogTags -> GeneralResult
@@ -26222,6 +26559,7 @@ StarPaymentOptions :: StarPaymentOptions -> GeneralResult
 StarRevenueStatistics :: StarRevenueStatistics -> GeneralResult
 StarSubscriptions :: StarSubscriptions -> GeneralResult
 StarTransactions :: StarTransactions -> GeneralResult
+StartLiveStoryResult :: StartLiveStoryResult -> GeneralResult
 StatisticalGraph :: StatisticalGraph -> GeneralResult
 Sticker :: Sticker -> GeneralResult
 StickerSet :: StickerSet -> GeneralResult
@@ -26264,7 +26602,6 @@ UserPrivacySettingRules :: UserPrivacySettingRules -> GeneralResult
 UserSupportInfo :: UserSupportInfo -> GeneralResult
 Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
-VideoChatStreams :: VideoChatStreams -> GeneralResult
 VideoMessageAdvertisements :: VideoMessageAdvertisements -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
@@ -26573,10 +26910,9 @@ AddGiftCollectionGifts :: Maybe MessageSender -> Maybe Int -> Maybe [Text] -> Ad
 [collection_id] :: AddGiftCollectionGifts -> Maybe Int
 
 -- | Identifier of the gifts to add to the collection;
---   1-getOption("gift_collection_gift_count_max") identifiers. If after
---   addition the collection has more than
---   getOption("gift_collection_gift_count_max") gifts, then the last one
---   are removed from the collection
+--   1-getOption("gift_collection_size_max") identifiers. If after addition
+--   the collection has more than getOption("gift_collection_size_max")
+--   gifts, then the last one are removed from the collection
 [received_gift_ids] :: AddGiftCollectionGifts -> Maybe [Text]
 defaultAddGiftCollectionGifts :: AddGiftCollectionGifts
 instance GHC.Show.Show TD.Query.AddGiftCollectionGifts.AddGiftCollectionGifts
@@ -26678,7 +27014,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddNetworkStatistics.AddNetwork
 
 module TD.Query.AddOffer
 
--- | Sent a suggested post based on a previously sent message in a channel
+-- | Sends a suggested post based on a previously sent message in a channel
 --   direct messages chat. Can be also used to suggest price or time change
 --   for an existing suggested post. Returns the sent message. Returns
 --   <a>Message</a>
@@ -26702,6 +27038,29 @@ instance GHC.Show.Show TD.Query.AddOffer.AddOffer
 instance GHC.Classes.Eq TD.Query.AddOffer.AddOffer
 instance TD.Lib.Internal.ShortShow TD.Query.AddOffer.AddOffer
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddOffer.AddOffer
+
+module TD.Query.AddPendingLiveStoryReaction
+
+-- | Adds pending paid reaction in a live story group call. Can't be used
+--   in live stories posted by the current user. Call
+--   commitPendingLiveStoryReactions or removePendingLiveStoryReactions to
+--   actually send all pending reactions when the undo timer is over or
+--   abort the sending. Returns <a>Ok</a>
+data AddPendingLiveStoryReaction
+AddPendingLiveStoryReaction :: Maybe Int -> Maybe Int -> AddPendingLiveStoryReaction
+
+-- | Group call identifier
+[group_call_id] :: AddPendingLiveStoryReaction -> Maybe Int
+
+-- | Number of Telegram Stars to be used for the reaction. The total number
+--   of pending paid reactions must not exceed
+--   getOption("paid_group_call_message_star_count_max")
+[star_count] :: AddPendingLiveStoryReaction -> Maybe Int
+defaultAddPendingLiveStoryReaction :: AddPendingLiveStoryReaction
+instance GHC.Show.Show TD.Query.AddPendingLiveStoryReaction.AddPendingLiveStoryReaction
+instance GHC.Classes.Eq TD.Query.AddPendingLiveStoryReaction.AddPendingLiveStoryReaction
+instance TD.Lib.Internal.ShortShow TD.Query.AddPendingLiveStoryReaction.AddPendingLiveStoryReaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddPendingLiveStoryReaction.AddPendingLiveStoryReaction
 
 module TD.Query.AddPendingPaidMessageReaction
 
@@ -26973,10 +27332,9 @@ AddStoryAlbumStories :: Maybe Int -> Maybe Int -> Maybe [Int] -> AddStoryAlbumSt
 [story_album_id] :: AddStoryAlbumStories -> Maybe Int
 
 -- | Identifier of the stories to add to the album;
---   1-getOption("story_album_story_count_max") identifiers. If after
---   addition the album has more than
---   getOption("story_album_story_count_max") stories, then the last one
---   are removed from the album
+--   1-getOption("story_album_size_max") identifiers. If after addition the
+--   album has more than getOption("story_album_size_max") stories, then
+--   the last one are removed from the album
 [story_ids] :: AddStoryAlbumStories -> Maybe [Int]
 defaultAddStoryAlbumStories :: AddStoryAlbumStories
 instance GHC.Show.Show TD.Query.AddStoryAlbumStories.AddStoryAlbumStories
@@ -28052,6 +28410,20 @@ instance GHC.Classes.Eq TD.Query.CloseWebApp.CloseWebApp
 instance TD.Lib.Internal.ShortShow TD.Query.CloseWebApp.CloseWebApp
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CloseWebApp.CloseWebApp
 
+module TD.Query.CommitPendingLiveStoryReactions
+
+-- | Applies all pending paid reactions in a live story group call. Returns
+--   <a>Ok</a>
+data CommitPendingLiveStoryReactions
+CommitPendingLiveStoryReactions :: Maybe Int -> CommitPendingLiveStoryReactions
+
+-- | Group call identifier
+[group_call_id] :: CommitPendingLiveStoryReactions -> Maybe Int
+instance GHC.Show.Show TD.Query.CommitPendingLiveStoryReactions.CommitPendingLiveStoryReactions
+instance GHC.Classes.Eq TD.Query.CommitPendingLiveStoryReactions.CommitPendingLiveStoryReactions
+instance TD.Lib.Internal.ShortShow TD.Query.CommitPendingLiveStoryReactions.CommitPendingLiveStoryReactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CommitPendingLiveStoryReactions.CommitPendingLiveStoryReactions
+
 module TD.Query.CommitPendingPaidMessageReactions
 
 -- | Applies all pending paid reactions on a message. Returns <a>Ok</a>
@@ -28314,7 +28686,7 @@ CreateGiftCollection :: Maybe MessageSender -> Maybe Text -> Maybe [Text] -> Cre
 [name] :: CreateGiftCollection -> Maybe Text
 
 -- | Identifier of the gifts to add to the collection;
---   0-getOption("gift_collection_gift_count_max") identifiers
+--   0-getOption("gift_collection_size_max") identifiers
 [received_gift_ids] :: CreateGiftCollection -> Maybe [Text]
 defaultCreateGiftCollection :: CreateGiftCollection
 instance GHC.Show.Show TD.Query.CreateGiftCollection.CreateGiftCollection
@@ -28521,7 +28893,7 @@ CreateStoryAlbum :: Maybe Int -> Maybe Text -> Maybe [Int] -> CreateStoryAlbum
 [name] :: CreateStoryAlbum -> Maybe Text
 
 -- | Identifiers of stories to add to the album;
---   0-getOption("story_album_story_count_max") identifiers
+--   0-getOption("story_album_size_max") identifiers
 [story_ids] :: CreateStoryAlbum -> Maybe [Int]
 defaultCreateStoryAlbum :: CreateStoryAlbum
 instance GHC.Show.Show TD.Query.CreateStoryAlbum.CreateStoryAlbum
@@ -29089,6 +29461,49 @@ instance GHC.Show.Show TD.Query.DeleteGiftCollection.DeleteGiftCollection
 instance GHC.Classes.Eq TD.Query.DeleteGiftCollection.DeleteGiftCollection
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteGiftCollection.DeleteGiftCollection
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteGiftCollection.DeleteGiftCollection
+
+module TD.Query.DeleteGroupCallMessages
+
+-- | Deletes messages in a group call; for live story calls only. Requires
+--   groupCallMessage.can_be_deleted right. Returns <a>Ok</a>
+data DeleteGroupCallMessages
+DeleteGroupCallMessages :: Maybe Int -> Maybe [Int] -> Maybe Bool -> DeleteGroupCallMessages
+
+-- | Group call identifier
+[group_call_id] :: DeleteGroupCallMessages -> Maybe Int
+
+-- | Identifiers of the messages to be deleted
+[message_ids] :: DeleteGroupCallMessages -> Maybe [Int]
+
+-- | Pass true to report the messages as spam
+[report_spam] :: DeleteGroupCallMessages -> Maybe Bool
+defaultDeleteGroupCallMessages :: DeleteGroupCallMessages
+instance GHC.Show.Show TD.Query.DeleteGroupCallMessages.DeleteGroupCallMessages
+instance GHC.Classes.Eq TD.Query.DeleteGroupCallMessages.DeleteGroupCallMessages
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteGroupCallMessages.DeleteGroupCallMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteGroupCallMessages.DeleteGroupCallMessages
+
+module TD.Query.DeleteGroupCallMessagesBySender
+
+-- | Deletes all messages sent by the specified message sender in a group
+--   call; for live story calls only. Requires
+--   groupCall.can_delete_messages right. Returns <a>Ok</a>
+data DeleteGroupCallMessagesBySender
+DeleteGroupCallMessagesBySender :: Maybe Int -> Maybe MessageSender -> Maybe Bool -> DeleteGroupCallMessagesBySender
+
+-- | Group call identifier
+[group_call_id] :: DeleteGroupCallMessagesBySender -> Maybe Int
+
+-- | Identifier of the sender of messages to delete
+[sender_id] :: DeleteGroupCallMessagesBySender -> Maybe MessageSender
+
+-- | Pass true to report the messages as spam
+[report_spam] :: DeleteGroupCallMessagesBySender -> Maybe Bool
+defaultDeleteGroupCallMessagesBySender :: DeleteGroupCallMessagesBySender
+instance GHC.Show.Show TD.Query.DeleteGroupCallMessagesBySender.DeleteGroupCallMessagesBySender
+instance GHC.Classes.Eq TD.Query.DeleteGroupCallMessagesBySender.DeleteGroupCallMessagesBySender
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteGroupCallMessagesBySender.DeleteGroupCallMessagesBySender
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteGroupCallMessagesBySender.DeleteGroupCallMessagesBySender
 
 module TD.Query.DeleteLanguagePack
 
@@ -30419,7 +30834,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EncryptGroupCallData.EncryptGro
 module TD.Query.EndGroupCall
 
 -- | Ends a group call. Requires groupCall.can_be_managed right for video
---   chats or groupCall.is_owned otherwise. Returns <a>Ok</a>
+--   chats and live stories or groupCall.is_owned otherwise. Returns
+--   <a>Ok</a>
 data EndGroupCall
 EndGroupCall :: Maybe Int -> EndGroupCall
 
@@ -30446,7 +30862,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EndGroupCallRecording.EndGroupC
 
 module TD.Query.EndGroupCallScreenSharing
 
--- | Ends screen sharing in a joined group call. Returns <a>Ok</a>
+-- | Ends screen sharing in a joined group call; not supported in live
+--   stories. Returns <a>Ok</a>
 data EndGroupCallScreenSharing
 EndGroupCallScreenSharing :: Maybe Int -> EndGroupCallScreenSharing
 
@@ -32885,6 +33302,51 @@ instance GHC.Classes.Eq TD.Query.GetGroupCallParticipants.GetGroupCallParticipan
 instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallParticipants.GetGroupCallParticipants
 
+module TD.Query.GetGroupCallStreamSegment
+
+-- | Returns a file with a segment of a video chat or live story in a
+--   modified OGG format for audio or MPEG-4 format for video. Returns
+--   <a>Data</a>
+data GetGroupCallStreamSegment
+GetGroupCallStreamSegment :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GroupCallVideoQuality -> GetGroupCallStreamSegment
+
+-- | Group call identifier
+[group_call_id] :: GetGroupCallStreamSegment -> Maybe Int
+
+-- | Point in time when the stream segment begins; Unix timestamp in
+--   milliseconds
+[time_offset] :: GetGroupCallStreamSegment -> Maybe Int
+
+-- | Segment duration scale; 0-1. Segment's duration is 1000/(2**scale)
+--   milliseconds
+[scale] :: GetGroupCallStreamSegment -> Maybe Int
+
+-- | Identifier of an audio/video channel to get as received from tgcalls
+[channel_id] :: GetGroupCallStreamSegment -> Maybe Int
+
+-- | Video quality as received from tgcalls; pass null to get the worst
+--   available quality
+[video_quality] :: GetGroupCallStreamSegment -> Maybe GroupCallVideoQuality
+defaultGetGroupCallStreamSegment :: GetGroupCallStreamSegment
+instance GHC.Show.Show TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
+instance GHC.Classes.Eq TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
+instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallStreamSegment.GetGroupCallStreamSegment
+
+module TD.Query.GetGroupCallStreams
+
+-- | Returns information about available streams in a video chat or a live
+--   story. Returns <a>GroupCallStreams</a>
+data GetGroupCallStreams
+GetGroupCallStreams :: Maybe Int -> GetGroupCallStreams
+
+-- | Group call identifier
+[group_call_id] :: GetGroupCallStreams -> Maybe Int
+instance GHC.Show.Show TD.Query.GetGroupCallStreams.GetGroupCallStreams
+instance GHC.Classes.Eq TD.Query.GetGroupCallStreams.GetGroupCallStreams
+instance TD.Lib.Internal.ShortShow TD.Query.GetGroupCallStreams.GetGroupCallStreams
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupCallStreams.GetGroupCallStreams
+
 module TD.Query.GetGroupsInCommon
 
 -- | Returns a list of common group chats with a given user. Chats are
@@ -33167,6 +33629,65 @@ instance GHC.Show.Show TD.Query.GetLinkPreview.GetLinkPreview
 instance GHC.Classes.Eq TD.Query.GetLinkPreview.GetLinkPreview
 instance TD.Lib.Internal.ShortShow TD.Query.GetLinkPreview.GetLinkPreview
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLinkPreview.GetLinkPreview
+
+module TD.Query.GetLiveStoryAvailableMessageSenders
+
+-- | Returns the list of message sender identifiers, on whose behalf
+--   messages can be sent to a live story. Returns
+--   <a>ChatMessageSenders</a>
+data GetLiveStoryAvailableMessageSenders
+GetLiveStoryAvailableMessageSenders :: Maybe Int -> GetLiveStoryAvailableMessageSenders
+
+-- | Group call identifier
+[group_call_id] :: GetLiveStoryAvailableMessageSenders -> Maybe Int
+instance GHC.Show.Show TD.Query.GetLiveStoryAvailableMessageSenders.GetLiveStoryAvailableMessageSenders
+instance GHC.Classes.Eq TD.Query.GetLiveStoryAvailableMessageSenders.GetLiveStoryAvailableMessageSenders
+instance TD.Lib.Internal.ShortShow TD.Query.GetLiveStoryAvailableMessageSenders.GetLiveStoryAvailableMessageSenders
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLiveStoryAvailableMessageSenders.GetLiveStoryAvailableMessageSenders
+
+module TD.Query.GetLiveStoryRtmpUrl
+
+-- | Returns RTMP URL for streaming to a live story; requires
+--   can_post_stories administrator right for channel chats. Returns
+--   <a>RtmpUrl</a>
+data GetLiveStoryRtmpUrl
+GetLiveStoryRtmpUrl :: Maybe Int -> GetLiveStoryRtmpUrl
+
+-- | Chat identifier
+[chat_id] :: GetLiveStoryRtmpUrl -> Maybe Int
+instance GHC.Show.Show TD.Query.GetLiveStoryRtmpUrl.GetLiveStoryRtmpUrl
+instance GHC.Classes.Eq TD.Query.GetLiveStoryRtmpUrl.GetLiveStoryRtmpUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetLiveStoryRtmpUrl.GetLiveStoryRtmpUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLiveStoryRtmpUrl.GetLiveStoryRtmpUrl
+
+module TD.Query.GetLiveStoryStreamer
+
+-- | Returns information about the user or the chat that streams to a live
+--   story; for live stories that aren't an RTMP stream only. Returns
+--   <a>GroupCallParticipant</a>
+data GetLiveStoryStreamer
+GetLiveStoryStreamer :: Maybe Int -> GetLiveStoryStreamer
+
+-- | Group call identifier
+[group_call_id] :: GetLiveStoryStreamer -> Maybe Int
+instance GHC.Show.Show TD.Query.GetLiveStoryStreamer.GetLiveStoryStreamer
+instance GHC.Classes.Eq TD.Query.GetLiveStoryStreamer.GetLiveStoryStreamer
+instance TD.Lib.Internal.ShortShow TD.Query.GetLiveStoryStreamer.GetLiveStoryStreamer
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLiveStoryStreamer.GetLiveStoryStreamer
+
+module TD.Query.GetLiveStoryTopDonors
+
+-- | Returns the list of top live story donors. Returns
+--   <a>LiveStoryDonors</a>
+data GetLiveStoryTopDonors
+GetLiveStoryTopDonors :: Maybe Int -> GetLiveStoryTopDonors
+
+-- | Group call identifier of the live story
+[group_call_id] :: GetLiveStoryTopDonors -> Maybe Int
+instance GHC.Show.Show TD.Query.GetLiveStoryTopDonors.GetLiveStoryTopDonors
+instance GHC.Classes.Eq TD.Query.GetLiveStoryTopDonors.GetLiveStoryTopDonors
+instance TD.Lib.Internal.ShortShow TD.Query.GetLiveStoryTopDonors.GetLiveStoryTopDonors
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLiveStoryTopDonors.GetLiveStoryTopDonors
 
 module TD.Query.GetLocalizationTargetInfo
 
@@ -35672,50 +36193,6 @@ instance GHC.Classes.Eq TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatRtmpUrl.GetVideoChatRtmpUrl
 
-module TD.Query.GetVideoChatStreamSegment
-
--- | Returns a file with a segment of a video chat stream in a modified OGG
---   format for audio or MPEG-4 format for video. Returns <a>Data</a>
-data GetVideoChatStreamSegment
-GetVideoChatStreamSegment :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GroupCallVideoQuality -> GetVideoChatStreamSegment
-
--- | Group call identifier
-[group_call_id] :: GetVideoChatStreamSegment -> Maybe Int
-
--- | Point in time when the stream segment begins; Unix timestamp in
---   milliseconds
-[time_offset] :: GetVideoChatStreamSegment -> Maybe Int
-
--- | Segment duration scale; 0-1. Segment's duration is 1000/(2**scale)
---   milliseconds
-[scale] :: GetVideoChatStreamSegment -> Maybe Int
-
--- | Identifier of an audio/video channel to get as received from tgcalls
-[channel_id] :: GetVideoChatStreamSegment -> Maybe Int
-
--- | Video quality as received from tgcalls; pass null to get the worst
---   available quality
-[video_quality] :: GetVideoChatStreamSegment -> Maybe GroupCallVideoQuality
-defaultGetVideoChatStreamSegment :: GetVideoChatStreamSegment
-instance GHC.Show.Show TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
-instance GHC.Classes.Eq TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
-instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatStreamSegment.GetVideoChatStreamSegment
-
-module TD.Query.GetVideoChatStreams
-
--- | Returns information about available video chat streams. Returns
---   <a>VideoChatStreams</a>
-data GetVideoChatStreams
-GetVideoChatStreams :: Maybe Int -> GetVideoChatStreams
-
--- | Group call identifier
-[group_call_id] :: GetVideoChatStreams -> Maybe Int
-instance GHC.Show.Show TD.Query.GetVideoChatStreams.GetVideoChatStreams
-instance GHC.Classes.Eq TD.Query.GetVideoChatStreams.GetVideoChatStreams
-instance TD.Lib.Internal.ShortShow TD.Query.GetVideoChatStreams.GetVideoChatStreams
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoChatStreams.GetVideoChatStreams
-
 module TD.Query.GetVideoMessageAdvertisements
 
 -- | Returns advertisements to be shown while a video from a message is
@@ -35962,6 +36439,17 @@ instance GHC.Classes.Eq TD.Query.InviteVideoChatParticipants.InviteVideoChatPart
 instance TD.Lib.Internal.ShortShow TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.InviteVideoChatParticipants.InviteVideoChatParticipants
 
+module TD.Query.IsLoginEmailAddressRequired
+
+-- | Checks whether the current user is required to set login email
+--   address. Returns <a>Ok</a>
+data IsLoginEmailAddressRequired
+IsLoginEmailAddressRequired :: IsLoginEmailAddressRequired
+instance GHC.Show.Show TD.Query.IsLoginEmailAddressRequired.IsLoginEmailAddressRequired
+instance GHC.Classes.Eq TD.Query.IsLoginEmailAddressRequired.IsLoginEmailAddressRequired
+instance TD.Lib.Internal.ShortShow TD.Query.IsLoginEmailAddressRequired.IsLoginEmailAddressRequired
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.IsLoginEmailAddressRequired.IsLoginEmailAddressRequired
+
 module TD.Query.IsProfileAudio
 
 -- | Checks whether a file is in the profile audio files of the current
@@ -36009,7 +36497,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinChatByInviteLink.JoinChatBy
 
 module TD.Query.JoinGroupCall
 
--- | Joins a group call that is not bound to a chat. Returns
+-- | Joins a regular group call that is not bound to a chat. Returns
 --   <a>GroupCallInfo</a>
 data JoinGroupCall
 JoinGroupCall :: Maybe InputGroupCall -> Maybe GroupCallJoinParameters -> JoinGroupCall
@@ -36025,6 +36513,24 @@ instance GHC.Classes.Eq TD.Query.JoinGroupCall.JoinGroupCall
 instance TD.Lib.Internal.ShortShow TD.Query.JoinGroupCall.JoinGroupCall
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinGroupCall.JoinGroupCall
 
+module TD.Query.JoinLiveStory
+
+-- | Joins a group call of an active live story. Returns join response
+--   payload for tgcalls. Returns <a>Text</a>
+data JoinLiveStory
+JoinLiveStory :: Maybe Int -> Maybe GroupCallJoinParameters -> JoinLiveStory
+
+-- | Group call identifier
+[group_call_id] :: JoinLiveStory -> Maybe Int
+
+-- | Parameters to join the call
+[join_parameters] :: JoinLiveStory -> Maybe GroupCallJoinParameters
+defaultJoinLiveStory :: JoinLiveStory
+instance GHC.Show.Show TD.Query.JoinLiveStory.JoinLiveStory
+instance GHC.Classes.Eq TD.Query.JoinLiveStory.JoinLiveStory
+instance TD.Lib.Internal.ShortShow TD.Query.JoinLiveStory.JoinLiveStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinLiveStory.JoinLiveStory
+
 module TD.Query.JoinVideoChat
 
 -- | Joins an active video chat. Returns join response payload for tgcalls.
@@ -36036,7 +36542,7 @@ JoinVideoChat :: Maybe Int -> Maybe MessageSender -> Maybe GroupCallJoinParamete
 [group_call_id] :: JoinVideoChat -> Maybe Int
 
 -- | Identifier of a group call participant, which will be used to join the
---   call; pass null to join as self; video chats only
+--   call; pass null to join as self
 [participant_id] :: JoinVideoChat -> Maybe MessageSender
 
 -- | Parameters to join the call
@@ -36166,10 +36672,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadDirectMessagesChatTopics.Lo
 
 module TD.Query.LoadGroupCallParticipants
 
--- | Loads more participants of a group call. The loaded participants will
---   be received through updates. Use the field
---   groupCall.loaded_all_participants to check whether all participants
---   have already been loaded. Returns <a>Ok</a>
+-- | Loads more participants of a group call; not supported in live
+--   stories. The loaded participants will be received through updates. Use
+--   the field groupCall.loaded_all_participants to check whether all
+--   participants have already been loaded. Returns <a>Ok</a>
 data LoadGroupCallParticipants
 LoadGroupCallParticipants :: Maybe Int -> Maybe Int -> LoadGroupCallParticipants
 
@@ -36570,8 +37076,8 @@ PostStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 [privacy_settings] :: PostStory -> Maybe StoryPrivacySettings
 
 -- | Identifiers of story albums to which the story will be added upon
---   posting. An album can have up to
---   getOption("story_album_story_count_max")
+--   posting. An album can have up to getOption("story_album_size_max")
+--   stories
 [album_ids] :: PostStory -> Maybe [Int]
 
 -- | Period after which the story is moved to archive, in seconds; must be
@@ -37224,6 +37730,20 @@ instance GHC.Classes.Eq TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveNotificationGroup.RemoveNotificationGroup
 
+module TD.Query.RemovePendingLiveStoryReactions
+
+-- | Removes all pending paid reactions in a live story group call. Returns
+--   <a>Ok</a>
+data RemovePendingLiveStoryReactions
+RemovePendingLiveStoryReactions :: Maybe Int -> RemovePendingLiveStoryReactions
+
+-- | Group call identifier
+[group_call_id] :: RemovePendingLiveStoryReactions -> Maybe Int
+instance GHC.Show.Show TD.Query.RemovePendingLiveStoryReactions.RemovePendingLiveStoryReactions
+instance GHC.Classes.Eq TD.Query.RemovePendingLiveStoryReactions.RemovePendingLiveStoryReactions
+instance TD.Lib.Internal.ShortShow TD.Query.RemovePendingLiveStoryReactions.RemovePendingLiveStoryReactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemovePendingLiveStoryReactions.RemovePendingLiveStoryReactions
+
 module TD.Query.RemovePendingPaidMessageReactions
 
 -- | Removes all pending paid reactions on a message. Returns <a>Ok</a>
@@ -37623,6 +38143,20 @@ instance GHC.Show.Show TD.Query.ReorderSupergroupActiveUsernames.ReorderSupergro
 instance GHC.Classes.Eq TD.Query.ReorderSupergroupActiveUsernames.ReorderSupergroupActiveUsernames
 instance TD.Lib.Internal.ShortShow TD.Query.ReorderSupergroupActiveUsernames.ReorderSupergroupActiveUsernames
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReorderSupergroupActiveUsernames.ReorderSupergroupActiveUsernames
+
+module TD.Query.ReplaceLiveStoryRtmpUrl
+
+-- | Replaces the current RTMP URL for streaming to a live story; requires
+--   owner privileges for channel chats. Returns <a>RtmpUrl</a>
+data ReplaceLiveStoryRtmpUrl
+ReplaceLiveStoryRtmpUrl :: Maybe Int -> ReplaceLiveStoryRtmpUrl
+
+-- | Chat identifier
+[chat_id] :: ReplaceLiveStoryRtmpUrl -> Maybe Int
+instance GHC.Show.Show TD.Query.ReplaceLiveStoryRtmpUrl.ReplaceLiveStoryRtmpUrl
+instance GHC.Classes.Eq TD.Query.ReplaceLiveStoryRtmpUrl.ReplaceLiveStoryRtmpUrl
+instance TD.Lib.Internal.ShortShow TD.Query.ReplaceLiveStoryRtmpUrl.ReplaceLiveStoryRtmpUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceLiveStoryRtmpUrl.ReplaceLiveStoryRtmpUrl
 
 module TD.Query.ReplacePrimaryChatInviteLink
 
@@ -39376,14 +39910,23 @@ module TD.Query.SendGroupCallMessage
 -- | Sends a message to other participants of a group call. Requires
 --   groupCall.can_send_messages right. Returns <a>Ok</a>
 data SendGroupCallMessage
-SendGroupCallMessage :: Maybe Int -> Maybe FormattedText -> SendGroupCallMessage
+SendGroupCallMessage :: Maybe Int -> Maybe FormattedText -> Maybe Int -> SendGroupCallMessage
 
 -- | Group call identifier
 [group_call_id] :: SendGroupCallMessage -> Maybe Int
 
 -- | Text of the message to send;
---   1-getOption("group_call_message_text_length_max") characters
+--   1-getOption("group_call_message_text_length_max") characters for
+--   non-live-stories; see updateGroupCallMessageLevels for live story
+--   restrictions, which depends on paid_message_star_count. Can't contain
+--   line feeds for live stories
 [text] :: SendGroupCallMessage -> Maybe FormattedText
+
+-- | The number of Telegram Stars the user agreed to pay to send the
+--   message; for live stories only;
+--   0-getOption("paid_group_call_message_star_count_max"). Must be 0 for
+--   messages sent to live stories posted by the current user
+[paid_message_star_count] :: SendGroupCallMessage -> Maybe Int
 defaultSendGroupCallMessage :: SendGroupCallMessage
 instance GHC.Show.Show TD.Query.SendGroupCallMessage.SendGroupCallMessage
 instance GHC.Classes.Eq TD.Query.SendGroupCallMessage.SendGroupCallMessage
@@ -41131,6 +41674,26 @@ instance GHC.Classes.Eq TD.Query.SetGiftSettings.SetGiftSettings
 instance TD.Lib.Internal.ShortShow TD.Query.SetGiftSettings.SetGiftSettings
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGiftSettings.SetGiftSettings
 
+module TD.Query.SetGroupCallPaidMessageStarCount
+
+-- | Changes the minimum number of Telegram Stars that must be paid by
+--   general participant for each sent message to a live story call.
+--   Requires groupCall.can_be_managed right. Returns <a>Ok</a>
+data SetGroupCallPaidMessageStarCount
+SetGroupCallPaidMessageStarCount :: Maybe Int -> Maybe Int -> SetGroupCallPaidMessageStarCount
+
+-- | Group call identifier; must be an identifier of a live story call
+[group_call_id] :: SetGroupCallPaidMessageStarCount -> Maybe Int
+
+-- | The new minimum number of Telegram Stars;
+--   0-getOption("paid_group_call_message_star_count_max")
+[paid_message_star_count] :: SetGroupCallPaidMessageStarCount -> Maybe Int
+defaultSetGroupCallPaidMessageStarCount :: SetGroupCallPaidMessageStarCount
+instance GHC.Show.Show TD.Query.SetGroupCallPaidMessageStarCount.SetGroupCallPaidMessageStarCount
+instance GHC.Classes.Eq TD.Query.SetGroupCallPaidMessageStarCount.SetGroupCallPaidMessageStarCount
+instance TD.Lib.Internal.ShortShow TD.Query.SetGroupCallPaidMessageStarCount.SetGroupCallPaidMessageStarCount
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGroupCallPaidMessageStarCount.SetGroupCallPaidMessageStarCount
+
 module TD.Query.SetGroupCallParticipantIsSpeaking
 
 -- | Informs TDLib that speaking state of a participant of an active group
@@ -41156,10 +41719,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetGroupCallParticipantIsSpeaki
 
 module TD.Query.SetGroupCallParticipantVolumeLevel
 
--- | Changes volume level of a participant of an active group call. If the
---   current user can manage the group call or is the owner of the group
---   call, then the participant's volume level will be changed for all
---   users with the default volume level. Returns <a>Ok</a>
+-- | Changes volume level of a participant of an active group call; not
+--   supported for live stories. If the current user can manage the group
+--   call or is the owner of the group call, then the participant's volume
+--   level will be changed for all users with the default volume level.
+--   Returns <a>Ok</a>
 data SetGroupCallParticipantVolumeLevel
 SetGroupCallParticipantVolumeLevel :: Maybe Int -> Maybe MessageSender -> Maybe Int -> SetGroupCallParticipantVolumeLevel
 
@@ -41220,6 +41784,24 @@ instance GHC.Classes.Eq TD.Query.SetInlineGameScore.SetInlineGameScore
 instance TD.Lib.Internal.ShortShow TD.Query.SetInlineGameScore.SetInlineGameScore
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetInlineGameScore.SetInlineGameScore
 
+module TD.Query.SetLiveStoryMessageSender
+
+-- | Selects a message sender to send messages in a live story call.
+--   Returns <a>Ok</a>
+data SetLiveStoryMessageSender
+SetLiveStoryMessageSender :: Maybe Int -> Maybe MessageSender -> SetLiveStoryMessageSender
+
+-- | Group call identifier
+[group_call_id] :: SetLiveStoryMessageSender -> Maybe Int
+
+-- | New message sender for the group call
+[message_sender_id] :: SetLiveStoryMessageSender -> Maybe MessageSender
+defaultSetLiveStoryMessageSender :: SetLiveStoryMessageSender
+instance GHC.Show.Show TD.Query.SetLiveStoryMessageSender.SetLiveStoryMessageSender
+instance GHC.Classes.Eq TD.Query.SetLiveStoryMessageSender.SetLiveStoryMessageSender
+instance TD.Lib.Internal.ShortShow TD.Query.SetLiveStoryMessageSender.SetLiveStoryMessageSender
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetLiveStoryMessageSender.SetLiveStoryMessageSender
+
 module TD.Query.SetLogStream
 
 -- | Sets new log stream for internal logging of TDLib. Can be called
@@ -41275,10 +41857,12 @@ module TD.Query.SetLoginEmailAddress
 
 -- | Changes the login email address of the user. The email address can be
 --   changed only if the current user already has login email and
---   passwordState.login_email_address_pattern is non-empty. The change
---   will not be applied until the new login email address is confirmed
---   with checkLoginEmailAddressCode. To use Apple ID/Google ID instead of
---   an email address, call checkLoginEmailAddressCode directly. Returns
+--   passwordState.login_email_address_pattern is non-empty, or the user
+--   received suggestedActionSetLoginEmailAddress and
+--   isLoginEmailAddressRequired succeeds. The change will not be applied
+--   until the new login email address is confirmed with
+--   checkLoginEmailAddressCode. To use Apple ID/Google ID instead of an
+--   email address, call checkLoginEmailAddressCode directly. Returns
 --   <a>EmailAddressAuthenticationCodeInfo</a>
 data SetLoginEmailAddress
 SetLoginEmailAddress :: Maybe Text -> SetLoginEmailAddress
@@ -41988,7 +42572,7 @@ module TD.Query.SetStoryPrivacySettings
 
 -- | Changes privacy settings of a story. The method can be called only for
 --   stories posted on behalf of the current user and if
---   story.can_be_edited == true. Returns <a>Ok</a>
+--   story.can_set_privacy_settings == true. Returns <a>Ok</a>
 data SetStoryPrivacySettings
 SetStoryPrivacySettings :: Maybe Int -> Maybe StoryPrivacySettings -> SetStoryPrivacySettings
 
@@ -42005,8 +42589,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetStoryPrivacySettings.SetStor
 
 module TD.Query.SetStoryReaction
 
--- | Changes chosen reaction on a story that has already been sent. Returns
---   <a>Ok</a>
+-- | Changes chosen reaction on a story that has already been sent; not
+--   supported for live stories. Returns <a>Ok</a>
 data SetStoryReaction
 SetStoryReaction :: Maybe Int -> Maybe Int -> Maybe ReactionType -> Maybe Bool -> SetStoryReaction
 
@@ -42323,7 +42907,8 @@ SetVideoChatDefaultParticipant :: Maybe Int -> Maybe MessageSender -> SetVideoCh
 -- | Chat identifier
 [chat_id] :: SetVideoChatDefaultParticipant -> Maybe Int
 
--- | Default group call participant identifier to join the video chats
+-- | Default group call participant identifier to join the video chats in
+--   the chat
 [default_participant_id] :: SetVideoChatDefaultParticipant -> Maybe MessageSender
 defaultSetVideoChatDefaultParticipant :: SetVideoChatDefaultParticipant
 instance GHC.Show.Show TD.Query.SetVideoChatDefaultParticipant.SetVideoChatDefaultParticipant
@@ -42455,8 +43040,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartGroupCallRecording.StartGr
 
 module TD.Query.StartGroupCallScreenSharing
 
--- | Starts screen sharing in a joined group call. Returns join response
---   payload for tgcalls. Returns <a>Text</a>
+-- | Starts screen sharing in a joined group call; not supported in live
+--   stories. Returns join response payload for tgcalls. Returns
+--   <a>Text</a>
 data StartGroupCallScreenSharing
 StartGroupCallScreenSharing :: Maybe Int -> Maybe Int -> Maybe Text -> StartGroupCallScreenSharing
 
@@ -42474,6 +43060,43 @@ instance GHC.Show.Show TD.Query.StartGroupCallScreenSharing.StartGroupCallScreen
 instance GHC.Classes.Eq TD.Query.StartGroupCallScreenSharing.StartGroupCallScreenSharing
 instance TD.Lib.Internal.ShortShow TD.Query.StartGroupCallScreenSharing.StartGroupCallScreenSharing
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartGroupCallScreenSharing.StartGroupCallScreenSharing
+
+module TD.Query.StartLiveStory
+
+-- | Starts a new live story on behalf of a chat; requires can_post_stories
+--   administrator right for channel chats. Returns
+--   <a>StartLiveStoryResult</a>
+data StartLiveStory
+StartLiveStory :: Maybe Int -> Maybe StoryPrivacySettings -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> StartLiveStory
+
+-- | Identifier of the chat that will start the live story. Pass Saved
+--   Messages chat identifier when starting a live story on behalf of the
+--   current user, or a channel chat identifier
+[chat_id] :: StartLiveStory -> Maybe Int
+
+-- | The privacy settings for the story; ignored for stories posted on
+--   behalf of channel chats
+[privacy_settings] :: StartLiveStory -> Maybe StoryPrivacySettings
+
+-- | Pass true if the content of the story must be protected from
+--   screenshotting
+[protect_content] :: StartLiveStory -> Maybe Bool
+
+-- | Pass true to create an RTMP stream instead of an ordinary group call
+[is_rtmp_stream] :: StartLiveStory -> Maybe Bool
+
+-- | Pass true to allow viewers of the story to send messages
+[enable_messages] :: StartLiveStory -> Maybe Bool
+
+-- | The minimum number of Telegram Stars that must be paid by viewers for
+--   each sent message to the call;
+--   0-getOption("paid_group_call_message_star_count_max")
+[paid_message_star_count] :: StartLiveStory -> Maybe Int
+defaultStartLiveStory :: StartLiveStory
+instance GHC.Show.Show TD.Query.StartLiveStory.StartLiveStory
+instance GHC.Classes.Eq TD.Query.StartLiveStory.StartLiveStory
+instance TD.Lib.Internal.ShortShow TD.Query.StartLiveStory.StartLiveStory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StartLiveStory.StartLiveStory
 
 module TD.Query.StartScheduledVideoChat
 
@@ -43175,24 +43798,24 @@ instance GHC.Classes.Eq TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGiftIsSaved.ToggleGiftIsSaved
 
-module TD.Query.ToggleGroupCallCanSendMessages
+module TD.Query.ToggleGroupCallAreMessagesAllowed
 
 -- | Toggles whether participants of a group call can send messages there.
---   Requires groupCall.can_toggle_can_send_messages right. Returns
+--   Requires groupCall.can_toggle_are_messages_allowed right. Returns
 --   <a>Ok</a>
-data ToggleGroupCallCanSendMessages
-ToggleGroupCallCanSendMessages :: Maybe Int -> Maybe Bool -> ToggleGroupCallCanSendMessages
+data ToggleGroupCallAreMessagesAllowed
+ToggleGroupCallAreMessagesAllowed :: Maybe Int -> Maybe Bool -> ToggleGroupCallAreMessagesAllowed
 
 -- | Group call identifier
-[group_call_id] :: ToggleGroupCallCanSendMessages -> Maybe Int
+[group_call_id] :: ToggleGroupCallAreMessagesAllowed -> Maybe Int
 
--- | New value of the can_send_messages setting
-[can_send_messages] :: ToggleGroupCallCanSendMessages -> Maybe Bool
-defaultToggleGroupCallCanSendMessages :: ToggleGroupCallCanSendMessages
-instance GHC.Show.Show TD.Query.ToggleGroupCallCanSendMessages.ToggleGroupCallCanSendMessages
-instance GHC.Classes.Eq TD.Query.ToggleGroupCallCanSendMessages.ToggleGroupCallCanSendMessages
-instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallCanSendMessages.ToggleGroupCallCanSendMessages
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallCanSendMessages.ToggleGroupCallCanSendMessages
+-- | New value of the are_messages_allowed setting
+[are_messages_allowed] :: ToggleGroupCallAreMessagesAllowed -> Maybe Bool
+defaultToggleGroupCallAreMessagesAllowed :: ToggleGroupCallAreMessagesAllowed
+instance GHC.Show.Show TD.Query.ToggleGroupCallAreMessagesAllowed.ToggleGroupCallAreMessagesAllowed
+instance GHC.Classes.Eq TD.Query.ToggleGroupCallAreMessagesAllowed.ToggleGroupCallAreMessagesAllowed
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleGroupCallAreMessagesAllowed.ToggleGroupCallAreMessagesAllowed
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallAreMessagesAllowed.ToggleGroupCallAreMessagesAllowed
 
 module TD.Query.ToggleGroupCallIsMyVideoEnabled
 
@@ -43253,7 +43876,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallParticipantIsHan
 module TD.Query.ToggleGroupCallParticipantIsMuted
 
 -- | Toggles whether a participant of an active group call is muted,
---   unmuted, or allowed to unmute themselves. Returns <a>Ok</a>
+--   unmuted, or allowed to unmute themselves; not supported for live
+--   stories. Returns <a>Ok</a>
 data ToggleGroupCallParticipantIsMuted
 ToggleGroupCallParticipantIsMuted :: Maybe Int -> Maybe MessageSender -> Maybe Bool -> ToggleGroupCallParticipantIsMuted
 
@@ -43273,8 +43897,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallParticipantIsMut
 
 module TD.Query.ToggleGroupCallScreenSharingIsPaused
 
--- | Pauses or unpauses screen sharing in a joined group call. Returns
---   <a>Ok</a>
+-- | Pauses or unpauses screen sharing in a joined group call; not
+--   supported in live stories. Returns <a>Ok</a>
 data ToggleGroupCallScreenSharingIsPaused
 ToggleGroupCallScreenSharingIsPaused :: Maybe Int -> Maybe Bool -> ToggleGroupCallScreenSharingIsPaused
 
