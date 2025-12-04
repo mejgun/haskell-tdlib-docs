@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.3.0
+@version 2.1.4.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -4051,6 +4051,34 @@ instance GHC.Classes.Eq TD.Data.VideoChat.VideoChat
 instance TD.Lib.Internal.ShortShow TD.Data.VideoChat.VideoChat
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VideoChat.VideoChat
 
+module TD.Data.UserAuctionBid
+data UserAuctionBid
+
+-- | Describes a bid of the current user in an auction
+UserAuctionBid :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Bool -> UserAuctionBid
+
+-- | The number of Telegram Stars that were put in the bid
+[star_count] :: UserAuctionBid -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the bid was made
+[bid_date] :: UserAuctionBid -> Maybe Int
+
+-- | The minimum number of Telegram Stars that can be put for the next bid
+[next_bid_star_count] :: UserAuctionBid -> Maybe Int
+
+-- | Identifier of the user or the chat that will receive the auctioned
+--   item. If the auction is opened in context of another user or chat,
+--   then a warning is supposed to be shown to the current user
+[owner_id] :: UserAuctionBid -> Maybe MessageSender
+
+-- | True, if the bid was returned to the user, because it was outbid and
+--   can't win anymore
+[was_returned] :: UserAuctionBid -> Maybe Bool
+instance GHC.Show.Show TD.Data.UserAuctionBid.UserAuctionBid
+instance GHC.Classes.Eq TD.Data.UserAuctionBid.UserAuctionBid
+instance TD.Lib.Internal.ShortShow TD.Data.UserAuctionBid.UserAuctionBid
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserAuctionBid.UserAuctionBid
+
 module TD.Data.UnreadReaction
 data UnreadReaction
 
@@ -7100,6 +7128,41 @@ instance TD.Lib.Internal.ShortShow TD.Data.GiftForResaleOrder.GiftForResaleOrder
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftForResaleOrder.GiftForResaleOrder
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.GiftForResaleOrder.GiftForResaleOrder
 
+module TD.Data.GiftBackground
+data GiftBackground
+
+-- | Describes background of a gift
+GiftBackground :: Maybe Int -> Maybe Int -> Maybe Int -> GiftBackground
+
+-- | Center color in RGB format
+[center_color] :: GiftBackground -> Maybe Int
+
+-- | Edge color in RGB format
+[edge_color] :: GiftBackground -> Maybe Int
+
+-- | Text color in RGB format
+[text_color] :: GiftBackground -> Maybe Int
+instance GHC.Show.Show TD.Data.GiftBackground.GiftBackground
+instance GHC.Classes.Eq TD.Data.GiftBackground.GiftBackground
+instance TD.Lib.Internal.ShortShow TD.Data.GiftBackground.GiftBackground
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftBackground.GiftBackground
+
+module TD.Data.GiftAuction
+data GiftAuction
+
+-- | Describes an auction on which a gift can be purchased
+GiftAuction :: Maybe Text -> Maybe Int -> GiftAuction
+
+-- | Identifier of the auction
+[_id] :: GiftAuction -> Maybe Text
+
+-- | Number of gifts distributed in each round
+[gifts_per_round] :: GiftAuction -> Maybe Int
+instance GHC.Show.Show TD.Data.GiftAuction.GiftAuction
+instance GHC.Classes.Eq TD.Data.GiftAuction.GiftAuction
+instance TD.Lib.Internal.ShortShow TD.Data.GiftAuction.GiftAuction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftAuction.GiftAuction
+
 module TD.Data.GameHighScore
 data GameHighScore
 
@@ -8144,6 +8207,52 @@ instance GHC.Show.Show TD.Data.GroupCallMessage.GroupCallMessage
 instance GHC.Classes.Eq TD.Data.GroupCallMessage.GroupCallMessage
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCallMessage.GroupCallMessage
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCallMessage.GroupCallMessage
+
+module TD.Data.GiftAuctionAcquiredGift
+data GiftAuctionAcquiredGift
+
+-- | Represents a gift that was acquired by the current user on an auction
+GiftAuctionAcquiredGift :: Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> GiftAuctionAcquiredGift
+
+-- | Receiver of the gift
+[receiver_id] :: GiftAuctionAcquiredGift -> Maybe MessageSender
+
+-- | Point in time (Unix timestamp) when the gift was acquired
+[date] :: GiftAuctionAcquiredGift -> Maybe Int
+
+-- | The number of Telegram Stars that were paid for the gift
+[star_count] :: GiftAuctionAcquiredGift -> Maybe Int
+
+-- | Identifier of the auction round in which the gift was acquired
+[auction_round_number] :: GiftAuctionAcquiredGift -> Maybe Int
+
+-- | Position of the user in the round among all auction participants
+[auction_round_position] :: GiftAuctionAcquiredGift -> Maybe Int
+
+-- | Message added to the gift
+[text] :: GiftAuctionAcquiredGift -> Maybe FormattedText
+
+-- | True, if the sender and gift text are shown only to the gift receiver;
+--   otherwise, everyone will be able to see them
+[is_private] :: GiftAuctionAcquiredGift -> Maybe Bool
+instance GHC.Show.Show TD.Data.GiftAuctionAcquiredGift.GiftAuctionAcquiredGift
+instance GHC.Classes.Eq TD.Data.GiftAuctionAcquiredGift.GiftAuctionAcquiredGift
+instance TD.Lib.Internal.ShortShow TD.Data.GiftAuctionAcquiredGift.GiftAuctionAcquiredGift
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftAuctionAcquiredGift.GiftAuctionAcquiredGift
+
+module TD.Data.GiftAuctionAcquiredGifts
+data GiftAuctionAcquiredGifts
+
+-- | Represents a list of gifts that were acquired by the current user on
+--   an auction
+GiftAuctionAcquiredGifts :: Maybe [GiftAuctionAcquiredGift] -> GiftAuctionAcquiredGifts
+
+-- | The list of acquired gifts
+[gifts] :: GiftAuctionAcquiredGifts -> Maybe [GiftAuctionAcquiredGift]
+instance GHC.Show.Show TD.Data.GiftAuctionAcquiredGifts.GiftAuctionAcquiredGifts
+instance GHC.Classes.Eq TD.Data.GiftAuctionAcquiredGifts.GiftAuctionAcquiredGifts
+instance TD.Lib.Internal.ShortShow TD.Data.GiftAuctionAcquiredGifts.GiftAuctionAcquiredGifts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftAuctionAcquiredGifts.GiftAuctionAcquiredGifts
 
 module TD.Data.FirebaseDeviceVerificationParameters
 
@@ -9227,7 +9336,7 @@ module TD.Data.Gift
 data Gift
 
 -- | Describes a gift that can be sent to another user or channel chat
-Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe GiftPurchaseLimits -> Maybe GiftPurchaseLimits -> Maybe Int -> Maybe Int -> Gift
+Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe GiftAuction -> Maybe Int -> Maybe GiftPurchaseLimits -> Maybe GiftPurchaseLimits -> Maybe Int -> Maybe Int -> Gift
 
 -- | Unique identifier of the gift
 [_id] :: Gift -> Maybe Int
@@ -9259,6 +9368,10 @@ Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> May
 
 -- | True, if the gift can be bought only by Telegram Premium subscribers
 [is_premium] :: Gift -> Maybe Bool
+
+-- | Information about the auction on which the gift can be purchased; may
+--   be null if the gift can be purchased directly
+[auction_info] :: Gift -> Maybe GiftAuction
 
 -- | Point in time (Unix timestamp) when the gift can be sent next time by
 --   the current user; can be 0 or a date in the past. If the date is in
@@ -14885,6 +14998,13 @@ InternalLinkTypeGame :: Maybe Text -> Maybe Text -> InternalLinkType
 -- | Short name of the game
 [game_short_name] :: InternalLinkType -> Maybe Text
 
+-- | The link is a link to a gift auction. Call getGiftAuctionState with
+--   the given auction identifier to process the link
+InternalLinkTypeGiftAuction :: Maybe Text -> InternalLinkType
+
+-- | Unique identifier of the auction
+[auction_id] :: InternalLinkType -> Maybe Text
+
 -- | The link is a link to a gift collection. Call searchPublicChat with
 --   the given username, then call getReceivedGifts with the received gift
 --   owner identifier and the given collection identifier, then show the
@@ -17747,6 +17867,103 @@ instance GHC.Classes.Eq TD.Data.Audios.Audios
 instance TD.Lib.Internal.ShortShow TD.Data.Audios.Audios
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Audios.Audios
 
+module TD.Data.AuctionBid
+data AuctionBid
+
+-- | Describes a bid in an auction
+AuctionBid :: Maybe Int -> Maybe Int -> Maybe Int -> AuctionBid
+
+-- | The number of Telegram Stars that were put in the bid
+[star_count] :: AuctionBid -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the bid was made
+[bid_date] :: AuctionBid -> Maybe Int
+
+-- | Position of the bid in the list of all bids
+[position] :: AuctionBid -> Maybe Int
+instance GHC.Show.Show TD.Data.AuctionBid.AuctionBid
+instance GHC.Classes.Eq TD.Data.AuctionBid.AuctionBid
+instance TD.Lib.Internal.ShortShow TD.Data.AuctionBid.AuctionBid
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AuctionBid.AuctionBid
+
+module TD.Data.AuctionState
+
+-- | Describes state of an auction
+data AuctionState
+
+-- | Contains information about an ongoing auction
+AuctionStateActive :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe [AuctionBid] -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe UserAuctionBid -> AuctionState
+
+-- | Point in time (Unix timestamp) when the auction started
+[start_date] :: AuctionState -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the auction will be ended
+[end_date] :: AuctionState -> Maybe Int
+
+-- | The minimum possible bid in the auction in Telegram Stars
+[min_bid] :: AuctionState -> Maybe Int
+
+-- | A sparse list of bids that were made in the auction
+[bid_levels] :: AuctionState -> Maybe [AuctionBid]
+
+-- | User identifiers of at most 3 users with the biggest bids
+[top_bidder_user_ids] :: AuctionState -> Maybe [Int]
+
+-- | Point in time (Unix timestamp) when the current round will end
+[current_round_end_date] :: AuctionState -> Maybe Int
+
+-- | 1-based number of the current round
+[current_round_number] :: AuctionState -> Maybe Int
+
+-- | The total number of rounds
+[total_round_count] :: AuctionState -> Maybe Int
+
+-- | The number of items that have to be distributed on the auciton
+[left_item_count] :: AuctionState -> Maybe Int
+
+-- | The number of items that were purchased by the current user on the
+--   auciton
+[acquired_item_count] :: AuctionState -> Maybe Int
+
+-- | Bid of the current user in the auction; may be null if none
+[user_bid] :: AuctionState -> Maybe UserAuctionBid
+
+-- | Contains information about a finished auction
+AuctionStateFinished :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> AuctionState
+
+-- | Point in time (Unix timestamp) when the auction started
+[start_date] :: AuctionState -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the auction will be ended
+[end_date] :: AuctionState -> Maybe Int
+
+-- | Average price of bought items in Telegram Stars
+[average_price] :: AuctionState -> Maybe Int
+
+-- | The number of items that were purchased by the current user on the
+--   auciton
+[acquired_item_count] :: AuctionState -> Maybe Int
+instance GHC.Show.Show TD.Data.AuctionState.AuctionState
+instance GHC.Classes.Eq TD.Data.AuctionState.AuctionState
+instance TD.Lib.Internal.ShortShow TD.Data.AuctionState.AuctionState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AuctionState.AuctionState
+
+module TD.Data.GiftAuctionState
+data GiftAuctionState
+
+-- | Represent auction state of a gift
+GiftAuctionState :: Maybe Gift -> Maybe AuctionState -> GiftAuctionState
+
+-- | The gift
+[gift] :: GiftAuctionState -> Maybe Gift
+
+-- | Auction state of the gift
+[state] :: GiftAuctionState -> Maybe AuctionState
+instance GHC.Show.Show TD.Data.GiftAuctionState.GiftAuctionState
+instance GHC.Classes.Eq TD.Data.GiftAuctionState.GiftAuctionState
+instance TD.Lib.Internal.ShortShow TD.Data.GiftAuctionState.GiftAuctionState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GiftAuctionState.GiftAuctionState
+
 module TD.Data.AttachmentMenuBotColor
 data AttachmentMenuBotColor
 
@@ -19431,6 +19648,18 @@ LinkPreviewTypeExternalVideo :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe I
 -- | Duration of the animation, in seconds
 [duration] :: LinkPreviewType -> Maybe Int
 
+-- | The link is a link to a gift auction
+LinkPreviewTypeGiftAuction :: Maybe Gift -> Maybe GiftBackground -> Maybe Int -> LinkPreviewType
+
+-- | The gift
+[gift] :: LinkPreviewType -> Maybe Gift
+
+-- | Background of the gift
+[gift_background] :: LinkPreviewType -> Maybe GiftBackground
+
+-- | Point in time (Unix timestamp) when the auction will be ended
+[auction_end_date] :: LinkPreviewType -> Maybe Int
+
 -- | The link is a link to a gift collection
 LinkPreviewTypeGiftCollection :: Maybe [Sticker] -> LinkPreviewType
 
@@ -19520,7 +19749,7 @@ LinkPreviewTypeUnsupported :: LinkPreviewType
 LinkPreviewTypeUpgradedGift :: Maybe UpgradedGift -> LinkPreviewType
 
 -- | The gift
-[gift] :: LinkPreviewType -> Maybe UpgradedGift
+[_gift] :: LinkPreviewType -> Maybe UpgradedGift
 
 -- | The link is a link to a user
 LinkPreviewTypeUser :: Maybe ChatPhoto -> Maybe Bool -> LinkPreviewType
@@ -20237,11 +20466,20 @@ StarTransactionTypeChannelSubscriptionSale :: Maybe Int -> Maybe Int -> StarTran
 -- | The number of seconds between consecutive Telegram Star debitings
 [subscription_period] :: StarTransactionType -> Maybe Int
 
+-- | The transaction is a bid on a gift auction; for regular users only
+StarTransactionTypeGiftAuctionBid :: Maybe MessageSender -> Maybe Gift -> StarTransactionType
+
+-- | Identifier of the user that will receive the gift
+[owner_id] :: StarTransactionType -> Maybe MessageSender
+
+-- | The gift
+[gift] :: StarTransactionType -> Maybe Gift
+
 -- | The transaction is a purchase of a regular gift; for regular users and
 --   bots only
 StarTransactionTypeGiftPurchase :: Maybe MessageSender -> Maybe Gift -> StarTransactionType
 
--- | Identifier of the user or the channel that received the gift
+-- | Identifier of the user that will receive the gift
 [owner_id] :: StarTransactionType -> Maybe MessageSender
 
 -- | The gift
@@ -20251,7 +20489,7 @@ StarTransactionTypeGiftPurchase :: Maybe MessageSender -> Maybe Gift -> StarTran
 --   only
 StarTransactionTypeGiftTransfer :: Maybe MessageSender -> Maybe UpgradedGift -> StarTransactionType
 
--- | Identifier of the user or the channel that received the gift
+-- | Identifier of the user that will receive the gift
 [owner_id] :: StarTransactionType -> Maybe MessageSender
 
 -- | The gift
@@ -20261,7 +20499,7 @@ StarTransactionTypeGiftTransfer :: Maybe MessageSender -> Maybe UpgradedGift -> 
 --   regular users only
 StarTransactionTypeGiftOriginalDetailsDrop :: Maybe MessageSender -> Maybe UpgradedGift -> StarTransactionType
 
--- | Identifier of the user or the channel that received the gift
+-- | Identifier of the user that will receive the gift
 [owner_id] :: StarTransactionType -> Maybe MessageSender
 
 -- | The gift
@@ -20292,7 +20530,7 @@ StarTransactionTypeGiftUpgrade :: Maybe Int -> Maybe UpgradedGift -> StarTransac
 --   user or channel; for regular users only
 StarTransactionTypeGiftUpgradePurchase :: Maybe MessageSender -> Maybe Gift -> StarTransactionType
 
--- | Identifier of the user or the channel that received the gift
+-- | Identifier of the user that will receive the gift
 [owner_id] :: StarTransactionType -> Maybe MessageSender
 
 -- | The gift
@@ -21810,7 +22048,7 @@ MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -
 
 -- | A regular gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Text -> MessageContent
+MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Text -> MessageContent
 
 -- | The gift
 [gift] :: MessageContent -> Maybe Gift
@@ -21840,6 +22078,9 @@ MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe
 -- | True, if the upgrade was bought after the gift was sent. In this case,
 --   prepaid upgrade cost must not be added to the gift cost
 [is_upgrade_separate] :: MessageContent -> Maybe Bool
+
+-- | True, if the message is a notification about a gift won on an auction
+[is_from_auction] :: MessageContent -> Maybe Bool
 
 -- | True, if the sender and gift text are shown only to the gift receiver;
 --   otherwise, everyone will be able to see them
@@ -25522,6 +25763,18 @@ UpdateNewCallSignalingData :: Maybe Int -> Maybe ByteString -> Update
 -- | The data
 [_data] :: Update -> Maybe ByteString
 
+-- | State of a gift auction was updated
+UpdateGiftAuctionState :: Maybe GiftAuctionState -> Update
+
+-- | New state of the auction
+[state] :: Update -> Maybe GiftAuctionState
+
+-- | The list of auctions in which participate the current user has changed
+UpdateActiveGiftAuctions :: Maybe [GiftAuctionState] -> Update
+
+-- | New states of the auctions
+[states] :: Update -> Maybe [GiftAuctionState]
+
 -- | Some privacy setting rules have been changed
 UpdateUserPrivacySettingRules :: Maybe UserPrivacySetting -> Maybe UserPrivacySettingRules -> Update
 
@@ -25762,7 +26015,7 @@ UpdateLanguagePackStrings :: Maybe Text -> Maybe Text -> Maybe [LanguagePackStri
 UpdateConnectionState :: Maybe ConnectionState -> Update
 
 -- | The new connection state
-[state] :: Update -> Maybe ConnectionState
+[_state] :: Update -> Maybe ConnectionState
 
 -- | The freeze state of the current user's account has changed
 UpdateFreezeState :: Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Text -> Update
@@ -26454,6 +26707,8 @@ FoundStories :: FoundStories -> GeneralResult
 FoundUsers :: FoundUsers -> GeneralResult
 FoundWebApp :: FoundWebApp -> GeneralResult
 GameHighScores :: GameHighScores -> GeneralResult
+GiftAuctionAcquiredGifts :: GiftAuctionAcquiredGifts -> GeneralResult
+GiftAuctionState :: GiftAuctionState -> GeneralResult
 GiftChatThemes :: GiftChatThemes -> GeneralResult
 GiftCollection :: GiftCollection -> GeneralResult
 GiftCollections :: GiftCollections -> GeneralResult
@@ -28364,6 +28619,20 @@ instance GHC.Show.Show TD.Query.CloseChat.CloseChat
 instance GHC.Classes.Eq TD.Query.CloseChat.CloseChat
 instance TD.Lib.Internal.ShortShow TD.Query.CloseChat.CloseChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CloseChat.CloseChat
+
+module TD.Query.CloseGiftAuction
+
+-- | Informs TDLib that a gift auction was closed by the user. Returns
+--   <a>Ok</a>
+data CloseGiftAuction
+CloseGiftAuction :: Maybe Int -> CloseGiftAuction
+
+-- | Identifier of the gift, which auction was closed
+[gift_id] :: CloseGiftAuction -> Maybe Int
+instance GHC.Show.Show TD.Query.CloseGiftAuction.CloseGiftAuction
+instance GHC.Classes.Eq TD.Query.CloseGiftAuction.CloseGiftAuction
+instance TD.Lib.Internal.ShortShow TD.Query.CloseGiftAuction.CloseGiftAuction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CloseGiftAuction.CloseGiftAuction
 
 module TD.Query.CloseSecretChat
 
@@ -33178,6 +33447,33 @@ instance GHC.Classes.Eq TD.Query.GetGameHighScores.GetGameHighScores
 instance TD.Lib.Internal.ShortShow TD.Query.GetGameHighScores.GetGameHighScores
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGameHighScores.GetGameHighScores
 
+module TD.Query.GetGiftAuctionAcquiredGifts
+
+-- | Returns the gifts that were acquired by the current user on a gift
+--   auction. Returns <a>GiftAuctionAcquiredGifts</a>
+data GetGiftAuctionAcquiredGifts
+GetGiftAuctionAcquiredGifts :: Maybe Int -> GetGiftAuctionAcquiredGifts
+
+-- | Identifier of the auctioned gift
+[gift_id] :: GetGiftAuctionAcquiredGifts -> Maybe Int
+instance GHC.Show.Show TD.Query.GetGiftAuctionAcquiredGifts.GetGiftAuctionAcquiredGifts
+instance GHC.Classes.Eq TD.Query.GetGiftAuctionAcquiredGifts.GetGiftAuctionAcquiredGifts
+instance TD.Lib.Internal.ShortShow TD.Query.GetGiftAuctionAcquiredGifts.GetGiftAuctionAcquiredGifts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGiftAuctionAcquiredGifts.GetGiftAuctionAcquiredGifts
+
+module TD.Query.GetGiftAuctionState
+
+-- | Returns auction state for a gift. Returns <a>GiftAuctionState</a>
+data GetGiftAuctionState
+GetGiftAuctionState :: Maybe Text -> GetGiftAuctionState
+
+-- | Unique identifier of the auction
+[auction_id] :: GetGiftAuctionState -> Maybe Text
+instance GHC.Show.Show TD.Query.GetGiftAuctionState.GetGiftAuctionState
+instance GHC.Classes.Eq TD.Query.GetGiftAuctionState.GetGiftAuctionState
+instance TD.Lib.Internal.ShortShow TD.Query.GetGiftAuctionState.GetGiftAuctionState
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGiftAuctionState.GetGiftAuctionState
+
 module TD.Query.GetGiftChatThemes
 
 -- | Returns available to the current user gift chat themes. Returns
@@ -36396,6 +36692,24 @@ instance GHC.Classes.Eq TD.Query.ImportMessages.ImportMessages
 instance TD.Lib.Internal.ShortShow TD.Query.ImportMessages.ImportMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ImportMessages.ImportMessages
 
+module TD.Query.IncreaseGiftAuctionBid
+
+-- | Increases a bid for an auction gift without changing gift text and
+--   receiver. Returns <a>Ok</a>
+data IncreaseGiftAuctionBid
+IncreaseGiftAuctionBid :: Maybe Int -> Maybe Int -> IncreaseGiftAuctionBid
+
+-- | Identifier of the gift to put the bid on
+[gift_id] :: IncreaseGiftAuctionBid -> Maybe Int
+
+-- | The number of Telegram Stars to put in the bid
+[star_count] :: IncreaseGiftAuctionBid -> Maybe Int
+defaultIncreaseGiftAuctionBid :: IncreaseGiftAuctionBid
+instance GHC.Show.Show TD.Query.IncreaseGiftAuctionBid.IncreaseGiftAuctionBid
+instance GHC.Classes.Eq TD.Query.IncreaseGiftAuctionBid.IncreaseGiftAuctionBid
+instance TD.Lib.Internal.ShortShow TD.Query.IncreaseGiftAuctionBid.IncreaseGiftAuctionBid
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.IncreaseGiftAuctionBid.IncreaseGiftAuctionBid
+
 module TD.Query.InviteGroupCallParticipant
 
 -- | Invites a user to an active group call; for group calls not bound to a
@@ -36828,6 +37142,20 @@ instance GHC.Classes.Eq TD.Query.OpenChatSimilarChat.OpenChatSimilarChat
 instance TD.Lib.Internal.ShortShow TD.Query.OpenChatSimilarChat.OpenChatSimilarChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenChatSimilarChat.OpenChatSimilarChat
 
+module TD.Query.OpenGiftAuction
+
+-- | Informs TDLib that a gift auction was opened by the user. Returns
+--   <a>Ok</a>
+data OpenGiftAuction
+OpenGiftAuction :: Maybe Int -> OpenGiftAuction
+
+-- | Identifier of the gift, which auction was opened
+[gift_id] :: OpenGiftAuction -> Maybe Int
+instance GHC.Show.Show TD.Query.OpenGiftAuction.OpenGiftAuction
+instance GHC.Classes.Eq TD.Query.OpenGiftAuction.OpenGiftAuction
+instance TD.Lib.Internal.ShortShow TD.Query.OpenGiftAuction.OpenGiftAuction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenGiftAuction.OpenGiftAuction
+
 module TD.Query.OpenMessageContent
 
 -- | Informs TDLib that the message content has been opened (e.g., the user
@@ -37046,6 +37374,36 @@ instance GHC.Show.Show TD.Query.PingProxy.PingProxy
 instance GHC.Classes.Eq TD.Query.PingProxy.PingProxy
 instance TD.Lib.Internal.ShortShow TD.Query.PingProxy.PingProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.PingProxy.PingProxy
+
+module TD.Query.PlaceGiftAuctionBid
+
+-- | Places a bid on an auction gift. Returns <a>Ok</a>
+data PlaceGiftAuctionBid
+PlaceGiftAuctionBid :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> PlaceGiftAuctionBid
+
+-- | Identifier of the gift to place the bid on
+[gift_id] :: PlaceGiftAuctionBid -> Maybe Int
+
+-- | The number of Telegram Stars to place in the bid
+[star_count] :: PlaceGiftAuctionBid -> Maybe Int
+
+-- | Identifier of the user that will receive the gift
+[user_id] :: PlaceGiftAuctionBid -> Maybe Int
+
+-- | Text to show along with the gift; 0-getOption("gift_text_length_max")
+--   characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, and
+--   CustomEmoji entities are allowed. Must be empty if the receiver
+--   enabled paid messages
+[text] :: PlaceGiftAuctionBid -> Maybe FormattedText
+
+-- | Pass true to show gift text and sender only to the gift receiver;
+--   otherwise, everyone will be able to see them
+[is_private] :: PlaceGiftAuctionBid -> Maybe Bool
+defaultPlaceGiftAuctionBid :: PlaceGiftAuctionBid
+instance GHC.Show.Show TD.Query.PlaceGiftAuctionBid.PlaceGiftAuctionBid
+instance GHC.Classes.Eq TD.Query.PlaceGiftAuctionBid.PlaceGiftAuctionBid
+instance TD.Lib.Internal.ShortShow TD.Query.PlaceGiftAuctionBid.PlaceGiftAuctionBid
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.PlaceGiftAuctionBid.PlaceGiftAuctionBid
 
 module TD.Query.PostStory
 

@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.AuctionState</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier">AuctionState</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.AuctionBid.html"><span class="hs-identifier">TD.Data.AuctionBid</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AuctionBid</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.UserAuctionBid.html"><span class="hs-identifier">TD.Data.UserAuctionBid</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">UserAuctionBid</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Describes state of an auction</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="AuctionState"><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier hs-var">AuctionState</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="AuctionStateActive"><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateActive"><span class="hs-identifier hs-var">AuctionStateActive</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about an ongoing auction</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="start_date"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var hs-var">start_date</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the auction started</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="end_date"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var hs-var">end_date</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the auction will be ended</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="min_bid"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#min_bid"><span class="hs-identifier hs-var hs-var">min_bid</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ The minimum possible bid in the auction in Telegram Stars</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="bid_levels"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe [AuctionBid]
+</span><a href="TD.Data.AuctionState.html#bid_levels"><span class="hs-identifier hs-var hs-var">bid_levels</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TD.Data.AuctionBid.html#AuctionBid"><span class="hs-identifier hs-type">AuctionBid.AuctionBid</span></a></span><span class="hs-special">]</span><span>       </span><span class="annot"><span class="hs-comment">-- ^ A sparse list of bids that were made in the auction</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="top_bidder_user_ids"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe [Int]
+</span><a href="TD.Data.AuctionState.html#top_bidder_user_ids"><span class="hs-identifier hs-var hs-var">top_bidder_user_ids</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ User identifiers of at most 3 users with the biggest bids</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="current_round_end_date"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_end_date"><span class="hs-identifier hs-var hs-var">current_round_end_date</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the current round will end</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="current_round_number"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_number"><span class="hs-identifier hs-var hs-var">current_round_number</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ 1-based number of the current round</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="total_round_count"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#total_round_count"><span class="hs-identifier hs-var hs-var">total_round_count</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ The total number of rounds</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="left_item_count"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#left_item_count"><span class="hs-identifier hs-var hs-var">left_item_count</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ The number of items that have to be distributed on the auciton</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="acquired_item_count"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var hs-var">acquired_item_count</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                           </span><span class="annot"><span class="hs-comment">-- ^ The number of items that were purchased by the current user on the auciton</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="user_bid"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe UserAuctionBid
+</span><a href="TD.Data.AuctionState.html#user_bid"><span class="hs-identifier hs-var hs-var">user_bid</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.UserAuctionBid.html#UserAuctionBid"><span class="hs-identifier hs-type">UserAuctionBid.UserAuctionBid</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Bid of the current user in the auction; may be null if none</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-25"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="AuctionStateFinished"><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateFinished"><span class="hs-identifier hs-var">AuctionStateFinished</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about a finished auction</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="start_date"><span class="annot"><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var">start_date</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the auction started</span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="end_date"><span class="annot"><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var">end_date</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the auction will be ended</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="average_price"><span class="annot"><span class="annottext">AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#average_price"><span class="hs-identifier hs-var hs-var">average_price</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Average price of bought items in Telegram Stars</span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="acquired_item_count"><span class="annot"><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var">acquired_item_count</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The number of items that were purchased by the current user on the auciton</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-31"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679877595"><span id="local-6989586621679877617"><span class="annot"><span class="annottext">AuctionState -&gt; AuctionState -&gt; Bool
+(AuctionState -&gt; AuctionState -&gt; Bool)
+-&gt; (AuctionState -&gt; AuctionState -&gt; Bool) -&gt; Eq AuctionState
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: AuctionState -&gt; AuctionState -&gt; Bool
+== :: AuctionState -&gt; AuctionState -&gt; Bool
+$c/= :: AuctionState -&gt; AuctionState -&gt; Bool
+/= :: AuctionState -&gt; AuctionState -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679877627"><span id="local-6989586621679877652"><span id="local-6989586621679877656"><span class="annot"><span class="annottext">Int -&gt; AuctionState -&gt; ShowS
+[AuctionState] -&gt; ShowS
+AuctionState -&gt; String
+(Int -&gt; AuctionState -&gt; ShowS)
+-&gt; (AuctionState -&gt; String)
+-&gt; ([AuctionState] -&gt; ShowS)
+-&gt; Show AuctionState
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; AuctionState -&gt; ShowS
+showsPrec :: Int -&gt; AuctionState -&gt; ShowS
+$cshow :: AuctionState -&gt; String
+show :: AuctionState -&gt; String
+$cshowList :: [AuctionState] -&gt; ShowS
+showList :: [AuctionState] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier hs-type">AuctionState</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-34"></span><span>  </span><span id="local-6989586621679877691"><span class="annot"><span class="annottext">shortShow :: AuctionState -&gt; String
+</span><a href="#local-6989586621679877691"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateActive"><span class="hs-identifier hs-type">AuctionStateActive</span></a></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">start_date :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var">start_date</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877693"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877693"><span class="hs-identifier hs-var">start_date_</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">end_date :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var">end_date</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877694"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877694"><span class="hs-identifier hs-var">end_date_</span></a></span></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">min_bid :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#min_bid"><span class="hs-identifier hs-var">min_bid</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877695"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877695"><span class="hs-identifier hs-var">min_bid_</span></a></span></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bid_levels :: AuctionState -&gt; Maybe [AuctionBid]
+</span><a href="TD.Data.AuctionState.html#bid_levels"><span class="hs-identifier hs-var">bid_levels</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877696"><span class="annot"><span class="annottext">Maybe [AuctionBid]
+</span><a href="#local-6989586621679877696"><span class="hs-identifier hs-var">bid_levels_</span></a></span></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">top_bidder_user_ids :: AuctionState -&gt; Maybe [Int]
+</span><a href="TD.Data.AuctionState.html#top_bidder_user_ids"><span class="hs-identifier hs-var">top_bidder_user_ids</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877697"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679877697"><span class="hs-identifier hs-var">top_bidder_user_ids_</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_round_end_date :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_end_date"><span class="hs-identifier hs-var">current_round_end_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877698"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877698"><span class="hs-identifier hs-var">current_round_end_date_</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_round_number :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_number"><span class="hs-identifier hs-var">current_round_number</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877699"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877699"><span class="hs-identifier hs-var">current_round_number_</span></a></span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">total_round_count :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#total_round_count"><span class="hs-identifier hs-var">total_round_count</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877700"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877700"><span class="hs-identifier hs-var">total_round_count_</span></a></span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">left_item_count :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#left_item_count"><span class="hs-identifier hs-var">left_item_count</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877701"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877701"><span class="hs-identifier hs-var">left_item_count_</span></a></span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">acquired_item_count :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var">acquired_item_count</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877702"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877702"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">user_bid :: AuctionState -&gt; Maybe UserAuctionBid
+</span><a href="TD.Data.AuctionState.html#user_bid"><span class="hs-identifier hs-var">user_bid</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877703"><span class="annot"><span class="annottext">Maybe UserAuctionBid
+</span><a href="#local-6989586621679877703"><span class="hs-identifier hs-var">user_bid_</span></a></span></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-47"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;AuctionStateActive&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-49"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;start_date&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877693"><span class="hs-identifier hs-var">start_date_</span></a></span><span>
+</span><span id="line-50"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;end_date&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877694"><span class="hs-identifier hs-var">end_date_</span></a></span><span>
+</span><span id="line-51"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;min_bid&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877695"><span class="hs-identifier hs-var">min_bid_</span></a></span><span>
+</span><span id="line-52"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;bid_levels&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe [AuctionBid] -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [AuctionBid]
+</span><a href="#local-6989586621679877696"><span class="hs-identifier hs-var">bid_levels_</span></a></span><span>
+</span><span id="line-53"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;top_bidder_user_ids&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe [Int] -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679877697"><span class="hs-identifier hs-var">top_bidder_user_ids_</span></a></span><span>
+</span><span id="line-54"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;current_round_end_date&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877698"><span class="hs-identifier hs-var">current_round_end_date_</span></a></span><span>
+</span><span id="line-55"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;current_round_number&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877699"><span class="hs-identifier hs-var">current_round_number_</span></a></span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;total_round_count&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877700"><span class="hs-identifier hs-var">total_round_count_</span></a></span><span>
+</span><span id="line-57"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;left_item_count&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877701"><span class="hs-identifier hs-var">left_item_count_</span></a></span><span>
+</span><span id="line-58"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;acquired_item_count&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877702"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span><span>
+</span><span id="line-59"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;user_bid&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe UserAuctionBid -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe UserAuctionBid
+</span><a href="#local-6989586621679877703"><span class="hs-identifier hs-var">user_bid_</span></a></span><span>
+</span><span id="line-60"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-61"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateFinished"><span class="hs-identifier hs-type">AuctionStateFinished</span></a></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">start_date :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var">start_date</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877706"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877706"><span class="hs-identifier hs-var">start_date_</span></a></span></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">end_date :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var">end_date</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877707"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877707"><span class="hs-identifier hs-var">end_date_</span></a></span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">average_price :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#average_price"><span class="hs-identifier hs-var">average_price</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877708"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877708"><span class="hs-identifier hs-var">average_price_</span></a></span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">acquired_item_count :: AuctionState -&gt; Maybe Int
+</span><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var">acquired_item_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679877709"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877709"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-67"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;AuctionStateFinished&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-69"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;start_date&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877706"><span class="hs-identifier hs-var">start_date_</span></a></span><span>
+</span><span id="line-70"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;end_date&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877707"><span class="hs-identifier hs-var">end_date_</span></a></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;average_price&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877708"><span class="hs-identifier hs-var">average_price_</span></a></span><span>
+</span><span id="line-72"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;acquired_item_count&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877709"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span><span>
+</span><span id="line-73"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679877712"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier hs-type">AuctionState</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-76"></span><span>  </span><span id="local-6989586621679877786"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser AuctionState
+</span><a href="#local-6989586621679877786"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679877788"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679877788"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679877790"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877790"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-77"></span><span>    </span><span id="local-6989586621679877791"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679877791"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877790"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-78"></span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679877791"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-80"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;auctionStateActive&quot;</span></span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser AuctionState
+</span><a href="#local-6989586621679877793"><span class="hs-identifier hs-var">parseAuctionStateActive</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679877788"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-81"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;auctionStateFinished&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser AuctionState
+</span><a href="#local-6989586621679877794"><span class="hs-identifier hs-var">parseAuctionStateFinished</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679877788"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-82"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                      </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser AuctionState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-83"></span><span>    </span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-85"></span><span>      </span><span class="annot"><a href="#local-6989586621679877793"><span class="hs-identifier hs-type">parseAuctionStateActive</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier hs-type">AuctionState</span></a></span><span>
+</span><span id="line-86"></span><span>      </span><span id="local-6989586621679877793"><span class="annot"><span class="annottext">parseAuctionStateActive :: Value -&gt; Parser AuctionState
+</span><a href="#local-6989586621679877793"><span class="hs-identifier hs-var hs-var">parseAuctionStateActive</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;AuctionStateActive&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState)
+-&gt; (Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679877796"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-87"></span><span>        </span><span id="local-6989586621679877797"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877797"><span class="hs-identifier hs-var">start_date_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;start_date&quot;</span></span><span>
+</span><span id="line-88"></span><span>        </span><span id="local-6989586621679877799"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877799"><span class="hs-identifier hs-var">end_date_</span></a></span></span><span>               </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;end_date&quot;</span></span><span>
+</span><span id="line-89"></span><span>        </span><span id="local-6989586621679877800"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877800"><span class="hs-identifier hs-var">min_bid_</span></a></span></span><span>                </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;min_bid&quot;</span></span><span>
+</span><span id="line-90"></span><span>        </span><span id="local-6989586621679877801"><span class="annot"><span class="annottext">Maybe [AuctionBid]
+</span><a href="#local-6989586621679877801"><span class="hs-identifier hs-var">bid_levels_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe [AuctionBid])
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;bid_levels&quot;</span></span><span>
+</span><span id="line-91"></span><span>        </span><span id="local-6989586621679877802"><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679877802"><span class="hs-identifier hs-var">top_bidder_user_ids_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe [Int])
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;top_bidder_user_ids&quot;</span></span><span>
+</span><span id="line-92"></span><span>        </span><span id="local-6989586621679877803"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877803"><span class="hs-identifier hs-var">current_round_end_date_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;current_round_end_date&quot;</span></span><span>
+</span><span id="line-93"></span><span>        </span><span id="local-6989586621679877804"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877804"><span class="hs-identifier hs-var">current_round_number_</span></a></span></span><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;current_round_number&quot;</span></span><span>
+</span><span id="line-94"></span><span>        </span><span id="local-6989586621679877805"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877805"><span class="hs-identifier hs-var">total_round_count_</span></a></span></span><span>      </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;total_round_count&quot;</span></span><span>
+</span><span id="line-95"></span><span>        </span><span id="local-6989586621679877806"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877806"><span class="hs-identifier hs-var">left_item_count_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;left_item_count&quot;</span></span><span>
+</span><span id="line-96"></span><span>        </span><span id="local-6989586621679877807"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877807"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;acquired_item_count&quot;</span></span><span>
+</span><span id="line-97"></span><span>        </span><span id="local-6989586621679877808"><span class="annot"><span class="annottext">Maybe UserAuctionBid
+</span><a href="#local-6989586621679877808"><span class="hs-identifier hs-var">user_bid_</span></a></span></span><span>               </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877796"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe UserAuctionBid)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;user_bid&quot;</span></span><span>
+</span><span id="line-98"></span><span>        </span><span class="annot"><span class="annottext">AuctionState -&gt; Parser AuctionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(AuctionState -&gt; Parser AuctionState)
+-&gt; AuctionState -&gt; Parser AuctionState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateActive"><span class="hs-identifier hs-type">AuctionStateActive</span></a></span><span>
+</span><span id="line-99"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">start_date :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var">start_date</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877797"><span class="hs-identifier hs-var">start_date_</span></a></span><span>
+</span><span id="line-100"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">end_date :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var">end_date</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877799"><span class="hs-identifier hs-var">end_date_</span></a></span><span>
+</span><span id="line-101"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">min_bid :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#min_bid"><span class="hs-identifier hs-var">min_bid</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877800"><span class="hs-identifier hs-var">min_bid_</span></a></span><span>
+</span><span id="line-102"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bid_levels :: Maybe [AuctionBid]
+</span><a href="TD.Data.AuctionState.html#bid_levels"><span class="hs-identifier hs-var">bid_levels</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [AuctionBid]
+</span><a href="#local-6989586621679877801"><span class="hs-identifier hs-var">bid_levels_</span></a></span><span>
+</span><span id="line-103"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">top_bidder_user_ids :: Maybe [Int]
+</span><a href="TD.Data.AuctionState.html#top_bidder_user_ids"><span class="hs-identifier hs-var">top_bidder_user_ids</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [Int]
+</span><a href="#local-6989586621679877802"><span class="hs-identifier hs-var">top_bidder_user_ids_</span></a></span><span>
+</span><span id="line-104"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_round_end_date :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_end_date"><span class="hs-identifier hs-var">current_round_end_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877803"><span class="hs-identifier hs-var">current_round_end_date_</span></a></span><span>
+</span><span id="line-105"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">current_round_number :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#current_round_number"><span class="hs-identifier hs-var">current_round_number</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877804"><span class="hs-identifier hs-var">current_round_number_</span></a></span><span>
+</span><span id="line-106"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">total_round_count :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#total_round_count"><span class="hs-identifier hs-var">total_round_count</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877805"><span class="hs-identifier hs-var">total_round_count_</span></a></span><span>
+</span><span id="line-107"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">left_item_count :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#left_item_count"><span class="hs-identifier hs-var">left_item_count</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877806"><span class="hs-identifier hs-var">left_item_count_</span></a></span><span>
+</span><span id="line-108"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">acquired_item_count :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var">acquired_item_count</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877807"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span><span>
+</span><span id="line-109"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">user_bid :: Maybe UserAuctionBid
+</span><a href="TD.Data.AuctionState.html#user_bid"><span class="hs-identifier hs-var">user_bid</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe UserAuctionBid
+</span><a href="#local-6989586621679877808"><span class="hs-identifier hs-var">user_bid_</span></a></span><span>
+</span><span id="line-110"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-111"></span><span>      </span><span class="annot"><a href="#local-6989586621679877794"><span class="hs-identifier hs-type">parseAuctionStateFinished</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionState"><span class="hs-identifier hs-type">AuctionState</span></a></span><span>
+</span><span id="line-112"></span><span>      </span><span id="local-6989586621679877794"><span class="annot"><span class="annottext">parseAuctionStateFinished :: Value -&gt; Parser AuctionState
+</span><a href="#local-6989586621679877794"><span class="hs-identifier hs-var hs-var">parseAuctionStateFinished</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;AuctionStateFinished&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState)
+-&gt; (Object -&gt; Parser AuctionState) -&gt; Value -&gt; Parser AuctionState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679877809"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877809"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-113"></span><span>        </span><span id="local-6989586621679877810"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877810"><span class="hs-identifier hs-var">start_date_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877809"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;start_date&quot;</span></span><span>
+</span><span id="line-114"></span><span>        </span><span id="local-6989586621679877811"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877811"><span class="hs-identifier hs-var">end_date_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877809"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;end_date&quot;</span></span><span>
+</span><span id="line-115"></span><span>        </span><span id="local-6989586621679877812"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877812"><span class="hs-identifier hs-var">average_price_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877809"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;average_price&quot;</span></span><span>
+</span><span id="line-116"></span><span>        </span><span id="local-6989586621679877813"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877813"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679877809"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;acquired_item_count&quot;</span></span><span>
+</span><span id="line-117"></span><span>        </span><span class="annot"><span class="annottext">AuctionState -&gt; Parser AuctionState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(AuctionState -&gt; Parser AuctionState)
+-&gt; AuctionState -&gt; Parser AuctionState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.AuctionState.html#AuctionStateFinished"><span class="hs-identifier hs-type">AuctionStateFinished</span></a></span><span>
+</span><span id="line-118"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">start_date :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#start_date"><span class="hs-identifier hs-var">start_date</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877810"><span class="hs-identifier hs-var">start_date_</span></a></span><span>
+</span><span id="line-119"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">end_date :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#end_date"><span class="hs-identifier hs-var">end_date</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877811"><span class="hs-identifier hs-var">end_date_</span></a></span><span>
+</span><span id="line-120"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">average_price :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#average_price"><span class="hs-identifier hs-var">average_price</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877812"><span class="hs-identifier hs-var">average_price_</span></a></span><span>
+</span><span id="line-121"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">acquired_item_count :: Maybe Int
+</span><a href="TD.Data.AuctionState.html#acquired_item_count"><span class="hs-identifier hs-var">acquired_item_count</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679877813"><span class="hs-identifier hs-var">acquired_item_count_</span></a></span><span>
+</span><span id="line-122"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-123"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser AuctionState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-124"></span><span>
+</span><span id="line-125"></span></pre></body></html>
