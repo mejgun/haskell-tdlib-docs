@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.AddLoginPasskey</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier">AddLoginPasskey</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#defaultAddLoginPasskey"><span class="hs-identifier">defaultAddLoginPasskey</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Adds a passkey allowed to be used for the login by the current user and returns the added passkey. Call getPasskeyParameters to get parameters for creating of the passkey. Returns 'TD.Data.Passkey.Passkey'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="AddLoginPasskey"><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-var">AddLoginPasskey</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="AddLoginPasskey"><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-var">AddLoginPasskey</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="client_data"><span class="annot"><span class="annottext">AddLoginPasskey -&gt; Maybe Text
+</span><a href="TD.Query.AddLoginPasskey.html#client_data"><span class="hs-identifier hs-var hs-var">client_data</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>        </span><span class="annot"><span class="hs-comment">-- ^ JSON-encoded client data</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="attestation_object"><span class="annot"><span class="annottext">AddLoginPasskey -&gt; Maybe ByteString
+</span><a href="TD.Query.AddLoginPasskey.html#attestation_object"><span class="hs-identifier hs-var hs-var">attestation_object</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Passkey attestation object</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679927606"><span id="local-6989586621679927613"><span class="annot"><span class="annottext">AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool
+(AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool)
+-&gt; (AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool)
+-&gt; Eq AddLoginPasskey
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool
+== :: AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool
+$c/= :: AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool
+/= :: AddLoginPasskey -&gt; AddLoginPasskey -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679927620"><span id="local-6989586621679927629"><span id="local-6989586621679927633"><span class="annot"><span class="annottext">Int -&gt; AddLoginPasskey -&gt; ShowS
+[AddLoginPasskey] -&gt; ShowS
+AddLoginPasskey -&gt; String
+(Int -&gt; AddLoginPasskey -&gt; ShowS)
+-&gt; (AddLoginPasskey -&gt; String)
+-&gt; ([AddLoginPasskey] -&gt; ShowS)
+-&gt; Show AddLoginPasskey
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; AddLoginPasskey -&gt; ShowS
+showsPrec :: Int -&gt; AddLoginPasskey -&gt; ShowS
+$cshow :: AddLoginPasskey -&gt; String
+show :: AddLoginPasskey -&gt; String
+$cshowList :: [AddLoginPasskey] -&gt; ShowS
+showList :: [AddLoginPasskey] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679927648"><span class="annot"><span class="annottext">shortShow :: AddLoginPasskey -&gt; String
+</span><a href="#local-6989586621679927648"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">client_data :: AddLoginPasskey -&gt; Maybe Text
+</span><a href="TD.Query.AddLoginPasskey.html#client_data"><span class="hs-identifier hs-var">client_data</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927650"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679927650"><span class="hs-identifier hs-var">client_data_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">attestation_object :: AddLoginPasskey -&gt; Maybe ByteString
+</span><a href="TD.Query.AddLoginPasskey.html#attestation_object"><span class="hs-identifier hs-var">attestation_object</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927651"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679927651"><span class="hs-identifier hs-var">attestation_object_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;AddLoginPasskey&quot;</span></span><span>
+</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;client_data&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679927650"><span class="hs-identifier hs-var">client_data_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;attestation_object&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679927651"><span class="hs-identifier hs-var">attestation_object_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679927656"><span id="local-6989586621679927660"><span id="local-6989586621679927663"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>  </span><span id="local-6989586621679927687"><span class="annot"><span class="annottext">toJSON :: AddLoginPasskey -&gt; Value
+</span><a href="#local-6989586621679927687"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">client_data :: AddLoginPasskey -&gt; Maybe Text
+</span><a href="TD.Query.AddLoginPasskey.html#client_data"><span class="hs-identifier hs-var">client_data</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927689"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679927689"><span class="hs-identifier hs-var">client_data_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">attestation_object :: AddLoginPasskey -&gt; Maybe ByteString
+</span><a href="TD.Query.AddLoginPasskey.html#attestation_object"><span class="hs-identifier hs-var">attestation_object</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679927690"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679927690"><span class="hs-identifier hs-var">attestation_object_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;addLoginPasskey&quot;</span></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;client_data&quot;</span></span><span>        </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679927689"><span class="hs-identifier hs-var">client_data_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;attestation_object&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Value) -&gt; Maybe ByteString -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeBytes"><span class="hs-identifier hs-var">I.writeBytes</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679927690"><span class="hs-identifier hs-var">attestation_object_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#defaultAddLoginPasskey"><span class="hs-identifier hs-type">defaultAddLoginPasskey</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span><span>
+</span><span id="line-45"></span><span id="defaultAddLoginPasskey"><span class="annot"><span class="annottext">defaultAddLoginPasskey :: AddLoginPasskey
+</span><a href="TD.Query.AddLoginPasskey.html#defaultAddLoginPasskey"><span class="hs-identifier hs-var hs-var">defaultAddLoginPasskey</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>  </span><span class="annot"><a href="TD.Query.AddLoginPasskey.html#AddLoginPasskey"><span class="hs-identifier hs-type">AddLoginPasskey</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">client_data :: Maybe Text
+</span><a href="TD.Query.AddLoginPasskey.html#client_data"><span class="hs-identifier hs-var">client_data</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">attestation_object :: Maybe ByteString
+</span><a href="TD.Query.AddLoginPasskey.html#attestation_object"><span class="hs-identifier hs-var">attestation_object</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span></pre></body></html>
