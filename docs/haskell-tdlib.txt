@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.6.0
+@version 2.1.9.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -462,7 +462,7 @@ UpgradedGiftValueInfo :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> M
 --   originally purchased
 [initial_sale_date] :: UpgradedGiftValueInfo -> Maybe Int
 
--- | Amount of Telegram Stars that were paid for the gift
+-- | The Telegram Star amount that was paid for the gift
 [initial_sale_star_count] :: UpgradedGiftValueInfo -> Maybe Int
 
 -- | Initial price of the gift; in the smallest units of the currency
@@ -710,15 +710,15 @@ data TonRevenueStatus
 -- | Contains information about Toncoins earned by the current user
 TonRevenueStatus :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> TonRevenueStatus
 
--- | Total amount of Toncoins earned; in the smallest units of the
+-- | Total Toncoin amount earned; in the smallest units of the
 --   cryptocurrency
 [total_amount] :: TonRevenueStatus -> Maybe Int
 
--- | Amount of Toncoins that aren't withdrawn yet; in the smallest units of
+-- | The Toncoin amount that isn't withdrawn yet; in the smallest units of
 --   the cryptocurrency
 [balance_amount] :: TonRevenueStatus -> Maybe Int
 
--- | Amount of Toncoins that are available for withdrawal; in the smallest
+-- | The Toncoin amount that is available for withdrawal; in the smallest
 --   units of the cryptocurrency
 [available_amount] :: TonRevenueStatus -> Maybe Int
 
@@ -1228,7 +1228,7 @@ data SuggestedPostPrice
 -- | Describes price of a suggested post in Telegram Stars
 SuggestedPostPriceStar :: Maybe Int -> SuggestedPostPrice
 
--- | The amount of Telegram Stars expected to be paid for the post;
+-- | The Telegram Star amount expected to be paid for the post;
 --   getOption("suggested_post_star_count_min")-getOption("suggested_post_star_count_max")
 [star_count] :: SuggestedPostPrice -> Maybe Int
 
@@ -1651,7 +1651,7 @@ StarSubscriptionPricing :: Maybe Int -> Maybe Int -> StarSubscriptionPricing
 -- | The number of seconds between consecutive Telegram Star debiting
 [period] :: StarSubscriptionPricing -> Maybe Int
 
--- | The amount of Telegram Stars that must be paid for each period
+-- | The Telegram Star amount that must be paid for each period
 [star_count] :: StarSubscriptionPricing -> Maybe Int
 defaultStarSubscriptionPricing :: StarSubscriptionPricing
 instance GHC.Show.Show TD.Data.StarSubscriptionPricing.StarSubscriptionPricing
@@ -1789,10 +1789,10 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarCount.StarCount
 module TD.Data.StarAmount
 data StarAmount
 
--- | Describes a possibly non-integer amount of Telegram Stars
+-- | Describes a possibly non-integer Telegram Star amount
 StarAmount :: Maybe Int -> Maybe Int -> StarAmount
 
--- | The integer amount of Telegram Stars rounded to 0
+-- | The integer Telegram Star amount rounded to 0
 [star_count] :: StarAmount -> Maybe Int
 
 -- | The number of 1/1000000000 shares of Telegram Stars; from -999999999
@@ -1809,13 +1809,13 @@ data StarRevenueStatus
 -- | Contains information about Telegram Stars earned by a user or a chat
 StarRevenueStatus :: Maybe StarAmount -> Maybe StarAmount -> Maybe StarAmount -> Maybe Bool -> Maybe Int -> StarRevenueStatus
 
--- | Total amount of Telegram Stars earned
+-- | Total Telegram Star amount earned
 [total_amount] :: StarRevenueStatus -> Maybe StarAmount
 
--- | The amount of Telegram Stars that aren't withdrawn yet
+-- | The Telegram Star amount that isn't withdrawn yet
 [current_amount] :: StarRevenueStatus -> Maybe StarAmount
 
--- | The amount of Telegram Stars that are available for withdrawal
+-- | The Telegram Star amount that is available for withdrawal
 [available_amount] :: StarRevenueStatus -> Maybe StarAmount
 
 -- | True, if Telegram Stars can be withdrawn now or later
@@ -1847,6 +1847,41 @@ instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance TD.Lib.Internal.ShortShow TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StarRevenueStatistics.StarRevenueStatistics
+
+module TD.Data.StakeDiceState
+data StakeDiceState
+
+-- | Describes state of the stake dice
+StakeDiceState :: Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe [Int] -> Maybe Int -> StakeDiceState
+
+-- | Hash of the state to use for sending the next dice; may be empty if
+--   the stake dice can't be sent by the current user
+[state_hash] :: StakeDiceState -> Maybe Text
+
+-- | The Toncoin amount that was staked in the previous roll; in the
+--   smallest units of the currency
+[stake_toncoin_amount] :: StakeDiceState -> Maybe Int
+
+-- | The amounts of Toncoins that are suggested to be staked; in the
+--   smallest units of the currency
+[suggested_stake_toncoin_amounts] :: StakeDiceState -> Maybe [Int]
+
+-- | The number of rolled sixes towards the streak; 0-2
+[current_streak] :: StakeDiceState -> Maybe Int
+
+-- | The number of Toncoins received by the user for each 1000 Toncoins
+--   staked if the dice outcome is 1-6 correspondingly; may be empty if the
+--   stake dice can't be sent by the current user
+[prize_per_mille] :: StakeDiceState -> Maybe [Int]
+
+-- | The number of Toncoins received by the user for each 1000 Toncoins
+--   staked if the dice outcome is 6 three times in a row with the same
+--   stake
+[streak_prize_per_mille] :: StakeDiceState -> Maybe Int
+instance GHC.Show.Show TD.Data.StakeDiceState.StakeDiceState
+instance GHC.Classes.Eq TD.Data.StakeDiceState.StakeDiceState
+instance TD.Lib.Internal.ShortShow TD.Data.StakeDiceState.StakeDiceState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StakeDiceState.StakeDiceState
 
 module TD.Data.SponsoredChat
 data SponsoredChat
@@ -7011,8 +7046,8 @@ GiveawayInfoCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> M
 --   a Telegram Premium giveaway
 [gift_code] :: GiveawayInfo -> Maybe Text
 
--- | The amount of Telegram Stars won by the current user; 0 if the user
---   isn't a winner in the giveaway or the giveaway isn't a Telegram Star
+-- | The Telegram Star amount won by the current user; 0 if the user isn't
+--   a winner in the giveaway or the giveaway isn't a Telegram Star
 --   giveaway
 [won_star_count] :: GiveawayInfo -> Maybe Int
 instance GHC.Show.Show TD.Data.GiveawayInfo.GiveawayInfo
@@ -7029,7 +7064,7 @@ GiftUpgradePrice :: Maybe Int -> Maybe Int -> GiftUpgradePrice
 -- | Point in time (Unix timestamp) when the price will be in effect
 [date] :: GiftUpgradePrice -> Maybe Int
 
--- | The amount of Telegram Stars required to pay to upgrade the gift
+-- | The Telegram Star amount required to pay to upgrade the gift
 [star_count] :: GiftUpgradePrice -> Maybe Int
 instance GHC.Show.Show TD.Data.GiftUpgradePrice.GiftUpgradePrice
 instance GHC.Classes.Eq TD.Data.GiftUpgradePrice.GiftUpgradePrice
@@ -7044,8 +7079,8 @@ data GiftResalePrice
 -- | Describes price of a resold gift in Telegram Stars
 GiftResalePriceStar :: Maybe Int -> GiftResalePrice
 
--- | The amount of Telegram Stars expected to be paid for the gift. Must be
---   in range
+-- | The Telegram Star amount expected to be paid for the gift. Must be in
+--   the range
 --   getOption("gift_resale_star_count_min")-getOption("gift_resale_star_count_max")
 --   for gifts put for resale
 [star_count] :: GiftResalePrice -> Maybe Int
@@ -7054,7 +7089,7 @@ GiftResalePriceStar :: Maybe Int -> GiftResalePrice
 GiftResalePriceTon :: Maybe Int -> GiftResalePrice
 
 -- | The amount of 1/100 of Toncoin expected to be paid for the gift. Must
---   be in range
+--   be in the range
 --   getOption("gift_resale_toncoin_cent_count_min")-getOption("gift_resale_toncoin_cent_count_max")
 [toncoin_cent_count] :: GiftResalePrice -> Maybe Int
 instance GHC.Show.Show TD.Data.GiftResalePrice.GiftResalePrice
@@ -9247,8 +9282,8 @@ TonTransactionTypeUpgradedGiftSale :: Maybe Int -> Maybe UpgradedGift -> Maybe I
 --   received by the seller of the gift
 [commission_per_mille] :: TonTransactionType -> Maybe Int
 
--- | The amount of Toncoins that were received by the Telegram; in the
---   smallest units of the currency
+-- | The Toncoin amount that was received by the Telegram; in the smallest
+--   units of the currency
 [commission_toncoin_amount] :: TonTransactionType -> Maybe Int
 
 -- | True, if the gift was sold through a purchase offer
@@ -9333,8 +9368,8 @@ PremiumGiftPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int ->
 -- | The amount to pay, in the smallest units of the currency
 [amount] :: PremiumGiftPaymentOption -> Maybe Int
 
--- | The alternative amount of Telegram Stars to pay; 0 if payment in
---   Telegram Stars is not possible
+-- | The alternative Telegram Star amount to pay; 0 if payment in Telegram
+--   Stars is not possible
 [star_count] :: PremiumGiftPaymentOption -> Maybe Int
 
 -- | The discount associated with this option, as a percentage
@@ -11643,7 +11678,7 @@ InputMessageText :: Maybe FormattedText -> Maybe LinkPreviewOptions -> Maybe Boo
 --   none; pass null to use default link preview options
 [link_preview_options] :: InputMessageContent -> Maybe LinkPreviewOptions
 
--- | True, if a chat message draft must be deleted
+-- | True, if the chat message draft must be deleted
 [clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | An animation message (GIF-style).
@@ -11923,7 +11958,7 @@ InputMessageDice :: Maybe Text -> Maybe Bool -> InputMessageContent
 -- | Emoji used to choose the sticker
 [emoji] :: InputMessageContent -> Maybe Text
 
--- | True, if a chat message draft must be deleted
+-- | True, if the chat message draft must be deleted
 [clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | A message with a game; not supported for channels or secret chats
@@ -12013,6 +12048,22 @@ InputMessagePoll :: Maybe FormattedText -> Maybe [FormattedText] -> Maybe Bool -
 
 -- | True, if the poll needs to be sent already closed; for bots only
 [is_closed] :: InputMessageContent -> Maybe Bool
+
+-- | A stake dice message
+InputMessageStakeDice :: Maybe Text -> Maybe Int -> Maybe Bool -> InputMessageContent
+
+-- | Hash of the stake dice state. The state hash can be used only if it
+--   was received recently enough. Otherwise, a new state must be requested
+--   using getStakeDiceState
+[state_hash] :: InputMessageContent -> Maybe Text
+
+-- | The Toncoin amount that will be staked; in the smallest units of the
+--   currency. Must be in the range
+--   getOption("stake_dice_stake_amount_min")-getOption("stake_dice_stake_amount_max")
+[stake_toncoin_amount] :: InputMessageContent -> Maybe Int
+
+-- | True, if the chat message draft must be deleted
+[clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | A message with a forwarded story. Stories can't be forwarded to secret
 --   chats. A story can be forwarded only if story.can_be_forwarded
@@ -16633,8 +16684,8 @@ BusinessBotRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 -- | True, if the bot can edit username of the business account
 [can_edit_username] :: BusinessBotRights -> Maybe Bool
 
--- | True, if the bot can view gifts and amount of Telegram Stars owned by
---   the business account
+-- | True, if the bot can view gifts and Telegram Star amount owned by the
+--   business account
 [can_view_gifts_and_stars] :: BusinessBotRights -> Maybe Bool
 
 -- | True, if the bot can sell regular gifts received by the business
@@ -20424,8 +20475,8 @@ AffiliateInfo :: Maybe Int -> Maybe Int -> Maybe StarAmount -> AffiliateInfo
 -- | Identifier of the chat which received the commission
 [affiliate_chat_id] :: AffiliateInfo -> Maybe Int
 
--- | The amount of Telegram Stars that were received by the affiliate; can
---   be negative for refunds
+-- | The Telegram Star amount that was received by the affiliate; can be
+--   negative for refunds
 [star_amount] :: AffiliateInfo -> Maybe StarAmount
 instance GHC.Show.Show TD.Data.AffiliateInfo.AffiliateInfo
 instance GHC.Classes.Eq TD.Data.AffiliateInfo.AffiliateInfo
@@ -20742,7 +20793,7 @@ StarTransactionTypeUpgradedGiftSale :: Maybe Int -> Maybe UpgradedGift -> Maybe 
 --   Telegram Stars received by the seller of the gift
 [commission_per_mille] :: StarTransactionType -> Maybe Int
 
--- | The amount of Telegram Stars that were received by Telegram; can be
+-- | The Telegram Star amount that was received by Telegram; can be
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
@@ -20807,7 +20858,7 @@ StarTransactionTypePaidMessageReceive :: Maybe MessageSender -> Maybe Int -> May
 --   Telegram Stars received by the seller of the gift
 [commission_per_mille] :: StarTransactionType -> Maybe Int
 
--- | The amount of Telegram Stars that were received by Telegram; can be
+-- | The Telegram Star amount that was received by Telegram; can be
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
@@ -20829,7 +20880,7 @@ StarTransactionTypePaidGroupCallMessageReceive :: Maybe MessageSender -> Maybe I
 --   Telegram Stars received by the seller of the gift
 [commission_per_mille] :: StarTransactionType -> Maybe Int
 
--- | The amount of Telegram Stars that were received by Telegram; can be
+-- | The Telegram Star amount that was received by Telegram; can be
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
@@ -20851,7 +20902,7 @@ StarTransactionTypePaidGroupCallReactionReceive :: Maybe MessageSender -> Maybe 
 --   Telegram Stars received by the seller of the gift
 [commission_per_mille] :: StarTransactionType -> Maybe Int
 
--- | The amount of Telegram Stars that were received by Telegram; can be
+-- | The Telegram Star amount that was received by Telegram; can be
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
@@ -21576,7 +21627,8 @@ MessageDice :: Maybe DiceStickers -> Maybe DiceStickers -> Maybe Text -> Maybe I
 -- | The corresponding emoji
 [emoji] :: MessageContent -> Maybe Text
 
--- | The dice value. If the value is 0, the dice don't have final state yet
+-- | The dice value. If the value is 0, then the dice don't have final
+--   state yet
 [value] :: MessageContent -> Maybe Int
 
 -- | Number of frame after which a success animation like a shower of
@@ -21594,6 +21646,32 @@ MessagePoll :: Maybe Poll -> MessageContent
 
 -- | The poll description
 [poll] :: MessageContent -> Maybe Poll
+
+-- | A stake dice message. The dice value is randomly generated by the
+--   server
+MessageStakeDice :: Maybe DiceStickers -> Maybe DiceStickers -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+
+-- | The animated stickers with the initial dice animation; may be null if
+--   unknown. The update updateMessageContent will be sent when the sticker
+--   became known
+[initial_state] :: MessageContent -> Maybe DiceStickers
+
+-- | The animated stickers with the final dice animation; may be null if
+--   unknown. The update updateMessageContent will be sent when the sticker
+--   became known
+[final_state] :: MessageContent -> Maybe DiceStickers
+
+-- | The dice value. If the value is 0, then the dice don't have final
+--   state yet
+[value] :: MessageContent -> Maybe Int
+
+-- | The Toncoin amount that was staked; in the smallest units of the
+--   currency
+[stake_toncoin_amount] :: MessageContent -> Maybe Int
+
+-- | The Toncoin amount that was gained from the roll; in the smallest
+--   units of the currency; -1 if the dice don't have final state yet
+[prize_toncoin_amount] :: MessageContent -> Maybe Int
 
 -- | A message with a forwarded story
 MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
@@ -22194,7 +22272,7 @@ MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe S
 --   is incoming
 [receiver_user_id] :: MessageContent -> Maybe Int
 
--- | The received amount of Toncoins, in the smallest units of the
+-- | The received Toncoin amount, in the smallest units of the
 --   cryptocurrency
 [ton_amount] :: MessageContent -> Maybe Int
 
@@ -22395,8 +22473,8 @@ MessageUpgradedGiftPurchaseOffer :: Maybe UpgradedGift -> Maybe GiftPurchaseOffe
 --   expired
 [expiration_date] :: MessageContent -> Maybe Int
 
--- | An offer to purchase a gift was declined or expired
-MessageUpgradedGiftPurchaseOfferDeclined :: Maybe UpgradedGift -> Maybe GiftResalePrice -> Maybe Int -> Maybe Bool -> MessageContent
+-- | An offer to purchase a gift was rejected or expired
+MessageUpgradedGiftPurchaseOfferRejected :: Maybe UpgradedGift -> Maybe GiftResalePrice -> Maybe Int -> Maybe Bool -> MessageContent
 
 -- | The gift
 [_gift] :: MessageContent -> Maybe UpgradedGift
@@ -22404,12 +22482,12 @@ MessageUpgradedGiftPurchaseOfferDeclined :: Maybe UpgradedGift -> Maybe GiftResa
 -- | The proposed price
 [price] :: MessageContent -> Maybe GiftResalePrice
 
--- | Identifier of the message with purchase offer which was declined or
+-- | Identifier of the message with purchase offer which was rejected or
 --   expired; may be 0 or an identifier of a deleted message
 [offer_message_id] :: MessageContent -> Maybe Int
 
 -- | True, if the offer has expired; otherwise, the offer was explicitly
---   declined
+--   rejected
 [was_expired] :: MessageContent -> Maybe Bool
 
 -- | Paid messages were refunded
@@ -22511,7 +22589,7 @@ MessageSuggestedPostPaid :: Maybe Int -> Maybe StarAmount -> Maybe Int -> Messag
 -- | The amount of received Telegram Stars
 [star_amount] :: MessageContent -> Maybe StarAmount
 
--- | The received amount of Toncoins, in the smallest units of the
+-- | The received Toncoin amount, in the smallest units of the
 --   cryptocurrency
 [ton_amount] :: MessageContent -> Maybe Int
 
@@ -22780,9 +22858,9 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Int 
 --   messageAnimation, messageAudio, messageChecklist, messageContact,
 --   messageDice, messageDocument, messageGame, messageGiveaway,
 --   messageGiveawayWinners, messageInvoice, messageLocation,
---   messagePaidMedia, messagePhoto, messagePoll, messageSticker,
---   messageStory, messageText (for link preview), messageVenue,
---   messageVideo, messageVideoNote, or messageVoiceNote
+--   messagePaidMedia, messagePhoto, messagePoll, messageStakeDice,
+--   messageSticker, messageStory, messageText (for link preview),
+--   messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
 [content] :: MessageReplyTo -> Maybe MessageContent
 
 -- | Describes a story replied by a given message
@@ -22802,7 +22880,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -22936,6 +23014,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | Information about the restrictions that must be applied to the message
 --   content; may be null if none
 [restriction_info] :: Message -> Maybe RestrictionInfo
+
+-- | IETF language tag of the message language on which it can be
+--   summarized; empty if summary isn't available for the message
+[summary_language_code] :: Message -> Maybe Text
 
 -- | Content of the message
 [content] :: Message -> Maybe MessageContent
@@ -26416,6 +26498,14 @@ UpdateDiceEmojis :: Maybe [Text] -> Update
 --   the state isn't verified yet
 [emojis] :: Update -> Maybe [Text]
 
+-- | The stake dice state has changed
+UpdateStakeDiceState :: Maybe StakeDiceState -> Update
+
+-- | The new state. The state can be used only if it was received recently
+--   enough. Otherwise, a new state must be requested using
+--   getStakeDiceState
+[__state] :: Update -> Maybe StakeDiceState
+
 -- | Some animated emoji message was clicked and a big animated sticker
 --   must be played if the message is visible on the screen.
 --   chatActionWatchingAnimations with the text of the message needs to be
@@ -27033,6 +27123,7 @@ Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
 SponsoredChats :: SponsoredChats -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
+StakeDiceState :: StakeDiceState -> GeneralResult
 StarAmount :: StarAmount -> GeneralResult
 StarCount :: StarCount -> GeneralResult
 StarGiveawayPaymentOptions :: StarGiveawayPaymentOptions -> GeneralResult
@@ -28172,8 +28263,8 @@ BuyGiftUpgrade :: Maybe MessageSender -> Maybe Text -> Maybe Int -> BuyGiftUpgra
 -- | Prepaid upgrade hash as received along with the gift
 [prepaid_upgrade_hash] :: BuyGiftUpgrade -> Maybe Text
 
--- | The amount of Telegram Stars the user agreed to pay for the upgrade;
---   must be equal to gift.upgrade_star_count
+-- | The Telegram Star amount the user agreed to pay for the upgrade; must
+--   be equal to gift.upgrade_star_count
 [star_count] :: BuyGiftUpgrade -> Maybe Int
 defaultBuyGiftUpgrade :: BuyGiftUpgrade
 instance GHC.Show.Show TD.Query.BuyGiftUpgrade.BuyGiftUpgrade
@@ -30437,7 +30528,7 @@ DropGiftOriginalDetails :: Maybe Text -> Maybe Int -> DropGiftOriginalDetails
 -- | Identifier of the gift
 [received_gift_id] :: DropGiftOriginalDetails -> Maybe Text
 
--- | The amount of Telegram Stars required to pay for the operation
+-- | The Telegram Star amount required to pay for the operation
 [star_count] :: DropGiftOriginalDetails -> Maybe Int
 defaultDropGiftOriginalDetails :: DropGiftOriginalDetails
 instance GHC.Show.Show TD.Query.DropGiftOriginalDetails.DropGiftOriginalDetails
@@ -31921,8 +32012,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotSimilarBots.GetBotSimilar
 
 module TD.Query.GetBusinessAccountStarAmount
 
--- | Returns the amount of Telegram Stars owned by a business account; for
---   bots only. Returns <a>StarAmount</a>
+-- | Returns the Telegram Star amount owned by a business account; for bots
+--   only. Returns <a>StarAmount</a>
 data GetBusinessAccountStarAmount
 GetBusinessAccountStarAmount :: Maybe Text -> GetBusinessAccountStarAmount
 
@@ -33074,8 +33165,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommands.GetCommands
 
 module TD.Query.GetConnectedAffiliateProgram
 
--- | Returns an affiliate program that were connected to the given
---   affiliate by identifier of the bot that created the program. Returns
+-- | Returns an affiliate program that was connected to the given affiliate
+--   by identifier of the bot that created the program. Returns
 --   <a>ConnectedAffiliateProgram</a>
 data GetConnectedAffiliateProgram
 GetConnectedAffiliateProgram :: Maybe AffiliateType -> Maybe Int -> GetConnectedAffiliateProgram
@@ -35631,7 +35722,7 @@ module TD.Query.GetRepliedMessage
 --   messageSuggestedPostRefunded, the message with the regular gift that
 --   was upgraded for messageUpgradedGift with origin of the type
 --   upgradedGiftOriginUpgrade, the message with gift purchase offer for
---   messageUpgradedGiftPurchaseOfferDeclined, and the topic creation
+--   messageUpgradedGiftPurchaseOfferRejected, and the topic creation
 --   message for topic messages without non-bundled replied message.
 --   Returns a 404 error if the message doesn't exist. Returns
 --   <a>Message</a>
@@ -35823,6 +35914,16 @@ instance GHC.Show.Show TD.Query.GetSecretChat.GetSecretChat
 instance GHC.Classes.Eq TD.Query.GetSecretChat.GetSecretChat
 instance TD.Lib.Internal.ShortShow TD.Query.GetSecretChat.GetSecretChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSecretChat.GetSecretChat
+
+module TD.Query.GetStakeDiceState
+
+-- | Returns the current state of stake dice. Returns <a>StakeDiceState</a>
+data GetStakeDiceState
+GetStakeDiceState :: GetStakeDiceState
+instance GHC.Show.Show TD.Query.GetStakeDiceState.GetStakeDiceState
+instance GHC.Classes.Eq TD.Query.GetStakeDiceState.GetStakeDiceState
+instance TD.Lib.Internal.ShortShow TD.Query.GetStakeDiceState.GetStakeDiceState
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetStakeDiceState.GetStakeDiceState
 
 module TD.Query.GetStarAdAccountUrl
 
@@ -37921,8 +38022,8 @@ ProcessGiftPurchaseOffer :: Maybe Int -> Maybe Bool -> ProcessGiftPurchaseOffer
 -- | Identifier of the message with the gift purchase offer
 [message_id] :: ProcessGiftPurchaseOffer -> Maybe Int
 
--- | Pass true to approve the request; pass false to decline it
-[approve] :: ProcessGiftPurchaseOffer -> Maybe Bool
+-- | Pass true to accept the request; pass false to reject it
+[accept] :: ProcessGiftPurchaseOffer -> Maybe Bool
 defaultProcessGiftPurchaseOffer :: ProcessGiftPurchaseOffer
 instance GHC.Show.Show TD.Query.ProcessGiftPurchaseOffer.ProcessGiftPurchaseOffer
 instance GHC.Classes.Eq TD.Query.ProcessGiftPurchaseOffer.ProcessGiftPurchaseOffer
@@ -39999,8 +40100,8 @@ SearchPublicPosts :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Searc
 --   can be smaller than the specified limit
 [limit] :: SearchPublicPosts -> Maybe Int
 
--- | The amount of Telegram Stars the user agreed to pay for the search;
---   pass 0 for free searches
+-- | The Telegram Star amount the user agreed to pay for the search; pass 0
+--   for free searches
 [star_count] :: SearchPublicPosts -> Maybe Int
 defaultSearchPublicPosts :: SearchPublicPosts
 instance GHC.Show.Show TD.Query.SearchPublicPosts.SearchPublicPosts
@@ -41928,10 +42029,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatNotificationSettings.Set
 
 module TD.Query.SetChatPaidMessageStarCount
 
--- | Changes the amount of Telegram Stars that must be paid to send a
---   message to a supergroup chat; requires can_restrict_members
---   administrator right and supergroupFullInfo.can_enable_paid_messages.
---   Returns <a>Ok</a>
+-- | Changes the Telegram Star amount that must be paid to send a message
+--   to a supergroup chat; requires can_restrict_members administrator
+--   right and supergroupFullInfo.can_enable_paid_messages. Returns
+--   <a>Ok</a>
 data SetChatPaidMessageStarCount
 SetChatPaidMessageStarCount :: Maybe Int -> Maybe Int -> SetChatPaidMessageStarCount
 
@@ -43978,6 +44079,29 @@ instance GHC.Classes.Eq TD.Query.SuggestUserProfilePhoto.SuggestUserProfilePhoto
 instance TD.Lib.Internal.ShortShow TD.Query.SuggestUserProfilePhoto.SuggestUserProfilePhoto
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SuggestUserProfilePhoto.SuggestUserProfilePhoto
 
+module TD.Query.SummarizeMessage
+
+-- | Summarizes content of the message with non-empty
+--   summary_language_code. Returns <a>FormattedText</a>
+data SummarizeMessage
+SummarizeMessage :: Maybe Int -> Maybe Int -> Maybe Text -> SummarizeMessage
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: SummarizeMessage -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: SummarizeMessage -> Maybe Int
+
+-- | Pass a language code to which the summary will be translated; may be
+--   empty if translation isn't needed. See translateText.to_language_code
+--   for the list of supported values
+[translate_to_language_code] :: SummarizeMessage -> Maybe Text
+defaultSummarizeMessage :: SummarizeMessage
+instance GHC.Show.Show TD.Query.SummarizeMessage.SummarizeMessage
+instance GHC.Classes.Eq TD.Query.SummarizeMessage.SummarizeMessage
+instance TD.Lib.Internal.ShortShow TD.Query.SummarizeMessage.SummarizeMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SummarizeMessage.SummarizeMessage
+
 module TD.Query.SynchronizeLanguagePack
 
 -- | Fetches the latest versions of all strings from a language pack in the
@@ -45126,7 +45250,7 @@ TransferGift :: Maybe Text -> Maybe Text -> Maybe MessageSender -> Maybe Int -> 
 -- | Identifier of the user or the channel chat that will receive the gift
 [new_owner_id] :: TransferGift -> Maybe MessageSender
 
--- | The amount of Telegram Stars required to pay for the transfer
+-- | The Telegram Star amount required to pay for the transfer
 [star_count] :: TransferGift -> Maybe Int
 defaultTransferGift :: TransferGift
 instance GHC.Show.Show TD.Query.TransferGift.TransferGift
@@ -45148,18 +45272,8 @@ TranslateMessageText :: Maybe Int -> Maybe Int -> Maybe Text -> TranslateMessage
 -- | Identifier of the message
 [message_id] :: TranslateMessageText -> Maybe Int
 
--- | Language code of the language to which the message is translated. Must
---   be one of "af", "sq", "am", "ar", "hy", "az", "eu", "be", "bn", "bs",
---   "bg", "ca", "ceb", "zh-CN", "zh", "zh-Hans", "zh-TW", "zh-Hant", "co",
---   "hr", "cs", "da", "nl", "en", "eo", "et", "fi", "fr", "fy", "gl",
---   "ka", "de", "el", "gu", "ht", "ha", "haw", "he", "iw", "hi", "hmn",
---   "hu", "is", "ig", "id", "in", "ga", "it", "ja", "jv", "kn", "kk",
---   "km", "rw", "ko", "ku", "ky", "lo", "la", "lv", "lt", "lb", "mk",
---   "mg", "ms", "ml", "mt", "mi", "mr", "mn", "my", "ne", "no", "ny",
---   "or", "ps", "fa", "pl", "pt", "pa", "ro", "ru", "sm", "gd", "sr",
---   "st", "sn", "sd", "si", "sk", "sl", "so", "es", "su", "sw", "sv",
---   "tl", "tg", "ta", "tt", "te", "th", "tr", "tk", "uk", "ur", "ug",
---   "uz", "vi", "cy", "xh", "yi", "ji", "yo", "zu"
+-- | Language code of the language to which the message is translated. See
+--   translateText.to_language_code for the list of supported values
 [to_language_code] :: TranslateMessageText -> Maybe Text
 defaultTranslateMessageText :: TranslateMessageText
 instance GHC.Show.Show TD.Query.TranslateMessageText.TranslateMessageText
@@ -45302,9 +45416,9 @@ UpgradeGift :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Int -> UpgradeGif
 --   upgraded gift
 [keep_original_details] :: UpgradeGift -> Maybe Bool
 
--- | The amount of Telegram Stars required to pay for the upgrade. It the
---   gift has prepaid_upgrade_star_count &gt; 0, then pass 0, otherwise,
---   pass gift.upgrade_star_count
+-- | The Telegram Star amount required to pay for the upgrade. It the gift
+--   has prepaid_upgrade_star_count &gt; 0, then pass 0, otherwise, pass
+--   gift.upgrade_star_count
 [star_count] :: UpgradeGift -> Maybe Int
 defaultUpgradeGift :: UpgradeGift
 instance GHC.Show.Show TD.Query.UpgradeGift.UpgradeGift
