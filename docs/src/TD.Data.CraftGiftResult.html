@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.CraftGiftResult</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier">CraftGiftResult</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.UpgradedGift.html"><span class="hs-identifier">TD.Data.UpgradedGift</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">UpgradedGift</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Contains result of gift crafting</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="CraftGiftResult"><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier hs-var">CraftGiftResult</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="CraftGiftResultSuccess"><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultSuccess"><span class="hs-identifier hs-var">CraftGiftResultSuccess</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Crafting was successful</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="gift"><span class="annot"><span class="annottext">CraftGiftResult -&gt; Maybe UpgradedGift
+</span><a href="TD.Data.CraftGiftResult.html#gift"><span class="hs-identifier hs-var hs-var">gift</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGift.html#UpgradedGift"><span class="hs-identifier hs-type">UpgradedGift.UpgradedGift</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The created gift</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="received_gift_id"><span class="annot"><span class="annottext">CraftGiftResult -&gt; Maybe Text
+</span><a href="TD.Data.CraftGiftResult.html#received_gift_id"><span class="hs-identifier hs-var hs-var">received_gift_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                    </span><span class="annot"><span class="hs-comment">-- ^ Unique identifier of the received gift for the current user</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="CraftGiftResultTooEarly"><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultTooEarly"><span class="hs-identifier hs-var">CraftGiftResultTooEarly</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Crafting isn't possible because one of the gifts can't be used for crafting yet</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="retry_after"><span class="annot"><span class="annottext">CraftGiftResult -&gt; Maybe Int
+</span><a href="TD.Data.CraftGiftResult.html#retry_after"><span class="hs-identifier hs-var hs-var">retry_after</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Time left before the gift can be used for crafting</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="CraftGiftResultInvalidGift"><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultInvalidGift"><span class="hs-identifier hs-var">CraftGiftResultInvalidGift</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Crafting isn't possible because one of the gifts isn't suitable for crafting</span></span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="CraftGiftResultFail"><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultFail"><span class="hs-identifier hs-var">CraftGiftResultFail</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Crafting has failed</span></span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679857816"><span id="local-6989586621679857825"><span class="annot"><span class="annottext">CraftGiftResult -&gt; CraftGiftResult -&gt; Bool
+(CraftGiftResult -&gt; CraftGiftResult -&gt; Bool)
+-&gt; (CraftGiftResult -&gt; CraftGiftResult -&gt; Bool)
+-&gt; Eq CraftGiftResult
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: CraftGiftResult -&gt; CraftGiftResult -&gt; Bool
+== :: CraftGiftResult -&gt; CraftGiftResult -&gt; Bool
+$c/= :: CraftGiftResult -&gt; CraftGiftResult -&gt; Bool
+/= :: CraftGiftResult -&gt; CraftGiftResult -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679857833"><span id="local-6989586621679857845"><span id="local-6989586621679857849"><span class="annot"><span class="annottext">Int -&gt; CraftGiftResult -&gt; ShowS
+[CraftGiftResult] -&gt; ShowS
+CraftGiftResult -&gt; String
+(Int -&gt; CraftGiftResult -&gt; ShowS)
+-&gt; (CraftGiftResult -&gt; String)
+-&gt; ([CraftGiftResult] -&gt; ShowS)
+-&gt; Show CraftGiftResult
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; CraftGiftResult -&gt; ShowS
+showsPrec :: Int -&gt; CraftGiftResult -&gt; ShowS
+$cshow :: CraftGiftResult -&gt; String
+show :: CraftGiftResult -&gt; String
+$cshowList :: [CraftGiftResult] -&gt; ShowS
+showList :: [CraftGiftResult] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier hs-type">CraftGiftResult</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679857868"><span class="annot"><span class="annottext">shortShow :: CraftGiftResult -&gt; String
+</span><a href="#local-6989586621679857868"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultSuccess"><span class="hs-identifier hs-type">CraftGiftResultSuccess</span></a></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: CraftGiftResult -&gt; Maybe UpgradedGift
+</span><a href="TD.Data.CraftGiftResult.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679857870"><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679857870"><span class="hs-identifier hs-var">gift_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">received_gift_id :: CraftGiftResult -&gt; Maybe Text
+</span><a href="TD.Data.CraftGiftResult.html#received_gift_id"><span class="hs-identifier hs-var">received_gift_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679857871"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679857871"><span class="hs-identifier hs-var">received_gift_id_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultSuccess&quot;</span></span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe UpgradedGift -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679857870"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;received_gift_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679857871"><span class="hs-identifier hs-var">received_gift_id_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultTooEarly"><span class="hs-identifier hs-type">CraftGiftResultTooEarly</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">retry_after :: CraftGiftResult -&gt; Maybe Int
+</span><a href="TD.Data.CraftGiftResult.html#retry_after"><span class="hs-identifier hs-var">retry_after</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679857874"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679857874"><span class="hs-identifier hs-var">retry_after_</span></a></span></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultTooEarly&quot;</span></span><span>
+</span><span id="line-37"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;retry_after&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679857874"><span class="hs-identifier hs-var">retry_after_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-40"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">CraftGiftResult
+</span><a href="TD.Data.CraftGiftResult.html#CraftGiftResultInvalidGift"><span class="hs-identifier hs-var">CraftGiftResultInvalidGift</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultInvalidGift&quot;</span></span><span>
+</span><span id="line-42"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">CraftGiftResult
+</span><a href="TD.Data.CraftGiftResult.html#CraftGiftResultFail"><span class="hs-identifier hs-var">CraftGiftResultFail</span></a></span><span>
+</span><span id="line-43"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultFail&quot;</span></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679857877"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier hs-type">CraftGiftResult</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>  </span><span id="local-6989586621679857921"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser CraftGiftResult
+</span><a href="#local-6989586621679857921"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679857923"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679857923"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679857925"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857925"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span id="local-6989586621679857926"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679857926"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857925"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679857926"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-50"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;craftGiftResultSuccess&quot;</span></span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser CraftGiftResult
+</span><a href="#local-6989586621679857928"><span class="hs-identifier hs-var">parseCraftGiftResultSuccess</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679857923"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;craftGiftResultTooEarly&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser CraftGiftResult
+</span><a href="#local-6989586621679857929"><span class="hs-identifier hs-var">parseCraftGiftResultTooEarly</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679857923"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;craftGiftResultInvalidGift&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CraftGiftResult -&gt; Parser CraftGiftResult
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">CraftGiftResult
+</span><a href="TD.Data.CraftGiftResult.html#CraftGiftResultInvalidGift"><span class="hs-identifier hs-var">CraftGiftResultInvalidGift</span></a></span><span>
+</span><span id="line-53"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;craftGiftResultFail&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">CraftGiftResult -&gt; Parser CraftGiftResult
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">CraftGiftResult
+</span><a href="TD.Data.CraftGiftResult.html#CraftGiftResultFail"><span class="hs-identifier hs-var">CraftGiftResultFail</span></a></span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser CraftGiftResult
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-55"></span><span>    </span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><a href="#local-6989586621679857928"><span class="hs-identifier hs-type">parseCraftGiftResultSuccess</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier hs-type">CraftGiftResult</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span id="local-6989586621679857928"><span class="annot"><span class="annottext">parseCraftGiftResultSuccess :: Value -&gt; Parser CraftGiftResult
+</span><a href="#local-6989586621679857928"><span class="hs-identifier hs-var hs-var">parseCraftGiftResultSuccess</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser CraftGiftResult)
+-&gt; Value
+-&gt; Parser CraftGiftResult
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultSuccess&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser CraftGiftResult)
+ -&gt; Value -&gt; Parser CraftGiftResult)
+-&gt; (Object -&gt; Parser CraftGiftResult)
+-&gt; Value
+-&gt; Parser CraftGiftResult
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679857931"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857931"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679857932"><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679857932"><span class="hs-identifier hs-var">gift_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857931"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe UpgradedGift)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gift&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679857934"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679857934"><span class="hs-identifier hs-var">received_gift_id_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857931"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;received_gift_id&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">CraftGiftResult -&gt; Parser CraftGiftResult
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(CraftGiftResult -&gt; Parser CraftGiftResult)
+-&gt; CraftGiftResult -&gt; Parser CraftGiftResult
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultSuccess"><span class="hs-identifier hs-type">CraftGiftResultSuccess</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">gift :: Maybe UpgradedGift
+</span><a href="TD.Data.CraftGiftResult.html#gift"><span class="hs-identifier hs-var">gift</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe UpgradedGift
+</span><a href="#local-6989586621679857932"><span class="hs-identifier hs-var">gift_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">received_gift_id :: Maybe Text
+</span><a href="TD.Data.CraftGiftResult.html#received_gift_id"><span class="hs-identifier hs-var">received_gift_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679857934"><span class="hs-identifier hs-var">received_gift_id_</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-65"></span><span>      </span><span class="annot"><a href="#local-6989586621679857929"><span class="hs-identifier hs-type">parseCraftGiftResultTooEarly</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResult"><span class="hs-identifier hs-type">CraftGiftResult</span></a></span><span>
+</span><span id="line-66"></span><span>      </span><span id="local-6989586621679857929"><span class="annot"><span class="annottext">parseCraftGiftResultTooEarly :: Value -&gt; Parser CraftGiftResult
+</span><a href="#local-6989586621679857929"><span class="hs-identifier hs-var hs-var">parseCraftGiftResultTooEarly</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser CraftGiftResult)
+-&gt; Value
+-&gt; Parser CraftGiftResult
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;CraftGiftResultTooEarly&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser CraftGiftResult)
+ -&gt; Value -&gt; Parser CraftGiftResult)
+-&gt; (Object -&gt; Parser CraftGiftResult)
+-&gt; Value
+-&gt; Parser CraftGiftResult
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679857935"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857935"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-67"></span><span>        </span><span id="local-6989586621679857936"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679857936"><span class="hs-identifier hs-var">retry_after_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679857935"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;retry_after&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">CraftGiftResult -&gt; Parser CraftGiftResult
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(CraftGiftResult -&gt; Parser CraftGiftResult)
+-&gt; CraftGiftResult -&gt; Parser CraftGiftResult
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.CraftGiftResult.html#CraftGiftResultTooEarly"><span class="hs-identifier hs-type">CraftGiftResultTooEarly</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">retry_after :: Maybe Int
+</span><a href="TD.Data.CraftGiftResult.html#retry_after"><span class="hs-identifier hs-var">retry_after</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679857936"><span class="hs-identifier hs-var">retry_after_</span></a></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-71"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser CraftGiftResult
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-72"></span><span>
+</span><span id="line-73"></span></pre></body></html>
