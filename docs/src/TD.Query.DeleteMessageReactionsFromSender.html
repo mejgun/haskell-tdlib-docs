@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.DeleteMessageReactionsFromSender</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier">DeleteMessageReactionsFromSender</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#defaultDeleteMessageReactionsFromSender"><span class="hs-identifier">defaultDeleteMessageReactionsFromSender</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html"><span class="hs-identifier">TD.Data.MessageSender</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSender</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Deletes all reactions added by the specified sender on a message. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="DeleteMessageReactionsFromSender"><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-var">DeleteMessageReactionsFromSender</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="DeleteMessageReactionsFromSender"><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-var">DeleteMessageReactionsFromSender</span></a></span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Chat identifier</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message_id"><span class="annot"><span class="annottext">DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#message_id"><span class="hs-identifier hs-var hs-var">message_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                         </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the message containing the reactions. Use messageProperties.can_delete_reactions to check whether the method can be used for a message</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="sender_id"><span class="annot"><span class="annottext">DeleteMessageReactionsFromSender -&gt; Maybe MessageSender
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#sender_id"><span class="hs-identifier hs-var hs-var">sender_id</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSender.html#MessageSender"><span class="hs-identifier hs-type">MessageSender.MessageSender</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the sender of reactions to delete</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679986059"><span id="local-6989586621679986067"><span class="annot"><span class="annottext">DeleteMessageReactionsFromSender
+-&gt; DeleteMessageReactionsFromSender -&gt; Bool
+(DeleteMessageReactionsFromSender
+ -&gt; DeleteMessageReactionsFromSender -&gt; Bool)
+-&gt; (DeleteMessageReactionsFromSender
+    -&gt; DeleteMessageReactionsFromSender -&gt; Bool)
+-&gt; Eq DeleteMessageReactionsFromSender
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: DeleteMessageReactionsFromSender
+-&gt; DeleteMessageReactionsFromSender -&gt; Bool
+== :: DeleteMessageReactionsFromSender
+-&gt; DeleteMessageReactionsFromSender -&gt; Bool
+$c/= :: DeleteMessageReactionsFromSender
+-&gt; DeleteMessageReactionsFromSender -&gt; Bool
+/= :: DeleteMessageReactionsFromSender
+-&gt; DeleteMessageReactionsFromSender -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679986074"><span id="local-6989586621679986084"><span id="local-6989586621679986088"><span class="annot"><span class="annottext">Int -&gt; DeleteMessageReactionsFromSender -&gt; ShowS
+[DeleteMessageReactionsFromSender] -&gt; ShowS
+DeleteMessageReactionsFromSender -&gt; String
+(Int -&gt; DeleteMessageReactionsFromSender -&gt; ShowS)
+-&gt; (DeleteMessageReactionsFromSender -&gt; String)
+-&gt; ([DeleteMessageReactionsFromSender] -&gt; ShowS)
+-&gt; Show DeleteMessageReactionsFromSender
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; DeleteMessageReactionsFromSender -&gt; ShowS
+showsPrec :: Int -&gt; DeleteMessageReactionsFromSender -&gt; ShowS
+$cshow :: DeleteMessageReactionsFromSender -&gt; String
+show :: DeleteMessageReactionsFromSender -&gt; String
+$cshowList :: [DeleteMessageReactionsFromSender] -&gt; ShowS
+showList :: [DeleteMessageReactionsFromSender] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679986104"><span class="annot"><span class="annottext">shortShow :: DeleteMessageReactionsFromSender -&gt; String
+</span><a href="#local-6989586621679986104"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986106"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986106"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986107"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986107"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_id :: DeleteMessageReactionsFromSender -&gt; Maybe MessageSender
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986108"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679986108"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DeleteMessageReactionsFromSender&quot;</span></span><span>
+</span><span id="line-28"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986106"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986107"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><span id="line-31"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSender -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679986108"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-32"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679986113"><span id="local-6989586621679986117"><span id="local-6989586621679986120"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-35"></span><span>  </span><span id="local-6989586621679986147"><span class="annot"><span class="annottext">toJSON :: DeleteMessageReactionsFromSender -&gt; Value
+</span><a href="#local-6989586621679986147"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986149"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986149"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: DeleteMessageReactionsFromSender -&gt; Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986150"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986150"><span class="hs-identifier hs-var">message_id_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_id :: DeleteMessageReactionsFromSender -&gt; Maybe MessageSender
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679986151"><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679986151"><span class="hs-identifier hs-var">sender_id_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;deleteMessageReactionsFromSender&quot;</span></span><span>
+</span><span id="line-43"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986149"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679986150"><span class="hs-identifier hs-var">message_id_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sender_id&quot;</span></span><span>  </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSender -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+</span><a href="#local-6989586621679986151"><span class="hs-identifier hs-var">sender_id_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#defaultDeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">defaultDeleteMessageReactionsFromSender</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span><span>
+</span><span id="line-49"></span><span id="defaultDeleteMessageReactionsFromSender"><span class="annot"><span class="annottext">defaultDeleteMessageReactionsFromSender :: DeleteMessageReactionsFromSender
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#defaultDeleteMessageReactionsFromSender"><span class="hs-identifier hs-var hs-var">defaultDeleteMessageReactionsFromSender</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-50"></span><span>  </span><span class="annot"><a href="TD.Query.DeleteMessageReactionsFromSender.html#DeleteMessageReactionsFromSender"><span class="hs-identifier hs-type">DeleteMessageReactionsFromSender</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message_id :: Maybe Int
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#message_id"><span class="hs-identifier hs-var">message_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sender_id :: Maybe MessageSender
+</span><a href="TD.Query.DeleteMessageReactionsFromSender.html#sender_id"><span class="hs-identifier hs-var">sender_id</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSender
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span></pre></body></html>

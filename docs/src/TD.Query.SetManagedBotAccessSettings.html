@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.SetManagedBotAccessSettings</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier">SetManagedBotAccessSettings</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#defaultSetManagedBotAccessSettings"><span class="hs-identifier">defaultSetManagedBotAccessSettings</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.BotAccessSettings.html"><span class="hs-identifier">TD.Data.BotAccessSettings</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BotAccessSettings</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="annot"><span class="hs-comment">-- | Sets access settings of a managed bot; for bots only. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="SetManagedBotAccessSettings"><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-var">SetManagedBotAccessSettings</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SetManagedBotAccessSettings"><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-var">SetManagedBotAccessSettings</span></a></span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="bot_user_id"><span class="annot"><span class="annottext">SetManagedBotAccessSettings -&gt; Maybe Int
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#bot_user_id"><span class="hs-identifier hs-var hs-var">bot_user_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                 </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the managed bot</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="settings"><span class="annot"><span class="annottext">SetManagedBotAccessSettings -&gt; Maybe BotAccessSettings
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#settings"><span class="hs-identifier hs-var hs-var">settings</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.BotAccessSettings.html#BotAccessSettings"><span class="hs-identifier hs-type">BotAccessSettings.BotAccessSettings</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ New access settings</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621680063147"><span id="local-6989586621680063154"><span class="annot"><span class="annottext">SetManagedBotAccessSettings -&gt; SetManagedBotAccessSettings -&gt; Bool
+(SetManagedBotAccessSettings
+ -&gt; SetManagedBotAccessSettings -&gt; Bool)
+-&gt; (SetManagedBotAccessSettings
+    -&gt; SetManagedBotAccessSettings -&gt; Bool)
+-&gt; Eq SetManagedBotAccessSettings
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: SetManagedBotAccessSettings -&gt; SetManagedBotAccessSettings -&gt; Bool
+== :: SetManagedBotAccessSettings -&gt; SetManagedBotAccessSettings -&gt; Bool
+$c/= :: SetManagedBotAccessSettings -&gt; SetManagedBotAccessSettings -&gt; Bool
+/= :: SetManagedBotAccessSettings -&gt; SetManagedBotAccessSettings -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621680063161"><span id="local-6989586621680063170"><span id="local-6989586621680063174"><span class="annot"><span class="annottext">Int -&gt; SetManagedBotAccessSettings -&gt; ShowS
+[SetManagedBotAccessSettings] -&gt; ShowS
+SetManagedBotAccessSettings -&gt; String
+(Int -&gt; SetManagedBotAccessSettings -&gt; ShowS)
+-&gt; (SetManagedBotAccessSettings -&gt; String)
+-&gt; ([SetManagedBotAccessSettings] -&gt; ShowS)
+-&gt; Show SetManagedBotAccessSettings
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; SetManagedBotAccessSettings -&gt; ShowS
+showsPrec :: Int -&gt; SetManagedBotAccessSettings -&gt; ShowS
+$cshow :: SetManagedBotAccessSettings -&gt; String
+show :: SetManagedBotAccessSettings -&gt; String
+$cshowList :: [SetManagedBotAccessSettings] -&gt; ShowS
+showList :: [SetManagedBotAccessSettings] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621680063189"><span class="annot"><span class="annottext">shortShow :: SetManagedBotAccessSettings -&gt; String
+</span><a href="#local-6989586621680063189"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span><span>
+</span><span id="line-22"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: SetManagedBotAccessSettings -&gt; Maybe Int
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680063191"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680063191"><span class="hs-identifier hs-var">bot_user_id_</span></a></span></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">settings :: SetManagedBotAccessSettings -&gt; Maybe BotAccessSettings
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#settings"><span class="hs-identifier hs-var">settings</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680063192"><span class="annot"><span class="annottext">Maybe BotAccessSettings
+</span><a href="#local-6989586621680063192"><span class="hs-identifier hs-var">settings_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SetManagedBotAccessSettings&quot;</span></span><span>
+</span><span id="line-26"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-27"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;bot_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680063191"><span class="hs-identifier hs-var">bot_user_id_</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;settings&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe BotAccessSettings -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe BotAccessSettings
+</span><a href="#local-6989586621680063192"><span class="hs-identifier hs-var">settings_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621680063197"><span id="local-6989586621680063201"><span id="local-6989586621680063204"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-32"></span><span>  </span><span id="local-6989586621680063228"><span class="annot"><span class="annottext">toJSON :: SetManagedBotAccessSettings -&gt; Value
+</span><a href="#local-6989586621680063228"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: SetManagedBotAccessSettings -&gt; Maybe Int
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680063230"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680063230"><span class="hs-identifier hs-var">bot_user_id_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">settings :: SetManagedBotAccessSettings -&gt; Maybe BotAccessSettings
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#settings"><span class="hs-identifier hs-var">settings</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680063231"><span class="annot"><span class="annottext">Maybe BotAccessSettings
+</span><a href="#local-6989586621680063231"><span class="hs-identifier hs-var">settings_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-38"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;setManagedBotAccessSettings&quot;</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;bot_user_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680063230"><span class="hs-identifier hs-var">bot_user_id_</span></a></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;settings&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe BotAccessSettings -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe BotAccessSettings
+</span><a href="#local-6989586621680063231"><span class="hs-identifier hs-var">settings_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#defaultSetManagedBotAccessSettings"><span class="hs-identifier hs-type">defaultSetManagedBotAccessSettings</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span><span>
+</span><span id="line-44"></span><span id="defaultSetManagedBotAccessSettings"><span class="annot"><span class="annottext">defaultSetManagedBotAccessSettings :: SetManagedBotAccessSettings
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#defaultSetManagedBotAccessSettings"><span class="hs-identifier hs-var hs-var">defaultSetManagedBotAccessSettings</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-45"></span><span>  </span><span class="annot"><a href="TD.Query.SetManagedBotAccessSettings.html#SetManagedBotAccessSettings"><span class="hs-identifier hs-type">SetManagedBotAccessSettings</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">bot_user_id :: Maybe Int
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#bot_user_id"><span class="hs-identifier hs-var">bot_user_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">settings :: Maybe BotAccessSettings
+</span><a href="TD.Query.SetManagedBotAccessSettings.html#settings"><span class="hs-identifier hs-var">settings</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe BotAccessSettings
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span></pre></body></html>

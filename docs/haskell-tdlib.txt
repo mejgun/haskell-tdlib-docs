@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.17.0
+@version 2.1.18.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -153,7 +153,7 @@ UserTypeRegular :: UserType
 UserTypeDeleted :: UserType
 
 -- | A bot (see <a>https://core.telegram.org/bots)</a>
-UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
+UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
 
 -- | True, if the bot is owned by the current user and can be edited using
 --   the methods toggleBotUsernameIsActive, reorderBotActiveUsernames,
@@ -188,11 +188,15 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Boo
 --   field)
 [inline_query_placeholder] :: UserType -> Maybe Text
 
+-- | True, if the bot can be queried by username from any non-secret chat
+[supports_guest_queries] :: UserType -> Maybe Bool
+
 -- | True, if the location of the user is expected to be sent with every
 --   inline query to this bot
 [need_location] :: UserType -> Maybe Bool
 
--- | True, if the bot supports connection to Telegram Business accounts
+-- | True, if the bot supports connection to user accounts for chat
+--   automation
 [can_connect_to_business] :: UserType -> Maybe Bool
 
 -- | True, if the bot can be added to attachment or side menu
@@ -722,6 +726,10 @@ TopChatCategoryChannels :: TopChatCategory
 --   their usage in inline mode
 TopChatCategoryInlineBots :: TopChatCategory
 
+-- | A category containing frequently used chats with bots, which were used
+--   as guest bots
+TopChatCategoryGuestBots :: TopChatCategory
+
 -- | A category containing frequently used chats with bots, which Web Apps
 --   were opened
 TopChatCategoryWebAppBots :: TopChatCategory
@@ -928,25 +936,6 @@ instance GHC.Classes.Eq TD.Data.TextParseMode.TextParseMode
 instance TD.Lib.Internal.ShortShow TD.Data.TextParseMode.TextParseMode
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextParseMode.TextParseMode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TextParseMode.TextParseMode
-
-module TD.Data.TextCompositionStyle
-data TextCompositionStyle
-
--- | Describes a style that can be used to compose a text
-TextCompositionStyle :: Maybe Text -> Maybe Int -> Maybe Text -> TextCompositionStyle
-
--- | Name of the style
-[name] :: TextCompositionStyle -> Maybe Text
-
--- | Identifier of the custom emoji corresponding to the style
-[custom_emoji_id] :: TextCompositionStyle -> Maybe Int
-
--- | Title of the style in the user application's language
-[title] :: TextCompositionStyle -> Maybe Text
-instance GHC.Show.Show TD.Data.TextCompositionStyle.TextCompositionStyle
-instance GHC.Classes.Eq TD.Data.TextCompositionStyle.TextCompositionStyle
-instance TD.Lib.Internal.ShortShow TD.Data.TextCompositionStyle.TextCompositionStyle
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextCompositionStyle.TextCompositionStyle
 
 module TD.Data.Text
 data Text
@@ -2416,19 +2405,6 @@ instance GHC.Classes.Eq TD.Data.Sessions.Sessions
 instance TD.Lib.Internal.ShortShow TD.Data.Sessions.Sessions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Sessions.Sessions
 
-module TD.Data.SentWebAppMessage
-data SentWebAppMessage
-
--- | Information about the message sent by answerWebAppQuery
-SentWebAppMessage :: Maybe Text -> SentWebAppMessage
-
--- | Identifier of the sent inline message, if known
-[inline_message_id] :: SentWebAppMessage -> Maybe Text
-instance GHC.Show.Show TD.Data.SentWebAppMessage.SentWebAppMessage
-instance GHC.Classes.Eq TD.Data.SentWebAppMessage.SentWebAppMessage
-instance TD.Lib.Internal.ShortShow TD.Data.SentWebAppMessage.SentWebAppMessage
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SentWebAppMessage.SentWebAppMessage
-
 module TD.Data.SecretChatState
 
 -- | Describes the current secret chat state
@@ -2604,7 +2580,7 @@ ScopeNotificationSettings :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool 
 [mute_for] :: ScopeNotificationSettings -> Maybe Int
 
 -- | Identifier of the notification sound to be played; 0 if sound is
---   disabled
+--   disabled; pass -1 to use the app-dependent default sound
 [sound_id] :: ScopeNotificationSettings -> Maybe Int
 
 -- | True, if message content must be displayed in notifications
@@ -2618,7 +2594,7 @@ ScopeNotificationSettings :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool 
 [mute_stories] :: ScopeNotificationSettings -> Maybe Bool
 
 -- | Identifier of the notification sound to be played for stories; 0 if
---   sound is disabled
+--   sound is disabled; pass -1 to use the app-dependent default sound
 [story_sound_id] :: ScopeNotificationSettings -> Maybe Int
 
 -- | True, if the chat that posted a story must be displayed in
@@ -3048,6 +3024,9 @@ ReactionUnavailabilityReasonAnonymousAdministrator :: ReactionUnavailabilityReas
 -- | The user isn't a member of the supergroup and can't send messages and
 --   reactions there without joining
 ReactionUnavailabilityReasonGuest :: ReactionUnavailabilityReason
+
+-- | The user is restricted in the chat
+ReactionUnavailabilityReasonRestricted :: ReactionUnavailabilityReason
 instance GHC.Show.Show TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
 instance GHC.Classes.Eq TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
 instance TD.Lib.Internal.ShortShow TD.Data.ReactionUnavailabilityReason.ReactionUnavailabilityReason
@@ -3148,7 +3127,7 @@ ReactionNotificationSettings :: Maybe ReactionNotificationSource -> Maybe Reacti
 [poll_vote_source] :: ReactionNotificationSettings -> Maybe ReactionNotificationSource
 
 -- | Identifier of the notification sound to be played; 0 if sound is
---   disabled
+--   disabled; pass -1 to use the app-dependent default sound
 [sound_id] :: ReactionNotificationSettings -> Maybe Int
 
 -- | True, if reaction sender and emoji must be displayed in notifications
@@ -3477,6 +3456,9 @@ PremiumLimitTypeSimilarChatCount :: PremiumLimitType
 
 -- | The maximum number of owned bots
 PremiumLimitTypeOwnedBotCount :: PremiumLimitType
+
+-- | The maximum number of added text composition styles
+PremiumLimitTypeCustomTextCompositionStyleCount :: PremiumLimitType
 instance GHC.Show.Show TD.Data.PremiumLimitType.PremiumLimitType
 instance GHC.Classes.Eq TD.Data.PremiumLimitType.PremiumLimitType
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumLimitType.PremiumLimitType
@@ -3648,6 +3630,53 @@ instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeature.PremiumFeature
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PremiumFeature.PremiumFeature
+
+module TD.Data.PollVoteStatistics
+data PollVoteStatistics
+
+-- | A detailed statistics about poll votes
+PollVoteStatistics :: Maybe StatisticalGraph -> PollVoteStatistics
+
+-- | A graph containing distribution of votes in the poll
+[vote_graph] :: PollVoteStatistics -> Maybe StatisticalGraph
+instance GHC.Show.Show TD.Data.PollVoteStatistics.PollVoteStatistics
+instance GHC.Classes.Eq TD.Data.PollVoteStatistics.PollVoteStatistics
+instance TD.Lib.Internal.ShortShow TD.Data.PollVoteStatistics.PollVoteStatistics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollVoteStatistics.PollVoteStatistics
+
+module TD.Data.PollVoteRestrictionReason
+
+-- | Reason of vote restriction in the poll for the current user
+data PollVoteRestrictionReason
+
+-- | The poll is closed
+PollVoteRestrictionReasonClosed :: PollVoteRestrictionReason
+
+-- | The poll isn't sent yet
+PollVoteRestrictionReasonYetUnsent :: PollVoteRestrictionReason
+
+-- | The poll is from a scheduled message
+PollVoteRestrictionReasonScheduled :: PollVoteRestrictionReason
+
+-- | The user is from a country, users from which aren't allowed to vote
+PollVoteRestrictionReasonCountryRestricted :: Maybe Text -> PollVoteRestrictionReason
+
+-- | Two-letter ISO 3166-1 alpha-2 code of the current user's country
+[country_code] :: PollVoteRestrictionReason -> Maybe Text
+
+-- | The user must be a member of the chat for at least a day to vote
+PollVoteRestrictionReasonMembershipRequired :: Maybe Int -> PollVoteRestrictionReason
+
+-- | Identifier of the chat which must be joined for at least a day before
+--   the user can vote
+[chat_id] :: PollVoteRestrictionReason -> Maybe Int
+
+-- | The poll can't be voted by the user due to some other reason
+PollVoteRestrictionReasonOther :: PollVoteRestrictionReason
+instance GHC.Show.Show TD.Data.PollVoteRestrictionReason.PollVoteRestrictionReason
+instance GHC.Classes.Eq TD.Data.PollVoteRestrictionReason.PollVoteRestrictionReason
+instance TD.Lib.Internal.ShortShow TD.Data.PollVoteRestrictionReason.PollVoteRestrictionReason
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollVoteRestrictionReason.PollVoteRestrictionReason
 
 module TD.Data.PollOptionProperties
 data PollOptionProperties
@@ -4896,7 +4925,7 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
 
 -- | True, if an offer can be added to the message using addOffer
 [can_add_offer] :: MessageProperties -> Maybe Bool
@@ -4964,6 +4993,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 --   inputStoryAreaTypeMessage
 [can_be_shared_in_story] :: MessageProperties -> Maybe Bool
 
+-- | True, if the user can delete reactions of other users in the message
+--   using the method deleteMessageReactionsFromSender
+[can_delete_reactions] :: MessageProperties -> Maybe Bool
+
 -- | True, if the message can be edited using the method editMessageMedia
 [can_edit_media] :: MessageProperties -> Maybe Bool
 
@@ -4993,6 +5026,10 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 -- | True, if information about the message thread is available through
 --   getMessageThread and getMessageThreadHistory
 [can_get_message_thread] :: MessageProperties -> Maybe Bool
+
+-- | True, if the message is a poll and vote statistics are available
+--   through getPollVoteStatistics
+[can_get_poll_vote_statistics] :: MessageProperties -> Maybe Bool
 
 -- | True, if read date of the message can be received through
 --   getMessageReadDate
@@ -6826,6 +6863,19 @@ instance GHC.Classes.Eq TD.Data.InlineQueryResultsButton.InlineQueryResultsButto
 instance TD.Lib.Internal.ShortShow TD.Data.InlineQueryResultsButton.InlineQueryResultsButton
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InlineQueryResultsButton.InlineQueryResultsButton
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InlineQueryResultsButton.InlineQueryResultsButton
+
+module TD.Data.InlineMessageId
+data InlineMessageId
+
+-- | Contains identifier of a sent guest message
+InlineMessageId :: Maybe Text -> InlineMessageId
+
+-- | Unique identifier for the message
+[_id] :: InlineMessageId -> Maybe Text
+instance GHC.Show.Show TD.Data.InlineMessageId.InlineMessageId
+instance GHC.Classes.Eq TD.Data.InlineMessageId.InlineMessageId
+instance TD.Lib.Internal.ShortShow TD.Data.InlineMessageId.InlineMessageId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InlineMessageId.InlineMessageId
 
 module TD.Data.InlineKeyboardButtonType
 
@@ -11016,6 +11066,60 @@ instance GHC.Classes.Eq TD.Data.TextQuote.TextQuote
 instance TD.Lib.Internal.ShortShow TD.Data.TextQuote.TextQuote
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextQuote.TextQuote
 
+module TD.Data.TextCompositionStyleExample
+data TextCompositionStyleExample
+
+-- | Contains an example of text composition style usage
+TextCompositionStyleExample :: Maybe FormattedText -> Maybe FormattedText -> TextCompositionStyleExample
+
+-- | Source text
+[source_text] :: TextCompositionStyleExample -> Maybe FormattedText
+
+-- | The text after the style was applied to the source text
+[result_text] :: TextCompositionStyleExample -> Maybe FormattedText
+instance GHC.Show.Show TD.Data.TextCompositionStyleExample.TextCompositionStyleExample
+instance GHC.Classes.Eq TD.Data.TextCompositionStyleExample.TextCompositionStyleExample
+instance TD.Lib.Internal.ShortShow TD.Data.TextCompositionStyleExample.TextCompositionStyleExample
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextCompositionStyleExample.TextCompositionStyleExample
+
+module TD.Data.TextCompositionStyle
+data TextCompositionStyle
+
+-- | Describes a style that can be used to compose a text
+TextCompositionStyle :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe TextCompositionStyleExample -> TextCompositionStyle
+
+-- | Name of the style
+[name] :: TextCompositionStyle -> Maybe Text
+
+-- | Identifier of the custom emoji corresponding to the style; 0 if none
+[custom_emoji_id] :: TextCompositionStyle -> Maybe Int
+
+-- | Title of the style in the user application's language
+[title] :: TextCompositionStyle -> Maybe Text
+
+-- | True, if the style is created by a user
+[is_custom] :: TextCompositionStyle -> Maybe Bool
+
+-- | True, if the user is creator of the style
+[is_creator] :: TextCompositionStyle -> Maybe Bool
+
+-- | Number of users that installed the style; for created custom styles
+--   only; 0 if unknown
+[install_count] :: TextCompositionStyle -> Maybe Int
+
+-- | Prompt of the style; for created custom styles only
+[prompt] :: TextCompositionStyle -> Maybe Text
+
+-- | User identifier of the creator of the style; 0 if none of unknown
+[creator_user_id] :: TextCompositionStyle -> Maybe Int
+
+-- | Example of the style usage in English; may be null if unknown
+[english_example] :: TextCompositionStyle -> Maybe TextCompositionStyleExample
+instance GHC.Show.Show TD.Data.TextCompositionStyle.TextCompositionStyle
+instance GHC.Classes.Eq TD.Data.TextCompositionStyle.TextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Data.TextCompositionStyle.TextCompositionStyle
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextCompositionStyle.TextCompositionStyle
+
 module TD.Data.TermsOfService
 data TermsOfService
 
@@ -11748,9 +11852,9 @@ PollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe MessageContent -> Po
 
 -- | Media that is shown when the user chooses an incorrect answer or taps
 --   on the lamp icon; may be null if none or the poll is unanswered yet.
---   Currently, can be only of the types messageAnimation, messageAudio,
---   messageDocument, messageLocation, messagePhoto, messageVenue, or
---   messageVideo without caption
+--   If present, currently, can be only of the types messageAnimation,
+--   messageAudio, messageDocument, messageLocation, messagePhoto,
+--   messageVenue, or messageVideo without caption
 [explanation_media] :: PollType -> Maybe MessageContent
 instance GHC.Show.Show TD.Data.PollType.PollType
 instance GHC.Classes.Eq TD.Data.PollType.PollType
@@ -11770,9 +11874,9 @@ PollOption :: Maybe Text -> Maybe FormattedText -> Maybe MessageContent -> Maybe
 -- | Option text; 1-100 characters; may contain only custom emoji entities
 [text] :: PollOption -> Maybe FormattedText
 
--- | Option media. Currently, can be only of the types messageAnimation,
---   messageLocation, messagePhoto, messageSticker, messageVenue, or
---   messageVideo without caption
+-- | Option media; may be null if none. If present, currently, can be only
+--   of the types messageAnimation, messageLocation, messagePhoto,
+--   messageSticker, messageVenue, or messageVideo without caption
 [media] :: PollOption -> Maybe MessageContent
 
 -- | Number of voters for this option, available only for closed or voted
@@ -11808,7 +11912,7 @@ module TD.Data.Poll
 data Poll
 
 -- | Describes a poll
-Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Int] -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Poll
+Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe [Int] -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe PollVoteRestrictionReason -> Poll
 
 -- | Unique poll identifier
 [_id] :: Poll -> Maybe Int
@@ -11827,7 +11931,8 @@ Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> M
 --   results are available
 [recent_voter_ids] :: Poll -> Maybe [MessageSender]
 
--- | True, if the current user can get voters in the poll
+-- | True, if the current user can get voters in the poll using
+--   getPollVoters
 [can_get_voters] :: Poll -> Maybe Bool
 
 -- | True, if the poll is anonymous
@@ -11838,6 +11943,15 @@ Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> M
 
 -- | True, if the poll can be answered multiple times
 [allows_revoting] :: Poll -> Maybe Bool
+
+-- | True, if only the users that are members of the chat for more than a
+--   day will be able to vote
+[members_only] :: Poll -> Maybe Bool
+
+-- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
+--   from which will be able to vote. If empty, then all users can
+--   participate in the poll
+[country_codes] :: Poll -> Maybe [Text]
 
 -- | The list of 0-based poll identifiers in which the options of the poll
 --   must be shown; empty if the order of options must not be changed
@@ -11855,6 +11969,10 @@ Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> M
 
 -- | True, if the poll is closed
 [is_closed] :: Poll -> Maybe Bool
+
+-- | The reason describing, why the current user can't vote in the poll;
+--   may be null if the user can vote in the poll
+[vote_restriction_reason] :: Poll -> Maybe PollVoteRestrictionReason
 instance GHC.Show.Show TD.Data.Poll.Poll
 instance GHC.Classes.Eq TD.Data.Poll.Poll
 instance TD.Lib.Internal.ShortShow TD.Data.Poll.Poll
@@ -11994,7 +12112,7 @@ InputPollTypeRegular :: Maybe Bool -> InputPollType
 [allow_adding_options] :: InputPollType -> Maybe Bool
 
 -- | A poll in quiz mode, which has predefined correct answers
-InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> InputPollType
+InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe InputMessageContent -> InputPollType
 
 -- | Increasing list of 0-based identifiers of the correct answer options;
 --   must be non-empty
@@ -12003,6 +12121,13 @@ InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> InputPollType
 -- | Text that is shown when the user chooses an incorrect answer or taps
 --   on the lamp icon; 0-200 characters with at most 2 line feeds
 [explanation] :: InputPollType -> Maybe FormattedText
+
+-- | Media that is shown when the user chooses an incorrect answer or taps
+--   on the lamp icon; pass null if none. Must be one of the following
+--   types: inputMessageAnimation, inputMessageAudio, inputMessageDocument,
+--   non-live inputMessageLocation, inputMessagePhoto, inputMessageVenue,
+--   or inputMessageVideo without caption
+[explanation_media] :: InputPollType -> Maybe InputMessageContent
 instance GHC.Show.Show TD.Data.InputPollType.InputPollType
 instance GHC.Classes.Eq TD.Data.InputPollType.InputPollType
 instance TD.Lib.Internal.ShortShow TD.Data.InputPollType.InputPollType
@@ -12013,11 +12138,17 @@ module TD.Data.InputPollOption
 data InputPollOption
 
 -- | Describes one answer option of a poll to be created
-InputPollOption :: Maybe FormattedText -> InputPollOption
+InputPollOption :: Maybe FormattedText -> Maybe InputMessageContent -> InputPollOption
 
 -- | Option text; 1-100 characters. Only custom emoji entities are allowed
 --   to be added and only by Premium users
 [text] :: InputPollOption -> Maybe FormattedText
+
+-- | Option media; pass null if none; ignored in addPollOption. Must be one
+--   of the following types: inputMessageAnimation, non-live
+--   inputMessageLocation, inputMessagePhoto, inputMessageSticker,
+--   inputMessageVenue, or inputMessageVideo without caption
+[media] :: InputPollOption -> Maybe InputMessageContent
 defaultInputPollOption :: InputPollOption
 instance GHC.Show.Show TD.Data.InputPollOption.InputPollOption
 instance GHC.Classes.Eq TD.Data.InputPollOption.InputPollOption
@@ -12966,20 +13097,27 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 -- | A message with a poll. Polls can't be sent to secret chats and channel
 --   direct messages chats. Polls can be sent to a private chat only if the
 --   chat is a chat with a bot or the Saved Messages chat
-InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe InputPollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
+InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe FormattedText -> Maybe InputMessageContent -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Bool -> Maybe Bool -> Maybe InputPollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
 
 -- | Poll question; 1-255 characters (up to 300 characters for bots). Only
 --   custom emoji entities are allowed to be added and only by Premium
 --   users
 [question] :: InputMessageContent -> Maybe FormattedText
 
--- | List of poll answer options; 2-getOption("poll_answer_count_max")
+-- | List of poll answer options; 1-getOption("poll_answer_count_max")
 --   options
 [options] :: InputMessageContent -> Maybe [InputPollOption]
 
 -- | Poll description; pass null to use an empty description;
 --   0-getOption("message_caption_length_max") characters
 [_description] :: InputMessageContent -> Maybe FormattedText
+
+-- | Media attached to the poll; pass null if none. Must be one of the
+--   following types: inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, non-live inputMessageLocation,
+--   inputMessagePhoto, inputMessageVenue, or inputMessageVideo without
+--   caption
+[media] :: InputMessageContent -> Maybe InputMessageContent
 
 -- | True, if the poll voters are anonymous. Non-anonymous polls can't be
 --   sent or forwarded to channels
@@ -12990,6 +13128,16 @@ InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe Form
 
 -- | True, if the poll can be answered multiple times
 [allows_revoting] :: InputMessageContent -> Maybe Bool
+
+-- | True, if only the users that are members of the chat for more than a
+--   day will be able to vote; for channel chats only
+[members_only] :: InputMessageContent -> Maybe Bool
+
+-- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
+--   from which will be able to vote; for channel chats only. If empty,
+--   then all users can participate in the poll. There can be up to
+--   getOption("poll_country_count_max") chosen countries
+[country_codes] :: InputMessageContent -> Maybe [Text]
 
 -- | True, if poll options must be shown in a fixed random order
 [shuffle_options] :: InputMessageContent -> Maybe Bool
@@ -14037,7 +14185,7 @@ module TD.Data.ChatPermissions
 data ChatPermissions
 
 -- | Describes actions that a user is allowed to take in a chat
-ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatPermissions
+ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatPermissions
 
 -- | True, if the user can send text messages, contacts, giveaways,
 --   giveaway winners, invoices, locations, and venues
@@ -14070,6 +14218,9 @@ ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe
 
 -- | True, if the user may add a link preview to their messages
 [can_add_link_previews] :: ChatPermissions -> Maybe Bool
+
+-- | True, if the user can react to messages
+[can_react_to_messages] :: ChatPermissions -> Maybe Bool
 
 -- | True, if the user may change the tag of self
 [can_edit_tag] :: ChatPermissions -> Maybe Bool
@@ -15944,7 +16095,8 @@ InternalLinkTypeRequestManagedBot :: Maybe Text -> Maybe Text -> Maybe Text -> I
 -- | Username of the bot which will manage the new bot
 [manager_bot_username] :: InternalLinkType -> Maybe Text
 
--- | Suggested username for the bot
+-- | Suggested username for the bot; always ends with "bot"
+--   case-insensitive
 [suggested_bot_username] :: InternalLinkType -> Maybe Text
 
 -- | Suggested name for the bot; may be empty if not specified
@@ -16013,6 +16165,15 @@ InternalLinkTypeStoryAlbum :: Maybe Text -> Maybe Int -> InternalLinkType
 
 -- | Story album identifier
 [story_album_id] :: InternalLinkType -> Maybe Int
+
+-- | The link is a link to a text composition style. Call
+--   searchTextCompositionStyle with the given style name to get
+--   information about the style. If the style is found and the user wants
+--   to add it, then call addTextCompositionStyle
+InternalLinkTypeTextCompositionStyle :: Maybe Text -> InternalLinkType
+
+-- | Name of the style
+[style_name] :: InternalLinkType -> Maybe Text
 
 -- | The link is a link to a cloud theme. TDLib has no theme support yet
 InternalLinkTypeTheme :: Maybe Text -> InternalLinkType
@@ -18165,6 +18326,26 @@ instance GHC.Classes.Eq TD.Data.BotCommands.BotCommands
 instance TD.Lib.Internal.ShortShow TD.Data.BotCommands.BotCommands
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotCommands.BotCommands
 
+module TD.Data.BotAccessSettings
+data BotAccessSettings
+
+-- | Describes users that have access to a bot
+BotAccessSettings :: Maybe Bool -> Maybe [Int] -> BotAccessSettings
+
+-- | True, if access to the bot is restricted to its owner and selected
+--   users
+[is_restricted] :: BotAccessSettings -> Maybe Bool
+
+-- | Identifiers of the users who can use the bot additionally to the owner
+--   of the bot
+[added_user_ids] :: BotAccessSettings -> Maybe [Int]
+defaultBotAccessSettings :: BotAccessSettings
+instance GHC.Show.Show TD.Data.BotAccessSettings.BotAccessSettings
+instance GHC.Classes.Eq TD.Data.BotAccessSettings.BotAccessSettings
+instance TD.Lib.Internal.ShortShow TD.Data.BotAccessSettings.BotAccessSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BotAccessSettings.BotAccessSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BotAccessSettings.BotAccessSettings
+
 module TD.Data.BlockList
 
 -- | Describes type of block list
@@ -18954,10 +19135,14 @@ AuthorizationStateWaitPhoneNumber :: AuthorizationState
 -- | The user must buy Telegram Premium as an in-store purchase to log in.
 --   Call checkAuthenticationPremiumPurchase and then
 --   setAuthenticationPremiumPurchaseTransaction
-AuthorizationStateWaitPremiumPurchase :: Maybe Text -> Maybe Text -> Maybe Text -> AuthorizationState
+AuthorizationStateWaitPremiumPurchase :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Text -> AuthorizationState
 
 -- | Identifier of the store product that must be bought
 [store_product_id] :: AuthorizationState -> Maybe Text
+
+-- | Duration of the Telegram Premium subscription after the purchase; may
+--   be 0 if Telegram Premium subscription will not be granted
+[premium_day_count] :: AuthorizationState -> Maybe Int
 
 -- | Email address to use for support if the user has issues with Telegram
 --   Premium purchase
@@ -21079,6 +21264,12 @@ LinkPreviewTypeSupergroupBoost :: Maybe ChatPhoto -> LinkPreviewType
 -- | Photo of the chat; may be null
 [_photo] :: LinkPreviewType -> Maybe ChatPhoto
 
+-- | The link is a link to a text composition style
+LinkPreviewTypeTextCompositionStyle :: Maybe Int -> LinkPreviewType
+
+-- | Identifier of the custom emoji corresponding to the style; 0 if none
+[custom_emoji_id] :: LinkPreviewType -> Maybe Int
+
 -- | The link is a link to a cloud theme. TDLib has no theme support yet
 LinkPreviewTypeTheme :: Maybe [Document] -> Maybe ThemeSettings -> LinkPreviewType
 
@@ -22786,9 +22977,10 @@ MessagePoll :: Maybe Poll -> Maybe FormattedText -> Maybe MessageContent -> Mayb
 -- | Description of the poll
 [description] :: MessageContent -> Maybe FormattedText
 
--- | Media attached to the poll. Currently, can be only of the types
---   messageAnimation, messageAudio, messageDocument, messageLocation,
---   messagePhoto, messageVenue, or messageVideo without caption
+-- | Media attached to the poll; may be null if none. If present,
+--   currently, can be only of the types messageAnimation, messageAudio,
+--   messageDocument, messageLocation, messagePhoto, messageVenue, or
+--   messageVideo without caption
 [_media] :: MessageContent -> Maybe MessageContent
 
 -- | True, if an option can be added to the poll using addPollOption
@@ -24110,7 +24302,7 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -24164,6 +24356,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | True, if the message contains an unread mention for the current user
 [contains_unread_mention] :: Message -> Maybe Bool
 
+-- | True, if the message is a poll message with unread votes
+[contains_unread_poll_votes] :: Message -> Maybe Bool
+
 -- | Point in time (Unix timestamp) when the message was sent; 0 for
 --   scheduled messages
 [date] :: Message -> Maybe Int
@@ -24216,6 +24411,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 -- | If non-zero, the user identifier of the inline bot through which this
 --   message was sent
 [via_bot_user_id] :: Message -> Maybe Int
+
+-- | The identifier of the user or chat which used a guest bot to send the
+--   message; may be null if none
+[guest_bot_caller_id] :: Message -> Maybe MessageSender
 
 -- | If non-zero, the user identifier of the business bot that sent this
 --   message
@@ -25519,7 +25718,7 @@ module TD.Data.AddedProxy
 data AddedProxy
 
 -- | Contains information about a proxy server added to the list of proxies
-AddedProxy :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Proxy -> AddedProxy
+AddedProxy :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Proxy -> AddedProxy
 
 -- | Unique identifier of the proxy
 [_id] :: AddedProxy -> Maybe Int
@@ -25530,6 +25729,9 @@ AddedProxy :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Proxy -> AddedProxy
 
 -- | True, if the proxy is enabled now
 [is_enabled] :: AddedProxy -> Maybe Bool
+
+-- | Comment for the proxy added by the user
+[comment] :: AddedProxy -> Maybe Text
 
 -- | The proxy
 [proxy] :: AddedProxy -> Maybe Proxy
@@ -26420,8 +26622,23 @@ UpdateMessageUnreadReactions :: Maybe Int -> Maybe Int -> Maybe [UnreadReaction]
 -- | The new list of unread reactions
 [unread_reactions] :: Update -> Maybe [UnreadReaction]
 
--- | The new number of messages with unread reactions left in the chat
+-- | The new number of messages with unread reactions in the chat
 [unread_reaction_count] :: Update -> Maybe Int
+
+-- | Unread votes were added or removed from a poll message
+UpdateMessageContainsUnreadPollVotes :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | A temporary message identifier
+[message_id] :: Update -> Maybe Int
+
+-- | True, if the message is a poll message with unread votes
+[contains_unread_poll_votes] :: Update -> Maybe Bool
+
+-- | The new number of messages with unread poll votes in the chat
+[unread_poll_vote_count] :: Update -> Maybe Int
 
 -- | A fact-check added to a message was changed
 UpdateMessageFactCheck :: Maybe Int -> Maybe Int -> Maybe FactCheck -> Update
@@ -26725,7 +26942,7 @@ UpdateChatUnreadReactionCount :: Maybe Int -> Maybe Int -> Update
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | The new number of messages with unread reactions left in the chat
+-- | The new number of messages with unread reactions in the chat
 [unread_reaction_count] :: Update -> Maybe Int
 
 -- | The chat unread_poll_vote_count has changed
@@ -26734,7 +26951,7 @@ UpdateChatUnreadPollVoteCount :: Maybe Int -> Maybe Int -> Update
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
 
--- | The number of messages with unread poll votes left in the chat
+-- | The new number of messages with unread poll votes in the chat
 [unread_poll_vote_count] :: Update -> Maybe Int
 
 -- | A chat video chat state has changed
@@ -26927,10 +27144,10 @@ UpdateForumTopic :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe I
 -- | The new number of unread mention messages left in the chat
 [unread_mention_count] :: Update -> Maybe Int
 
--- | The new number of messages with unread reactions left in the chat
+-- | The new number of messages with unread reactions in the chat
 [unread_reaction_count] :: Update -> Maybe Int
 
--- | The number of messages with unread poll votes left in the chat
+-- | The new number of messages with unread poll votes in the chat
 [unread_poll_vote_count] :: Update -> Maybe Int
 
 -- | The new notification settings
@@ -27974,6 +28191,18 @@ UpdateNewChosenInlineResult :: Maybe Int -> Maybe Location -> Maybe Text -> Mayb
 -- | Identifier of the sent inline message, if known
 [inline_message_id] :: Update -> Maybe Text
 
+-- | A new incoming guest query; for bots only
+UpdateNewGuestQuery :: Maybe Int -> Maybe Message -> Maybe [Message] -> Update
+
+-- | Unique query identifier
+[_id] :: Update -> Maybe Int
+
+-- | The new message
+[message] :: Update -> Maybe Message
+
+-- | The list of reference messages
+[reference_messages] :: Update -> Maybe [Message]
+
 -- | A new incoming callback query; for bots only
 UpdateNewCallbackQuery :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe CallbackQueryPayload -> Update
 
@@ -28271,6 +28500,7 @@ Backgrounds :: Backgrounds -> GeneralResult
 BankCardInfo :: BankCardInfo -> GeneralResult
 BasicGroup :: BasicGroup -> GeneralResult
 BasicGroupFullInfo :: BasicGroupFullInfo -> GeneralResult
+BotAccessSettings :: BotAccessSettings -> GeneralResult
 BotCommands :: BotCommands -> GeneralResult
 BotMediaPreview :: BotMediaPreview -> GeneralResult
 BotMediaPreviewInfo :: BotMediaPreviewInfo -> GeneralResult
@@ -28385,6 +28615,7 @@ GroupCallStreams :: GroupCallStreams -> GeneralResult
 Hashtags :: Hashtags -> GeneralResult
 HttpUrl :: HttpUrl -> GeneralResult
 ImportedContacts :: ImportedContacts -> GeneralResult
+InlineMessageId :: InlineMessageId -> GeneralResult
 InlineQueryResults :: InlineQueryResults -> GeneralResult
 InternalLinkType :: InternalLinkType -> GeneralResult
 InviteGroupCallParticipantResult :: InviteGroupCallParticipantResult -> GeneralResult
@@ -28438,6 +28669,7 @@ PaymentReceipt :: PaymentReceipt -> GeneralResult
 PaymentResult :: PaymentResult -> GeneralResult
 PhoneNumberInfo :: PhoneNumberInfo -> GeneralResult
 PollOptionProperties :: PollOptionProperties -> GeneralResult
+PollVoteStatistics :: PollVoteStatistics -> GeneralResult
 PollVoters :: PollVoters -> GeneralResult
 PremiumFeatures :: PremiumFeatures -> GeneralResult
 PremiumGiftCodeInfo :: PremiumGiftCodeInfo -> GeneralResult
@@ -28466,7 +28698,6 @@ SavedMessagesTags :: SavedMessagesTags -> GeneralResult
 ScopeNotificationSettings :: ScopeNotificationSettings -> GeneralResult
 Seconds :: Seconds -> GeneralResult
 SecretChat :: SecretChat -> GeneralResult
-SentWebAppMessage :: SentWebAppMessage -> GeneralResult
 Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
 SponsoredChats :: SponsoredChats -> GeneralResult
@@ -28505,6 +28736,8 @@ TestVectorIntObject :: TestVectorIntObject -> GeneralResult
 TestVectorString :: TestVectorString -> GeneralResult
 TestVectorStringObject :: TestVectorStringObject -> GeneralResult
 Text :: Text -> GeneralResult
+TextCompositionStyle :: TextCompositionStyle -> GeneralResult
+TextCompositionStyleExample :: TextCompositionStyleExample -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
 TimeZones :: TimeZones -> GeneralResult
 TonRevenueStatistics :: TonRevenueStatistics -> GeneralResult
@@ -29083,11 +29316,23 @@ module TD.Query.AddProfileAudio
 -- | Adds an audio file to the beginning of the profile audio files of the
 --   current user. Returns <a>Ok</a>
 data AddProfileAudio
-AddProfileAudio :: Maybe Int -> AddProfileAudio
+AddProfileAudio :: Maybe InputFile -> Maybe Int -> Maybe Text -> Maybe Text -> AddProfileAudio
 
--- | Identifier of the audio file to be added. The file must have been
---   uploaded to the server
-[file_id] :: AddProfileAudio -> Maybe Int
+-- | The audio file to be added
+[audio] :: AddProfileAudio -> Maybe InputFile
+
+-- | Duration of the audio, in seconds; may be replaced by the server;
+--   ignored for already uploaded files
+[duration] :: AddProfileAudio -> Maybe Int
+
+-- | Title of the audio; 0-64 characters; may be replaced by the server;
+--   ignored for already uploaded files
+[title] :: AddProfileAudio -> Maybe Text
+
+-- | Performer of the audio; 0-64 characters, may be replaced by the
+--   server; ignored for already uploaded files
+[performer] :: AddProfileAudio -> Maybe Text
+defaultAddProfileAudio :: AddProfileAudio
 instance GHC.Show.Show TD.Query.AddProfileAudio.AddProfileAudio
 instance GHC.Classes.Eq TD.Query.AddProfileAudio.AddProfileAudio
 instance TD.Lib.Internal.ShortShow TD.Query.AddProfileAudio.AddProfileAudio
@@ -29098,13 +29343,16 @@ module TD.Query.AddProxy
 -- | Adds a proxy server for network requests. Can be called before
 --   authorization. Returns <a>AddedProxy</a>
 data AddProxy
-AddProxy :: Maybe Proxy -> Maybe Bool -> AddProxy
+AddProxy :: Maybe Proxy -> Maybe Bool -> Maybe Text -> AddProxy
 
 -- | The proxy to add
 [proxy] :: AddProxy -> Maybe Proxy
 
 -- | Pass true to immediately enable the proxy
 [enable] :: AddProxy -> Maybe Bool
+
+-- | Comment to set for the proxy
+[comment] :: AddProxy -> Maybe Text
 defaultAddProxy :: AddProxy
 instance GHC.Show.Show TD.Query.AddProxy.AddProxy
 instance GHC.Classes.Eq TD.Query.AddProxy.AddProxy
@@ -29323,6 +29571,22 @@ instance GHC.Classes.Eq TD.Query.AddStoryAlbumStories.AddStoryAlbumStories
 instance TD.Lib.Internal.ShortShow TD.Query.AddStoryAlbumStories.AddStoryAlbumStories
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddStoryAlbumStories.AddStoryAlbumStories
 
+module TD.Query.AddTextCompositionStyle
+
+-- | Adds a custom text composition style to the list of used by the user
+--   styles. May return an error with a message <a>TONES_SAVED_TOO_MANY</a>
+--   if the maximum number of added custom styles has been reached. Returns
+--   <a>Ok</a>
+data AddTextCompositionStyle
+AddTextCompositionStyle :: Maybe Text -> AddTextCompositionStyle
+
+-- | Name of the style
+[name] :: AddTextCompositionStyle -> Maybe Text
+instance GHC.Show.Show TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
+
 module TD.Query.AllowBotToSendMessages
 
 -- | Allows the specified bot to send messages to the user. Returns
@@ -29399,6 +29663,24 @@ instance GHC.Classes.Eq TD.Query.AnswerCustomQuery.AnswerCustomQuery
 instance TD.Lib.Internal.ShortShow TD.Query.AnswerCustomQuery.AnswerCustomQuery
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerCustomQuery.AnswerCustomQuery
 
+module TD.Query.AnswerGuestQuery
+
+-- | Sets the result of a guest query; for bots only. Returns
+--   <a>InlineMessageId</a>
+data AnswerGuestQuery
+AnswerGuestQuery :: Maybe Int -> Maybe InputInlineQueryResult -> AnswerGuestQuery
+
+-- | Identifier of the guest query
+[guest_query_id] :: AnswerGuestQuery -> Maybe Int
+
+-- | The result of the query
+[result] :: AnswerGuestQuery -> Maybe InputInlineQueryResult
+defaultAnswerGuestQuery :: AnswerGuestQuery
+instance GHC.Show.Show TD.Query.AnswerGuestQuery.AnswerGuestQuery
+instance GHC.Classes.Eq TD.Query.AnswerGuestQuery.AnswerGuestQuery
+instance TD.Lib.Internal.ShortShow TD.Query.AnswerGuestQuery.AnswerGuestQuery
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerGuestQuery.AnswerGuestQuery
+
 module TD.Query.AnswerInlineQuery
 
 -- | Sets the result of an inline query; for bots only. Returns <a>Ok</a>
@@ -29473,7 +29755,7 @@ module TD.Query.AnswerWebAppQuery
 
 -- | Sets the result of interaction with a Web App and sends corresponding
 --   message on behalf of the user to the chat from which the query
---   originated; for bots only. Returns <a>SentWebAppMessage</a>
+--   originated; for bots only. Returns <a>InlineMessageId</a>
 data AnswerWebAppQuery
 AnswerWebAppQuery :: Maybe Text -> Maybe InputInlineQueryResult -> AnswerWebAppQuery
 
@@ -29963,7 +30245,11 @@ module TD.Query.CheckAuthenticationPremiumPurchase
 --   before authorization. Works only when the current authorization state
 --   is authorizationStateWaitPremiumPurchase. Returns <a>Ok</a>
 data CheckAuthenticationPremiumPurchase
-CheckAuthenticationPremiumPurchase :: Maybe Text -> Maybe Int -> CheckAuthenticationPremiumPurchase
+CheckAuthenticationPremiumPurchase :: Maybe Int -> Maybe Text -> Maybe Int -> CheckAuthenticationPremiumPurchase
+
+-- | The number of days for which the Telegram Premium subscription will be
+--   granted
+[premium_day_count] :: CheckAuthenticationPremiumPurchase -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
 [currency] :: CheckAuthenticationPremiumPurchase -> Maybe Text
@@ -31082,6 +31368,34 @@ instance GHC.Classes.Eq TD.Query.CreateTemporaryPassword.CreateTemporaryPassword
 instance TD.Lib.Internal.ShortShow TD.Query.CreateTemporaryPassword.CreateTemporaryPassword
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateTemporaryPassword.CreateTemporaryPassword
 
+module TD.Query.CreateTextCompositionStyle
+
+-- | Creates a custom text composition style. May return an error with a
+--   message <a>TONES_SAVED_TOO_MANY</a> if the maximum number of added
+--   custom styles has been reached. Returns <a>TextCompositionStyle</a>
+data CreateTextCompositionStyle
+CreateTextCompositionStyle :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> CreateTextCompositionStyle
+
+-- | Title of the style;
+--   1-getOption("text_composition_style_title_length_max") characters
+[title] :: CreateTextCompositionStyle -> Maybe Text
+
+-- | Identifier of the custom emoji corresponding to the style
+[custom_emoji_id] :: CreateTextCompositionStyle -> Maybe Int
+
+-- | Prompt that will be used for text composition;
+--   1-getOption("text_composition_style_prompt_length_max") characters
+[prompt] :: CreateTextCompositionStyle -> Maybe Text
+
+-- | Pass true if the current user must be shown as the creator of the
+--   style
+[show_creator] :: CreateTextCompositionStyle -> Maybe Bool
+defaultCreateTextCompositionStyle :: CreateTextCompositionStyle
+instance GHC.Show.Show TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
+
 module TD.Query.CreateVideoChat
 
 -- | Creates a video chat (a group call bound to a chat); for basic groups,
@@ -31222,6 +31536,25 @@ instance GHC.Show.Show TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 instance GHC.Classes.Eq TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
+
+module TD.Query.DeleteAllRecentMessageReactionsFromSender
+
+-- | Deletes all recent reactions added by the specified sender in a chat.
+--   Supported only for basic groups and supergroups; requires
+--   can_delete_messages administrator right. Returns <a>Ok</a>
+data DeleteAllRecentMessageReactionsFromSender
+DeleteAllRecentMessageReactionsFromSender :: Maybe Int -> Maybe MessageSender -> DeleteAllRecentMessageReactionsFromSender
+
+-- | Chat identifier
+[chat_id] :: DeleteAllRecentMessageReactionsFromSender -> Maybe Int
+
+-- | Identifier of the sender of reactions to delete
+[sender_id] :: DeleteAllRecentMessageReactionsFromSender -> Maybe MessageSender
+defaultDeleteAllRecentMessageReactionsFromSender :: DeleteAllRecentMessageReactionsFromSender
+instance GHC.Show.Show TD.Query.DeleteAllRecentMessageReactionsFromSender.DeleteAllRecentMessageReactionsFromSender
+instance GHC.Classes.Eq TD.Query.DeleteAllRecentMessageReactionsFromSender.DeleteAllRecentMessageReactionsFromSender
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllRecentMessageReactionsFromSender.DeleteAllRecentMessageReactionsFromSender
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllRecentMessageReactionsFromSender.DeleteAllRecentMessageReactionsFromSender
 
 module TD.Query.DeleteAllRevokedChatInviteLinks
 
@@ -31676,6 +32009,29 @@ instance GHC.Classes.Eq TD.Query.DeleteLanguagePack.DeleteLanguagePack
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteLanguagePack.DeleteLanguagePack
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteLanguagePack.DeleteLanguagePack
 
+module TD.Query.DeleteMessageReactionsFromSender
+
+-- | Deletes all reactions added by the specified sender on a message.
+--   Returns <a>Ok</a>
+data DeleteMessageReactionsFromSender
+DeleteMessageReactionsFromSender :: Maybe Int -> Maybe Int -> Maybe MessageSender -> DeleteMessageReactionsFromSender
+
+-- | Chat identifier
+[chat_id] :: DeleteMessageReactionsFromSender -> Maybe Int
+
+-- | Identifier of the message containing the reactions. Use
+--   messageProperties.can_delete_reactions to check whether the method can
+--   be used for a message
+[message_id] :: DeleteMessageReactionsFromSender -> Maybe Int
+
+-- | Identifier of the sender of reactions to delete
+[sender_id] :: DeleteMessageReactionsFromSender -> Maybe MessageSender
+defaultDeleteMessageReactionsFromSender :: DeleteMessageReactionsFromSender
+instance GHC.Show.Show TD.Query.DeleteMessageReactionsFromSender.DeleteMessageReactionsFromSender
+instance GHC.Classes.Eq TD.Query.DeleteMessageReactionsFromSender.DeleteMessageReactionsFromSender
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteMessageReactionsFromSender.DeleteMessageReactionsFromSender
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteMessageReactionsFromSender.DeleteMessageReactionsFromSender
+
 module TD.Query.DeleteMessages
 
 -- | Deletes messages. Returns <a>Ok</a>
@@ -31903,6 +32259,20 @@ instance GHC.Show.Show TD.Query.DeleteStoryAlbum.DeleteStoryAlbum
 instance GHC.Classes.Eq TD.Query.DeleteStoryAlbum.DeleteStoryAlbum
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteStoryAlbum.DeleteStoryAlbum
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteStoryAlbum.DeleteStoryAlbum
+
+module TD.Query.DeleteTextCompositionStyle
+
+-- | Deletes a custom text composition style that was created by the
+--   current user. Returns <a>Ok</a>
+data DeleteTextCompositionStyle
+DeleteTextCompositionStyle :: Maybe Text -> DeleteTextCompositionStyle
+
+-- | Name of the style
+[name] :: DeleteTextCompositionStyle -> Maybe Text
+instance GHC.Show.Show TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
 
 module TD.Query.Destroy
 
@@ -32829,7 +33199,7 @@ module TD.Query.EditProxy
 -- | Edits an existing proxy server for network requests. Can be called
 --   before authorization. Returns <a>AddedProxy</a>
 data EditProxy
-EditProxy :: Maybe Int -> Maybe Proxy -> Maybe Bool -> EditProxy
+EditProxy :: Maybe Int -> Maybe Proxy -> Maybe Bool -> Maybe Text -> EditProxy
 
 -- | Proxy identifier
 [proxy_id] :: EditProxy -> Maybe Int
@@ -32839,6 +33209,9 @@ EditProxy :: Maybe Int -> Maybe Proxy -> Maybe Bool -> EditProxy
 
 -- | Pass true to immediately enable the proxy
 [enable] :: EditProxy -> Maybe Bool
+
+-- | New comment for the proxy
+[comment] :: EditProxy -> Maybe Text
 defaultEditProxy :: EditProxy
 instance GHC.Show.Show TD.Query.EditProxy.EditProxy
 instance GHC.Classes.Eq TD.Query.EditProxy.EditProxy
@@ -32941,6 +33314,36 @@ instance GHC.Show.Show TD.Query.EditStoryCover.EditStoryCover
 instance GHC.Classes.Eq TD.Query.EditStoryCover.EditStoryCover
 instance TD.Lib.Internal.ShortShow TD.Query.EditStoryCover.EditStoryCover
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStoryCover.EditStoryCover
+
+module TD.Query.EditTextCompositionStyle
+
+-- | Edits a custom text composition style that was created by the current
+--   user. Returns <a>TextCompositionStyle</a>
+data EditTextCompositionStyle
+EditTextCompositionStyle :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> EditTextCompositionStyle
+
+-- | Name of the style
+[name] :: EditTextCompositionStyle -> Maybe Text
+
+-- | Title of the style;
+--   1-getOption("text_composition_style_title_length_max") characters
+[title] :: EditTextCompositionStyle -> Maybe Text
+
+-- | Identifier of the custom emoji corresponding to the style
+[custom_emoji_id] :: EditTextCompositionStyle -> Maybe Int
+
+-- | Prompt that will be used for text composition;
+--   1-getOption("text_composition_style_prompt_length_max") characters
+[prompt] :: EditTextCompositionStyle -> Maybe Text
+
+-- | Pass true if the current user must be shown as the creator of the
+--   style
+[show_creator] :: EditTextCompositionStyle -> Maybe Bool
+defaultEditTextCompositionStyle :: EditTextCompositionStyle
+instance GHC.Show.Show TD.Query.EditTextCompositionStyle.EditTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.EditTextCompositionStyle.EditTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.EditTextCompositionStyle.EditTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditTextCompositionStyle.EditTextCompositionStyle
 
 module TD.Query.EditUserStarSubscription
 
@@ -33556,23 +33959,6 @@ instance GHC.Show.Show TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance GHC.Classes.Eq TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance TD.Lib.Internal.ShortShow TD.Query.GetBotSimilarBots.GetBotSimilarBots
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotSimilarBots.GetBotSimilarBots
-
-module TD.Query.GetBotToken
-
--- | Returns token of a created bot; for bots only. Returns <a>Text</a>
-data GetBotToken
-GetBotToken :: Maybe Int -> Maybe Bool -> GetBotToken
-
--- | Identifier of the created bot
-[bot_user_id] :: GetBotToken -> Maybe Int
-
--- | Pass true to revoke the current token and create a new one
-[revoke] :: GetBotToken -> Maybe Bool
-defaultGetBotToken :: GetBotToken
-instance GHC.Show.Show TD.Query.GetBotToken.GetBotToken
-instance GHC.Classes.Eq TD.Query.GetBotToken.GetBotToken
-instance TD.Lib.Internal.ShortShow TD.Query.GetBotToken.GetBotToken
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBotToken.GetBotToken
 
 module TD.Query.GetBusinessAccountStarAmount
 
@@ -36129,6 +36515,37 @@ instance GHC.Classes.Eq TD.Query.GetMainWebApp.GetMainWebApp
 instance TD.Lib.Internal.ShortShow TD.Query.GetMainWebApp.GetMainWebApp
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetMainWebApp.GetMainWebApp
 
+module TD.Query.GetManagedBotAccessSettings
+
+-- | Returns access settings of a managed bot; for bots only. Returns
+--   <a>BotAccessSettings</a>
+data GetManagedBotAccessSettings
+GetManagedBotAccessSettings :: Maybe Int -> GetManagedBotAccessSettings
+
+-- | Identifier of the managed bot
+[bot_user_id] :: GetManagedBotAccessSettings -> Maybe Int
+instance GHC.Show.Show TD.Query.GetManagedBotAccessSettings.GetManagedBotAccessSettings
+instance GHC.Classes.Eq TD.Query.GetManagedBotAccessSettings.GetManagedBotAccessSettings
+instance TD.Lib.Internal.ShortShow TD.Query.GetManagedBotAccessSettings.GetManagedBotAccessSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetManagedBotAccessSettings.GetManagedBotAccessSettings
+
+module TD.Query.GetManagedBotToken
+
+-- | Returns token of a managed bot; for bots only. Returns <a>Text</a>
+data GetManagedBotToken
+GetManagedBotToken :: Maybe Int -> Maybe Bool -> GetManagedBotToken
+
+-- | Identifier of the managed bot
+[bot_user_id] :: GetManagedBotToken -> Maybe Int
+
+-- | Pass true to revoke the current token and create a new one
+[revoke] :: GetManagedBotToken -> Maybe Bool
+defaultGetManagedBotToken :: GetManagedBotToken
+instance GHC.Show.Show TD.Query.GetManagedBotToken.GetManagedBotToken
+instance GHC.Classes.Eq TD.Query.GetManagedBotToken.GetManagedBotToken
+instance TD.Lib.Internal.ShortShow TD.Query.GetManagedBotToken.GetManagedBotToken
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetManagedBotToken.GetManagedBotToken
+
 module TD.Query.GetMapThumbnailFile
 
 -- | Returns information about a file with a map thumbnail in PNG format.
@@ -36850,6 +37267,24 @@ instance GHC.Classes.Eq TD.Query.GetPaymentReceipt.GetPaymentReceipt
 instance TD.Lib.Internal.ShortShow TD.Query.GetPaymentReceipt.GetPaymentReceipt
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPaymentReceipt.GetPaymentReceipt
 
+module TD.Query.GetPersonalChatHistory
+
+-- | Returns messages in the personal chat of a given user; for bots only.
+--   Returns <a>Messages</a>
+data GetPersonalChatHistory
+GetPersonalChatHistory :: Maybe Int -> Maybe Int -> GetPersonalChatHistory
+
+-- | User identifier
+[user_id] :: GetPersonalChatHistory -> Maybe Int
+
+-- | The maximum number of messages to be returned; 1-20
+[limit] :: GetPersonalChatHistory -> Maybe Int
+defaultGetPersonalChatHistory :: GetPersonalChatHistory
+instance GHC.Show.Show TD.Query.GetPersonalChatHistory.GetPersonalChatHistory
+instance GHC.Classes.Eq TD.Query.GetPersonalChatHistory.GetPersonalChatHistory
+instance TD.Lib.Internal.ShortShow TD.Query.GetPersonalChatHistory.GetPersonalChatHistory
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPersonalChatHistory.GetPersonalChatHistory
+
 module TD.Query.GetPhoneNumberInfo
 
 -- | Returns information about a phone number by its prefix. Can be called
@@ -36906,6 +37341,29 @@ instance GHC.Show.Show TD.Query.GetPollOptionProperties.GetPollOptionProperties
 instance GHC.Classes.Eq TD.Query.GetPollOptionProperties.GetPollOptionProperties
 instance TD.Lib.Internal.ShortShow TD.Query.GetPollOptionProperties.GetPollOptionProperties
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPollOptionProperties.GetPollOptionProperties
+
+module TD.Query.GetPollVoteStatistics
+
+-- | Returns statistics of poll votes in a poll. Returns
+--   <a>PollVoteStatistics</a>
+data GetPollVoteStatistics
+GetPollVoteStatistics :: Maybe Int -> Maybe Int -> Maybe Bool -> GetPollVoteStatistics
+
+-- | Identifier of the chat to which the poll belongs
+[chat_id] :: GetPollVoteStatistics -> Maybe Int
+
+-- | Identifier of the message containing the poll. Use
+--   messageProperties.can_get_poll_vote_statistics to check whether the
+--   method can be used for a message
+[message_id] :: GetPollVoteStatistics -> Maybe Int
+
+-- | Pass true if a dark theme is used by the application
+[is_dark] :: GetPollVoteStatistics -> Maybe Bool
+defaultGetPollVoteStatistics :: GetPollVoteStatistics
+instance GHC.Show.Show TD.Query.GetPollVoteStatistics.GetPollVoteStatistics
+instance GHC.Classes.Eq TD.Query.GetPollVoteStatistics.GetPollVoteStatistics
+instance TD.Lib.Internal.ShortShow TD.Query.GetPollVoteStatistics.GetPollVoteStatistics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPollVoteStatistics.GetPollVoteStatistics
 
 module TD.Query.GetPollVoters
 
@@ -37474,7 +37932,7 @@ module TD.Query.GetSavedNotificationSound
 
 -- | Returns saved notification sound by its identifier. Returns a 404
 --   error if there is no saved notification sound with the specified
---   identifier. Returns <a>NotificationSounds</a>
+--   identifier. Returns <a>NotificationSound</a>
 data GetSavedNotificationSound
 GetSavedNotificationSound :: Maybe Int -> GetSavedNotificationSound
 
@@ -38204,6 +38662,25 @@ instance GHC.Show.Show TD.Query.GetTemporaryPasswordState.GetTemporaryPasswordSt
 instance GHC.Classes.Eq TD.Query.GetTemporaryPasswordState.GetTemporaryPasswordState
 instance TD.Lib.Internal.ShortShow TD.Query.GetTemporaryPasswordState.GetTemporaryPasswordState
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTemporaryPasswordState.GetTemporaryPasswordState
+
+module TD.Query.GetTextCompositionStyleExample
+
+-- | Returns an example of usage of a custom text composition style.
+--   Returns <a>TextCompositionStyleExample</a>
+data GetTextCompositionStyleExample
+GetTextCompositionStyleExample :: Maybe Text -> Maybe Int -> GetTextCompositionStyleExample
+
+-- | Name of the style
+[name] :: GetTextCompositionStyleExample -> Maybe Text
+
+-- | 0-based unique number of the requested example; must be non-negative
+--   and less than getOption("text_composition_style_example_count")
+[example_number] :: GetTextCompositionStyleExample -> Maybe Int
+defaultGetTextCompositionStyleExample :: GetTextCompositionStyleExample
+instance GHC.Show.Show TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
+instance GHC.Classes.Eq TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
+instance TD.Lib.Internal.ShortShow TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
 
 module TD.Query.GetTextEntities
 
@@ -40516,6 +40993,21 @@ instance GHC.Classes.Eq TD.Query.RemoveStoryAlbumStories.RemoveStoryAlbumStories
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveStoryAlbumStories.RemoveStoryAlbumStories
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveStoryAlbumStories.RemoveStoryAlbumStories
 
+module TD.Query.RemoveTextCompositionStyle
+
+-- | Removes a custom text composition style from the list of used by the
+--   user styles. If the style was created by the current user, then it can
+--   only be deleted. Returns <a>Ok</a>
+data RemoveTextCompositionStyle
+RemoveTextCompositionStyle :: Maybe Text -> RemoveTextCompositionStyle
+
+-- | Name of the style
+[name] :: RemoveTextCompositionStyle -> Maybe Text
+instance GHC.Show.Show TD.Query.RemoveTextCompositionStyle.RemoveTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.RemoveTextCompositionStyle.RemoveTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.RemoveTextCompositionStyle.RemoveTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveTextCompositionStyle.RemoveTextCompositionStyle
+
 module TD.Query.RemoveTopChat
 
 -- | Removes a chat from the list of frequently used chats. Supported only
@@ -42173,6 +42665,20 @@ instance GHC.Classes.Eq TD.Query.SearchStringsByPrefix.SearchStringsByPrefix
 instance TD.Lib.Internal.ShortShow TD.Query.SearchStringsByPrefix.SearchStringsByPrefix
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchStringsByPrefix.SearchStringsByPrefix
 
+module TD.Query.SearchTextCompositionStyle
+
+-- | Searches a custom text composition style by its name. Returns
+--   <a>TextCompositionStyle</a>
+data SearchTextCompositionStyle
+SearchTextCompositionStyle :: Maybe Text -> SearchTextCompositionStyle
+
+-- | Name of the style
+[name] :: SearchTextCompositionStyle -> Maybe Text
+instance GHC.Show.Show TD.Query.SearchTextCompositionStyle.SearchTextCompositionStyle
+instance GHC.Classes.Eq TD.Query.SearchTextCompositionStyle.SearchTextCompositionStyle
+instance TD.Lib.Internal.ShortShow TD.Query.SearchTextCompositionStyle.SearchTextCompositionStyle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchTextCompositionStyle.SearchTextCompositionStyle
+
 module TD.Query.SearchUserByPhoneNumber
 
 -- | Searches a user by their phone number. Returns a 404 error if the user
@@ -42891,7 +43397,8 @@ SendTextMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedTe
 -- | Unique identifier of the draft
 [draft_id] :: SendTextMessageDraft -> Maybe Int
 
--- | Draft text of the message
+-- | Draft text of the message; pass null to show a "Thinking..."
+--   placeholder
 [text] :: SendTextMessageDraft -> Maybe FormattedText
 defaultSendTextMessageDraft :: SendTextMessageDraft
 instance GHC.Show.Show TD.Query.SendTextMessageDraft.SendTextMessageDraft
@@ -43072,7 +43579,7 @@ module TD.Query.SetAuthenticationPremiumPurchaseTransaction
 --   authorization. Works only when the current authorization state is
 --   authorizationStateWaitPremiumPurchase. Returns <a>Ok</a>
 data SetAuthenticationPremiumPurchaseTransaction
-SetAuthenticationPremiumPurchaseTransaction :: Maybe StoreTransaction -> Maybe Bool -> Maybe Text -> Maybe Int -> SetAuthenticationPremiumPurchaseTransaction
+SetAuthenticationPremiumPurchaseTransaction :: Maybe StoreTransaction -> Maybe Bool -> Maybe Int -> Maybe Text -> Maybe Int -> SetAuthenticationPremiumPurchaseTransaction
 
 -- | Information about the transaction
 [transaction] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe StoreTransaction
@@ -43080,6 +43587,10 @@ SetAuthenticationPremiumPurchaseTransaction :: Maybe StoreTransaction -> Maybe B
 -- | Pass true if this is a restore of a Telegram Premium purchase; only
 --   for App Store
 [is_restore] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Bool
+
+-- | The number of days for which the Telegram Premium subscription will be
+--   granted
+[premium_day_count] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
 [currency] :: SetAuthenticationPremiumPurchaseTransaction -> Maybe Text
@@ -44607,6 +45118,24 @@ instance GHC.Show.Show TD.Query.SetMainProfileTab.SetMainProfileTab
 instance GHC.Classes.Eq TD.Query.SetMainProfileTab.SetMainProfileTab
 instance TD.Lib.Internal.ShortShow TD.Query.SetMainProfileTab.SetMainProfileTab
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetMainProfileTab.SetMainProfileTab
+
+module TD.Query.SetManagedBotAccessSettings
+
+-- | Sets access settings of a managed bot; for bots only. Returns
+--   <a>Ok</a>
+data SetManagedBotAccessSettings
+SetManagedBotAccessSettings :: Maybe Int -> Maybe BotAccessSettings -> SetManagedBotAccessSettings
+
+-- | Identifier of the managed bot
+[bot_user_id] :: SetManagedBotAccessSettings -> Maybe Int
+
+-- | New access settings
+[settings] :: SetManagedBotAccessSettings -> Maybe BotAccessSettings
+defaultSetManagedBotAccessSettings :: SetManagedBotAccessSettings
+instance GHC.Show.Show TD.Query.SetManagedBotAccessSettings.SetManagedBotAccessSettings
+instance GHC.Classes.Eq TD.Query.SetManagedBotAccessSettings.SetManagedBotAccessSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetManagedBotAccessSettings.SetManagedBotAccessSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetManagedBotAccessSettings.SetManagedBotAccessSettings
 
 module TD.Query.SetMenuButton
 
