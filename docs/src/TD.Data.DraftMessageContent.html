@@ -1,0 +1,593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.DraftMessageContent</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier">DraftMessageContent</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html"><span class="hs-identifier">TD.Data.FormattedText</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">FormattedText</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.LinkPreviewOptions.html"><span class="hs-identifier">TD.Data.LinkPreviewOptions</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">LinkPreviewOptions</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.RichMessage.html"><span class="hs-identifier">TD.Data.RichMessage</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">RichMessage</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageSelfDestructType.html"><span class="hs-identifier">TD.Data.MessageSelfDestructType</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageSelfDestructType</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="annot"><span class="hs-comment">-- | Content of the message draft</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">data</span><span> </span><span id="DraftMessageContent"><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-var">DraftMessageContent</span></a></span></span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="DraftMessageContentText"><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentText"><span class="hs-identifier hs-var">DraftMessageContentText</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A text message draft</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="text"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe FormattedText
+</span><a href="TD.Data.DraftMessageContent.html#text"><span class="hs-identifier hs-var hs-var">text</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.FormattedText.html#FormattedText"><span class="hs-identifier hs-type">FormattedText.FormattedText</span></a></span><span>           </span><span class="annot"><span class="hs-comment">-- ^ Formatted text to be saved as a draft; 0-getOption(&quot;message_text_length_max&quot;) characters</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="link_preview_options"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe LinkPreviewOptions
+</span><a href="TD.Data.DraftMessageContent.html#link_preview_options"><span class="hs-identifier hs-var hs-var">link_preview_options</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.LinkPreviewOptions.html#LinkPreviewOptions"><span class="hs-identifier hs-type">LinkPreviewOptions.LinkPreviewOptions</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Options to be used for generation of a link preview; may be null if none; pass null to use default link preview options</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="DraftMessageContentRichMessage"><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentRichMessage"><span class="hs-identifier hs-var">DraftMessageContentRichMessage</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A rich message draft; not supported in setChatDraftMessage</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="message"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe RichMessage
+</span><a href="TD.Data.DraftMessageContent.html#message"><span class="hs-identifier hs-var hs-var">message</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.RichMessage.html#RichMessage"><span class="hs-identifier hs-type">RichMessage.RichMessage</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The rich message; the message must not have not yet uploaded media</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="DraftMessageContentVideoNote"><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVideoNote"><span class="hs-identifier hs-var">DraftMessageContentVideoNote</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A video note message draft</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="file_path"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var hs-var">file_path</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                          </span><span class="annot"><span class="hs-comment">-- ^ Path to the file with the video note</span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="duration"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var hs-var">duration</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                             </span><span class="annot"><span class="hs-comment">-- ^ Duration of the video, in seconds; 0-60</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="_length"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#_length"><span class="hs-identifier hs-var hs-var">_length</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                             </span><span class="annot"><span class="hs-comment">-- ^ Video width and height; must be positive and not greater than 640</span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="self_destruct_type"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var hs-var">self_destruct_type</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSelfDestructType.html#MessageSelfDestructType"><span class="hs-identifier hs-type">MessageSelfDestructType.MessageSelfDestructType</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Video note self-destruct type; may be null if none; pass null if none; private chats only</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="DraftMessageContentVoiceNote"><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVoiceNote"><span class="hs-identifier hs-var">DraftMessageContentVoiceNote</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ A voice note message draft</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="file_path"><span class="annot"><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                          </span><span class="annot"><span class="hs-comment">-- ^ Path to the file with the voice note</span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="duration"><span class="annot"><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                             </span><span class="annot"><span class="hs-comment">-- ^ Duration of the voice note, in seconds</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="waveform"><span class="annot"><span class="annottext">DraftMessageContent -&gt; Maybe ByteString
+</span><a href="TD.Data.DraftMessageContent.html#waveform"><span class="hs-identifier hs-var hs-var">waveform</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Waveform representation of the voice note in 5-bit format</span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="self_destruct_type"><span class="annot"><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageSelfDestructType.html#MessageSelfDestructType"><span class="hs-identifier hs-type">MessageSelfDestructType.MessageSelfDestructType</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Voice note self-destruct type; may be null if none; pass null if none; private chats only</span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-35"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679954448"><span id="local-6989586621679954469"><span class="annot"><span class="annottext">DraftMessageContent -&gt; DraftMessageContent -&gt; Bool
+(DraftMessageContent -&gt; DraftMessageContent -&gt; Bool)
+-&gt; (DraftMessageContent -&gt; DraftMessageContent -&gt; Bool)
+-&gt; Eq DraftMessageContent
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: DraftMessageContent -&gt; DraftMessageContent -&gt; Bool
+== :: DraftMessageContent -&gt; DraftMessageContent -&gt; Bool
+$c/= :: DraftMessageContent -&gt; DraftMessageContent -&gt; Bool
+/= :: DraftMessageContent -&gt; DraftMessageContent -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679954481"><span id="local-6989586621679954507"><span id="local-6989586621679954511"><span class="annot"><span class="annottext">Int -&gt; DraftMessageContent -&gt; ShowS
+[DraftMessageContent] -&gt; ShowS
+DraftMessageContent -&gt; String
+(Int -&gt; DraftMessageContent -&gt; ShowS)
+-&gt; (DraftMessageContent -&gt; String)
+-&gt; ([DraftMessageContent] -&gt; ShowS)
+-&gt; Show DraftMessageContent
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; DraftMessageContent -&gt; ShowS
+showsPrec :: Int -&gt; DraftMessageContent -&gt; ShowS
+$cshow :: DraftMessageContent -&gt; String
+show :: DraftMessageContent -&gt; String
+$cshowList :: [DraftMessageContent] -&gt; ShowS
+showList :: [DraftMessageContent] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-38"></span><span>  </span><span id="local-6989586621679954548"><span class="annot"><span class="annottext">shortShow :: DraftMessageContent -&gt; String
+</span><a href="#local-6989586621679954548"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentText"><span class="hs-identifier hs-type">DraftMessageContentText</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">text :: DraftMessageContent -&gt; Maybe FormattedText
+</span><a href="TD.Data.DraftMessageContent.html#text"><span class="hs-identifier hs-var">text</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954550"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954550"><span class="hs-identifier hs-var">text_</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">link_preview_options :: DraftMessageContent -&gt; Maybe LinkPreviewOptions
+</span><a href="TD.Data.DraftMessageContent.html#link_preview_options"><span class="hs-identifier hs-var">link_preview_options</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954551"><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954551"><span class="hs-identifier hs-var">link_preview_options_</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentText&quot;</span></span><span>
+</span><span id="line-43"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;text&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe FormattedText -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954550"><span class="hs-identifier hs-var">text_</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;link_preview_options&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe LinkPreviewOptions -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954551"><span class="hs-identifier hs-var">link_preview_options_</span></a></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentRichMessage"><span class="hs-identifier hs-type">DraftMessageContentRichMessage</span></a></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">message :: DraftMessageContent -&gt; Maybe RichMessage
+</span><a href="TD.Data.DraftMessageContent.html#message"><span class="hs-identifier hs-var">message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954554"><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954554"><span class="hs-identifier hs-var">message_</span></a></span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentRichMessage&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-52"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe RichMessage -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954554"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-53"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-54"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVideoNote"><span class="hs-identifier hs-type">DraftMessageContentVideoNote</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: DraftMessageContent -&gt; Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954555"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954555"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954556"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954556"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_length :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#_length"><span class="hs-identifier hs-var">_length</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954557"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954557"><span class="hs-identifier hs-var">_length_</span></a></span></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: DraftMessageContent -&gt; Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954558"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954558"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-60"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentVideoNote&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-62"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954555"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-63"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954556"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-64"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_length&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954557"><span class="hs-identifier hs-var">_length_</span></a></span><span>
+</span><span id="line-65"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSelfDestructType -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954558"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-66"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-67"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVoiceNote"><span class="hs-identifier hs-type">DraftMessageContentVoiceNote</span></a></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: DraftMessageContent -&gt; Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954559"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954559"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954560"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954560"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>
+</span><span id="line-70"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">waveform :: DraftMessageContent -&gt; Maybe ByteString
+</span><a href="TD.Data.DraftMessageContent.html#waveform"><span class="hs-identifier hs-var">waveform</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954561"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954561"><span class="hs-identifier hs-var">waveform_</span></a></span></span><span>
+</span><span id="line-71"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: DraftMessageContent -&gt; Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954562"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954562"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-73"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentVoiceNote&quot;</span></span><span>
+</span><span id="line-74"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-75"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954559"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-76"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954560"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-77"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;waveform&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954561"><span class="hs-identifier hs-var">waveform_</span></a></span><span>
+</span><span id="line-78"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageSelfDestructType -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954562"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-79"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679954565"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-82"></span><span>  </span><span id="local-6989586621679954640"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954640"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679954642"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679954642"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679954644"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954644"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-83"></span><span>    </span><span id="local-6989586621679954645"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679954645"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954644"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679954645"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-86"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;draftMessageContentText&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954647"><span class="hs-identifier hs-var">parseDraftMessageContentText</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679954642"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-87"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;draftMessageContentRichMessage&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954648"><span class="hs-identifier hs-var">parseDraftMessageContentRichMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679954642"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-88"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;draftMessageContentVideoNote&quot;</span></span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954649"><span class="hs-identifier hs-var">parseDraftMessageContentVideoNote</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679954642"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-89"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;draftMessageContentVoiceNote&quot;</span></span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954650"><span class="hs-identifier hs-var">parseDraftMessageContentVoiceNote</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679954642"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-90"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser DraftMessageContent
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-91"></span><span>    </span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-93"></span><span>      </span><span class="annot"><a href="#local-6989586621679954647"><span class="hs-identifier hs-type">parseDraftMessageContentText</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span><span>
+</span><span id="line-94"></span><span>      </span><span id="local-6989586621679954647"><span class="annot"><span class="annottext">parseDraftMessageContentText :: Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954647"><span class="hs-identifier hs-var hs-var">parseDraftMessageContentText</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentText&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser DraftMessageContent)
+ -&gt; Value -&gt; Parser DraftMessageContent)
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679954652"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954652"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-95"></span><span>        </span><span id="local-6989586621679954653"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954653"><span class="hs-identifier hs-var">text_</span></a></span></span><span>                 </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954652"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe FormattedText)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;text&quot;</span></span><span>
+</span><span id="line-96"></span><span>        </span><span id="local-6989586621679954655"><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954655"><span class="hs-identifier hs-var">link_preview_options_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954652"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe LinkPreviewOptions)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;link_preview_options&quot;</span></span><span>
+</span><span id="line-97"></span><span>        </span><span class="annot"><span class="annottext">DraftMessageContent -&gt; Parser DraftMessageContent
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(DraftMessageContent -&gt; Parser DraftMessageContent)
+-&gt; DraftMessageContent -&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentText"><span class="hs-identifier hs-type">DraftMessageContentText</span></a></span><span>
+</span><span id="line-98"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">text :: Maybe FormattedText
+</span><a href="TD.Data.DraftMessageContent.html#text"><span class="hs-identifier hs-var">text</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954653"><span class="hs-identifier hs-var">text_</span></a></span><span>
+</span><span id="line-99"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">link_preview_options :: Maybe LinkPreviewOptions
+</span><a href="TD.Data.DraftMessageContent.html#link_preview_options"><span class="hs-identifier hs-var">link_preview_options</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954655"><span class="hs-identifier hs-var">link_preview_options_</span></a></span><span>
+</span><span id="line-100"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-101"></span><span>      </span><span class="annot"><a href="#local-6989586621679954648"><span class="hs-identifier hs-type">parseDraftMessageContentRichMessage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span><span>
+</span><span id="line-102"></span><span>      </span><span id="local-6989586621679954648"><span class="annot"><span class="annottext">parseDraftMessageContentRichMessage :: Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954648"><span class="hs-identifier hs-var hs-var">parseDraftMessageContentRichMessage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentRichMessage&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser DraftMessageContent)
+ -&gt; Value -&gt; Parser DraftMessageContent)
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679954656"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954656"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-103"></span><span>        </span><span id="local-6989586621679954657"><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954657"><span class="hs-identifier hs-var">message_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954656"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe RichMessage)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message&quot;</span></span><span>
+</span><span id="line-104"></span><span>        </span><span class="annot"><span class="annottext">DraftMessageContent -&gt; Parser DraftMessageContent
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(DraftMessageContent -&gt; Parser DraftMessageContent)
+-&gt; DraftMessageContent -&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentRichMessage"><span class="hs-identifier hs-type">DraftMessageContentRichMessage</span></a></span><span>
+</span><span id="line-105"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">message :: Maybe RichMessage
+</span><a href="TD.Data.DraftMessageContent.html#message"><span class="hs-identifier hs-var">message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954657"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-106"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-107"></span><span>      </span><span class="annot"><a href="#local-6989586621679954649"><span class="hs-identifier hs-type">parseDraftMessageContentVideoNote</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span><span>
+</span><span id="line-108"></span><span>      </span><span id="local-6989586621679954649"><span class="annot"><span class="annottext">parseDraftMessageContentVideoNote :: Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954649"><span class="hs-identifier hs-var hs-var">parseDraftMessageContentVideoNote</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentVideoNote&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser DraftMessageContent)
+ -&gt; Value -&gt; Parser DraftMessageContent)
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679954658"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954658"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-109"></span><span>        </span><span id="local-6989586621679954659"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954659"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954658"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>
+</span><span id="line-110"></span><span>        </span><span id="local-6989586621679954660"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954660"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>           </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954658"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>
+</span><span id="line-111"></span><span>        </span><span id="local-6989586621679954661"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954661"><span class="hs-identifier hs-var">_length_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954658"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;length&quot;</span></span><span>
+</span><span id="line-112"></span><span>        </span><span id="local-6989586621679954662"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954662"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954658"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe MessageSelfDestructType)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span>
+</span><span id="line-113"></span><span>        </span><span class="annot"><span class="annottext">DraftMessageContent -&gt; Parser DraftMessageContent
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(DraftMessageContent -&gt; Parser DraftMessageContent)
+-&gt; DraftMessageContent -&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVideoNote"><span class="hs-identifier hs-type">DraftMessageContentVideoNote</span></a></span><span>
+</span><span id="line-114"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954659"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-115"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954660"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-116"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_length :: Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#_length"><span class="hs-identifier hs-var">_length</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954661"><span class="hs-identifier hs-var">_length_</span></a></span><span>
+</span><span id="line-117"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954662"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-118"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-119"></span><span>      </span><span class="annot"><a href="#local-6989586621679954650"><span class="hs-identifier hs-type">parseDraftMessageContentVoiceNote</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span><span>
+</span><span id="line-120"></span><span>      </span><span id="local-6989586621679954650"><span class="annot"><span class="annottext">parseDraftMessageContentVoiceNote :: Value -&gt; Parser DraftMessageContent
+</span><a href="#local-6989586621679954650"><span class="hs-identifier hs-var hs-var">parseDraftMessageContentVoiceNote</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;DraftMessageContentVoiceNote&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser DraftMessageContent)
+ -&gt; Value -&gt; Parser DraftMessageContent)
+-&gt; (Object -&gt; Parser DraftMessageContent)
+-&gt; Value
+-&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679954663"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954663"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-121"></span><span>        </span><span id="local-6989586621679954664"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954664"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954663"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>
+</span><span id="line-122"></span><span>        </span><span id="local-6989586621679954665"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954665"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>           </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954663"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>
+</span><span id="line-123"></span><span>        </span><span id="local-6989586621679954666"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954666"><span class="hs-identifier hs-var">waveform_</span></a></span></span><span>           </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; ByteString) -&gt; Maybe String -&gt; Maybe ByteString
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ByteString
+</span><a href="TD.Lib.Internal.html#readBytes"><span class="hs-identifier hs-var">I.readBytes</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe ByteString)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe ByteString)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954663"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;waveform&quot;</span></span><span>
+</span><span id="line-124"></span><span>        </span><span id="local-6989586621679954669"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954669"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954663"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe MessageSelfDestructType)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span>
+</span><span id="line-125"></span><span>        </span><span class="annot"><span class="annottext">DraftMessageContent -&gt; Parser DraftMessageContent
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(DraftMessageContent -&gt; Parser DraftMessageContent)
+-&gt; DraftMessageContent -&gt; Parser DraftMessageContent
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVoiceNote"><span class="hs-identifier hs-type">DraftMessageContentVoiceNote</span></a></span><span>
+</span><span id="line-126"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954664"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-127"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954665"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-128"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">waveform :: Maybe ByteString
+</span><a href="TD.Data.DraftMessageContent.html#waveform"><span class="hs-identifier hs-var">waveform</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954666"><span class="hs-identifier hs-var">waveform_</span></a></span><span>
+</span><span id="line-129"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954669"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-130"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-131"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser DraftMessageContent
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-132"></span><span>
+</span><span id="line-133"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679954672"><span id="local-6989586621679954676"><span id="local-6989586621679954679"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContent"><span class="hs-identifier hs-type">DraftMessageContent</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-134"></span><span>  </span><span id="local-6989586621679954750"><span class="annot"><span class="annottext">toJSON :: DraftMessageContent -&gt; Value
+</span><a href="#local-6989586621679954750"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentText"><span class="hs-identifier hs-type">DraftMessageContentText</span></a></span><span>
+</span><span id="line-135"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">text :: DraftMessageContent -&gt; Maybe FormattedText
+</span><a href="TD.Data.DraftMessageContent.html#text"><span class="hs-identifier hs-var">text</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954752"><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954752"><span class="hs-identifier hs-var">text_</span></a></span></span><span>
+</span><span id="line-136"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">link_preview_options :: DraftMessageContent -&gt; Maybe LinkPreviewOptions
+</span><a href="TD.Data.DraftMessageContent.html#link_preview_options"><span class="hs-identifier hs-var">link_preview_options</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954753"><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954753"><span class="hs-identifier hs-var">link_preview_options_</span></a></span></span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-138"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-139"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;draftMessageContentText&quot;</span></span><span>
+</span><span id="line-140"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;text&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Maybe FormattedText -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe FormattedText
+</span><a href="#local-6989586621679954752"><span class="hs-identifier hs-var">text_</span></a></span><span>
+</span><span id="line-141"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;link_preview_options&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe LinkPreviewOptions -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe LinkPreviewOptions
+</span><a href="#local-6989586621679954753"><span class="hs-identifier hs-var">link_preview_options_</span></a></span><span>
+</span><span id="line-142"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-143"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentRichMessage"><span class="hs-identifier hs-type">DraftMessageContentRichMessage</span></a></span><span>
+</span><span id="line-144"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">message :: DraftMessageContent -&gt; Maybe RichMessage
+</span><a href="TD.Data.DraftMessageContent.html#message"><span class="hs-identifier hs-var">message</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954757"><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954757"><span class="hs-identifier hs-var">message_</span></a></span></span><span>
+</span><span id="line-145"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-146"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-147"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;draftMessageContentRichMessage&quot;</span></span><span>
+</span><span id="line-148"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe RichMessage -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe RichMessage
+</span><a href="#local-6989586621679954757"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-149"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-150"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVideoNote"><span class="hs-identifier hs-type">DraftMessageContentVideoNote</span></a></span><span>
+</span><span id="line-151"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: DraftMessageContent -&gt; Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954758"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954758"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>
+</span><span id="line-152"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954759"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954759"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>
+</span><span id="line-153"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">_length :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#_length"><span class="hs-identifier hs-var">_length</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954760"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954760"><span class="hs-identifier hs-var">_length_</span></a></span></span><span>
+</span><span id="line-154"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: DraftMessageContent -&gt; Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954761"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954761"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span>
+</span><span id="line-155"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-156"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-157"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;draftMessageContentVideoNote&quot;</span></span><span>
+</span><span id="line-158"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954758"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-159"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954759"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-160"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;length&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954760"><span class="hs-identifier hs-var">_length_</span></a></span><span>
+</span><span id="line-161"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSelfDestructType -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954761"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-162"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-163"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.DraftMessageContent.html#DraftMessageContentVoiceNote"><span class="hs-identifier hs-type">DraftMessageContentVoiceNote</span></a></span><span>
+</span><span id="line-164"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">file_path :: DraftMessageContent -&gt; Maybe Text
+</span><a href="TD.Data.DraftMessageContent.html#file_path"><span class="hs-identifier hs-var">file_path</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954762"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954762"><span class="hs-identifier hs-var">file_path_</span></a></span></span><span>
+</span><span id="line-165"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">duration :: DraftMessageContent -&gt; Maybe Int
+</span><a href="TD.Data.DraftMessageContent.html#duration"><span class="hs-identifier hs-var">duration</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954763"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954763"><span class="hs-identifier hs-var">duration_</span></a></span></span><span>
+</span><span id="line-166"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">waveform :: DraftMessageContent -&gt; Maybe ByteString
+</span><a href="TD.Data.DraftMessageContent.html#waveform"><span class="hs-identifier hs-var">waveform</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954764"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954764"><span class="hs-identifier hs-var">waveform_</span></a></span></span><span>
+</span><span id="line-167"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">self_destruct_type :: DraftMessageContent -&gt; Maybe MessageSelfDestructType
+</span><a href="TD.Data.DraftMessageContent.html#self_destruct_type"><span class="hs-identifier hs-var">self_destruct_type</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954765"><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954765"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span></span><span>
+</span><span id="line-168"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-169"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-170"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;draftMessageContentVoiceNote&quot;</span></span><span>
+</span><span id="line-171"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;file_path&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954762"><span class="hs-identifier hs-var">file_path_</span></a></span><span>
+</span><span id="line-172"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;duration&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954763"><span class="hs-identifier hs-var">duration_</span></a></span><span>
+</span><span id="line-173"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;waveform&quot;</span></span><span>           </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Value) -&gt; Maybe ByteString -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeBytes"><span class="hs-identifier hs-var">I.writeBytes</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954764"><span class="hs-identifier hs-var">waveform_</span></a></span><span>
+</span><span id="line-174"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;self_destruct_type&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageSelfDestructType -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageSelfDestructType
+</span><a href="#local-6989586621679954765"><span class="hs-identifier hs-var">self_destruct_type_</span></a></span><span>
+</span><span id="line-175"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-176"></span><span>
+</span><span id="line-177"></span></pre></body></html>

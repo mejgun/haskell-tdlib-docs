@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.20.0
+@version 2.1.21.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -34,6 +34,86 @@ instance TD.Lib.Internal.ShortShow a => TD.Lib.Internal.ShortShow [a]
 instance Data.Hashable.Class.Hashable TD.Lib.Internal.Extra
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Lib.Internal.Extra
 
+module TD.Data.WebDomainException
+data WebDomainException
+
+-- | Describes an exception for built-in browser usage
+WebDomainException :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> WebDomainException
+
+-- | URL for which the exception is done
+[url] :: WebDomainException -> Maybe Text
+
+-- | Domain of the URL. All URLs on the domain and subdomains of the domain
+--   are subject to the exception
+[domain] :: WebDomainException -> Maybe Text
+
+-- | Title of the website
+[title] :: WebDomainException -> Maybe Text
+
+-- | Identifier of the custom emoji with favicon of the website; may be 0
+--   if unknown, in which case the first letter of the domain must be used
+[favicon_custom_emoji_id] :: WebDomainException -> Maybe Int
+instance GHC.Show.Show TD.Data.WebDomainException.WebDomainException
+instance GHC.Classes.Eq TD.Data.WebDomainException.WebDomainException
+instance TD.Lib.Internal.ShortShow TD.Data.WebDomainException.WebDomainException
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebDomainException.WebDomainException
+
+module TD.Data.WebBrowserType
+
+-- | Describes the type of web browser
+data WebBrowserType
+
+-- | An external web browser
+WebBrowserTypeExternal :: WebBrowserType
+
+-- | The in-app browser
+WebBrowserTypeInApp :: WebBrowserType
+instance GHC.Show.Show TD.Data.WebBrowserType.WebBrowserType
+instance GHC.Classes.Eq TD.Data.WebBrowserType.WebBrowserType
+instance TD.Lib.Internal.ShortShow TD.Data.WebBrowserType.WebBrowserType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebBrowserType.WebBrowserType
+
+module TD.Data.WebBrowserSettings
+data WebBrowserSettings
+
+-- | Describes web browser settings
+WebBrowserSettings :: Maybe Bool -> Maybe [WebDomainException] -> Maybe [WebDomainException] -> Maybe Bool -> WebBrowserSettings
+
+-- | True, if links are opened in an external browser by default
+[open_external_browser] :: WebBrowserSettings -> Maybe Bool
+
+-- | The list of websites which must always be opened in an external
+--   browser
+[external_exceptions] :: WebBrowserSettings -> Maybe [WebDomainException]
+
+-- | The list of websites which must always be opened in the in-app browser
+[in_app_exceptions] :: WebBrowserSettings -> Maybe [WebDomainException]
+
+-- | True, if a close button must be shown in the in-app browser; for
+--   Android app only
+[display_close_button] :: WebBrowserSettings -> Maybe Bool
+instance GHC.Show.Show TD.Data.WebBrowserSettings.WebBrowserSettings
+instance GHC.Classes.Eq TD.Data.WebBrowserSettings.WebBrowserSettings
+instance TD.Lib.Internal.ShortShow TD.Data.WebBrowserSettings.WebBrowserSettings
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebBrowserSettings.WebBrowserSettings
+
+module TD.Data.WebAppUrl
+data WebAppUrl
+
+-- | Contains information about a Web App URL
+WebAppUrl :: Maybe Text -> Maybe Bool -> WebAppUrl
+
+-- | The Web App URL to open in a web view
+[url] :: WebAppUrl -> Maybe Text
+
+-- | True, if events from the Web App must be accepted only from the same
+--   origin as the URL
+[require_same_origin] :: WebAppUrl -> Maybe Bool
+instance GHC.Show.Show TD.Data.WebAppUrl.WebAppUrl
+instance GHC.Classes.Eq TD.Data.WebAppUrl.WebAppUrl
+instance TD.Lib.Internal.ShortShow TD.Data.WebAppUrl.WebAppUrl
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppUrl.WebAppUrl
+
 module TD.Data.WebAppOpenMode
 
 -- | Describes mode in which a Web App is opened
@@ -57,13 +137,13 @@ module TD.Data.WebAppInfo
 data WebAppInfo
 
 -- | Contains information about a Web App
-WebAppInfo :: Maybe Int -> Maybe Text -> WebAppInfo
+WebAppInfo :: Maybe Int -> Maybe WebAppUrl -> WebAppInfo
 
 -- | Unique identifier for the Web App launch
 [launch_id] :: WebAppInfo -> Maybe Int
 
--- | A Web App URL to open in a web view
-[url] :: WebAppInfo -> Maybe Text
+-- | The Web App URL to open in a web view
+[url] :: WebAppInfo -> Maybe WebAppUrl
 instance GHC.Show.Show TD.Data.WebAppInfo.WebAppInfo
 instance GHC.Classes.Eq TD.Data.WebAppInfo.WebAppInfo
 instance TD.Lib.Internal.ShortShow TD.Data.WebAppInfo.WebAppInfo
@@ -153,7 +233,7 @@ UserTypeRegular :: UserType
 UserTypeDeleted :: UserType
 
 -- | A bot (see <a>https://core.telegram.org/bots)</a>
-UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
+UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
 
 -- | True, if the bot is owned by the current user and can be edited using
 --   the methods toggleBotUsernameIsActive, reorderBotActiveUsernames,
@@ -190,6 +270,9 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Boo
 
 -- | True, if the bot can be queried by username from any non-secret chat
 [supports_guest_queries] :: UserType -> Maybe Bool
+
+-- | True, if the bot can be set as a guard bot in supergroup chats
+[is_guard] :: UserType -> Maybe Bool
 
 -- | True, if the location of the user is expected to be sent with every
 --   inline query to this bot
@@ -664,30 +747,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.UpgradedGiftAttributeId.UpgradedGiftA
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.UpgradedGiftAttributeId.UpgradedGiftAttributeId
 
-module TD.Data.UnconfirmedSession
-data UnconfirmedSession
-
--- | Contains information about an unconfirmed session
-UnconfirmedSession :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> UnconfirmedSession
-
--- | Session identifier
-[_id] :: UnconfirmedSession -> Maybe Int
-
--- | Point in time (Unix timestamp) when the user has logged in
-[log_in_date] :: UnconfirmedSession -> Maybe Int
-
--- | Model of the device that was used for the session creation, as
---   provided by the application
-[device_model] :: UnconfirmedSession -> Maybe Text
-
--- | A human-readable description of the location from which the session
---   was created, based on the IP address
-[location] :: UnconfirmedSession -> Maybe Text
-instance GHC.Show.Show TD.Data.UnconfirmedSession.UnconfirmedSession
-instance GHC.Classes.Eq TD.Data.UnconfirmedSession.UnconfirmedSession
-instance TD.Lib.Internal.ShortShow TD.Data.UnconfirmedSession.UnconfirmedSession
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UnconfirmedSession.UnconfirmedSession
-
 module TD.Data.TransactionDirection
 
 -- | Describes direction of transactions in a transaction list
@@ -835,6 +894,7 @@ instance GHC.Show.Show TD.Data.ThumbnailFormat.ThumbnailFormat
 instance GHC.Classes.Eq TD.Data.ThumbnailFormat.ThumbnailFormat
 instance TD.Lib.Internal.ShortShow TD.Data.ThumbnailFormat.ThumbnailFormat
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ThumbnailFormat.ThumbnailFormat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ThumbnailFormat.ThumbnailFormat
 
 module TD.Data.ThemeParameters
 data ThemeParameters
@@ -2256,63 +2316,112 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SettingsSection.SettingsSection
 
 module TD.Data.SessionType
 
--- | Represents the type of session
+-- | Describes type of user session
 data SessionType
 
--- | The session is running on an Android device
-SessionTypeAndroid :: SessionType
+-- | A regular session from a device
+SessionTypeDevice :: Maybe Int -> SessionType
 
--- | The session is running on a generic Apple device
-SessionTypeApple :: SessionType
+-- | Unique identifier of the session. Use terminateSession to terminate it
+--   or confirmSession to confirm it if it isn't confirmed yet
+[session_id] :: SessionType -> Maybe Int
 
--- | The session is running on the Brave browser
-SessionTypeBrave :: SessionType
+-- | A business bot connected to the current user's account
+SessionTypeConnectedBot :: Maybe Int -> SessionType
 
--- | The session is running on the Chrome browser
-SessionTypeChrome :: SessionType
-
--- | The session is running on the Edge browser
-SessionTypeEdge :: SessionType
-
--- | The session is running on the Firefox browser
-SessionTypeFirefox :: SessionType
-
--- | The session is running on an iPad device
-SessionTypeIpad :: SessionType
-
--- | The session is running on an iPhone device
-SessionTypeIphone :: SessionType
-
--- | The session is running on a Linux device
-SessionTypeLinux :: SessionType
-
--- | The session is running on a Mac device
-SessionTypeMac :: SessionType
-
--- | The session is running on the Opera browser
-SessionTypeOpera :: SessionType
-
--- | The session is running on the Safari browser
-SessionTypeSafari :: SessionType
-
--- | The session is running on an Ubuntu device
-SessionTypeUbuntu :: SessionType
-
--- | The session is running on an unknown type of device
-SessionTypeUnknown :: SessionType
-
--- | The session is running on the Vivaldi browser
-SessionTypeVivaldi :: SessionType
-
--- | The session is running on a Windows device
-SessionTypeWindows :: SessionType
-
--- | The session is running on an Xbox console
-SessionTypeXbox :: SessionType
+-- | User identifier of the bot. Use deleteBusinessConnectedBot to remove
+--   it or confirmBusinessConnectedBot to confirm it if it isn't confirmed
+--   yet
+[bot_user_id] :: SessionType -> Maybe Int
 instance GHC.Show.Show TD.Data.SessionType.SessionType
 instance GHC.Classes.Eq TD.Data.SessionType.SessionType
 instance TD.Lib.Internal.ShortShow TD.Data.SessionType.SessionType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SessionType.SessionType
+
+module TD.Data.UnconfirmedSession
+data UnconfirmedSession
+
+-- | Contains information about an unconfirmed session
+UnconfirmedSession :: Maybe SessionType -> Maybe Int -> Maybe Text -> Maybe Text -> UnconfirmedSession
+
+-- | Session type
+[_type] :: UnconfirmedSession -> Maybe SessionType
+
+-- | Point in time (Unix timestamp) when the user has logged in or the
+--   business bot was connected
+[date] :: UnconfirmedSession -> Maybe Int
+
+-- | Model of the device that was used for the session creation, as
+--   provided by the application
+[device_model] :: UnconfirmedSession -> Maybe Text
+
+-- | A human-readable description of the location from which the session
+--   was created, based on the IP address
+[location] :: UnconfirmedSession -> Maybe Text
+instance GHC.Show.Show TD.Data.UnconfirmedSession.UnconfirmedSession
+instance GHC.Classes.Eq TD.Data.UnconfirmedSession.UnconfirmedSession
+instance TD.Lib.Internal.ShortShow TD.Data.UnconfirmedSession.UnconfirmedSession
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UnconfirmedSession.UnconfirmedSession
+
+module TD.Data.SessionDeviceType
+
+-- | Represents the type of device from which session was created
+data SessionDeviceType
+
+-- | The session is running on an Android device
+SessionDeviceTypeAndroid :: SessionDeviceType
+
+-- | The session is running on a generic Apple device
+SessionDeviceTypeApple :: SessionDeviceType
+
+-- | The session is running on the Brave browser
+SessionDeviceTypeBrave :: SessionDeviceType
+
+-- | The session is running on the Chrome browser
+SessionDeviceTypeChrome :: SessionDeviceType
+
+-- | The session is running on the Edge browser
+SessionDeviceTypeEdge :: SessionDeviceType
+
+-- | The session is running on the Firefox browser
+SessionDeviceTypeFirefox :: SessionDeviceType
+
+-- | The session is running on an iPad device
+SessionDeviceTypeIpad :: SessionDeviceType
+
+-- | The session is running on an iPhone device
+SessionDeviceTypeIphone :: SessionDeviceType
+
+-- | The session is running on a Linux device
+SessionDeviceTypeLinux :: SessionDeviceType
+
+-- | The session is running on a Mac device
+SessionDeviceTypeMac :: SessionDeviceType
+
+-- | The session is running on the Opera browser
+SessionDeviceTypeOpera :: SessionDeviceType
+
+-- | The session is running on the Safari browser
+SessionDeviceTypeSafari :: SessionDeviceType
+
+-- | The session is running on an Ubuntu device
+SessionDeviceTypeUbuntu :: SessionDeviceType
+
+-- | The session is running on an unknown type of device
+SessionDeviceTypeUnknown :: SessionDeviceType
+
+-- | The session is running on the Vivaldi browser
+SessionDeviceTypeVivaldi :: SessionDeviceType
+
+-- | The session is running on a Windows device
+SessionDeviceTypeWindows :: SessionDeviceType
+
+-- | The session is running on an Xbox console
+SessionDeviceTypeXbox :: SessionDeviceType
+instance GHC.Show.Show TD.Data.SessionDeviceType.SessionDeviceType
+instance GHC.Classes.Eq TD.Data.SessionDeviceType.SessionDeviceType
+instance TD.Lib.Internal.ShortShow TD.Data.SessionDeviceType.SessionDeviceType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SessionDeviceType.SessionDeviceType
 
 module TD.Data.Session
 data Session
@@ -2320,7 +2429,7 @@ data Session
 -- | Contains information about one session in a Telegram application used
 --   by the current user. Sessions must be shown to the user in the
 --   returned order
-Session :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe SessionType -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Session
+Session :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe SessionDeviceType -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Session
 
 -- | Session identifier
 [_id] :: Session -> Maybe Int
@@ -2341,9 +2450,9 @@ Session :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> 
 -- | True, if incoming calls can be accepted by the session
 [can_accept_calls] :: Session -> Maybe Bool
 
--- | Session type based on the system and application version, which can be
---   used to display a corresponding icon
-[_type] :: Session -> Maybe SessionType
+-- | Session device type based on the system and application version, which
+--   can be used to display a corresponding icon
+[device_type] :: Session -> Maybe SessionDeviceType
 
 -- | Telegram API identifier, as provided by the application
 [api_id] :: Session -> Maybe Int
@@ -2553,7 +2662,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SearchMessagesFilter.SearchMessa
 
 module TD.Data.SearchMessagesChatTypeFilter
 
--- | Represents a filter for type of the chats in which to search messages
+-- | Represents a filter for type of the chats in which to search for
+--   messages
 data SearchMessagesChatTypeFilter
 
 -- | Returns only messages in private chats
@@ -2569,6 +2679,22 @@ instance GHC.Classes.Eq TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatT
 instance TD.Lib.Internal.ShortShow TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
+
+module TD.Data.SearchChatTypeFilter
+
+-- | Represents a filter for type of the chats to search for
+data SearchChatTypeFilter
+
+-- | Returns only private chats with bots
+SearchChatTypeFilterBot :: SearchChatTypeFilter
+
+-- | Returns only channel chats
+SearchChatTypeFilterChannel :: SearchChatTypeFilter
+instance GHC.Show.Show TD.Data.SearchChatTypeFilter.SearchChatTypeFilter
+instance GHC.Classes.Eq TD.Data.SearchChatTypeFilter.SearchChatTypeFilter
+instance TD.Lib.Internal.ShortShow TD.Data.SearchChatTypeFilter.SearchChatTypeFilter
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SearchChatTypeFilter.SearchChatTypeFilter
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SearchChatTypeFilter.SearchChatTypeFilter
 
 module TD.Data.ScopeNotificationSettings
 data ScopeNotificationSettings
@@ -2690,6 +2816,28 @@ instance GHC.Show.Show TD.Data.RtmpUrl.RtmpUrl
 instance GHC.Classes.Eq TD.Data.RtmpUrl.RtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Data.RtmpUrl.RtmpUrl
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RtmpUrl.RtmpUrl
+
+module TD.Data.RichMessageSource
+
+-- | Describes source of a rich message
+data RichMessageSource
+
+-- | A Markdown-formatted rich message; for bots only
+RichMessageSourceMarkdown :: Maybe Text -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+
+-- | An HTML-formatted rich message; for bots only
+RichMessageSourceHtml :: Maybe Text -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+instance GHC.Show.Show TD.Data.RichMessageSource.RichMessageSource
+instance GHC.Classes.Eq TD.Data.RichMessageSource.RichMessageSource
+instance TD.Lib.Internal.ShortShow TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessageSource.RichMessageSource
 
 module TD.Data.RevenueWithdrawalState
 
@@ -2974,10 +3122,12 @@ RemoteFile :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Int 
 
 -- | Size of the remote available part of the file, in bytes; 0 if unknown
 [uploaded_size] :: RemoteFile -> Maybe Int
+defaultRemoteFile :: RemoteFile
 instance GHC.Show.Show TD.Data.RemoteFile.RemoteFile
 instance GHC.Classes.Eq TD.Data.RemoteFile.RemoteFile
 instance TD.Lib.Internal.ShortShow TD.Data.RemoteFile.RemoteFile
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RemoteFile.RemoteFile
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RemoteFile.RemoteFile
 
 module TD.Data.RecoveryEmailAddress
 data RecoveryEmailAddress
@@ -3423,6 +3573,9 @@ PremiumLimitTypePinnedArchivedChatCount :: PremiumLimitType
 
 -- | The maximum number of pinned Saved Messages topics
 PremiumLimitTypePinnedSavedMessagesTopicCount :: PremiumLimitType
+
+-- | The maximum length of text of sent messages
+PremiumLimitTypeMessageTextLength :: PremiumLimitType
 
 -- | The maximum length of sent media caption
 PremiumLimitTypeCaptionLength :: PremiumLimitType
@@ -4108,6 +4261,7 @@ instance GHC.Show.Show TD.Data.PageBlockVerticalAlignment.PageBlockVerticalAlign
 instance GHC.Classes.Eq TD.Data.PageBlockVerticalAlignment.PageBlockVerticalAlignment
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockVerticalAlignment.PageBlockVerticalAlignment
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockVerticalAlignment.PageBlockVerticalAlignment
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockVerticalAlignment.PageBlockVerticalAlignment
 
 module TD.Data.PageBlockHorizontalAlignment
 
@@ -4126,22 +4280,40 @@ instance GHC.Show.Show TD.Data.PageBlockHorizontalAlignment.PageBlockHorizontalA
 instance GHC.Classes.Eq TD.Data.PageBlockHorizontalAlignment.PageBlockHorizontalAlignment
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockHorizontalAlignment.PageBlockHorizontalAlignment
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockHorizontalAlignment.PageBlockHorizontalAlignment
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockHorizontalAlignment.PageBlockHorizontalAlignment
 
 module TD.Data.PageBlockListItem
 data PageBlockListItem
 
 -- | Describes an item of a list page block
-PageBlockListItem :: Maybe Text -> Maybe [PageBlock] -> PageBlockListItem
+PageBlockListItem :: Maybe Text -> Maybe [PageBlock] -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> PageBlockListItem
 
 -- | Item label
 [label] :: PageBlockListItem -> Maybe Text
 
 -- | Item blocks
-[page_blocks] :: PageBlockListItem -> Maybe [PageBlock]
+[blocks] :: PageBlockListItem -> Maybe [PageBlock]
+
+-- | True, if the item has a checkbox
+[has_checkbox] :: PageBlockListItem -> Maybe Bool
+
+-- | True, if the item is checked
+[is_checked] :: PageBlockListItem -> Maybe Bool
+
+-- | Value of the item; 0 for unordered lists
+[value] :: PageBlockListItem -> Maybe Int
+
+-- | Type of the item numbering type; must be one of "a" for a lowercase
+--   letters, <a>A</a> for an uppercase letters, "i" for lowercase Roman
+--   numerals, <a>I</a> for uppercase Roman numerals, "1" for decimal
+--   numbers, or empty for unordered lists
+[_type] :: PageBlockListItem -> Maybe Text
+defaultPageBlockListItem :: PageBlockListItem
 instance GHC.Show.Show TD.Data.PageBlockListItem.PageBlockListItem
 instance GHC.Classes.Eq TD.Data.PageBlockListItem.PageBlockListItem
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockListItem.PageBlockListItem
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockListItem.PageBlockListItem
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockListItem.PageBlockListItem
 
 module TD.Data.OptionValue
 
@@ -4359,10 +4531,12 @@ Minithumbnail :: Maybe Int -> Maybe Int -> Maybe ByteString -> Minithumbnail
 
 -- | The thumbnail in JPEG format
 [_data] :: Minithumbnail -> Maybe ByteString
+defaultMinithumbnail :: Minithumbnail
 instance GHC.Show.Show TD.Data.Minithumbnail.Minithumbnail
 instance GHC.Classes.Eq TD.Data.Minithumbnail.Minithumbnail
 instance TD.Lib.Internal.ShortShow TD.Data.Minithumbnail.Minithumbnail
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Minithumbnail.Minithumbnail
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Minithumbnail.Minithumbnail
 
 module TD.Data.MessageViewer
 data MessageViewer
@@ -5320,10 +5494,10 @@ module TD.Data.MainWebApp
 data MainWebApp
 
 -- | Contains information about the main Web App of a bot
-MainWebApp :: Maybe Text -> Maybe WebAppOpenMode -> MainWebApp
+MainWebApp :: Maybe WebAppUrl -> Maybe WebAppOpenMode -> MainWebApp
 
 -- | URL of the Web App to open
-[url] :: MainWebApp -> Maybe Text
+[url] :: MainWebApp -> Maybe WebAppUrl
 
 -- | The mode in which the Web App must be opened
 [mode] :: MainWebApp -> Maybe WebAppOpenMode
@@ -5626,10 +5800,12 @@ LocalFile :: Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 --   download progress. The actual file size may be bigger, and some parts
 --   of it may contain garbage
 [downloaded_size] :: LocalFile -> Maybe Int
+defaultLocalFile :: LocalFile
 instance GHC.Show.Show TD.Data.LocalFile.LocalFile
 instance GHC.Classes.Eq TD.Data.LocalFile.LocalFile
 instance TD.Lib.Internal.ShortShow TD.Data.LocalFile.LocalFile
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LocalFile.LocalFile
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.LocalFile.LocalFile
 
 module TD.Data.LiveStoryDonors
 data LiveStoryDonors
@@ -5647,6 +5823,36 @@ instance GHC.Show.Show TD.Data.LiveStoryDonors.LiveStoryDonors
 instance GHC.Classes.Eq TD.Data.LiveStoryDonors.LiveStoryDonors
 instance TD.Lib.Internal.ShortShow TD.Data.LiveStoryDonors.LiveStoryDonors
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LiveStoryDonors.LiveStoryDonors
+
+module TD.Data.LiveLocation
+data LiveLocation
+
+-- | A live location
+LiveLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> LiveLocation
+
+-- | The current location
+[location] :: LiveLocation -> Maybe Location
+
+-- | Time relative to the message send date, for which the location can be
+--   updated, in seconds; if 0x7FFFFFFF, then location can be updated
+--   forever
+[live_period] :: LiveLocation -> Maybe Int
+
+-- | The direction in which the location moves, in degrees; 1-360; 0 if
+--   unknown
+[heading] :: LiveLocation -> Maybe Int
+
+-- | The maximum distance to another chat member for proximity alerts, in
+--   meters (0-100000). 0 if the notification is disabled. Can't be enabled
+--   in direct messages chats, channels and Saved Messages. Available only
+--   to the message sender
+[proximity_alert_radius] :: LiveLocation -> Maybe Int
+defaultLiveLocation :: LiveLocation
+instance GHC.Show.Show TD.Data.LiveLocation.LiveLocation
+instance GHC.Classes.Eq TD.Data.LiveLocation.LiveLocation
+instance TD.Lib.Internal.ShortShow TD.Data.LiveLocation.LiveLocation
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LiveLocation.LiveLocation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.LiveLocation.LiveLocation
 
 module TD.Data.LinkPreviewOptions
 data LinkPreviewOptions
@@ -6323,6 +6529,28 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputStoryAreas.InputStoryAreas
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputStoryAreas.InputStoryAreas
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputStoryAreas.InputStoryAreas
 
+module TD.Data.InputRichMessage
+data InputRichMessage
+
+-- | A rich message to send
+InputRichMessage :: Maybe RichMessageSource -> Maybe Bool -> Maybe Bool -> InputRichMessage
+
+-- | Source of the rich message
+[source] :: InputRichMessage -> Maybe RichMessageSource
+
+-- | Pass true if the message must be shown from right to left
+[is_rtl] :: InputRichMessage -> Maybe Bool
+
+-- | Pass true to enable detection of URLs, email addresses and other
+--   automatic blocks
+[detect_automatic_blocks] :: InputRichMessage -> Maybe Bool
+defaultInputRichMessage :: InputRichMessage
+instance GHC.Show.Show TD.Data.InputRichMessage.InputRichMessage
+instance GHC.Classes.Eq TD.Data.InputRichMessage.InputRichMessage
+instance TD.Lib.Internal.ShortShow TD.Data.InputRichMessage.InputRichMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputRichMessage.InputRichMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputRichMessage.InputRichMessage
+
 module TD.Data.InputPassportElementErrorSource
 
 -- | Contains the description of an error in a Telegram Passport element;
@@ -6525,6 +6753,47 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputThumbnail.InputThumbnail
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputThumbnail.InputThumbnail
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputThumbnail.InputThumbnail
 
+module TD.Data.InputVideo
+data InputVideo
+
+-- | A video to be sent
+InputVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe InputFile -> Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> InputVideo
+
+-- | Video file to be sent. The video is expected to be re-encoded to MPEG4
+--   format with H.264 codec by the sender
+[video] :: InputVideo -> Maybe InputFile
+
+-- | Video thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputVideo -> Maybe InputThumbnail
+
+-- | Cover of the video; pass null to skip cover uploading; not supported
+--   in secret chats and for self-destructing messages
+[cover] :: InputVideo -> Maybe InputFile
+
+-- | Timestamp from which the video playing must start, in seconds
+[start_timestamp] :: InputVideo -> Maybe Int
+
+-- | File identifiers of the stickers added to the video, if applicable
+[added_sticker_file_ids] :: InputVideo -> Maybe [Int]
+
+-- | Duration of the video, in seconds
+[duration] :: InputVideo -> Maybe Int
+
+-- | Video width
+[width] :: InputVideo -> Maybe Int
+
+-- | Video height
+[height] :: InputVideo -> Maybe Int
+
+-- | True, if the video is expected to be streamed
+[supports_streaming] :: InputVideo -> Maybe Bool
+defaultInputVideo :: InputVideo
+instance GHC.Show.Show TD.Data.InputVideo.InputVideo
+instance GHC.Classes.Eq TD.Data.InputVideo.InputVideo
+instance TD.Lib.Internal.ShortShow TD.Data.InputVideo.InputVideo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputVideo.InputVideo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputVideo.InputVideo
+
 module TD.Data.InputStoryContent
 
 -- | The content of a story to post
@@ -6596,6 +6865,40 @@ instance GHC.Classes.Eq TD.Data.InputSticker.InputSticker
 instance TD.Lib.Internal.ShortShow TD.Data.InputSticker.InputSticker
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputSticker.InputSticker
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputSticker.InputSticker
+
+module TD.Data.InputPhoto
+data InputPhoto
+
+-- | A photo to be sent
+InputPhoto :: Maybe InputFile -> Maybe InputThumbnail -> Maybe InputFile -> Maybe [Int] -> Maybe Int -> Maybe Int -> InputPhoto
+
+-- | Photo to be sent. The photo must be at most 10 MB in size. The photo's
+--   width and height must not exceed 10000 in total. Width and height
+--   ratio must be at most 20
+[photo] :: InputPhoto -> Maybe InputFile
+
+-- | Photo thumbnail; pass null to skip thumbnail uploading. The thumbnail
+--   is sent to the other party only in secret chats
+[thumbnail] :: InputPhoto -> Maybe InputThumbnail
+
+-- | Video of the live photo; not supported in secret chats; pass null if
+--   the photo isn't a live photo
+[video] :: InputPhoto -> Maybe InputFile
+
+-- | File identifiers of the stickers added to the photo, if applicable
+[added_sticker_file_ids] :: InputPhoto -> Maybe [Int]
+
+-- | Photo width; may be replaced by the server
+[width] :: InputPhoto -> Maybe Int
+
+-- | Photo height; may be replaced by the server
+[height] :: InputPhoto -> Maybe Int
+defaultInputPhoto :: InputPhoto
+instance GHC.Show.Show TD.Data.InputPhoto.InputPhoto
+instance GHC.Classes.Eq TD.Data.InputPhoto.InputPhoto
+instance TD.Lib.Internal.ShortShow TD.Data.InputPhoto.InputPhoto
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPhoto.InputPhoto
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPhoto.InputPhoto
 
 module TD.Data.InputPersonalDocument
 data InputPersonalDocument
@@ -6678,6 +6981,28 @@ instance GHC.Classes.Eq TD.Data.InputPaidMedia.InputPaidMedia
 instance TD.Lib.Internal.ShortShow TD.Data.InputPaidMedia.InputPaidMedia
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPaidMedia.InputPaidMedia
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPaidMedia.InputPaidMedia
+
+module TD.Data.InputDocument
+data InputDocument
+
+-- | A document (general file) to be sent
+InputDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool -> InputDocument
+
+-- | File to be sent
+[document] :: InputDocument -> Maybe InputFile
+
+-- | Document thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputDocument -> Maybe InputThumbnail
+
+-- | Pass true to disable automatic file type detection and send the
+--   document as a file. Always true for files sent to secret chats
+[disable_content_type_detection] :: InputDocument -> Maybe Bool
+defaultInputDocument :: InputDocument
+instance GHC.Show.Show TD.Data.InputDocument.InputDocument
+instance GHC.Classes.Eq TD.Data.InputDocument.InputDocument
+instance TD.Lib.Internal.ShortShow TD.Data.InputDocument.InputDocument
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputDocument.InputDocument
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputDocument.InputDocument
 
 module TD.Data.InputCredentials
 
@@ -6822,6 +7147,137 @@ instance GHC.Classes.Eq TD.Data.InputBackground.InputBackground
 instance TD.Lib.Internal.ShortShow TD.Data.InputBackground.InputBackground
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputBackground.InputBackground
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputBackground.InputBackground
+
+module TD.Data.InputAudio
+data InputAudio
+
+-- | An audio to be sent
+InputAudio :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Text -> Maybe Text -> InputAudio
+
+-- | Audio file to be sent
+[audio] :: InputAudio -> Maybe InputFile
+
+-- | Thumbnail of the cover for the album; pass null to skip thumbnail
+--   uploading
+[album_cover_thumbnail] :: InputAudio -> Maybe InputThumbnail
+
+-- | Duration of the audio, in seconds; may be replaced by the server
+[duration] :: InputAudio -> Maybe Int
+
+-- | Title of the audio; 0-64 characters; may be replaced by the server
+[title] :: InputAudio -> Maybe Text
+
+-- | Performer of the audio; 0-64 characters, may be replaced by the server
+[performer] :: InputAudio -> Maybe Text
+defaultInputAudio :: InputAudio
+instance GHC.Show.Show TD.Data.InputAudio.InputAudio
+instance GHC.Classes.Eq TD.Data.InputAudio.InputAudio
+instance TD.Lib.Internal.ShortShow TD.Data.InputAudio.InputAudio
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputAudio.InputAudio
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputAudio.InputAudio
+
+module TD.Data.InputAnimation
+data InputAnimation
+
+-- | An animation to be sent
+InputAnimation :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> InputAnimation
+
+-- | Animation file to be sent
+[animation] :: InputAnimation -> Maybe InputFile
+
+-- | Animation thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputAnimation -> Maybe InputThumbnail
+
+-- | File identifiers of the stickers added to the animation, if applicable
+[added_sticker_file_ids] :: InputAnimation -> Maybe [Int]
+
+-- | Duration of the animation, in seconds; may be replaced by the server
+[duration] :: InputAnimation -> Maybe Int
+
+-- | Width of the animation; may be replaced by the server
+[width] :: InputAnimation -> Maybe Int
+
+-- | Height of the animation; may be replaced by the server
+[height] :: InputAnimation -> Maybe Int
+defaultInputAnimation :: InputAnimation
+instance GHC.Show.Show TD.Data.InputAnimation.InputAnimation
+instance GHC.Classes.Eq TD.Data.InputAnimation.InputAnimation
+instance TD.Lib.Internal.ShortShow TD.Data.InputAnimation.InputAnimation
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputAnimation.InputAnimation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputAnimation.InputAnimation
+
+module TD.Data.InputPollMedia
+
+-- | The content of a poll media to send
+data InputPollMedia
+
+-- | An animation
+InputPollMediaAnimation :: Maybe InputAnimation -> InputPollMedia
+
+-- | The animation to be sent
+[animation] :: InputPollMedia -> Maybe InputAnimation
+
+-- | An audio
+InputPollMediaAudio :: Maybe InputAudio -> InputPollMedia
+
+-- | The audio to be sent
+[audio] :: InputPollMedia -> Maybe InputAudio
+
+-- | A document (general file)
+InputPollMediaDocument :: Maybe InputDocument -> InputPollMedia
+
+-- | The document to be sent
+[document] :: InputPollMedia -> Maybe InputDocument
+
+-- | A link
+InputPollMediaLink :: Maybe Text -> InputPollMedia
+
+-- | URL of the link
+[url] :: InputPollMedia -> Maybe Text
+
+-- | A location
+InputPollMediaLocation :: Maybe Location -> InputPollMedia
+
+-- | Location to be sent
+[location] :: InputPollMedia -> Maybe Location
+
+-- | A photo
+InputPollMediaPhoto :: Maybe InputPhoto -> InputPollMedia
+
+-- | Photo to be sent
+[photo] :: InputPollMedia -> Maybe InputPhoto
+
+-- | A sticker
+InputPollMediaSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> InputPollMedia
+
+-- | Sticker to be sent
+[sticker] :: InputPollMedia -> Maybe InputFile
+
+-- | Sticker thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputPollMedia -> Maybe InputThumbnail
+
+-- | Sticker width
+[width] :: InputPollMedia -> Maybe Int
+
+-- | Sticker height
+[height] :: InputPollMedia -> Maybe Int
+
+-- | A venue
+InputPollMediaVenue :: Maybe Venue -> InputPollMedia
+
+-- | Venue to send
+[venue] :: InputPollMedia -> Maybe Venue
+
+-- | A video
+InputPollMediaVideo :: Maybe InputVideo -> InputPollMedia
+
+-- | The video to be sent
+[video] :: InputPollMedia -> Maybe InputVideo
+instance GHC.Show.Show TD.Data.InputPollMedia.InputPollMedia
+instance GHC.Classes.Eq TD.Data.InputPollMedia.InputPollMedia
+instance TD.Lib.Internal.ShortShow TD.Data.InputPollMedia.InputPollMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPollMedia.InputPollMedia
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPollMedia.InputPollMedia
 
 module TD.Data.InlineQueryResultsButtonType
 
@@ -8383,10 +8839,12 @@ File :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe LocalFile -> Maybe RemoteFi
 
 -- | Information about the remote copy of the file
 [remote] :: File -> Maybe RemoteFile
+defaultFile :: File
 instance GHC.Show.Show TD.Data.File.File
 instance GHC.Classes.Eq TD.Data.File.File
 instance TD.Lib.Internal.ShortShow TD.Data.File.File
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.File.File
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.File.File
 
 module TD.Data.VideoStoryboard
 data VideoStoryboard
@@ -8428,10 +8886,12 @@ Thumbnail :: Maybe ThumbnailFormat -> Maybe Int -> Maybe Int -> Maybe File -> Th
 
 -- | The thumbnail
 [file] :: Thumbnail -> Maybe File
+defaultThumbnail :: Thumbnail
 instance GHC.Show.Show TD.Data.Thumbnail.Thumbnail
 instance GHC.Classes.Eq TD.Data.Thumbnail.Thumbnail
 instance TD.Lib.Internal.ShortShow TD.Data.Thumbnail.Thumbnail
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Thumbnail.Thumbnail
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Thumbnail.Thumbnail
 
 module TD.Data.Video
 data Video
@@ -8470,10 +8930,12 @@ Video :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Mayb
 
 -- | File containing the video
 [video] :: Video -> Maybe File
+defaultVideo :: Video
 instance GHC.Show.Show TD.Data.Video.Video
 instance GHC.Classes.Eq TD.Data.Video.Video
 instance TD.Lib.Internal.ShortShow TD.Data.Video.Video
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Video.Video
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Video.Video
 
 module TD.Data.StoryVideo
 data StoryVideo
@@ -8984,10 +9446,12 @@ PhotoSize :: Maybe Text -> Maybe File -> Maybe Int -> Maybe Int -> Maybe [Int] -
 -- | Sizes of progressive JPEG file prefixes, which can be used to
 --   preliminarily show the image; in bytes
 [progressive_sizes] :: PhotoSize -> Maybe [Int]
+defaultPhotoSize :: PhotoSize
 instance GHC.Show.Show TD.Data.PhotoSize.PhotoSize
 instance GHC.Classes.Eq TD.Data.PhotoSize.PhotoSize
 instance TD.Lib.Internal.ShortShow TD.Data.PhotoSize.PhotoSize
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PhotoSize.PhotoSize
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PhotoSize.PhotoSize
 
 module TD.Data.Photo
 data Photo
@@ -9004,10 +9468,12 @@ Photo :: Maybe Bool -> Maybe Minithumbnail -> Maybe [PhotoSize] -> Photo
 
 -- | Available variants of the photo, in different sizes
 [sizes] :: Photo -> Maybe [PhotoSize]
+defaultPhoto :: Photo
 instance GHC.Show.Show TD.Data.Photo.Photo
 instance GHC.Classes.Eq TD.Data.Photo.Photo
 instance TD.Lib.Internal.ShortShow TD.Data.Photo.Photo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Photo.Photo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Photo.Photo
 
 module TD.Data.StoryContent
 
@@ -9297,10 +9763,12 @@ PageBlockRelatedArticle :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Photo
 -- | Point in time (Unix timestamp) when the article was published; 0 if
 --   unknown
 [publish_date] :: PageBlockRelatedArticle -> Maybe Int
+defaultPageBlockRelatedArticle :: PageBlockRelatedArticle
 instance GHC.Show.Show TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance GHC.Classes.Eq TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockRelatedArticle.PageBlockRelatedArticle
 
 module TD.Data.LinkPreviewAlbumMedia
 
@@ -9446,6 +9914,7 @@ instance GHC.Show.Show TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
 instance GHC.Classes.Eq TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
 instance TD.Lib.Internal.ShortShow TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.SpeechRecognitionResult.SpeechRecognitionResult
 
 module TD.Data.VoiceNote
 data VoiceNote
@@ -9469,10 +9938,12 @@ VoiceNote :: Maybe Int -> Maybe ByteString -> Maybe Text -> Maybe SpeechRecognit
 
 -- | File containing the voice note
 [voice] :: VoiceNote -> Maybe File
+defaultVoiceNote :: VoiceNote
 instance GHC.Show.Show TD.Data.VoiceNote.VoiceNote
 instance GHC.Classes.Eq TD.Data.VoiceNote.VoiceNote
 instance TD.Lib.Internal.ShortShow TD.Data.VoiceNote.VoiceNote
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.VoiceNote.VoiceNote
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.VoiceNote.VoiceNote
 
 module TD.Data.VideoNote
 data VideoNote
@@ -9964,200 +10435,12 @@ Document :: Maybe Text -> Maybe Text -> Maybe Minithumbnail -> Maybe Thumbnail -
 
 -- | File containing the document
 [document] :: Document -> Maybe File
+defaultDocument :: Document
 instance GHC.Show.Show TD.Data.Document.Document
 instance GHC.Classes.Eq TD.Data.Document.Document
 instance TD.Lib.Internal.ShortShow TD.Data.Document.Document
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Document.Document
-
-module TD.Data.RichText
-
--- | Describes a formatted text object
-data RichText
-
--- | A plain text
-RichTextPlain :: Maybe Text -> RichText
-
--- | Text
-[text] :: RichText -> Maybe Text
-
--- | A bold rich text
-RichTextBold :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | An italicized rich text
-RichTextItalic :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | An underlined rich text
-RichTextUnderline :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A strikethrough rich text
-RichTextStrikethrough :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A fixed-width rich text
-RichTextFixed :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A rich text URL link
-RichTextUrl :: Maybe RichText -> Maybe Text -> Maybe Bool -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | URL
-[url] :: RichText -> Maybe Text
-
--- | True, if the URL has cached instant view server-side
-[is_cached] :: RichText -> Maybe Bool
-
--- | A rich text email link
-RichTextEmailAddress :: Maybe RichText -> Maybe Text -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | Email address
-[email_address] :: RichText -> Maybe Text
-
--- | A subscript rich text
-RichTextSubscript :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A superscript rich text
-RichTextSuperscript :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A marked rich text
-RichTextMarked :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A rich text phone number
-RichTextPhoneNumber :: Maybe RichText -> Maybe Text -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | Phone number
-[phone_number] :: RichText -> Maybe Text
-
--- | A small image inside the text
-RichTextIcon :: Maybe Document -> Maybe Int -> Maybe Int -> RichText
-
--- | The image represented as a document. The image can be in GIF, JPEG or
---   PNG format
-[document] :: RichText -> Maybe Document
-
--- | Width of a bounding box in which the image must be shown; 0 if unknown
-[width] :: RichText -> Maybe Int
-
--- | Height of a bounding box in which the image must be shown; 0 if
---   unknown
-[height] :: RichText -> Maybe Int
-
--- | A reference to a richTexts object on the same page
-RichTextReference :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | The name of a richTextAnchor object, which is the first element of the
---   target richTexts object
-[anchor_name] :: RichText -> Maybe Text
-
--- | URL
-[url] :: RichText -> Maybe Text
-
--- | An anchor
-RichTextAnchor :: Maybe Text -> RichText
-
--- | Anchor name
-[name] :: RichText -> Maybe Text
-
--- | A link to an anchor on the same page
-RichTextAnchorLink :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | The name of a richTextAnchor object, which is the first element of the
---   target richTexts object
-[anchor_name] :: RichText -> Maybe Text
-
--- | URL
-[url] :: RichText -> Maybe Text
-
--- | A concatenation of rich texts
-RichTexts :: Maybe [RichText] -> RichText
-
--- | Texts
-[texts] :: RichText -> Maybe [RichText]
-instance GHC.Show.Show TD.Data.RichText.RichText
-instance GHC.Classes.Eq TD.Data.RichText.RichText
-instance TD.Lib.Internal.ShortShow TD.Data.RichText.RichText
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichText.RichText
-
-module TD.Data.PageBlockTableCell
-data PageBlockTableCell
-
--- | Represents a cell of a table
-PageBlockTableCell :: Maybe RichText -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe PageBlockHorizontalAlignment -> Maybe PageBlockVerticalAlignment -> PageBlockTableCell
-
--- | Cell text; may be null. If the text is null, then the cell must be
---   invisible
-[text] :: PageBlockTableCell -> Maybe RichText
-
--- | True, if it is a header cell
-[is_header] :: PageBlockTableCell -> Maybe Bool
-
--- | The number of columns the cell spans
-[colspan] :: PageBlockTableCell -> Maybe Int
-
--- | The number of rows the cell spans
-[rowspan] :: PageBlockTableCell -> Maybe Int
-
--- | Horizontal cell content alignment
-[align] :: PageBlockTableCell -> Maybe PageBlockHorizontalAlignment
-
--- | Vertical cell content alignment
-[valign] :: PageBlockTableCell -> Maybe PageBlockVerticalAlignment
-instance GHC.Show.Show TD.Data.PageBlockTableCell.PageBlockTableCell
-instance GHC.Classes.Eq TD.Data.PageBlockTableCell.PageBlockTableCell
-instance TD.Lib.Internal.ShortShow TD.Data.PageBlockTableCell.PageBlockTableCell
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockTableCell.PageBlockTableCell
-
-module TD.Data.PageBlockCaption
-data PageBlockCaption
-
--- | Contains a caption of another block
-PageBlockCaption :: Maybe RichText -> Maybe RichText -> PageBlockCaption
-
--- | Content of the caption
-[text] :: PageBlockCaption -> Maybe RichText
-
--- | Block credit (like HTML tag <a>cite</a>)
-[credit] :: PageBlockCaption -> Maybe RichText
-instance GHC.Show.Show TD.Data.PageBlockCaption.PageBlockCaption
-instance GHC.Classes.Eq TD.Data.PageBlockCaption.PageBlockCaption
-instance TD.Lib.Internal.ShortShow TD.Data.PageBlockCaption.PageBlockCaption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockCaption.PageBlockCaption
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Document.Document
 
 module TD.Data.DiffEntityType
 
@@ -11110,7 +11393,7 @@ TextCompositionStyle :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> M
 -- | Prompt of the style; for created custom styles only
 [prompt] :: TextCompositionStyle -> Maybe Text
 
--- | User identifier of the creator of the style; 0 if none of unknown
+-- | User identifier of the creator of the style; 0 if none or unknown
 [creator_user_id] :: TextCompositionStyle -> Maybe Int
 
 -- | Example of the style usage in English; may be null if unknown
@@ -11831,153 +12114,6 @@ instance GHC.Classes.Eq TD.Data.ProductInfo.ProductInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ProductInfo.ProductInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ProductInfo.ProductInfo
 
-module TD.Data.PollType
-
--- | Describes the type of poll
-data PollType
-
--- | A regular poll
-PollTypeRegular :: PollType
-
--- | A poll in quiz mode, which has predefined correct answers
-PollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe MessageContent -> PollType
-
--- | Increasing list of 0-based identifiers of the correct answer options;
---   empty for a yet unanswered poll
-[correct_option_ids] :: PollType -> Maybe [Int]
-
--- | Text that is shown when the user chooses an incorrect answer or taps
---   on the lamp icon; empty for a yet unanswered poll
-[explanation] :: PollType -> Maybe FormattedText
-
--- | Media that is shown when the user chooses an incorrect answer or taps
---   on the lamp icon; may be null if none or the poll is unanswered yet.
---   If present, currently, can be only of the types messageAnimation,
---   messageAudio, messageDocument, messageLocation, messagePhoto,
---   messageVenue, or messageVideo without caption
-[explanation_media] :: PollType -> Maybe MessageContent
-instance GHC.Show.Show TD.Data.PollType.PollType
-instance GHC.Classes.Eq TD.Data.PollType.PollType
-instance TD.Lib.Internal.ShortShow TD.Data.PollType.PollType
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollType.PollType
-
-module TD.Data.PollOption
-data PollOption
-
--- | Describes one answer option of a poll
-PollOption :: Maybe Text -> Maybe FormattedText -> Maybe MessageContent -> Maybe Int -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe MessageSender -> Maybe Int -> PollOption
-
--- | Unique identifier of the option in the poll; may be empty if yet
---   unassigned
-[_id] :: PollOption -> Maybe Text
-
--- | Option text; 1-100 characters; may contain only custom emoji entities
-[text] :: PollOption -> Maybe FormattedText
-
--- | Option media; may be null if none. If present, currently, can be only
---   of the types messageAnimation, messageLocation, messagePhoto,
---   messageSticker, messageVenue, or messageVideo without caption
-[media] :: PollOption -> Maybe MessageContent
-
--- | Number of voters for this option, available only for closed or voted
---   polls, or if the current user is the creator of the poll
-[voter_count] :: PollOption -> Maybe Int
-
--- | The percentage of votes for this option; 0-100
-[vote_percentage] :: PollOption -> Maybe Int
-
--- | Identifiers of recent voters for the option, if the poll is
---   non-anonymous and poll results are available
-[recent_voter_ids] :: PollOption -> Maybe [MessageSender]
-
--- | True, if the option was chosen by the user
-[is_chosen] :: PollOption -> Maybe Bool
-
--- | True, if the option is being chosen by a pending setPollAnswer request
-[is_being_chosen] :: PollOption -> Maybe Bool
-
--- | Identifier of the user or chat who added the option; may be null if
---   the option existed from creation of the poll
-[author] :: PollOption -> Maybe MessageSender
-
--- | Point in time (Unix timestamp) when the option was added; 0 if the
---   option existed from creation of the poll
-[addition_date] :: PollOption -> Maybe Int
-instance GHC.Show.Show TD.Data.PollOption.PollOption
-instance GHC.Classes.Eq TD.Data.PollOption.PollOption
-instance TD.Lib.Internal.ShortShow TD.Data.PollOption.PollOption
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollOption.PollOption
-
-module TD.Data.Poll
-data Poll
-
--- | Describes a poll
-Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe [Int] -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe PollVoteRestrictionReason -> Poll
-
--- | Unique poll identifier
-[_id] :: Poll -> Maybe Int
-
--- | Poll question; 1-300 characters; may contain only custom emoji
---   entities
-[question] :: Poll -> Maybe FormattedText
-
--- | List of poll answer options
-[options] :: Poll -> Maybe [PollOption]
-
--- | Total number of voters, participating in the poll
-[total_voter_count] :: Poll -> Maybe Int
-
--- | Identifiers of recent voters, if the poll is non-anonymous and poll
---   results are available
-[recent_voter_ids] :: Poll -> Maybe [MessageSender]
-
--- | True, if the current user can get voters in the poll using
---   getPollVoters
-[can_get_voters] :: Poll -> Maybe Bool
-
--- | True, if the poll is anonymous
-[is_anonymous] :: Poll -> Maybe Bool
-
--- | True, if multiple answer options can be chosen simultaneously
-[allows_multiple_answers] :: Poll -> Maybe Bool
-
--- | True, if the poll can be answered multiple times
-[allows_revoting] :: Poll -> Maybe Bool
-
--- | True, if only the users that are members of the chat for more than a
---   day will be able to vote
-[members_only] :: Poll -> Maybe Bool
-
--- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
---   from which will be able to vote. If empty, then all users can
---   participate in the poll
-[country_codes] :: Poll -> Maybe [Text]
-
--- | The list of 0-based poll identifiers in which the options of the poll
---   must be shown; empty if the order of options must not be changed
-[option_order] :: Poll -> Maybe [Int]
-
--- | Type of the poll
-[_type] :: Poll -> Maybe PollType
-
--- | Amount of time the poll will be active after creation, in seconds
-[open_period] :: Poll -> Maybe Int
-
--- | Point in time (Unix timestamp) when the poll will automatically be
---   closed
-[close_date] :: Poll -> Maybe Int
-
--- | True, if the poll is closed
-[is_closed] :: Poll -> Maybe Bool
-
--- | The reason describing, why the current user can't vote in the poll;
---   may be null if the user can vote in the poll
-[vote_restriction_reason] :: Poll -> Maybe PollVoteRestrictionReason
-instance GHC.Show.Show TD.Data.Poll.Poll
-instance GHC.Classes.Eq TD.Data.Poll.Poll
-instance TD.Lib.Internal.ShortShow TD.Data.Poll.Poll
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Poll.Poll
-
 module TD.Data.MessageCopyOptions
 data MessageCopyOptions
 
@@ -12112,7 +12248,7 @@ InputPollTypeRegular :: Maybe Bool -> InputPollType
 [allow_adding_options] :: InputPollType -> Maybe Bool
 
 -- | A poll in quiz mode, which has predefined correct answers
-InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe InputMessageContent -> InputPollType
+InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe InputPollMedia -> InputPollType
 
 -- | Increasing list of 0-based identifiers of the correct answer options;
 --   must be non-empty
@@ -12124,10 +12260,10 @@ InputPollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe InputMessageCon
 
 -- | Media that is shown when the user chooses an incorrect answer or taps
 --   on the lamp icon; pass null if none. Must be one of the following
---   types: inputMessageAnimation, inputMessageAudio, inputMessageDocument,
---   non-live inputMessageLocation, inputMessagePhoto, inputMessageVenue,
---   or inputMessageVideo without caption
-[explanation_media] :: InputPollType -> Maybe InputMessageContent
+--   types: inputPollMediaAnimation, inputPollMediaAudio,
+--   inputPollMediaDocument, inputPollMediaLocation, inputPollMediaPhoto,
+--   inputPollMediaVenue, or inputPollMediaVideo without caption
+[explanation_media] :: InputPollType -> Maybe InputPollMedia
 instance GHC.Show.Show TD.Data.InputPollType.InputPollType
 instance GHC.Classes.Eq TD.Data.InputPollType.InputPollType
 instance TD.Lib.Internal.ShortShow TD.Data.InputPollType.InputPollType
@@ -12138,17 +12274,17 @@ module TD.Data.InputPollOption
 data InputPollOption
 
 -- | Describes one answer option of a poll to be created
-InputPollOption :: Maybe FormattedText -> Maybe InputMessageContent -> InputPollOption
+InputPollOption :: Maybe FormattedText -> Maybe InputPollMedia -> InputPollOption
 
 -- | Option text; 1-100 characters. Only custom emoji entities are allowed
 --   to be added and only by Premium users
 [text] :: InputPollOption -> Maybe FormattedText
 
 -- | Option media; pass null if none; ignored in addPollOption. Must be one
---   of the following types: inputMessageAnimation, non-live
---   inputMessageLocation, inputMessagePhoto, inputMessageSticker,
---   inputMessageVenue, or inputMessageVideo without caption
-[media] :: InputPollOption -> Maybe InputMessageContent
+--   of the following types: inputPollMediaAnimation, inputPollMediaLink,
+--   inputPollMediaLocation, inputPollMediaPhoto, inputPollMediaSticker,
+--   inputPollMediaVenue, or inputPollMediaVideo without caption
+[media] :: InputPollOption -> Maybe InputPollMedia
 defaultInputPollOption :: InputPollOption
 instance GHC.Show.Show TD.Data.InputPollOption.InputPollOption
 instance GHC.Classes.Eq TD.Data.InputPollOption.InputPollOption
@@ -12381,6 +12517,297 @@ instance GHC.Show.Show TD.Data.DeepLinkInfo.DeepLinkInfo
 instance GHC.Classes.Eq TD.Data.DeepLinkInfo.DeepLinkInfo
 instance TD.Lib.Internal.ShortShow TD.Data.DeepLinkInfo.DeepLinkInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DeepLinkInfo.DeepLinkInfo
+
+module TD.Data.RichText
+
+-- | Describes a formatted text object
+data RichText
+
+-- | A plain text
+RichTextPlain :: Maybe Text -> RichText
+
+-- | Text
+[text] :: RichText -> Maybe Text
+
+-- | A bold rich text
+RichTextBold :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | An italicized rich text
+RichTextItalic :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | An underlined rich text
+RichTextUnderline :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A strikethrough rich text
+RichTextStrikethrough :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A spoilered rich text
+RichTextSpoiler :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A date and time
+RichTextDateTime :: Maybe RichText -> Maybe Int -> Maybe DateTimeFormattingType -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | Point in time (Unix timestamp) representing the date and time
+[unix_time] :: RichText -> Maybe Int
+
+-- | Date and time formatting type; may be null if none and the original
+--   text must not be changed
+[formatting_type] :: RichText -> Maybe DateTimeFormattingType
+
+-- | A mention of a Telegram user or chat by a username
+RichTextMention :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The username
+[username] :: RichText -> Maybe Text
+
+-- | A hashtag
+RichTextHashtag :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The hashtag
+[hashtag] :: RichText -> Maybe Text
+
+-- | A cashtag
+RichTextCashtag :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The cashtag
+[cashtag] :: RichText -> Maybe Text
+
+-- | A bot command
+RichTextBotCommand :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The bot command
+[bot_command] :: RichText -> Maybe Text
+
+-- | A fixed-width rich text
+RichTextFixed :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A rich text that serves as a mention of a user
+RichTextMentionName :: Maybe RichText -> Maybe Int -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | Identifier of the mentioned user
+[user_id] :: RichText -> Maybe Int
+
+-- | A rich text URL link
+RichTextUrl :: Maybe RichText -> Maybe Text -> Maybe Bool -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | URL
+[url] :: RichText -> Maybe Text
+
+-- | True, if the URL has cached instant view server-side; instant view
+--   only
+[is_cached] :: RichText -> Maybe Bool
+
+-- | A rich text email address
+RichTextEmailAddress :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | Email address
+[email_address] :: RichText -> Maybe Text
+
+-- | A bank card number
+RichTextBankCardNumber :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The number of the bank card
+[bank_card_number] :: RichText -> Maybe Text
+
+-- | A subscript rich text
+RichTextSubscript :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A superscript rich text
+RichTextSuperscript :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A marked rich text
+RichTextMarked :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A rich text phone number
+RichTextPhoneNumber :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | Phone number
+[phone_number] :: RichText -> Maybe Text
+
+-- | A custom emoji
+RichTextCustomEmoji :: Maybe Int -> Maybe Text -> RichText
+
+-- | Unique identifier of the custom emoji
+[custom_emoji_id] :: RichText -> Maybe Int
+
+-- | Alternative text for the custom emoji
+[alternative_text] :: RichText -> Maybe Text
+
+-- | A small image inside the text; instant view only
+RichTextIcon :: Maybe Document -> Maybe Int -> Maybe Int -> RichText
+
+-- | The image represented as a document. The image can be in GIF, JPEG or
+--   PNG format
+[document] :: RichText -> Maybe Document
+
+-- | Width of a bounding box in which the image must be shown; 0 if unknown
+[width] :: RichText -> Maybe Int
+
+-- | Height of a bounding box in which the image must be shown; 0 if
+--   unknown
+[height] :: RichText -> Maybe Int
+
+-- | A mathematical expression
+RichTextMathematicalExpression :: Maybe Text -> RichText
+
+-- | The expression in LaTeX format
+[expression] :: RichText -> Maybe Text
+
+-- | A reference
+RichTextReference :: Maybe Text -> Maybe RichText -> RichText
+
+-- | Reference name
+[name] :: RichText -> Maybe Text
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A link to a reference on the same page
+RichTextReferenceLink :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The reference name
+[reference_name] :: RichText -> Maybe Text
+
+-- | URL
+[url] :: RichText -> Maybe Text
+
+-- | An anchor
+RichTextAnchor :: Maybe Text -> RichText
+
+-- | Reference name
+[name] :: RichText -> Maybe Text
+
+-- | A link to an anchor on the same page
+RichTextAnchorLink :: Maybe RichText -> Maybe Text -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The anchor name. If the name is empty, the link must bring back to top
+[anchor_name] :: RichText -> Maybe Text
+
+-- | URL
+[url] :: RichText -> Maybe Text
+
+-- | A concatenation of rich texts
+RichTexts :: Maybe [RichText] -> RichText
+
+-- | Texts
+[texts] :: RichText -> Maybe [RichText]
+instance GHC.Show.Show TD.Data.RichText.RichText
+instance GHC.Classes.Eq TD.Data.RichText.RichText
+instance TD.Lib.Internal.ShortShow TD.Data.RichText.RichText
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichText.RichText
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichText.RichText
+
+module TD.Data.PageBlockTableCell
+data PageBlockTableCell
+
+-- | Represents a cell of a table
+PageBlockTableCell :: Maybe RichText -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe PageBlockHorizontalAlignment -> Maybe PageBlockVerticalAlignment -> PageBlockTableCell
+
+-- | Cell text; may be null. If the text is null, then the cell must be
+--   invisible
+[text] :: PageBlockTableCell -> Maybe RichText
+
+-- | True, if it is a header cell
+[is_header] :: PageBlockTableCell -> Maybe Bool
+
+-- | The number of columns the cell spans
+[colspan] :: PageBlockTableCell -> Maybe Int
+
+-- | The number of rows the cell spans
+[rowspan] :: PageBlockTableCell -> Maybe Int
+
+-- | Horizontal cell content alignment
+[align] :: PageBlockTableCell -> Maybe PageBlockHorizontalAlignment
+
+-- | Vertical cell content alignment
+[valign] :: PageBlockTableCell -> Maybe PageBlockVerticalAlignment
+defaultPageBlockTableCell :: PageBlockTableCell
+instance GHC.Show.Show TD.Data.PageBlockTableCell.PageBlockTableCell
+instance GHC.Classes.Eq TD.Data.PageBlockTableCell.PageBlockTableCell
+instance TD.Lib.Internal.ShortShow TD.Data.PageBlockTableCell.PageBlockTableCell
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockTableCell.PageBlockTableCell
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockTableCell.PageBlockTableCell
+
+module TD.Data.PageBlockCaption
+data PageBlockCaption
+
+-- | Contains a caption of another block
+PageBlockCaption :: Maybe RichText -> Maybe RichText -> PageBlockCaption
+
+-- | Content of the caption
+[text] :: PageBlockCaption -> Maybe RichText
+
+-- | Block credit (like HTML tag <a>cite</a>); may be null if none
+[credit] :: PageBlockCaption -> Maybe RichText
+defaultPageBlockCaption :: PageBlockCaption
+instance GHC.Show.Show TD.Data.PageBlockCaption.PageBlockCaption
+instance GHC.Classes.Eq TD.Data.PageBlockCaption.PageBlockCaption
+instance TD.Lib.Internal.ShortShow TD.Data.PageBlockCaption.PageBlockCaption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockCaption.PageBlockCaption
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockCaption.PageBlockCaption
 
 module TD.Data.DateRange
 data DateRange
@@ -12752,29 +13179,23 @@ InputMessageText :: Maybe FormattedText -> Maybe LinkPreviewOptions -> Maybe Boo
 --   none; pass null to use default link preview options
 [link_preview_options] :: InputMessageContent -> Maybe LinkPreviewOptions
 
--- | True, if the chat message draft must be deleted
+-- | Pass true to delete message draft in the chat
+[clear_draft] :: InputMessageContent -> Maybe Bool
+
+-- | A rich message
+InputMessageRichMessage :: Maybe InputRichMessage -> Maybe Bool -> InputMessageContent
+
+-- | The rich message to send
+[message] :: InputMessageContent -> Maybe InputRichMessage
+
+-- | Pass true to delete message draft in the chat
 [clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | An animation message (GIF-style).
-InputMessageAnimation :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> InputMessageContent
+InputMessageAnimation :: Maybe InputAnimation -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> InputMessageContent
 
--- | Animation file to be sent
-[animation] :: InputMessageContent -> Maybe InputFile
-
--- | Animation thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | File identifiers of the stickers added to the animation, if applicable
-[added_sticker_file_ids] :: InputMessageContent -> Maybe [Int]
-
--- | Duration of the animation, in seconds
-[duration] :: InputMessageContent -> Maybe Int
-
--- | Width of the animation; may be replaced by the server
-[width] :: InputMessageContent -> Maybe Int
-
--- | Height of the animation; may be replaced by the server
-[height] :: InputMessageContent -> Maybe Int
+-- | The animation to be sent
+[animation] :: InputMessageContent -> Maybe InputAnimation
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
@@ -12790,40 +13211,20 @@ InputMessageAnimation :: Maybe InputFile -> Maybe InputThumbnail -> Maybe [Int] 
 [has_spoiler] :: InputMessageContent -> Maybe Bool
 
 -- | An audio message
-InputMessageAudio :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe FormattedText -> InputMessageContent
+InputMessageAudio :: Maybe InputAudio -> Maybe FormattedText -> InputMessageContent
 
--- | Audio file to be sent
-[audio] :: InputMessageContent -> Maybe InputFile
-
--- | Thumbnail of the cover for the album; pass null to skip thumbnail
---   uploading
-[album_cover_thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Duration of the animation, in seconds
-[duration] :: InputMessageContent -> Maybe Int
-
--- | Title of the audio; 0-64 characters; may be replaced by the server
-[title] :: InputMessageContent -> Maybe Text
-
--- | Performer of the audio; 0-64 characters, may be replaced by the server
-[performer] :: InputMessageContent -> Maybe Text
+-- | Audio to be sent
+[audio] :: InputMessageContent -> Maybe InputAudio
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
 [caption] :: InputMessageContent -> Maybe FormattedText
 
 -- | A document message (general file)
-InputMessageDocument :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Bool -> Maybe FormattedText -> InputMessageContent
+InputMessageDocument :: Maybe InputDocument -> Maybe FormattedText -> InputMessageContent
 
 -- | Document to be sent
-[document] :: InputMessageContent -> Maybe InputFile
-
--- | Animation thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Pass true to disable automatic file type detection and send the
---   document as a file. Always true for files sent to secret chats
-[disable_content_type_detection] :: InputMessageContent -> Maybe Bool
+[document] :: InputMessageContent -> Maybe InputDocument
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
@@ -12853,28 +13254,10 @@ InputMessagePaidMedia :: Maybe Int -> Maybe [InputPaidMedia] -> Maybe FormattedT
 [payload] :: InputMessageContent -> Maybe Text
 
 -- | A photo message
-InputMessagePhoto :: Maybe InputFile -> Maybe InputThumbnail -> Maybe InputFile -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
+InputMessagePhoto :: Maybe InputPhoto -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
 
--- | Photo to send. The photo must be at most 10 MB in size. The photo's
---   width and height must not exceed 10000 in total. Width and height
---   ratio must be at most 20
-[photo] :: InputMessageContent -> Maybe InputFile
-
--- | Animation thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Video of the live photo; not supported in secret chats; pass null if
---   the photo isn't a live photo
-[video] :: InputMessageContent -> Maybe InputFile
-
--- | File identifiers of the stickers added to the animation, if applicable
-[added_sticker_file_ids] :: InputMessageContent -> Maybe [Int]
-
--- | Width of the animation; may be replaced by the server
-[width] :: InputMessageContent -> Maybe Int
-
--- | Height of the animation; may be replaced by the server
-[height] :: InputMessageContent -> Maybe Int
+-- | Photo to be sent
+[photo] :: InputMessageContent -> Maybe InputPhoto
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
@@ -12898,49 +13281,23 @@ InputMessageSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> M
 -- | Sticker to be sent
 [sticker] :: InputMessageContent -> Maybe InputFile
 
--- | Animation thumbnail; pass null to skip thumbnail uploading
+-- | Sticker thumbnail; pass null to skip thumbnail uploading
 [thumbnail] :: InputMessageContent -> Maybe InputThumbnail
 
--- | Width of the animation; may be replaced by the server
+-- | Sticker width
 [width] :: InputMessageContent -> Maybe Int
 
--- | Height of the animation; may be replaced by the server
+-- | Sticker height
 [height] :: InputMessageContent -> Maybe Int
 
 -- | Emoji used to choose the sticker
 [emoji] :: InputMessageContent -> Maybe Text
 
 -- | A video message
-InputMessageVideo :: Maybe InputFile -> Maybe InputThumbnail -> Maybe InputFile -> Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
+InputMessageVideo :: Maybe InputVideo -> Maybe FormattedText -> Maybe Bool -> Maybe MessageSelfDestructType -> Maybe Bool -> InputMessageContent
 
--- | Video of the live photo; not supported in secret chats; pass null if
---   the photo isn't a live photo
-[video] :: InputMessageContent -> Maybe InputFile
-
--- | Animation thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Cover of the video; pass null to skip cover uploading; not supported
---   in secret chats and for self-destructing messages
-[cover] :: InputMessageContent -> Maybe InputFile
-
--- | Timestamp from which the video playing must start, in seconds
-[start_timestamp] :: InputMessageContent -> Maybe Int
-
--- | File identifiers of the stickers added to the animation, if applicable
-[added_sticker_file_ids] :: InputMessageContent -> Maybe [Int]
-
--- | Duration of the animation, in seconds
-[duration] :: InputMessageContent -> Maybe Int
-
--- | Width of the animation; may be replaced by the server
-[width] :: InputMessageContent -> Maybe Int
-
--- | Height of the animation; may be replaced by the server
-[height] :: InputMessageContent -> Maybe Int
-
--- | True, if the video is expected to be streamed
-[supports_streaming] :: InputMessageContent -> Maybe Bool
+-- | Video to be sent
+[video] :: InputMessageContent -> Maybe InputVideo
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
@@ -12965,10 +13322,10 @@ InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int ->
 --   format with H.264 codec and have no data outside of the visible circle
 [video_note] :: InputMessageContent -> Maybe InputFile
 
--- | Animation thumbnail; pass null to skip thumbnail uploading
+-- | Sticker thumbnail; pass null to skip thumbnail uploading
 [thumbnail] :: InputMessageContent -> Maybe InputThumbnail
 
--- | Duration of the animation, in seconds
+-- | Duration of the video, in seconds; 0-60
 [duration] :: InputMessageContent -> Maybe Int
 
 -- | Video width and height; must be positive and not greater than 640
@@ -12985,7 +13342,7 @@ InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> May
 --   or be in MP3 or M4A format as regular audio
 [voice_note] :: InputMessageContent -> Maybe InputFile
 
--- | Duration of the animation, in seconds
+-- | Duration of the video, in seconds; 0-60
 [duration] :: InputMessageContent -> Maybe Int
 
 -- | Waveform representation of the voice note in 5-bit format
@@ -12998,25 +13355,19 @@ InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> May
 -- | Photo self-destruct type; pass null if none; private chats only
 [self_destruct_type] :: InputMessageContent -> Maybe MessageSelfDestructType
 
+-- | A message with a live location
+InputMessageLiveLocation :: Maybe LiveLocation -> InputMessageContent
+
+-- | Initial state of the live location to be sent. Live period must be
+--   equal to 0x7FFFFFFF for permanent live locations, or between 60 and
+--   86400
+[location] :: InputMessageContent -> Maybe LiveLocation
+
 -- | A message with a location
-InputMessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> InputMessageContent
+InputMessageLocation :: Maybe Location -> InputMessageContent
 
 -- | Location to be sent
-[location] :: InputMessageContent -> Maybe Location
-
--- | Period for which the location can be updated, in seconds; must be
---   between 60 and 86400 for a temporary live location, 0x7FFFFFFF for
---   permanent live location, and 0 otherwise
-[live_period] :: InputMessageContent -> Maybe Int
-
--- | For live locations, a direction in which the location moves, in
---   degrees; 1-360. Pass 0 if unknown
-[heading] :: InputMessageContent -> Maybe Int
-
--- | For live locations, a maximum distance to another chat member for
---   proximity alerts, in meters (0-100000). Pass 0 if the notification is
---   disabled. Can't be enabled in channels and Saved Messages
-[proximity_alert_radius] :: InputMessageContent -> Maybe Int
+[_location] :: InputMessageContent -> Maybe Location
 
 -- | A message with information about a venue
 InputMessageVenue :: Maybe Venue -> InputMessageContent
@@ -13036,7 +13387,7 @@ InputMessageDice :: Maybe Text -> Maybe Bool -> InputMessageContent
 -- | Emoji used to choose the sticker
 [emoji] :: InputMessageContent -> Maybe Text
 
--- | True, if the chat message draft must be deleted
+-- | Pass true to delete message draft in the chat
 [clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | A message with a game; not supported for channels or secret chats
@@ -13054,7 +13405,7 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 -- | Invoice
 [invoice] :: InputMessageContent -> Maybe Invoice
 
--- | Title of the audio; 0-64 characters; may be replaced by the server
+-- | Product title; 1-32 characters
 [title] :: InputMessageContent -> Maybe Text
 
 -- | Product description; 0-255 characters
@@ -13097,7 +13448,7 @@ InputMessageInvoice :: Maybe Invoice -> Maybe Text -> Maybe Text -> Maybe Text -
 -- | A message with a poll. Polls can't be sent to secret chats and channel
 --   direct messages chats. Polls can be sent to a private chat only if the
 --   chat is a chat with a bot or the Saved Messages chat
-InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe FormattedText -> Maybe InputMessageContent -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Bool -> Maybe Bool -> Maybe InputPollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
+InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe FormattedText -> Maybe InputPollMedia -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe Bool -> Maybe Bool -> Maybe InputPollType -> Maybe Int -> Maybe Int -> Maybe Bool -> InputMessageContent
 
 -- | Poll question; 1-255 characters (up to 300 characters for bots). Only
 --   custom emoji entities are allowed to be added and only by Premium
@@ -13113,11 +13464,10 @@ InputMessagePoll :: Maybe FormattedText -> Maybe [InputPollOption] -> Maybe Form
 [_description] :: InputMessageContent -> Maybe FormattedText
 
 -- | Media attached to the poll; pass null if none. Must be one of the
---   following types: inputMessageAnimation, inputMessageAudio,
---   inputMessageDocument, non-live inputMessageLocation,
---   inputMessagePhoto, inputMessageVenue, or inputMessageVideo without
---   caption
-[media] :: InputMessageContent -> Maybe InputMessageContent
+--   following types: inputPollMediaAnimation, inputPollMediaAudio,
+--   inputPollMediaDocument, inputPollMediaLocation, inputPollMediaPhoto,
+--   inputPollMediaVenue, or inputPollMediaVideo without caption
+[media] :: InputMessageContent -> Maybe InputPollMedia
 
 -- | True, if the poll voters are anonymous. Non-anonymous polls can't be
 --   sent or forwarded to channels
@@ -13173,7 +13523,7 @@ InputMessageStakeDice :: Maybe Text -> Maybe Int -> Maybe Bool -> InputMessageCo
 --   getOption("stake_dice_stake_amount_min")-getOption("stake_dice_stake_amount_max")
 [stake_toncoin_amount] :: InputMessageContent -> Maybe Int
 
--- | True, if the chat message draft must be deleted
+-- | Pass true to delete message draft in the chat
 [clear_draft] :: InputMessageContent -> Maybe Bool
 
 -- | A message with a forwarded story. Stories can't be forwarded to secret
@@ -13223,36 +13573,6 @@ instance GHC.Classes.Eq TD.Data.InputMessageContent.InputMessageContent
 instance TD.Lib.Internal.ShortShow TD.Data.InputMessageContent.InputMessageContent
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputMessageContent.InputMessageContent
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputMessageContent.InputMessageContent
-
-module TD.Data.DraftMessage
-data DraftMessage
-
--- | Contains information about a message draft
-DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe InputMessageContent -> Maybe Int -> Maybe InputSuggestedPostInfo -> DraftMessage
-
--- | Information about the message to be replied; inputMessageReplyToStory
---   is unsupported; may be null if none
-[reply_to] :: DraftMessage -> Maybe InputMessageReplyTo
-
--- | Point in time (Unix timestamp) when the draft was created
-[date] :: DraftMessage -> Maybe Int
-
--- | Content of the message draft; must be of the type inputMessageText,
---   inputMessageVideoNote, or inputMessageVoiceNote
-[input_message_text] :: DraftMessage -> Maybe InputMessageContent
-
--- | Identifier of the effect to apply to the message when it is sent; 0 if
---   none
-[effect_id] :: DraftMessage -> Maybe Int
-
--- | Information about the suggested post; may be null if none
-[suggested_post_info] :: DraftMessage -> Maybe InputSuggestedPostInfo
-defaultDraftMessage :: DraftMessage
-instance GHC.Show.Show TD.Data.DraftMessage.DraftMessage
-instance GHC.Classes.Eq TD.Data.DraftMessage.DraftMessage
-instance TD.Lib.Internal.ShortShow TD.Data.DraftMessage.DraftMessage
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DraftMessage.DraftMessage
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.DraftMessage.DraftMessage
 
 module TD.Data.ConnectionState
 
@@ -14176,10 +14496,12 @@ ChatPhotoInfo :: Maybe File -> Maybe File -> Maybe Minithumbnail -> Maybe Bool -
 
 -- | True, if the photo is visible only for the current user
 [is_personal] :: ChatPhotoInfo -> Maybe Bool
+defaultChatPhotoInfo :: ChatPhotoInfo
 instance GHC.Show.Show TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance GHC.Classes.Eq TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatPhotoInfo.ChatPhotoInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatPhotoInfo.ChatPhotoInfo
 
 module TD.Data.ChatPermissions
 data ChatPermissions
@@ -14187,8 +14509,8 @@ data ChatPermissions
 -- | Describes actions that a user is allowed to take in a chat
 ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatPermissions
 
--- | True, if the user can send text messages, contacts, giveaways,
---   giveaway winners, invoices, locations, and venues
+-- | True, if the user can send text messages, rich messages, contacts,
+--   giveaways, giveaway winners, invoices, locations, and venues
 [can_send_basic_messages] :: ChatPermissions -> Maybe Bool
 
 -- | True, if the user can send music files
@@ -14463,6 +14785,42 @@ instance GHC.Classes.Eq TD.Data.ChatLists.ChatLists
 instance TD.Lib.Internal.ShortShow TD.Data.ChatLists.ChatLists
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatLists.ChatLists
 
+module TD.Data.ChatJoinResult
+
+-- | Describes result of join of a chat by the current user
+data ChatJoinResult
+
+-- | The chat was joined successfully
+ChatJoinResultSuccess :: Maybe Int -> ChatJoinResult
+
+-- | Identifier of the chat
+[chat_id] :: ChatJoinResult -> Maybe Int
+
+-- | The join request was sent and have to be approved by administrators of
+--   the chat
+ChatJoinResultRequestSent :: ChatJoinResult
+
+-- | An approval from a guard bot through a Web App is required to join the
+--   chat
+ChatJoinResultGuardBotApprovalRequired :: Maybe Int -> Maybe WebAppUrl -> Maybe Int -> ChatJoinResult
+
+-- | Identifier of the guard bot
+[bot_user_id] :: ChatJoinResult -> Maybe Int
+
+-- | The URL of the Web App to open
+[url] :: ChatJoinResult -> Maybe WebAppUrl
+
+-- | Unique identifier of the join request, which will be used in
+--   updateChatJoinResult
+[query_id] :: ChatJoinResult -> Maybe Int
+
+-- | The join was declined by the guard bot
+ChatJoinResultDeclined :: ChatJoinResult
+instance GHC.Show.Show TD.Data.ChatJoinResult.ChatJoinResult
+instance GHC.Classes.Eq TD.Data.ChatJoinResult.ChatJoinResult
+instance TD.Lib.Internal.ShortShow TD.Data.ChatJoinResult.ChatJoinResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatJoinResult.ChatJoinResult
+
 module TD.Data.ChatJoinRequestsInfo
 data ChatJoinRequestsInfo
 
@@ -14478,6 +14836,25 @@ instance GHC.Show.Show TD.Data.ChatJoinRequestsInfo.ChatJoinRequestsInfo
 instance GHC.Classes.Eq TD.Data.ChatJoinRequestsInfo.ChatJoinRequestsInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ChatJoinRequestsInfo.ChatJoinRequestsInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatJoinRequestsInfo.ChatJoinRequestsInfo
+
+module TD.Data.ChatJoinRequestResult
+
+-- | Describes result of a chat join request
+data ChatJoinRequestResult
+
+-- | The request was approved
+ChatJoinRequestResultApproved :: ChatJoinRequestResult
+
+-- | The request was decline
+ChatJoinRequestResultDeclined :: ChatJoinRequestResult
+
+-- | The request was postponed without a decision
+ChatJoinRequestResultQueued :: ChatJoinRequestResult
+instance GHC.Show.Show TD.Data.ChatJoinRequestResult.ChatJoinRequestResult
+instance GHC.Classes.Eq TD.Data.ChatJoinRequestResult.ChatJoinRequestResult
+instance TD.Lib.Internal.ShortShow TD.Data.ChatJoinRequestResult.ChatJoinRequestResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatJoinRequestResult.ChatJoinRequestResult
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatJoinRequestResult.ChatJoinRequestResult
 
 module TD.Data.ChatJoinRequest
 data ChatJoinRequest
@@ -17256,7 +17633,8 @@ InputInlineQueryResultAnimation :: Maybe Text -> Maybe Text -> Maybe Text -> May
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17289,7 +17667,8 @@ InputInlineQueryResultArticle :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17316,7 +17695,8 @@ InputInlineQueryResultAudio :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17343,7 +17723,8 @@ InputInlineQueryResultContact :: Maybe Text -> Maybe Contact -> Maybe Text -> Ma
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17380,7 +17761,8 @@ InputInlineQueryResultDocument :: Maybe Text -> Maybe Text -> Maybe Text -> Mayb
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17427,7 +17809,8 @@ InputInlineQueryResultLocation :: Maybe Text -> Maybe Location -> Maybe Int -> M
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17460,7 +17843,8 @@ InputInlineQueryResultPhoto :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17488,7 +17872,8 @@ InputInlineQueryResultSticker :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17515,7 +17900,8 @@ InputInlineQueryResultVenue :: Maybe Text -> Maybe Venue -> Maybe Text -> Maybe 
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17556,7 +17942,8 @@ InputInlineQueryResultVideo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
@@ -17581,7 +17968,8 @@ InputInlineQueryResultVoiceNote :: Maybe Text -> Maybe Text -> Maybe Text -> May
 [reply_markup] :: InputInlineQueryResult -> Maybe ReplyMarkup
 
 -- | The content of the message to be sent. Must be one of the following
---   types: inputMessageText, inputMessageAnimation, inputMessageInvoice,
+--   types: inputMessageText, inputMessageRichMessage,
+--   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
 --   inputMessageLocation, inputMessageVenue or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 instance GHC.Show.Show TD.Data.InputInlineQueryResult.InputInlineQueryResult
@@ -17972,7 +18360,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnection.BusinessC
 module TD.Data.BusinessConnectedBot
 data BusinessConnectedBot
 
--- | Describes a bot connected to a business account
+-- | Describes a business bot connected to an account
 BusinessConnectedBot :: Maybe Int -> Maybe BusinessRecipients -> Maybe BusinessBotRights -> BusinessConnectedBot
 
 -- | User identifier of the bot
@@ -17989,6 +18377,31 @@ instance GHC.Classes.Eq TD.Data.BusinessConnectedBot.BusinessConnectedBot
 instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBot.BusinessConnectedBot
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.BusinessConnectedBot.BusinessConnectedBot
+
+module TD.Data.BusinessConnectedBotInfo
+data BusinessConnectedBotInfo
+
+-- | Describes a connection of a bot to an account
+BusinessConnectedBotInfo :: Maybe BusinessConnectedBot -> Maybe Int -> Maybe Text -> Maybe Text -> BusinessConnectedBotInfo
+
+-- | Information about the bot
+[bot] :: BusinessConnectedBotInfo -> Maybe BusinessConnectedBot
+
+-- | Point in time (Unix timestamp) when the bot was added; may be 0 if
+--   unknown
+[connection_date] :: BusinessConnectedBotInfo -> Maybe Int
+
+-- | Model of the device that was used for the bot connection, as provided
+--   by the application; may be empty if unknown
+[device_model] :: BusinessConnectedBotInfo -> Maybe Text
+
+-- | A human-readable description of the location from which the bot was
+--   connected, based on the IP address; may be empty if unknown
+[location] :: BusinessConnectedBotInfo -> Maybe Text
+instance GHC.Show.Show TD.Data.BusinessConnectedBotInfo.BusinessConnectedBotInfo
+instance GHC.Classes.Eq TD.Data.BusinessConnectedBotInfo.BusinessConnectedBotInfo
+instance TD.Lib.Internal.ShortShow TD.Data.BusinessConnectedBotInfo.BusinessConnectedBotInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.BusinessConnectedBotInfo.BusinessConnectedBotInfo
 
 module TD.Data.BusinessBotManageBar
 data BusinessBotManageBar
@@ -19128,8 +19541,9 @@ AuthorizationStateWaitTdlibParameters :: AuthorizationState
 
 -- | TDLib needs the user's phone number to authorize. Call
 --   setAuthenticationPhoneNumber to provide the phone number, or use
---   requestQrCodeAuthentication, getAuthenticationPasskeyParameters, or
---   checkAuthenticationBotToken for other authentication options
+--   requestQrCodeAuthentication, getAuthenticationPasskeyParameters,
+--   checkAuthenticationWebToken, or checkAuthenticationBotToken for other
+--   authentication options
 AuthorizationStateWaitPhoneNumber :: AuthorizationState
 
 -- | The user must buy Telegram Premium as an in-store purchase to log in.
@@ -19279,10 +19693,12 @@ Audio :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Ma
 
 -- | File containing the audio
 [audio] :: Audio -> Maybe File
+defaultAudio :: Audio
 instance GHC.Show.Show TD.Data.Audio.Audio
 instance GHC.Classes.Eq TD.Data.Audio.Audio
 instance TD.Lib.Internal.ShortShow TD.Data.Audio.Audio
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Audio.Audio
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Audio.Audio
 
 module TD.Data.Audios
 data Audios
@@ -19641,7 +20057,8 @@ Animation :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> 
 [mime_type] :: Animation -> Maybe Text
 
 -- | True, if stickers were added to the animation. The list of
---   corresponding sticker set can be received using getAttachedStickerSets
+--   corresponding sticker sets can be received using
+--   getAttachedStickerSets
 [has_stickers] :: Animation -> Maybe Bool
 
 -- | Animation minithumbnail; may be null
@@ -19652,10 +20069,12 @@ Animation :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> 
 
 -- | File containing the animation
 [animation] :: Animation -> Maybe File
+defaultAnimation :: Animation
 instance GHC.Show.Show TD.Data.Animation.Animation
 instance GHC.Classes.Eq TD.Data.Animation.Animation
 instance TD.Lib.Internal.ShortShow TD.Data.Animation.Animation
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Animation.Animation
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Animation.Animation
 
 module TD.Data.WebApp
 data WebApp
@@ -20142,19 +20561,19 @@ module TD.Data.PageBlock
 -- | Describes a block of an instant view for a web page
 data PageBlock
 
--- | The title of a page
+-- | The title of a page; instant view only
 PageBlockTitle :: Maybe RichText -> PageBlock
 
 -- | Title
 [title] :: PageBlock -> Maybe RichText
 
--- | The subtitle of a page
+-- | The subtitle of a page; instant view only
 PageBlockSubtitle :: Maybe RichText -> PageBlock
 
 -- | Subtitle
 [subtitle] :: PageBlock -> Maybe RichText
 
--- | The author and publishing date of a page
+-- | The author and publishing date of a page; instant view only
 PageBlockAuthorDate :: Maybe RichText -> Maybe Int -> PageBlock
 
 -- | Author
@@ -20164,19 +20583,29 @@ PageBlockAuthorDate :: Maybe RichText -> Maybe Int -> PageBlock
 --   unknown
 [publish_date] :: PageBlock -> Maybe Int
 
--- | A header
+-- | A header; instant view only
 PageBlockHeader :: Maybe RichText -> PageBlock
 
 -- | Header
 [header] :: PageBlock -> Maybe RichText
 
--- | A subheader
+-- | A subheader; instant view only
 PageBlockSubheader :: Maybe RichText -> PageBlock
 
 -- | Subheader
 [subheader] :: PageBlock -> Maybe RichText
 
--- | A kicker
+-- | A section heading
+PageBlockSectionHeading :: Maybe RichText -> Maybe Int -> PageBlock
+
+-- | Text of the section heading
+[text] :: PageBlock -> Maybe RichText
+
+-- | Relative size of the text font; 1-6, 1 is the largest, 6 is the
+--   smallest
+[size] :: PageBlock -> Maybe Int
+
+-- | A kicker; instant view only
 PageBlockKicker :: Maybe RichText -> PageBlock
 
 -- | Kicker
@@ -20185,13 +20614,13 @@ PageBlockKicker :: Maybe RichText -> PageBlock
 -- | A text paragraph
 PageBlockParagraph :: Maybe RichText -> PageBlock
 
--- | Paragraph text
+-- | Text of the section heading
 [text] :: PageBlock -> Maybe RichText
 
 -- | A preformatted text paragraph
 PageBlockPreformatted :: Maybe RichText -> Maybe Text -> PageBlock
 
--- | Paragraph text
+-- | Text of the section heading
 [text] :: PageBlock -> Maybe RichText
 
 -- | Programming language for which the text needs to be formatted
@@ -20203,8 +20632,20 @@ PageBlockFooter :: Maybe RichText -> PageBlock
 -- | Footer
 [footer] :: PageBlock -> Maybe RichText
 
+-- | A "Thinking..." placeholder; for pending rich messages only
+PageBlockThinking :: Maybe RichText -> PageBlock
+
+-- | Text of the section heading
+[text] :: PageBlock -> Maybe RichText
+
 -- | An empty block separating a page
 PageBlockDivider :: PageBlock
+
+-- | A mathematical expression
+PageBlockMathematicalExpression :: Maybe Text -> PageBlock
+
+-- | The expression in LaTeX format
+[expression] :: PageBlock -> Maybe Text
 
 -- | An invisible anchor on a page, which can be used in a URL to open the
 --   page from the specified anchor
@@ -20220,34 +20661,37 @@ PageBlockList :: Maybe [PageBlockListItem] -> PageBlock
 [items] :: PageBlock -> Maybe [PageBlockListItem]
 
 -- | A block quote
-PageBlockBlockQuote :: Maybe RichText -> Maybe RichText -> PageBlock
+PageBlockBlockQuote :: Maybe [PageBlock] -> Maybe RichText -> PageBlock
 
--- | Paragraph text
-[text] :: PageBlock -> Maybe RichText
+-- | Quote blocks
+[blocks] :: PageBlock -> Maybe [PageBlock]
 
--- | Quote credit
+-- | Quote credit; may be null if none
 [credit] :: PageBlock -> Maybe RichText
 
 -- | A pull quote
 PageBlockPullQuote :: Maybe RichText -> Maybe RichText -> PageBlock
 
--- | Paragraph text
+-- | Text of the section heading
 [text] :: PageBlock -> Maybe RichText
 
--- | Quote credit
+-- | Quote credit; may be null if none
 [credit] :: PageBlock -> Maybe RichText
 
 -- | An animation
-PageBlockAnimation :: Maybe Animation -> Maybe PageBlockCaption -> Maybe Bool -> PageBlock
+PageBlockAnimation :: Maybe Animation -> Maybe PageBlockCaption -> Maybe Bool -> Maybe Bool -> PageBlock
 
 -- | Animation file; may be null
 [animation] :: PageBlock -> Maybe Animation
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | True, if the animation must be played automatically
 [need_autoplay] :: PageBlock -> Maybe Bool
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: PageBlock -> Maybe Bool
 
 -- | An audio file
 PageBlockAudio :: Maybe Audio -> Maybe PageBlockCaption -> PageBlock
@@ -20255,28 +20699,32 @@ PageBlockAudio :: Maybe Audio -> Maybe PageBlockCaption -> PageBlock
 -- | Audio file; may be null
 [audio] :: PageBlock -> Maybe Audio
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | A photo
-PageBlockPhoto :: Maybe Photo -> Maybe PageBlockCaption -> Maybe Text -> PageBlock
+PageBlockPhoto :: Maybe Photo -> Maybe PageBlockCaption -> Maybe Text -> Maybe Bool -> PageBlock
 
 -- | Photo file; may be null
 [photo] :: PageBlock -> Maybe Photo
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
--- | URL that needs to be opened when the photo is clicked
+-- | URL that needs to be opened when the photo is clicked; instant view
+--   only
 [url] :: PageBlock -> Maybe Text
 
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: PageBlock -> Maybe Bool
+
 -- | A video
-PageBlockVideo :: Maybe Video -> Maybe PageBlockCaption -> Maybe Bool -> Maybe Bool -> PageBlock
+PageBlockVideo :: Maybe Video -> Maybe PageBlockCaption -> Maybe Bool -> Maybe Bool -> Maybe Bool -> PageBlock
 
 -- | Video file; may be null
 [video] :: PageBlock -> Maybe Video
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | True, if the animation must be played automatically
@@ -20285,25 +20733,29 @@ PageBlockVideo :: Maybe Video -> Maybe PageBlockCaption -> Maybe Bool -> Maybe B
 -- | True, if the video must be looped
 [is_looped] :: PageBlock -> Maybe Bool
 
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: PageBlock -> Maybe Bool
+
 -- | A voice note
 PageBlockVoiceNote :: Maybe VoiceNote -> Maybe PageBlockCaption -> PageBlock
 
 -- | Voice note; may be null
 [voice_note] :: PageBlock -> Maybe VoiceNote
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
--- | A page cover
+-- | A page cover; instant view only
 PageBlockCover :: Maybe PageBlock -> PageBlock
 
 -- | Cover
 [cover] :: PageBlock -> Maybe PageBlock
 
--- | An embedded web page
+-- | An embedded web page; instant view only
 PageBlockEmbedded :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Int -> Maybe Int -> Maybe PageBlockCaption -> Maybe Bool -> Maybe Bool -> PageBlock
 
--- | URL that needs to be opened when the photo is clicked
+-- | URL that needs to be opened when the photo is clicked; instant view
+--   only
 [url] :: PageBlock -> Maybe Text
 
 -- | HTML-markup of the embedded page
@@ -20318,7 +20770,7 @@ PageBlockEmbedded :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Int -> May
 -- | Block height; 0 if unknown
 [height] :: PageBlock -> Maybe Int
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | True, if the block must be full width
@@ -20327,10 +20779,11 @@ PageBlockEmbedded :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Int -> May
 -- | True, if scrolling needs to be allowed
 [allow_scrolling] :: PageBlock -> Maybe Bool
 
--- | An embedded post
+-- | An embedded post; instant view only
 PageBlockEmbeddedPost :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Int -> Maybe [PageBlock] -> Maybe PageBlockCaption -> PageBlock
 
--- | URL that needs to be opened when the photo is clicked
+-- | URL that needs to be opened when the photo is clicked; instant view
+--   only
 [url] :: PageBlock -> Maybe Text
 
 -- | Post author
@@ -20342,31 +20795,31 @@ PageBlockEmbeddedPost :: Maybe Text -> Maybe Text -> Maybe Photo -> Maybe Int ->
 -- | Point in time (Unix timestamp) when the post was created; 0 if unknown
 [date] :: PageBlock -> Maybe Int
 
--- | Post content
-[page_blocks] :: PageBlock -> Maybe [PageBlock]
+-- | Quote blocks
+[blocks] :: PageBlock -> Maybe [PageBlock]
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | A collage
 PageBlockCollage :: Maybe [PageBlock] -> Maybe PageBlockCaption -> PageBlock
 
--- | Post content
-[page_blocks] :: PageBlock -> Maybe [PageBlock]
+-- | Quote blocks
+[blocks] :: PageBlock -> Maybe [PageBlock]
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
 -- | A slideshow
 PageBlockSlideshow :: Maybe [PageBlock] -> Maybe PageBlockCaption -> PageBlock
 
--- | Post content
-[page_blocks] :: PageBlock -> Maybe [PageBlock]
+-- | Quote blocks
+[blocks] :: PageBlock -> Maybe [PageBlock]
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 
--- | A link to a chat
+-- | A link to a chat; instant view only
 PageBlockChatLink :: Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Text -> PageBlock
 
 -- | Chat title
@@ -20386,7 +20839,7 @@ PageBlockChatLink :: Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Tex
 -- | A table
 PageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> PageBlock
 
--- | Table caption
+-- | Table caption; may be null if none
 [_caption] :: PageBlock -> Maybe RichText
 
 -- | Table cells
@@ -20404,13 +20857,13 @@ PageBlockDetails :: Maybe RichText -> Maybe [PageBlock] -> Maybe Bool -> PageBlo
 -- | Header
 [header] :: PageBlock -> Maybe RichText
 
--- | Post content
-[page_blocks] :: PageBlock -> Maybe [PageBlock]
+-- | Quote blocks
+[blocks] :: PageBlock -> Maybe [PageBlock]
 
 -- | True, if the block is open by default
 [is_open] :: PageBlock -> Maybe Bool
 
--- | Related articles
+-- | Related articles; instant view only
 PageBlockRelatedArticles :: Maybe RichText -> Maybe [PageBlockRelatedArticle] -> PageBlock
 
 -- | Header
@@ -20434,12 +20887,13 @@ PageBlockMap :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe P
 -- | Block height; 0 if unknown
 [height] :: PageBlock -> Maybe Int
 
--- | Animation caption
+-- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
 instance GHC.Show.Show TD.Data.PageBlock.PageBlock
 instance GHC.Classes.Eq TD.Data.PageBlock.PageBlock
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlock.PageBlock
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlock.PageBlock
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlock.PageBlock
 
 module TD.Data.WebPageInstantView
 data WebPageInstantView
@@ -20448,7 +20902,7 @@ data WebPageInstantView
 WebPageInstantView :: Maybe [PageBlock] -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe InternalLinkType -> WebPageInstantView
 
 -- | Content of the instant view page
-[page_blocks] :: WebPageInstantView -> Maybe [PageBlock]
+[blocks] :: WebPageInstantView -> Maybe [PageBlock]
 
 -- | Number of the instant view views; 0 if unknown
 [view_count] :: WebPageInstantView -> Maybe Int
@@ -20469,6 +20923,116 @@ instance GHC.Show.Show TD.Data.WebPageInstantView.WebPageInstantView
 instance GHC.Classes.Eq TD.Data.WebPageInstantView.WebPageInstantView
 instance TD.Lib.Internal.ShortShow TD.Data.WebPageInstantView.WebPageInstantView
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebPageInstantView.WebPageInstantView
+
+module TD.Data.RichMessage
+data RichMessage
+
+-- | Describes a message with rich formatting
+RichMessage :: Maybe [PageBlock] -> Maybe Bool -> Maybe Bool -> RichMessage
+
+-- | Content of the message
+[blocks] :: RichMessage -> Maybe [PageBlock]
+
+-- | True, if the message must be shown from right to left
+[is_rtl] :: RichMessage -> Maybe Bool
+
+-- | True, if the object contains the full message. Otherwise,
+--   getFullRichMessage must be used to get the full message
+[is_full] :: RichMessage -> Maybe Bool
+defaultRichMessage :: RichMessage
+instance GHC.Show.Show TD.Data.RichMessage.RichMessage
+instance GHC.Classes.Eq TD.Data.RichMessage.RichMessage
+instance TD.Lib.Internal.ShortShow TD.Data.RichMessage.RichMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessage.RichMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessage.RichMessage
+
+module TD.Data.DraftMessageContent
+
+-- | Content of the message draft
+data DraftMessageContent
+
+-- | A text message draft
+DraftMessageContentText :: Maybe FormattedText -> Maybe LinkPreviewOptions -> DraftMessageContent
+
+-- | Formatted text to be saved as a draft;
+--   0-getOption("message_text_length_max") characters
+[text] :: DraftMessageContent -> Maybe FormattedText
+
+-- | Options to be used for generation of a link preview; may be null if
+--   none; pass null to use default link preview options
+[link_preview_options] :: DraftMessageContent -> Maybe LinkPreviewOptions
+
+-- | A rich message draft; not supported in setChatDraftMessage
+DraftMessageContentRichMessage :: Maybe RichMessage -> DraftMessageContent
+
+-- | The rich message; the message must not have not yet uploaded media
+[message] :: DraftMessageContent -> Maybe RichMessage
+
+-- | A video note message draft
+DraftMessageContentVideoNote :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> DraftMessageContent
+
+-- | Path to the file with the video note
+[file_path] :: DraftMessageContent -> Maybe Text
+
+-- | Duration of the video, in seconds; 0-60
+[duration] :: DraftMessageContent -> Maybe Int
+
+-- | Video width and height; must be positive and not greater than 640
+[_length] :: DraftMessageContent -> Maybe Int
+
+-- | Video note self-destruct type; may be null if none; pass null if none;
+--   private chats only
+[self_destruct_type] :: DraftMessageContent -> Maybe MessageSelfDestructType
+
+-- | A voice note message draft
+DraftMessageContentVoiceNote :: Maybe Text -> Maybe Int -> Maybe ByteString -> Maybe MessageSelfDestructType -> DraftMessageContent
+
+-- | Path to the file with the video note
+[file_path] :: DraftMessageContent -> Maybe Text
+
+-- | Duration of the video, in seconds; 0-60
+[duration] :: DraftMessageContent -> Maybe Int
+
+-- | Waveform representation of the voice note in 5-bit format
+[waveform] :: DraftMessageContent -> Maybe ByteString
+
+-- | Video note self-destruct type; may be null if none; pass null if none;
+--   private chats only
+[self_destruct_type] :: DraftMessageContent -> Maybe MessageSelfDestructType
+instance GHC.Show.Show TD.Data.DraftMessageContent.DraftMessageContent
+instance GHC.Classes.Eq TD.Data.DraftMessageContent.DraftMessageContent
+instance TD.Lib.Internal.ShortShow TD.Data.DraftMessageContent.DraftMessageContent
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DraftMessageContent.DraftMessageContent
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.DraftMessageContent.DraftMessageContent
+
+module TD.Data.DraftMessage
+data DraftMessage
+
+-- | Contains information about a message draft
+DraftMessage :: Maybe InputMessageReplyTo -> Maybe Int -> Maybe DraftMessageContent -> Maybe Int -> Maybe InputSuggestedPostInfo -> DraftMessage
+
+-- | Information about the message to be replied; inputMessageReplyToStory
+--   is unsupported; may be null if none
+[reply_to] :: DraftMessage -> Maybe InputMessageReplyTo
+
+-- | Point in time (Unix timestamp) when the draft was created
+[date] :: DraftMessage -> Maybe Int
+
+-- | Content of the message draft
+[content] :: DraftMessage -> Maybe DraftMessageContent
+
+-- | Identifier of the effect to apply to the message when it is sent; 0 if
+--   none
+[effect_id] :: DraftMessage -> Maybe Int
+
+-- | Information about the suggested post; may be null if none
+[suggested_post_info] :: DraftMessage -> Maybe InputSuggestedPostInfo
+defaultDraftMessage :: DraftMessage
+instance GHC.Show.Show TD.Data.DraftMessage.DraftMessage
+instance GHC.Classes.Eq TD.Data.DraftMessage.DraftMessage
+instance TD.Lib.Internal.ShortShow TD.Data.DraftMessage.DraftMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.DraftMessage.DraftMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.DraftMessage.DraftMessage
 
 module TD.Data.Game
 data Game
@@ -20848,7 +21412,7 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe Int -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
@@ -20985,6 +21549,10 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int ->
 --   with can_invite_users right only
 [invite_link] :: SupergroupFullInfo -> Maybe ChatInviteLink
 
+-- | User identifier of the guard bot in the group; for chat administrators
+--   only
+[guard_bot_user_id] :: SupergroupFullInfo -> Maybe Int
+
 -- | List of commands of bots in the group
 [bot_commands] :: SupergroupFullInfo -> Maybe [BotCommands]
 
@@ -21034,7 +21602,7 @@ LinkPreviewTypeApp :: Maybe Photo -> LinkPreviewType
 -- | Photo for the app
 [photo] :: LinkPreviewType -> Maybe Photo
 
--- | The link is a link to a web site
+-- | The link is a link to a website
 LinkPreviewTypeArticle :: Maybe Photo -> LinkPreviewType
 
 -- | Photo for the app
@@ -21357,7 +21925,7 @@ LinkPreview :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe For
 -- | URL to display
 [display_url] :: LinkPreview -> Maybe Text
 
--- | Short name of the site (e.g., Google Docs, App Store)
+-- | Short name of the website (e.g., Google Docs, App Store)
 [site_name] :: LinkPreview -> Maybe Text
 
 -- | Title of the content
@@ -21486,6 +22054,239 @@ instance GHC.Show.Show TD.Data.AlternativeVideo.AlternativeVideo
 instance GHC.Classes.Eq TD.Data.AlternativeVideo.AlternativeVideo
 instance TD.Lib.Internal.ShortShow TD.Data.AlternativeVideo.AlternativeVideo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AlternativeVideo.AlternativeVideo
+
+module TD.Data.PollMedia
+
+-- | Contains the media in a poll
+data PollMedia
+
+-- | An animation
+PollMediaAnimation :: Maybe Animation -> PollMedia
+
+-- | The animation
+[animation] :: PollMedia -> Maybe Animation
+
+-- | An audio
+PollMediaAudio :: Maybe Audio -> PollMedia
+
+-- | The audio
+[audio] :: PollMedia -> Maybe Audio
+
+-- | A document (general file)
+PollMediaDocument :: Maybe Document -> PollMedia
+
+-- | The document
+[document] :: PollMedia -> Maybe Document
+
+-- | A link
+PollMediaLink :: Maybe Text -> Maybe LinkPreview -> PollMedia
+
+-- | URL of the link
+[url] :: PollMedia -> Maybe Text
+
+-- | Preview of the link; may be null if unknown
+[link_preview] :: PollMedia -> Maybe LinkPreview
+
+-- | A location
+PollMediaLocation :: Maybe Location -> PollMedia
+
+-- | The location
+[location] :: PollMedia -> Maybe Location
+
+-- | A photo
+PollMediaPhoto :: Maybe Photo -> Maybe Video -> PollMedia
+
+-- | The photo
+[photo] :: PollMedia -> Maybe Photo
+
+-- | The video representing the live photo; may be null if the photo is
+--   static
+[video] :: PollMedia -> Maybe Video
+
+-- | A sticker
+PollMediaSticker :: Maybe Sticker -> PollMedia
+
+-- | The sticker
+[sticker] :: PollMedia -> Maybe Sticker
+
+-- | A venue
+PollMediaVenue :: Maybe Venue -> PollMedia
+
+-- | The venue
+[venue] :: PollMedia -> Maybe Venue
+
+-- | A video
+PollMediaVideo :: Maybe Video -> Maybe [AlternativeVideo] -> Maybe [VideoStoryboard] -> Maybe Photo -> Maybe Int -> PollMedia
+
+-- | The video representing the live photo; may be null if the photo is
+--   static
+[video] :: PollMedia -> Maybe Video
+
+-- | Alternative qualities of the video
+[alternative_videos] :: PollMedia -> Maybe [AlternativeVideo]
+
+-- | Available storyboards for the video
+[storyboards] :: PollMedia -> Maybe [VideoStoryboard]
+
+-- | Cover of the video; may be null if none
+[cover] :: PollMedia -> Maybe Photo
+
+-- | Timestamp from which the video playing must start, in seconds
+[start_timestamp] :: PollMedia -> Maybe Int
+instance GHC.Show.Show TD.Data.PollMedia.PollMedia
+instance GHC.Classes.Eq TD.Data.PollMedia.PollMedia
+instance TD.Lib.Internal.ShortShow TD.Data.PollMedia.PollMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollMedia.PollMedia
+
+module TD.Data.PollType
+
+-- | Describes the type of poll
+data PollType
+
+-- | A regular poll
+PollTypeRegular :: PollType
+
+-- | A poll in quiz mode, which has predefined correct answers
+PollTypeQuiz :: Maybe [Int] -> Maybe FormattedText -> Maybe PollMedia -> PollType
+
+-- | Increasing list of 0-based identifiers of the correct answer options;
+--   empty for a yet unanswered poll
+[correct_option_ids] :: PollType -> Maybe [Int]
+
+-- | Text that is shown when the user chooses an incorrect answer or taps
+--   on the lamp icon; empty for a yet unanswered poll
+[explanation] :: PollType -> Maybe FormattedText
+
+-- | Media that is shown when the user chooses an incorrect answer or taps
+--   on the lamp icon; may be null if none or the poll is unanswered yet.
+--   If present, currently, can be only of the types pollMediaAnimation,
+--   pollMediaAudio, pollMediaDocument, pollMediaLocation, pollMediaPhoto,
+--   pollMediaVenue, or pollMediaVideo
+[explanation_media] :: PollType -> Maybe PollMedia
+instance GHC.Show.Show TD.Data.PollType.PollType
+instance GHC.Classes.Eq TD.Data.PollType.PollType
+instance TD.Lib.Internal.ShortShow TD.Data.PollType.PollType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollType.PollType
+
+module TD.Data.PollOption
+data PollOption
+
+-- | Describes one answer option of a poll
+PollOption :: Maybe Text -> Maybe FormattedText -> Maybe PollMedia -> Maybe Int -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe MessageSender -> Maybe Int -> PollOption
+
+-- | Unique identifier of the option in the poll; may be empty if yet
+--   unassigned
+[_id] :: PollOption -> Maybe Text
+
+-- | Option text; 1-100 characters; may contain only custom emoji entities
+[text] :: PollOption -> Maybe FormattedText
+
+-- | Option media; may be null if none. If present, currently, can be only
+--   of the types pollMediaAnimation, pollMediaLink, pollMediaLocation,
+--   pollMediaPhoto, pollMediaSticker, pollMediaVenue, or pollMediaVideo
+[media] :: PollOption -> Maybe PollMedia
+
+-- | Number of voters for this option, available only for closed or voted
+--   polls, or if the current user is the creator of the poll
+[voter_count] :: PollOption -> Maybe Int
+
+-- | The percentage of votes for this option; 0-100
+[vote_percentage] :: PollOption -> Maybe Int
+
+-- | Identifiers of recent voters for the option, if the poll is
+--   non-anonymous and poll results are available
+[recent_voter_ids] :: PollOption -> Maybe [MessageSender]
+
+-- | True, if the option was chosen by the user
+[is_chosen] :: PollOption -> Maybe Bool
+
+-- | True, if the option is being chosen by a pending setPollAnswer request
+[is_being_chosen] :: PollOption -> Maybe Bool
+
+-- | Identifier of the user or chat who added the option; may be null if
+--   the option existed from creation of the poll
+[author] :: PollOption -> Maybe MessageSender
+
+-- | Point in time (Unix timestamp) when the option was added; 0 if the
+--   option existed from creation of the poll
+[addition_date] :: PollOption -> Maybe Int
+instance GHC.Show.Show TD.Data.PollOption.PollOption
+instance GHC.Classes.Eq TD.Data.PollOption.PollOption
+instance TD.Lib.Internal.ShortShow TD.Data.PollOption.PollOption
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PollOption.PollOption
+
+module TD.Data.Poll
+data Poll
+
+-- | Describes a poll
+Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> Maybe [MessageSender] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Text] -> Maybe [Int] -> Maybe PollType -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe PollVoteRestrictionReason -> Poll
+
+-- | Unique poll identifier
+[_id] :: Poll -> Maybe Int
+
+-- | Poll question; 1-300 characters; may contain only custom emoji
+--   entities
+[question] :: Poll -> Maybe FormattedText
+
+-- | List of poll answer options
+[options] :: Poll -> Maybe [PollOption]
+
+-- | Total number of voters, participating in the poll
+[total_voter_count] :: Poll -> Maybe Int
+
+-- | Identifiers of recent voters, if the poll is non-anonymous and poll
+--   results are available
+[recent_voter_ids] :: Poll -> Maybe [MessageSender]
+
+-- | True, if the current user can get voters in the poll using
+--   getPollVoters
+[can_get_voters] :: Poll -> Maybe Bool
+
+-- | True, if the current user can see results of the poll
+[can_see_results] :: Poll -> Maybe Bool
+
+-- | True, if the poll is anonymous
+[is_anonymous] :: Poll -> Maybe Bool
+
+-- | True, if multiple answer options can be chosen simultaneously
+[allows_multiple_answers] :: Poll -> Maybe Bool
+
+-- | True, if the poll can be answered multiple times
+[allows_revoting] :: Poll -> Maybe Bool
+
+-- | True, if only the users that are members of the chat for more than a
+--   day will be able to vote
+[members_only] :: Poll -> Maybe Bool
+
+-- | The list of two-letter ISO 3166-1 alpha-2 codes of countries, users
+--   from which will be able to vote. If empty, then all users can
+--   participate in the poll
+[country_codes] :: Poll -> Maybe [Text]
+
+-- | The list of 0-based poll identifiers in which the options of the poll
+--   must be shown; empty if the order of options must not be changed
+[option_order] :: Poll -> Maybe [Int]
+
+-- | Type of the poll
+[_type] :: Poll -> Maybe PollType
+
+-- | Amount of time the poll will be active after creation, in seconds
+[open_period] :: Poll -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the poll will automatically be
+--   closed
+[close_date] :: Poll -> Maybe Int
+
+-- | True, if the poll is closed
+[is_closed] :: Poll -> Maybe Bool
+
+-- | The reason describing, why the current user can't vote in the poll;
+--   may be null if the user can vote in the poll
+[vote_restriction_reason] :: Poll -> Maybe PollVoteRestrictionReason
+instance GHC.Show.Show TD.Data.Poll.Poll
+instance GHC.Classes.Eq TD.Data.Poll.Poll
+instance TD.Lib.Internal.ShortShow TD.Data.Poll.Poll
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Poll.Poll
 
 module TD.Data.AgeVerificationParameters
 data AgeVerificationParameters
@@ -22734,6 +23535,13 @@ MessageText :: Maybe FormattedText -> Maybe LinkPreview -> Maybe LinkPreviewOpti
 --   null if default options were used
 [link_preview_options] :: MessageContent -> Maybe LinkPreviewOptions
 
+-- | A rich message; the message can have multiple media of the same type,
+--   all of which must be shown in the corresponding profile tab
+MessageRichMessage :: Maybe RichMessage -> MessageContent
+
+-- | The rich message
+[message] :: MessageContent -> Maybe RichMessage
+
 -- | An animation message (GIF-style).
 MessageAnimation :: Maybe Animation -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
 
@@ -22892,30 +23700,22 @@ MessageExpiredVideoNote :: MessageContent
 -- | A self-destructed voice note message
 MessageExpiredVoiceNote :: MessageContent
 
--- | A message with a location
-MessageLocation :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+-- | A message with a live location
+MessageLiveLocation :: Maybe LiveLocation -> Maybe Int -> MessageContent
 
--- | The location description
-[location] :: MessageContent -> Maybe Location
-
--- | Time relative to the message send date, for which the location can be
---   updated, in seconds; if 0x7FFFFFFF, then location can be updated
---   forever
-[live_period] :: MessageContent -> Maybe Int
+-- | The current location
+[location] :: MessageContent -> Maybe LiveLocation
 
 -- | Left time for which the location can be updated, in seconds. If 0,
 --   then the location can't be updated anymore. The update
 --   updateMessageContent is not sent when this field changes
 [expires_in] :: MessageContent -> Maybe Int
 
--- | For live locations, a direction in which the location moves, in
---   degrees; 1-360. If 0 the direction is unknown
-[heading] :: MessageContent -> Maybe Int
+-- | A message with a location
+MessageLocation :: Maybe Location -> MessageContent
 
--- | For live locations, a maximum distance to another chat member for
---   proximity alerts, in meters (0-100000). 0 if the notification is
---   disabled. Available only to the message sender
-[proximity_alert_radius] :: MessageContent -> Maybe Int
+-- | The location
+[_location] :: MessageContent -> Maybe Location
 
 -- | A message with information about a venue
 MessageVenue :: Maybe Venue -> MessageContent
@@ -22969,7 +23769,7 @@ MessageGame :: Maybe Game -> MessageContent
 [game] :: MessageContent -> Maybe Game
 
 -- | A message with a poll
-MessagePoll :: Maybe Poll -> Maybe FormattedText -> Maybe MessageContent -> Maybe Bool -> MessageContent
+MessagePoll :: Maybe Poll -> Maybe FormattedText -> Maybe PollMedia -> Maybe Bool -> MessageContent
 
 -- | Information about the poll
 [poll] :: MessageContent -> Maybe Poll
@@ -22978,10 +23778,10 @@ MessagePoll :: Maybe Poll -> Maybe FormattedText -> Maybe MessageContent -> Mayb
 [description] :: MessageContent -> Maybe FormattedText
 
 -- | Media attached to the poll; may be null if none. If present,
---   currently, can be only of the types messageAnimation, messageAudio,
---   messageDocument, messageLocation, messagePhoto, messageVenue, or
---   messageVideo without caption
-[_media] :: MessageContent -> Maybe MessageContent
+--   currently, can be only of the types pollMediaAnimation,
+--   pollMediaAudio, pollMediaDocument, pollMediaLocation, pollMediaPhoto,
+--   pollMediaVenue, or pollMediaVideo
+[_media] :: MessageContent -> Maybe PollMedia
 
 -- | True, if an option can be added to the poll using addPollOption
 [can_add_option] :: MessageContent -> Maybe Bool
@@ -25947,8 +26747,7 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 [join_to_send_messages] :: Supergroup -> Maybe Bool
 
 -- | True, if all users directly joining the supergroup need to be approved
---   by supergroup administrators. May be true only for non-broadcast
---   supergroups with username, location, or a linked chat
+--   by supergroup administrators
 [join_by_request] :: Supergroup -> Maybe Bool
 
 -- | True, if the slow mode is enabled in the supergroup
@@ -27265,12 +28064,12 @@ UpdateChatAction :: Maybe Int -> Maybe MessageTopic -> Maybe MessageSender -> Ma
 -- | The action
 [action] :: Update -> Maybe ChatAction
 
--- | A new pending text message was received in a chat with a bot. The
---   message must be shown in the chat for at most
+-- | A new pending text or rich message was received in a chat with a bot.
+--   The message must be shown in the chat for at most
 --   getOption("pending_text_message_period") seconds, replace any other
 --   pending message with the same draft_id, and be deleted whenever any
 --   incoming message from the bot in the message thread is received
-UpdatePendingTextMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> Update
+UpdatePendingMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageContent -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -27281,8 +28080,9 @@ UpdatePendingTextMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Formatt
 -- | Unique identifier of the message draft within the message thread
 [draft_id] :: Update -> Maybe Int
 
--- | Text of the pending message
-[text] :: Update -> Maybe FormattedText
+-- | Content of the message; always of the type messageText or
+--   messageRichMessage
+[content] :: Update -> Maybe MessageContent
 
 -- | The user went online or offline
 UpdateUserStatus :: Maybe Int -> Maybe UserStatus -> Update
@@ -27360,7 +28160,8 @@ UpdateServiceNotification :: Maybe Text -> Maybe MessageContent -> Update
 --   Destroy method
 [__type] :: Update -> Maybe Text
 
--- | Notification content
+-- | Content of the message; always of the type messageText or
+--   messageRichMessage
 [content] :: Update -> Maybe MessageContent
 
 -- | An OAuth authorization request was received
@@ -27663,6 +28464,20 @@ UpdateUnreadChatCount :: Maybe ChatList -> Maybe Int -> Maybe Int -> Maybe Int -
 -- | Total number of unmuted chats marked as unread
 [marked_as_unread_unmuted_count] :: Update -> Maybe Int
 
+-- | A join request from the user was completed
+UpdateChatJoinResult :: Maybe Int -> Maybe Int -> Maybe ChatJoinRequestResult -> Update
+
+-- | Identifier of the join request query as received in
+--   chatJoinResultGuardBotApprovalRequired. If the corresponding Web App
+--   is stiil open, then it must be closed
+[query_id] :: Update -> Maybe Int
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | Result of the join
+[result] :: Update -> Maybe ChatJoinRequestResult
+
 -- | A story was changed
 UpdateStory :: Maybe Story -> Update
 
@@ -27840,6 +28655,12 @@ UpdateProfileAccentColors :: Maybe [ProfileAccentColor] -> Maybe [Int] -> Update
 --   specified order
 [available_accent_color_ids] :: Update -> Maybe [Int]
 
+-- | Web browser settings have been updated
+UpdateWebBrowserSettings :: Maybe WebBrowserSettings -> Update
+
+-- | New settings
+[settings] :: Update -> Maybe WebBrowserSettings
+
 -- | Some language pack strings have been updated
 UpdateLanguagePackStrings :: Maybe Text -> Maybe Text -> Maybe [LanguagePackString] -> Update
 
@@ -27897,10 +28718,13 @@ UpdateTermsOfService :: Maybe Text -> Maybe TermsOfService -> Update
 [terms_of_service] :: Update -> Maybe TermsOfService
 
 -- | The first unconfirmed session has changed
-UpdateUnconfirmedSession :: Maybe UnconfirmedSession -> Update
+UpdateUnconfirmedSession :: Maybe UnconfirmedSession -> Maybe Int -> Update
 
 -- | The unconfirmed session; may be null if none
 [session] :: Update -> Maybe UnconfirmedSession
+
+-- | The total number of unconfirmed sessions
+[unconfirmed_session_count] :: Update -> Maybe Int
 
 -- | The list of bots added to attachment or side menu has changed
 UpdateAttachmentMenuBots :: Maybe [AttachmentMenuBot] -> Update
@@ -28113,7 +28937,7 @@ UpdateAutosaveSettings :: Maybe AutosaveSettingsScope -> Maybe ScopeAutosaveSett
 
 -- | The new autosave settings; may be null if the settings are reset to
 --   default
-[settings] :: Update -> Maybe ScopeAutosaveSettings
+[_settings] :: Update -> Maybe ScopeAutosaveSettings
 
 -- | A business connection has changed; for bots only
 UpdateBusinessConnection :: Maybe BusinessConnection -> Update
@@ -28389,7 +29213,7 @@ UpdateChatMember :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatInviteLink 
 [new_chat_member] :: Update -> Maybe ChatMember
 
 -- | A user sent a join request to a chat; for bots only
-UpdateNewChatJoinRequest :: Maybe Int -> Maybe ChatJoinRequest -> Maybe Int -> Maybe ChatInviteLink -> Update
+UpdateNewChatJoinRequest :: Maybe Int -> Maybe ChatJoinRequest -> Maybe Int -> Maybe ChatInviteLink -> Maybe Int -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -28403,6 +29227,11 @@ UpdateNewChatJoinRequest :: Maybe Int -> Maybe ChatJoinRequest -> Maybe Int -> M
 -- | If user has joined the chat using an invite link, the invite link; may
 --   be null
 [invite_link] :: Update -> Maybe ChatInviteLink
+
+-- | Identifier of the join request query as received in
+--   chatJoinResultGuardBotApprovalRequired. If the corresponding Web App
+--   is stiil open, then it must be closed
+[query_id] :: Update -> Maybe Int
 
 -- | A chat boost has changed; for bots only
 UpdateChatBoost :: Maybe Int -> Maybe ChatBoost -> Update
@@ -28509,7 +29338,7 @@ BotMenuButton :: BotMenuButton -> GeneralResult
 BusinessChatLink :: BusinessChatLink -> GeneralResult
 BusinessChatLinkInfo :: BusinessChatLinkInfo -> GeneralResult
 BusinessChatLinks :: BusinessChatLinks -> GeneralResult
-BusinessConnectedBot :: BusinessConnectedBot -> GeneralResult
+BusinessConnectedBotInfo :: BusinessConnectedBotInfo -> GeneralResult
 BusinessConnection :: BusinessConnection -> GeneralResult
 BusinessFeatures :: BusinessFeatures -> GeneralResult
 BusinessMessage :: BusinessMessage -> GeneralResult
@@ -28542,6 +29371,7 @@ ChatInviteLinkInfo :: ChatInviteLinkInfo -> GeneralResult
 ChatInviteLinkMembers :: ChatInviteLinkMembers -> GeneralResult
 ChatInviteLinks :: ChatInviteLinks -> GeneralResult
 ChatJoinRequests :: ChatJoinRequests -> GeneralResult
+ChatJoinResult :: ChatJoinResult -> GeneralResult
 ChatLists :: ChatLists -> GeneralResult
 ChatMember :: ChatMember -> GeneralResult
 ChatMembers :: ChatMembers -> GeneralResult
@@ -28559,6 +29389,7 @@ ConnectedAffiliatePrograms :: ConnectedAffiliatePrograms -> GeneralResult
 ConnectedWebsites :: ConnectedWebsites -> GeneralResult
 Count :: Count -> GeneralResult
 Countries :: Countries -> GeneralResult
+CountryInfo :: CountryInfo -> GeneralResult
 CraftGiftResult :: CraftGiftResult -> GeneralResult
 CreatedBasicGroupChat :: CreatedBasicGroupChat -> GeneralResult
 CurrentWeather :: CurrentWeather -> GeneralResult
@@ -28693,6 +29524,7 @@ ReportChatResult :: ReportChatResult -> GeneralResult
 ReportSponsoredResult :: ReportSponsoredResult -> GeneralResult
 ReportStoryResult :: ReportStoryResult -> GeneralResult
 ResetPasswordResult :: ResetPasswordResult -> GeneralResult
+RichMessage :: RichMessage -> GeneralResult
 RtmpUrl :: RtmpUrl -> GeneralResult
 SavedMessagesTags :: SavedMessagesTags -> GeneralResult
 ScopeNotificationSettings :: ScopeNotificationSettings -> GeneralResult
@@ -28757,6 +29589,8 @@ Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
 VideoMessageAdvertisements :: VideoMessageAdvertisements -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
+WebAppUrl :: WebAppUrl -> GeneralResult
+WebBrowserType :: WebBrowserType -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
 instance GHC.Show.Show TD.GeneralResult.GeneralResult
 instance GHC.Classes.Eq TD.GeneralResult.GeneralResult
@@ -29414,8 +30248,7 @@ AddQuickReplyShortcutMessage :: Maybe Text -> Maybe Int -> Maybe InputMessageCon
 [reply_to_message_id] :: AddQuickReplyShortcutMessage -> Maybe Int
 
 -- | The content of the message to be added; inputMessagePaidMedia,
---   inputMessageForwarded and inputMessageLocation with live_period aren't
---   supported
+--   inputMessageForwarded and inputMessageLiveLocation
 [input_message_content] :: AddQuickReplyShortcutMessage -> Maybe InputMessageContent
 defaultAddQuickReplyShortcutMessage :: AddQuickReplyShortcutMessage
 instance GHC.Show.Show TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
@@ -29587,6 +30420,26 @@ instance GHC.Classes.Eq TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
 instance TD.Lib.Internal.ShortShow TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddTextCompositionStyle.AddTextCompositionStyle
 
+module TD.Query.AddWebBrowserSettingsException
+
+-- | Adds a special handling for the opening of the specified URL. Returns
+--   <a>Ok</a>
+data AddWebBrowserSettingsException
+AddWebBrowserSettingsException :: Maybe Bool -> Maybe Text -> AddWebBrowserSettingsException
+
+-- | Pass true if the specified website must be opened in an external
+--   browser; pass false to open it in the in-app browser. There can be at
+--   most 100 exceptions in each list of the exceptions
+[open_external_browser] :: AddWebBrowserSettingsException -> Maybe Bool
+
+-- | URL of the website
+[url] :: AddWebBrowserSettingsException -> Maybe Text
+defaultAddWebBrowserSettingsException :: AddWebBrowserSettingsException
+instance GHC.Show.Show TD.Query.AddWebBrowserSettingsException.AddWebBrowserSettingsException
+instance GHC.Classes.Eq TD.Query.AddWebBrowserSettingsException.AddWebBrowserSettingsException
+instance TD.Lib.Internal.ShortShow TD.Query.AddWebBrowserSettingsException.AddWebBrowserSettingsException
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddWebBrowserSettingsException.AddWebBrowserSettingsException
+
 module TD.Query.AllowBotToSendMessages
 
 -- | Allows the specified bot to send messages to the user. Returns
@@ -29645,6 +30498,26 @@ instance GHC.Show.Show TD.Query.AnswerCallbackQuery.AnswerCallbackQuery
 instance GHC.Classes.Eq TD.Query.AnswerCallbackQuery.AnswerCallbackQuery
 instance TD.Lib.Internal.ShortShow TD.Query.AnswerCallbackQuery.AnswerCallbackQuery
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerCallbackQuery.AnswerCallbackQuery
+
+module TD.Query.AnswerChatJoinRequestQuery
+
+-- | Sets the result of a chat join query; for bots only. Returns <a>Ok</a>
+data AnswerChatJoinRequestQuery
+AnswerChatJoinRequestQuery :: Maybe Int -> Maybe ChatJoinRequestResult -> Maybe Text -> AnswerChatJoinRequestQuery
+
+-- | Identifier of the query
+[query_id] :: AnswerChatJoinRequestQuery -> Maybe Int
+
+-- | The result
+[result] :: AnswerChatJoinRequestQuery -> Maybe ChatJoinRequestResult
+
+-- | URL of the Web App to open
+[url] :: AnswerChatJoinRequestQuery -> Maybe Text
+defaultAnswerChatJoinRequestQuery :: AnswerChatJoinRequestQuery
+instance GHC.Show.Show TD.Query.AnswerChatJoinRequestQuery.AnswerChatJoinRequestQuery
+instance GHC.Classes.Eq TD.Query.AnswerChatJoinRequestQuery.AnswerChatJoinRequestQuery
+instance TD.Lib.Internal.ShortShow TD.Query.AnswerChatJoinRequestQuery.AnswerChatJoinRequestQuery
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerChatJoinRequestQuery.AnswerChatJoinRequestQuery
 
 module TD.Query.AnswerCustomQuery
 
@@ -30128,6 +31001,24 @@ instance GHC.Classes.Eq TD.Query.ChangeStickerSet.ChangeStickerSet
 instance TD.Lib.Internal.ShortShow TD.Query.ChangeStickerSet.ChangeStickerSet
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ChangeStickerSet.ChangeStickerSet
 
+module TD.Query.ChangeWebBrowserSettings
+
+-- | Changes web browser settings. Returns <a>Ok</a>
+data ChangeWebBrowserSettings
+ChangeWebBrowserSettings :: Maybe Bool -> Maybe Bool -> ChangeWebBrowserSettings
+
+-- | Pass true if links must be opened in an external browser by default
+[open_external_browser] :: ChangeWebBrowserSettings -> Maybe Bool
+
+-- | Pass true if a close button must be shown in the in-app browser; for
+--   Android app only
+[display_close_button] :: ChangeWebBrowserSettings -> Maybe Bool
+defaultChangeWebBrowserSettings :: ChangeWebBrowserSettings
+instance GHC.Show.Show TD.Query.ChangeWebBrowserSettings.ChangeWebBrowserSettings
+instance GHC.Classes.Eq TD.Query.ChangeWebBrowserSettings.ChangeWebBrowserSettings
+instance TD.Lib.Internal.ShortShow TD.Query.ChangeWebBrowserSettings.ChangeWebBrowserSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ChangeWebBrowserSettings.ChangeWebBrowserSettings
+
 module TD.Query.CheckAuthenticationBotToken
 
 -- | Checks the authentication token of a bot; to log in as a bot. Works
@@ -30261,6 +31152,26 @@ instance GHC.Show.Show TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenti
 instance GHC.Classes.Eq TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
 instance TD.Lib.Internal.ShortShow TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationPremiumPurchase.CheckAuthenticationPremiumPurchase
+
+module TD.Query.CheckAuthenticationWebToken
+
+-- | Checks a web token to log in to the corresponding account; for
+--   official Telegram apps only. Works only when the current authorization
+--   state is authorizationStateWaitPhoneNumber or
+--   authorizationStateWaitOtherDeviceConfirmation. Returns <a>Ok</a>
+data CheckAuthenticationWebToken
+CheckAuthenticationWebToken :: Maybe Text -> Maybe Int -> CheckAuthenticationWebToken
+
+-- | The token to check
+[token] :: CheckAuthenticationWebToken -> Maybe Text
+
+-- | Identifier of the datacenter of the user
+[dc_id] :: CheckAuthenticationWebToken -> Maybe Int
+defaultCheckAuthenticationWebToken :: CheckAuthenticationWebToken
+instance GHC.Show.Show TD.Query.CheckAuthenticationWebToken.CheckAuthenticationWebToken
+instance GHC.Classes.Eq TD.Query.CheckAuthenticationWebToken.CheckAuthenticationWebToken
+instance TD.Lib.Internal.ShortShow TD.Query.CheckAuthenticationWebToken.CheckAuthenticationWebToken
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationWebToken.CheckAuthenticationWebToken
 
 module TD.Query.CheckBotUsername
 
@@ -30821,6 +31732,20 @@ instance GHC.Show.Show TD.Query.ComposeTextWithAi.ComposeTextWithAi
 instance GHC.Classes.Eq TD.Query.ComposeTextWithAi.ComposeTextWithAi
 instance TD.Lib.Internal.ShortShow TD.Query.ComposeTextWithAi.ComposeTextWithAi
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ComposeTextWithAi.ComposeTextWithAi
+
+module TD.Query.ConfirmBusinessConnectedBot
+
+-- | Confirms an unconfirmed business connection of the current user from
+--   another device. Returns <a>Ok</a>
+data ConfirmBusinessConnectedBot
+ConfirmBusinessConnectedBot :: Maybe Int -> ConfirmBusinessConnectedBot
+
+-- | User identifier of the bot
+[bot_user_id] :: ConfirmBusinessConnectedBot -> Maybe Int
+instance GHC.Show.Show TD.Query.ConfirmBusinessConnectedBot.ConfirmBusinessConnectedBot
+instance GHC.Classes.Eq TD.Query.ConfirmBusinessConnectedBot.ConfirmBusinessConnectedBot
+instance TD.Lib.Internal.ShortShow TD.Query.ConfirmBusinessConnectedBot.ConfirmBusinessConnectedBot
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ConfirmBusinessConnectedBot.ConfirmBusinessConnectedBot
 
 module TD.Query.ConfirmQrCodeAuthentication
 
@@ -32556,7 +33481,7 @@ module TD.Query.EditBusinessMessageLiveLocation
 -- | Edits the content of a live location in a message sent on behalf of a
 --   business account; for bots only. Returns <a>BusinessMessage</a>
 data EditBusinessMessageLiveLocation
-EditBusinessMessageLiveLocation :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditBusinessMessageLiveLocation
+EditBusinessMessageLiveLocation :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe LiveLocation -> EditBusinessMessageLiveLocation
 
 -- | Unique identifier of business connection on behalf of which the
 --   message was sent
@@ -32571,24 +33496,11 @@ EditBusinessMessageLiveLocation :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe
 -- | The new message reply markup; pass null if none
 [reply_markup] :: EditBusinessMessageLiveLocation -> Maybe ReplyMarkup
 
--- | New location content of the message; pass null to stop sharing the
---   live location
-[location] :: EditBusinessMessageLiveLocation -> Maybe Location
-
--- | New time relative to the message send date, for which the location can
---   be updated, in seconds. If 0x7FFFFFFF specified, then the location can
---   be updated forever. Otherwise, must not exceed the current live_period
---   by more than a day, and the live location expiration date must remain
---   in the next 90 days. Pass 0 to keep the current live_period
-[live_period] :: EditBusinessMessageLiveLocation -> Maybe Int
-
--- | The new direction in which the location moves, in degrees; 1-360. Pass
---   0 if unknown
-[heading] :: EditBusinessMessageLiveLocation -> Maybe Int
-
--- | The new maximum distance for proximity alerts, in meters (0-100000).
---   Pass 0 if the notification is disabled
-[proximity_alert_radius] :: EditBusinessMessageLiveLocation -> Maybe Int
+-- | New live location of the message; pass null to stop sharing the live
+--   location. If the new live_period isn't set to 0x7FFFFFFF, then it must
+--   not exceed the current live_period by more than a day, and the live
+--   location expiration date must remain in the next 90 days
+[location] :: EditBusinessMessageLiveLocation -> Maybe LiveLocation
 defaultEditBusinessMessageLiveLocation :: EditBusinessMessageLiveLocation
 instance GHC.Show.Show TD.Query.EditBusinessMessageLiveLocation.EditBusinessMessageLiveLocation
 instance GHC.Classes.Eq TD.Query.EditBusinessMessageLiveLocation.EditBusinessMessageLiveLocation
@@ -32671,7 +33583,8 @@ EditBusinessMessageText :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyMa
 -- | The new message reply markup; pass null if none
 [reply_markup] :: EditBusinessMessageText -> Maybe ReplyMarkup
 
--- | New text content of the message. Must be of type inputMessageText
+-- | New text content of the message. Must be of type inputMessageText or
+--   inputMessageRichMessage
 [input_message_content] :: EditBusinessMessageText -> Maybe InputMessageContent
 defaultEditBusinessMessageText :: EditBusinessMessageText
 instance GHC.Show.Show TD.Query.EditBusinessMessageText.EditBusinessMessageText
@@ -32893,7 +33806,7 @@ module TD.Query.EditInlineMessageLiveLocation
 -- | Edits the content of a live location in an inline message sent via a
 --   bot; for bots only. Returns <a>Ok</a>
 data EditInlineMessageLiveLocation
-EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditInlineMessageLiveLocation
+EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe LiveLocation -> EditInlineMessageLiveLocation
 
 -- | Inline message identifier
 [inline_message_id] :: EditInlineMessageLiveLocation -> Maybe Text
@@ -32901,24 +33814,11 @@ EditInlineMessageLiveLocation :: Maybe Text -> Maybe ReplyMarkup -> Maybe Locati
 -- | The new message reply markup; pass null if none
 [reply_markup] :: EditInlineMessageLiveLocation -> Maybe ReplyMarkup
 
--- | New location content of the message; pass null to stop sharing the
---   live location
-[location] :: EditInlineMessageLiveLocation -> Maybe Location
-
--- | New time relative to the message send date, for which the location can
---   be updated, in seconds. If 0x7FFFFFFF specified, then the location can
---   be updated forever. Otherwise, must not exceed the current live_period
---   by more than a day, and the live location expiration date must remain
---   in the next 90 days. Pass 0 to keep the current live_period
-[live_period] :: EditInlineMessageLiveLocation -> Maybe Int
-
--- | The new direction in which the location moves, in degrees; 1-360. Pass
---   0 if unknown
-[heading] :: EditInlineMessageLiveLocation -> Maybe Int
-
--- | The new maximum distance for proximity alerts, in meters (0-100000).
---   Pass 0 if the notification is disabled
-[proximity_alert_radius] :: EditInlineMessageLiveLocation -> Maybe Int
+-- | New live location of the message; pass null to stop sharing the live
+--   location. If the new live_period isn't set to 0x7FFFFFFF, then it must
+--   not exceed the current live_period by more than a day, and the live
+--   location expiration date must remain in the next 90 days
+[location] :: EditInlineMessageLiveLocation -> Maybe LiveLocation
 defaultEditInlineMessageLiveLocation :: EditInlineMessageLiveLocation
 instance GHC.Show.Show TD.Query.EditInlineMessageLiveLocation.EditInlineMessageLiveLocation
 instance GHC.Classes.Eq TD.Query.EditInlineMessageLiveLocation.EditInlineMessageLiveLocation
@@ -32980,7 +33880,8 @@ EditInlineMessageText :: Maybe Text -> Maybe ReplyMarkup -> Maybe InputMessageCo
 -- | The new message reply markup; pass null if none
 [reply_markup] :: EditInlineMessageText -> Maybe ReplyMarkup
 
--- | New text content of the message. Must be of type inputMessageText
+-- | New text content of the message. Must be of type inputMessageText or
+--   inputMessageRichMessage
 [input_message_content] :: EditInlineMessageText -> Maybe InputMessageContent
 defaultEditInlineMessageText :: EditInlineMessageText
 instance GHC.Show.Show TD.Query.EditInlineMessageText.EditInlineMessageText
@@ -33052,7 +33953,7 @@ module TD.Query.EditMessageLiveLocation
 --   the edited message after the edit is completed on the server side.
 --   Returns <a>Message</a>
 data EditMessageLiveLocation
-EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> EditMessageLiveLocation
+EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe LiveLocation -> EditMessageLiveLocation
 
 -- | The chat the message belongs to
 [chat_id] :: EditMessageLiveLocation -> Maybe Int
@@ -33064,24 +33965,11 @@ EditMessageLiveLocation :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe 
 -- | The new message reply markup; pass null if none; for bots only
 [reply_markup] :: EditMessageLiveLocation -> Maybe ReplyMarkup
 
--- | New location content of the message; pass null to stop sharing the
---   live location
-[location] :: EditMessageLiveLocation -> Maybe Location
-
--- | New time relative to the message send date, for which the location can
---   be updated, in seconds. If 0x7FFFFFFF specified, then the location can
---   be updated forever. Otherwise, must not exceed the current live_period
---   by more than a day, and the live location expiration date must remain
---   in the next 90 days. Pass 0 to keep the current live_period
-[live_period] :: EditMessageLiveLocation -> Maybe Int
-
--- | The new direction in which the location moves, in degrees; 1-360. Pass
---   0 if unknown
-[heading] :: EditMessageLiveLocation -> Maybe Int
-
--- | The new maximum distance for proximity alerts, in meters (0-100000).
---   Pass 0 if the notification is disabled
-[proximity_alert_radius] :: EditMessageLiveLocation -> Maybe Int
+-- | New live location of the message; pass null to stop sharing the live
+--   location. If the new live_period isn't set to 0x7FFFFFFF, then it must
+--   not exceed the current live_period by more than a day, and the live
+--   location expiration date must remain in the next 90 days
+[location] :: EditMessageLiveLocation -> Maybe LiveLocation
 defaultEditMessageLiveLocation :: EditMessageLiveLocation
 instance GHC.Show.Show TD.Query.EditMessageLiveLocation.EditMessageLiveLocation
 instance GHC.Classes.Eq TD.Query.EditMessageLiveLocation.EditMessageLiveLocation
@@ -33186,7 +34074,8 @@ EditMessageText :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMes
 -- | The new message reply markup; pass null if none; for bots only
 [reply_markup] :: EditMessageText -> Maybe ReplyMarkup
 
--- | New text content of the message. Must be of type inputMessageText
+-- | New text content of the message. Must be of type inputMessageText or
+--   inputMessageRichMessage
 [input_message_content] :: EditMessageText -> Maybe InputMessageContent
 defaultEditMessageText :: EditMessageText
 instance GHC.Show.Show TD.Query.EditMessageText.EditMessageText
@@ -33238,8 +34127,8 @@ EditQuickReplyMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageContent -> 
 
 -- | New content of the message. Must be one of the following types:
 --   inputMessageAnimation, inputMessageAudio, inputMessageChecklist,
---   inputMessageDocument, inputMessagePhoto, inputMessageText, or
---   inputMessageVideo
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageText, or inputMessageVideo
 [input_message_content] :: EditQuickReplyMessage -> Maybe InputMessageContent
 defaultEditQuickReplyMessage :: EditQuickReplyMessage
 instance GHC.Show.Show TD.Query.EditQuickReplyMessage.EditQuickReplyMessage
@@ -33540,8 +34429,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAccountTtl.GetAccountTtl
 
 module TD.Query.GetActiveSessions
 
--- | Returns all active sessions of the current user. Returns
---   <a>Sessions</a>
+-- | Returns all active sessions of the current user. Additionally,
+--   getBusinessConnectedBot must be used to show the bot on top of active
+--   sessions. Returns <a>Sessions</a>
 data GetActiveSessions
 GetActiveSessions :: GetActiveSessions
 instance GHC.Show.Show TD.Query.GetActiveSessions.GetActiveSessions
@@ -34001,9 +34891,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetBusinessChatLinks.GetBusines
 
 module TD.Query.GetBusinessConnectedBot
 
--- | Returns the business bot that is connected to the current user
---   account. Returns a 404 error if there is no connected bot. Returns
---   <a>BusinessConnectedBot</a>
+-- | Returns information about the business bot that is connected to the
+--   current user account. Returns a 404 error if there is no connected
+--   bot. Returns <a>BusinessConnectedBotInfo</a>
 data GetBusinessConnectedBot
 GetBusinessConnectedBot :: GetBusinessConnectedBot
 instance GHC.Show.Show TD.Query.GetBusinessConnectedBot.GetBusinessConnectedBot
@@ -34921,7 +35811,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatSimilarChats.GetChatSimi
 module TD.Query.GetChatSparseMessagePositions
 
 -- | Returns sparse positions of messages of the specified type in the chat
---   to be used for shared media scroll implementation. Returns the results
+--   to be used for Shared Media scroll implementation. Returns the results
 --   in reverse chronological order (i.e., in order of decreasing
 --   message_id). Cannot be used in secret chats or with
 --   searchMessagesFilterFailedToSend filter without an enabled message
@@ -35205,6 +36095,20 @@ instance GHC.Show.Show TD.Query.GetCountries.GetCountries
 instance GHC.Classes.Eq TD.Query.GetCountries.GetCountries
 instance TD.Lib.Internal.ShortShow TD.Query.GetCountries.GetCountries
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCountries.GetCountries
+
+module TD.Query.GetCountry
+
+-- | Returns information about an existing country. Can be called before
+--   authorization. Returns <a>CountryInfo</a>
+data GetCountry
+GetCountry :: Maybe Text -> GetCountry
+
+-- | A two-letter ISO 3166-1 alpha-2 country code
+[country_code] :: GetCountry -> Maybe Text
+instance GHC.Show.Show TD.Query.GetCountry.GetCountry
+instance GHC.Classes.Eq TD.Query.GetCountry.GetCountry
+instance TD.Lib.Internal.ShortShow TD.Query.GetCountry.GetCountry
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCountry.GetCountry
 
 module TD.Query.GetCountryCode
 
@@ -35574,8 +36478,8 @@ module TD.Query.GetExternalLinkInfo
 
 -- | Returns information about an action to be done when the current user
 --   clicks an external link. Don't use this method for links from secret
---   chats if link preview is disabled in secret chats. Returns
---   <a>LoginUrlInfo</a>
+--   chats if link preview is disabled in secret chats, and use directly
+--   getLinkWebBrowserType. Returns <a>LoginUrlInfo</a>
 data GetExternalLinkInfo
 GetExternalLinkInfo :: Maybe Text -> GetExternalLinkInfo
 
@@ -35777,6 +36681,23 @@ instance GHC.Show.Show TD.Query.GetForumTopics.GetForumTopics
 instance GHC.Classes.Eq TD.Query.GetForumTopics.GetForumTopics
 instance TD.Lib.Internal.ShortShow TD.Query.GetForumTopics.GetForumTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetForumTopics.GetForumTopics
+
+module TD.Query.GetFullRichMessage
+
+-- | Returns the full version of a rich message. Returns <a>RichMessage</a>
+data GetFullRichMessage
+GetFullRichMessage :: Maybe Int -> Maybe Int -> GetFullRichMessage
+
+-- | Identifier of the chat the messages belong to
+[chat_id] :: GetFullRichMessage -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: GetFullRichMessage -> Maybe Int
+defaultGetFullRichMessage :: GetFullRichMessage
+instance GHC.Show.Show TD.Query.GetFullRichMessage.GetFullRichMessage
+instance GHC.Classes.Eq TD.Query.GetFullRichMessage.GetFullRichMessage
+instance TD.Lib.Internal.ShortShow TD.Query.GetFullRichMessage.GetFullRichMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetFullRichMessage.GetFullRichMessage
 
 module TD.Query.GetGameHighScores
 
@@ -36302,6 +37223,20 @@ instance GHC.Show.Show TD.Query.GetLinkPreview.GetLinkPreview
 instance GHC.Classes.Eq TD.Query.GetLinkPreview.GetLinkPreview
 instance TD.Lib.Internal.ShortShow TD.Query.GetLinkPreview.GetLinkPreview
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLinkPreview.GetLinkPreview
+
+module TD.Query.GetLinkWebBrowserType
+
+-- | Returns a type of the web browser which must be used to open the link.
+--   Returns <a>WebBrowserType</a>
+data GetLinkWebBrowserType
+GetLinkWebBrowserType :: Maybe Text -> GetLinkWebBrowserType
+
+-- | The HTTP link
+[link] :: GetLinkWebBrowserType -> Maybe Text
+instance GHC.Show.Show TD.Query.GetLinkWebBrowserType.GetLinkWebBrowserType
+instance GHC.Classes.Eq TD.Query.GetLinkWebBrowserType.GetLinkWebBrowserType
+instance TD.Lib.Internal.ShortShow TD.Query.GetLinkWebBrowserType.GetLinkWebBrowserType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetLinkWebBrowserType.GetLinkWebBrowserType
 
 module TD.Query.GetLiveStoryAvailableMessageSenders
 
@@ -37796,7 +38731,7 @@ module TD.Query.GetRemoteFile
 
 -- | Returns information about a file by its remote identifier. This is an
 --   offline method. Can be used to register a URL as a file for further
---   uploading, or sending as a message. Even the request succeeds, the
+--   uploading, or sending as a message. Even if the request succeeds, the
 --   file can be used only if it is still accessible to the user. For
 --   example, if the file is from a message, then the message must be not
 --   deleted and accessible to the user. If the file database is disabled,
@@ -39129,7 +40064,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetVideoMessageAdvertisements.G
 module TD.Query.GetWebAppLinkUrl
 
 -- | Returns an HTTPS URL of a Web App to open after a link of the type
---   internalLinkTypeWebApp is clicked. Returns <a>HttpUrl</a>
+--   internalLinkTypeWebApp is clicked. Returns <a>WebAppUrl</a>
 data GetWebAppLinkUrl
 GetWebAppLinkUrl :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe WebAppOpenParameters -> GetWebAppLinkUrl
 
@@ -39175,7 +40110,7 @@ module TD.Query.GetWebAppUrl
 
 -- | Returns an HTTPS URL of a Web App to open from the side menu, a
 --   keyboardButtonTypeWebApp button, or an
---   inlineQueryResultsButtonTypeWebApp button. Returns <a>HttpUrl</a>
+--   inlineQueryResultsButtonTypeWebApp button. Returns <a>WebAppUrl</a>
 data GetWebAppUrl
 GetWebAppUrl :: Maybe Int -> Maybe Text -> Maybe WebAppOpenParameters -> GetWebAppUrl
 
@@ -39398,9 +40333,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.IsProfileAudio.IsProfileAudio
 module TD.Query.JoinChat
 
 -- | Adds the current user as a new member to a chat. Private and secret
---   chats can't be joined using this method. May return an error with a
---   message <a>INVITE_REQUEST_SENT</a> if only a join request was created.
---   Returns <a>Ok</a>
+--   chats can't be joined using this method. Returns <a>ChatJoinResult</a>
 data JoinChat
 JoinChat :: Maybe Int -> JoinChat
 
@@ -39414,8 +40347,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.JoinChat.JoinChat
 module TD.Query.JoinChatByInviteLink
 
 -- | Uses an invite link to add the current user to the chat if possible.
---   May return an error with a message <a>INVITE_REQUEST_SENT</a> if only
---   a join request was created. Returns <a>Chat</a>
+--   Returns <a>ChatJoinResult</a>
 data JoinChatByInviteLink
 JoinChatByInviteLink :: Maybe Text -> JoinChatByInviteLink
 
@@ -40608,6 +41540,17 @@ instance GHC.Classes.Eq TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromD
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDownloads
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveAllFilesFromDownloads.RemoveAllFilesFromDownloads
 
+module TD.Query.RemoveAllWebBrowserSettingsExceptions
+
+-- | Removes special handling for the opening of all links. Returns
+--   <a>Ok</a>
+data RemoveAllWebBrowserSettingsExceptions
+RemoveAllWebBrowserSettingsExceptions :: RemoveAllWebBrowserSettingsExceptions
+instance GHC.Show.Show TD.Query.RemoveAllWebBrowserSettingsExceptions.RemoveAllWebBrowserSettingsExceptions
+instance GHC.Classes.Eq TD.Query.RemoveAllWebBrowserSettingsExceptions.RemoveAllWebBrowserSettingsExceptions
+instance TD.Lib.Internal.ShortShow TD.Query.RemoveAllWebBrowserSettingsExceptions.RemoveAllWebBrowserSettingsExceptions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveAllWebBrowserSettingsExceptions.RemoveAllWebBrowserSettingsExceptions
+
 module TD.Query.RemoveBusinessConnectedBotFromChat
 
 -- | Removes the connected business bot from a specific chat by adding the
@@ -41025,6 +41968,20 @@ instance GHC.Show.Show TD.Query.RemoveTopChat.RemoveTopChat
 instance GHC.Classes.Eq TD.Query.RemoveTopChat.RemoveTopChat
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveTopChat.RemoveTopChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveTopChat.RemoveTopChat
+
+module TD.Query.RemoveWebBrowserSettingsException
+
+-- | Removes a special handling for the opening of the specified URL.
+--   Returns <a>Ok</a>
+data RemoveWebBrowserSettingsException
+RemoveWebBrowserSettingsException :: Maybe Text -> RemoveWebBrowserSettingsException
+
+-- | URL of the website
+[url] :: RemoveWebBrowserSettingsException -> Maybe Text
+instance GHC.Show.Show TD.Query.RemoveWebBrowserSettingsException.RemoveWebBrowserSettingsException
+instance GHC.Classes.Eq TD.Query.RemoveWebBrowserSettingsException.RemoveWebBrowserSettingsException
+instance TD.Lib.Internal.ShortShow TD.Query.RemoveWebBrowserSettingsException.RemoveWebBrowserSettingsException
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveWebBrowserSettingsException.RemoveWebBrowserSettingsException
 
 module TD.Query.ReorderActiveUsernames
 
@@ -42020,9 +42977,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchChatMessages.SearchChatMe
 
 module TD.Query.SearchChatRecentLocationMessages
 
--- | Returns information about the recent locations of chat members that
---   were sent to the chat. Returns up to 1 location message per user.
---   Returns <a>Messages</a>
+-- | Returns information about the recent live locations of chat members
+--   that were sent to the chat. Returns at most one live location message
+--   per user. Returns <a>Messages</a>
 data SearchChatRecentLocationMessages
 SearchChatRecentLocationMessages :: Maybe Int -> Maybe Int -> SearchChatRecentLocationMessages
 
@@ -42043,11 +43000,15 @@ module TD.Query.SearchChats
 --   known chats. This is an offline method. Returns chats in the order
 --   seen in the main chat list. Returns <a>Chats</a>
 data SearchChats
-SearchChats :: Maybe Text -> Maybe Int -> SearchChats
+SearchChats :: Maybe Text -> Maybe SearchChatTypeFilter -> Maybe Int -> SearchChats
 
 -- | Query to search for. If the query is empty, returns up to 50 recently
 --   found chats
 [query] :: SearchChats -> Maybe Text
+
+-- | Additional filter for type of the chats to be returned; pass null to
+--   search for chats of all types
+[type_filter] :: SearchChats -> Maybe SearchChatTypeFilter
 
 -- | The maximum number of chats to be returned
 [limit] :: SearchChats -> Maybe Int
@@ -42063,10 +43024,14 @@ module TD.Query.SearchChatsOnServer
 --   known chats via request to the server. Returns chats in the order seen
 --   in the main chat list. Returns <a>Chats</a>
 data SearchChatsOnServer
-SearchChatsOnServer :: Maybe Text -> Maybe Int -> SearchChatsOnServer
+SearchChatsOnServer :: Maybe Text -> Maybe SearchChatTypeFilter -> Maybe Int -> SearchChatsOnServer
 
 -- | Query to search for
 [query] :: SearchChatsOnServer -> Maybe Text
+
+-- | Additional filter for type of the chats to be returned; pass null to
+--   search for chats of all types
+[type_filter] :: SearchChatsOnServer -> Maybe SearchChatTypeFilter
 
 -- | The maximum number of chats to be returned
 [limit] :: SearchChatsOnServer -> Maybe Int
@@ -42310,10 +43275,15 @@ module TD.Query.SearchPublicChats
 --   chats with contacts and chats from the chat list from the results.
 --   Returns <a>Chats</a>
 data SearchPublicChats
-SearchPublicChats :: Maybe Text -> SearchPublicChats
+SearchPublicChats :: Maybe Text -> Maybe SearchChatTypeFilter -> SearchPublicChats
 
 -- | Query to search for
 [query] :: SearchPublicChats -> Maybe Text
+
+-- | Additional filter for type of the chats to be returned; pass null to
+--   search for chats of all types
+[type_filter] :: SearchPublicChats -> Maybe SearchChatTypeFilter
+defaultSearchPublicChats :: SearchPublicChats
 instance GHC.Show.Show TD.Query.SearchPublicChats.SearchPublicChats
 instance GHC.Classes.Eq TD.Query.SearchPublicChats.SearchPublicChats
 instance TD.Lib.Internal.ShortShow TD.Query.SearchPublicChats.SearchPublicChats
@@ -42485,10 +43455,14 @@ module TD.Query.SearchRecentlyFoundChats
 -- | Searches for the specified query in the title and username of up to 50
 --   recently found chats. This is an offline method. Returns <a>Chats</a>
 data SearchRecentlyFoundChats
-SearchRecentlyFoundChats :: Maybe Text -> Maybe Int -> SearchRecentlyFoundChats
+SearchRecentlyFoundChats :: Maybe Text -> Maybe SearchChatTypeFilter -> Maybe Int -> SearchRecentlyFoundChats
 
 -- | Query to search for
 [query] :: SearchRecentlyFoundChats -> Maybe Text
+
+-- | Additional filter for type of the chats to be returned; pass null to
+--   search for chats of all types
+[type_filter] :: SearchRecentlyFoundChats -> Maybe SearchChatTypeFilter
 
 -- | The maximum number of chats to be returned
 [limit] :: SearchRecentlyFoundChats -> Maybe Int
@@ -43379,6 +44353,31 @@ instance GHC.Show.Show TD.Query.SendResoldGift.SendResoldGift
 instance GHC.Classes.Eq TD.Query.SendResoldGift.SendResoldGift
 instance TD.Lib.Internal.ShortShow TD.Query.SendResoldGift.SendResoldGift
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendResoldGift.SendResoldGift
+
+module TD.Query.SendRichMessageDraft
+
+-- | Sends a draft for a being generated rich message; for bots only.
+--   Returns <a>Ok</a>
+data SendRichMessageDraft
+SendRichMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe InputRichMessage -> SendRichMessageDraft
+
+-- | Chat identifier
+[chat_id] :: SendRichMessageDraft -> Maybe Int
+
+-- | The forum topic identifier in which the message will be sent; pass 0
+--   if none
+[forum_topic_id] :: SendRichMessageDraft -> Maybe Int
+
+-- | Unique identifier of the draft
+[draft_id] :: SendRichMessageDraft -> Maybe Int
+
+-- | Draft of the message
+[message] :: SendRichMessageDraft -> Maybe InputRichMessage
+defaultSendRichMessageDraft :: SendRichMessageDraft
+instance GHC.Show.Show TD.Query.SendRichMessageDraft.SendRichMessageDraft
+instance GHC.Classes.Eq TD.Query.SendRichMessageDraft.SendRichMessageDraft
+instance TD.Lib.Internal.ShortShow TD.Query.SendRichMessageDraft.SendRichMessageDraft
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendRichMessageDraft.SendRichMessageDraft
 
 module TD.Query.SendTextMessageDraft
 
@@ -46483,7 +47482,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SynchronizeLanguagePack.Synchro
 
 module TD.Query.TerminateAllOtherSessions
 
--- | Terminates all other sessions of the current user. Returns <a>Ok</a>
+-- | Terminates all other sessions of the current user. Additionally, the
+--   user must be suggested to delete the connected business bot using
+--   deleteBusinessConnectedBot if there is any. Returns <a>Ok</a>
 data TerminateAllOtherSessions
 TerminateAllOtherSessions :: TerminateAllOtherSessions
 instance GHC.Show.Show TD.Query.TerminateAllOtherSessions.TerminateAllOtherSessions
@@ -47414,7 +48415,7 @@ module TD.Query.ToggleSupergroupJoinByRequest
 --   approved by supergroup administrators; requires can_restrict_members
 --   administrator right. Returns <a>Ok</a>
 data ToggleSupergroupJoinByRequest
-ToggleSupergroupJoinByRequest :: Maybe Int -> Maybe Bool -> ToggleSupergroupJoinByRequest
+ToggleSupergroupJoinByRequest :: Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> ToggleSupergroupJoinByRequest
 
 -- | Identifier of the supergroup that isn't a broadcast group and isn't a
 --   channel direct message group
@@ -47422,6 +48423,16 @@ ToggleSupergroupJoinByRequest :: Maybe Int -> Maybe Bool -> ToggleSupergroupJoin
 
 -- | New value of join_by_request
 [join_by_request] :: ToggleSupergroupJoinByRequest -> Maybe Bool
+
+-- | Identifier of the bot which will be the guard bot in the group; pass 0
+--   if none; ignored if join_by_request == false. The bot must have
+--   administrator privileges and can_invite_users right in the supergroup
+--   chat, and must have userTypeBot.is_guard == true
+[guard_bot_user_id] :: ToggleSupergroupJoinByRequest -> Maybe Int
+
+-- | Pass true to apply the change to the existing invite links, including
+--   primary links
+[apply_to_invite_links] :: ToggleSupergroupJoinByRequest -> Maybe Bool
 defaultToggleSupergroupJoinByRequest :: ToggleSupergroupJoinByRequest
 instance GHC.Show.Show TD.Query.ToggleSupergroupJoinByRequest.ToggleSupergroupJoinByRequest
 instance GHC.Classes.Eq TD.Query.ToggleSupergroupJoinByRequest.ToggleSupergroupJoinByRequest
@@ -47784,7 +48795,7 @@ UpgradeGift :: Maybe Text -> Maybe Text -> Maybe Bool -> Maybe Int -> UpgradeGif
 --   upgraded gift
 [keep_original_details] :: UpgradeGift -> Maybe Bool
 
--- | The Telegram Star amount required to pay for the upgrade. It the gift
+-- | The Telegram Star amount required to pay for the upgrade. If the gift
 --   has prepaid_upgrade_star_count &gt; 0, then pass 0, otherwise, pass
 --   gift.upgrade_star_count
 [star_count] :: UpgradeGift -> Maybe Int
