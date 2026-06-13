@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.21.0
+@version 2.1.22.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -4303,8 +4303,8 @@ PageBlockListItem :: Maybe Text -> Maybe [PageBlock] -> Maybe Bool -> Maybe Bool
 -- | Value of the item; 0 for unordered lists
 [value] :: PageBlockListItem -> Maybe Int
 
--- | Type of the item numbering type; must be one of "a" for a lowercase
---   letters, <a>A</a> for an uppercase letters, "i" for lowercase Roman
+-- | Type of the item numbering type; must be one of "a" for lowercase
+--   letters, <a>A</a> for uppercase letters, "i" for lowercase Roman
 --   numerals, <a>I</a> for uppercase Roman numerals, "1" for decimal
 --   numbers, or empty for unordered lists
 [_type] :: PageBlockListItem -> Maybe Text
@@ -5696,7 +5696,7 @@ StoryAreaTypeVenue :: Maybe Venue -> StoryAreaType
 [venue] :: StoryAreaType -> Maybe Venue
 
 -- | An area pointing to a suggested reaction. App needs to show a
---   clickable reaction on the area and call setStoryReaction when the are
+--   clickable reaction on the area and call setStoryReaction when the area
 --   is clicked
 StoryAreaTypeSuggestedReaction :: Maybe ReactionType -> Maybe Int -> Maybe Bool -> Maybe Bool -> StoryAreaType
 
@@ -6325,8 +6325,9 @@ InputSuggestedPostInfo :: Maybe SuggestedPostPrice -> Maybe Int -> InputSuggeste
 
 -- | Price of the suggested post; pass null to suggest a post without
 --   payment. If the current user isn't an administrator of the channel
---   direct messages chat and has no enough funds to pay for the post, then
---   the error <a>BALANCE_TOO_LOW</a> will be returned immediately
+--   direct messages chat and doesn't have enough funds to pay for the
+--   post, then the error <a>BALANCE_TOO_LOW</a> will be returned
+--   immediately
 [price] :: InputSuggestedPostInfo -> Maybe SuggestedPostPrice
 
 -- | Point in time (Unix timestamp) when the post is expected to be
@@ -6921,7 +6922,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPersonalDocument.InputPerso
 
 module TD.Data.InputPaidMediaType
 
--- | Describes type of paid media to sent
+-- | Describes type of paid media to send
 data InputPaidMediaType
 
 -- | The media is a photo. The photo must be at most 10 MB in size. The
@@ -8145,7 +8146,7 @@ UpgradedGiftOriginResale :: Maybe GiftResalePrice -> UpgradedGiftOrigin
 --   user. The gift can't be transferred, resold or withdrawn to blockchain
 UpgradedGiftOriginBlockchain :: UpgradedGiftOrigin
 
--- | The sender or receiver of the message has paid for upgraid of the
+-- | The sender or receiver of the message has paid for upgrade of the
 --   gift, which has been completed
 UpgradedGiftOriginPrepaidUpgrade :: UpgradedGiftOrigin
 
@@ -9374,18 +9375,18 @@ Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> May
 --   null if not limited
 [user_limits] :: Gift -> Maybe GiftPurchaseLimits
 
--- | Number of times the gift can be purchased all users; may be null if
+-- | Number of times the gift can be purchased by all users; may be null if
 --   not limited
 [overall_limits] :: Gift -> Maybe GiftPurchaseLimits
 
 -- | Background of the gift
 [background] :: Gift -> Maybe GiftBackground
 
--- | Point in time (Unix timestamp) when the gift was send for the first
+-- | Point in time (Unix timestamp) when the gift was sent for the first
 --   time; for sold out gifts only
 [first_send_date] :: Gift -> Maybe Int
 
--- | Point in time (Unix timestamp) when the gift was send for the last
+-- | Point in time (Unix timestamp) when the gift was sent for the last
 --   time; for sold out gifts only
 [last_send_date] :: Gift -> Maybe Int
 instance GHC.Show.Show TD.Data.Gift.Gift
@@ -9561,7 +9562,7 @@ StarSubscriptionTypeChannel :: Maybe Bool -> Maybe Text -> StarSubscriptionType
 [can_reuse] :: StarSubscriptionType -> Maybe Bool
 
 -- | The invite link that can be used to renew the subscription if it has
---   been expired; may be empty, if the link isn't available anymore
+--   expired; may be empty if the link isn't available anymore
 [invite_link] :: StarSubscriptionType -> Maybe Text
 
 -- | Describes a subscription in a bot or a business account
@@ -9604,7 +9605,7 @@ StarSubscription :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe 
 -- | True, if the subscription was canceled
 [is_canceled] :: StarSubscription -> Maybe Bool
 
--- | True, if the subscription expires soon and there are no enough
+-- | True, if the subscription expires soon and there aren't enough
 --   Telegram Stars on the user's balance to extend it
 [is_expiring] :: StarSubscription -> Maybe Bool
 
@@ -11013,7 +11014,7 @@ UpgradedGift :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text 
 -- | True, if the gift was used to craft another gift
 [is_burned] :: UpgradedGift -> Maybe Bool
 
--- | True, if the gift was craft from another gifts
+-- | True, if the gift was crafted from other gifts
 [is_crafted] :: UpgradedGift -> Maybe Bool
 
 -- | True, if the original gift could have been bought only by Telegram
@@ -11769,9 +11770,9 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 --   getStoryInteractions
 [can_get_interactions] :: Story -> Maybe Bool
 
--- | True, if users viewed the story can't be received, because the story
---   has expired more than getOption("story_viewers_expiration_delay")
---   seconds ago
+-- | True, if users who viewed the story can't be received, because the
+--   story has expired more than
+--   getOption("story_viewers_expiration_delay") seconds ago
 [has_expired_viewers] :: Story -> Maybe Bool
 
 -- | Information about the original story; may be null if the story wasn't
@@ -12065,7 +12066,7 @@ ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Mayb
 [prepaid_upgrade_hash] :: ReceivedGift -> Maybe Text
 
 -- | Point in time (Unix timestamp) when the gift can be used to craft
---   another gift can be in the past; only for the receiver of the gift
+--   another gift; can be in the past; only for the receiver of the gift
 [craft_date] :: ReceivedGift -> Maybe Int
 instance GHC.Show.Show TD.Data.ReceivedGift.ReceivedGift
 instance GHC.Classes.Eq TD.Data.ReceivedGift.ReceivedGift
@@ -14845,7 +14846,7 @@ data ChatJoinRequestResult
 -- | The request was approved
 ChatJoinRequestResultApproved :: ChatJoinRequestResult
 
--- | The request was decline
+-- | The request was declined
 ChatJoinRequestResultDeclined :: ChatJoinRequestResult
 
 -- | The request was postponed without a decision
@@ -18106,7 +18107,7 @@ BusinessGreetingMessageSettings :: Maybe Int -> Maybe BusinessRecipients -> Mayb
 [recipients] :: BusinessGreetingMessageSettings -> Maybe BusinessRecipients
 
 -- | The number of days after which a chat will be considered as inactive;
---   currently, must be on of 7, 14, 21, or 28
+--   currently, must be one of 7, 14, 21, or 28
 [inactivity_days] :: BusinessGreetingMessageSettings -> Maybe Int
 defaultBusinessGreetingMessageSettings :: BusinessGreetingMessageSettings
 instance GHC.Show.Show TD.Data.BusinessGreetingMessageSettings.BusinessGreetingMessageSettings
@@ -18490,11 +18491,11 @@ BusinessInfo :: Maybe BusinessLocation -> Maybe BusinessOpeningHours -> Maybe Bu
 [location] :: BusinessInfo -> Maybe BusinessLocation
 
 -- | Opening hours of the business; may be null if none. The hours are
---   guaranteed to be valid and has already been split by week days
+--   guaranteed to be valid and have already been split by week days
 [opening_hours] :: BusinessInfo -> Maybe BusinessOpeningHours
 
 -- | Opening hours of the business in the local time; may be null if none.
---   The hours are guaranteed to be valid and has already been split by
+--   The hours are guaranteed to be valid and have already been split by
 --   week days. Local time zone identifier will be empty. An
 --   updateUserFullInfo update is not triggered when value of this field
 --   changes
@@ -19371,7 +19372,7 @@ AutoDownloadSettings :: Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> May
 --   listening to an audio file
 [preload_next_audio] :: AutoDownloadSettings -> Maybe Bool
 
--- | True, if stories needs to be preloaded
+-- | True, if stories need to be preloaded
 [preload_stories] :: AutoDownloadSettings -> Maybe Bool
 
 -- | True, if "use less data for calls" option needs to be enabled
@@ -24496,7 +24497,7 @@ MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe S
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
--- | A Telegram Stars were received by the current user from a giveaway
+-- | Telegram Stars were received by the current user from a giveaway
 MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Sticker -> MessageContent
 
 -- | Number of Telegram Stars needed to buy access to the media in the
@@ -24655,7 +24656,7 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Messag
 [export_date] :: MessageContent -> Maybe Int
 
 -- | Point in time (Unix timestamp) when the gift can be used to craft
---   another gift can be in the past; only for the receiver of the gift
+--   another gift; can be in the past; only for the receiver of the gift
 [craft_date] :: MessageContent -> Maybe Int
 
 -- | A gift which purchase, upgrade or transfer were refunded
@@ -24758,8 +24759,8 @@ MessageChecklistTasksAdded :: Maybe Int -> Maybe [ChecklistTask] -> MessageConte
 -- | List of tasks added to the checklist
 [tasks] :: MessageContent -> Maybe [ChecklistTask]
 
--- | Approval of suggested post has failed, because the user which proposed
---   the post had no enough funds
+-- | Approval of suggested post has failed, because the user who proposed
+--   the post didn't have enough funds
 MessageSuggestedPostApprovalFailed :: Maybe Int -> Maybe SuggestedPostPrice -> MessageContent
 
 -- | Identifier of the message with the suggested post; may be 0 or an
@@ -28413,7 +28414,8 @@ UpdateGiftAuctionState :: Maybe GiftAuctionState -> Update
 -- | New state of the auction
 [state] :: Update -> Maybe GiftAuctionState
 
--- | The list of auctions in which participate the current user has changed
+-- | The list of auctions in which the current user participates has
+--   changed
 UpdateActiveGiftAuctions :: Maybe [GiftAuctionState] -> Update
 
 -- | New states of the auctions
@@ -28469,7 +28471,7 @@ UpdateChatJoinResult :: Maybe Int -> Maybe Int -> Maybe ChatJoinRequestResult ->
 
 -- | Identifier of the join request query as received in
 --   chatJoinResultGuardBotApprovalRequired. If the corresponding Web App
---   is stiil open, then it must be closed
+--   is still open, then it must be closed
 [query_id] :: Update -> Maybe Int
 
 -- | The chat identifier of the sent message
@@ -28698,7 +28700,7 @@ UpdateFreezeState :: Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Text -> Updat
 -- | The link to open to send an appeal to unfreeze the account
 [appeal_link] :: Update -> Maybe Text
 
--- | The parameters for age verification of the current user's account has
+-- | The parameters for age verification of the current user's account have
 --   changed
 UpdateAgeVerificationParameters :: Maybe AgeVerificationParameters -> Update
 
@@ -28830,7 +28832,7 @@ UpdateTonRevenueStatus :: Maybe TonRevenueStatus -> Update
 [__status] :: Update -> Maybe TonRevenueStatus
 
 -- | The parameters of speech recognition without Telegram Premium
---   subscription has changed
+--   subscription have changed
 UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Update
 
 -- | The maximum allowed duration of media for speech recognition without
@@ -28885,7 +28887,7 @@ UpdateAnimatedEmojiMessageClicked :: Maybe Int -> Maybe Int -> Maybe Sticker -> 
 [sticker] :: Update -> Maybe Sticker
 
 -- | The parameters of animation search through
---   getOption("animation_search_bot_username") bot has changed
+--   getOption("animation_search_bot_username") bot have changed
 UpdateAnimationSearchParameters :: Maybe Text -> Maybe [Text] -> Update
 
 -- | Name of the animation search provider
@@ -28912,7 +28914,7 @@ UpdateSuggestedActions :: Maybe [SuggestedAction] -> Maybe [SuggestedAction] -> 
 
 -- | Download or upload file speed for the user was limited, but it can be
 --   restored by subscription to Telegram Premium. The notification can be
---   postponed until a being downloaded or uploaded file is visible to the
+--   postponed until a file being downloaded or uploaded is visible to the
 --   user. Use getOption("premium_download_speedup") or
 --   getOption("premium_upload_speedup") to get expected speedup after
 --   subscription to Telegram Premium
@@ -29230,7 +29232,7 @@ UpdateNewChatJoinRequest :: Maybe Int -> Maybe ChatJoinRequest -> Maybe Int -> M
 
 -- | Identifier of the join request query as received in
 --   chatJoinResultGuardBotApprovalRequired. If the corresponding Web App
---   is stiil open, then it must be closed
+--   is still open, then it must be closed
 [query_id] :: Update -> Maybe Int
 
 -- | A chat boost has changed; for bots only
@@ -29659,7 +29661,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AcceptOauthRequest.AcceptOauthR
 
 module TD.Query.AcceptTermsOfService
 
--- | Accepts Telegram terms of services. Returns <a>Ok</a>
+-- | Accepts Telegram terms of service. Returns <a>Ok</a>
 data AcceptTermsOfService
 AcceptTermsOfService :: Maybe Text -> AcceptTermsOfService
 
@@ -35420,7 +35422,7 @@ GetChatInviteLinks :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe
 --   current user for non-owner
 [creator_user_id] :: GetChatInviteLinks -> Maybe Int
 
--- | Pass true if revoked links needs to be returned instead of active or
+-- | Pass true if revoked links need to be returned instead of active or
 --   expired
 [is_revoked] :: GetChatInviteLinks -> Maybe Bool
 
@@ -36049,7 +36051,7 @@ module TD.Query.GetConnectedAffiliatePrograms
 data GetConnectedAffiliatePrograms
 GetConnectedAffiliatePrograms :: Maybe AffiliateType -> Maybe Text -> Maybe Int -> GetConnectedAffiliatePrograms
 
--- | The affiliate to which the affiliate program were connected
+-- | The affiliate to which the affiliate programs were connected
 [affiliate] :: GetConnectedAffiliatePrograms -> Maybe AffiliateType
 
 -- | Offset of the first affiliate program to return as received from the
@@ -39052,8 +39054,8 @@ module TD.Query.GetStarSubscriptions
 data GetStarSubscriptions
 GetStarSubscriptions :: Maybe Bool -> Maybe Text -> GetStarSubscriptions
 
--- | Pass true to receive only expiring subscriptions for which there are
---   no enough Telegram Stars to extend
+-- | Pass true to receive only expiring subscriptions for which there
+--   aren't enough Telegram Stars to extend
 [only_expiring] :: GetStarSubscriptions -> Maybe Bool
 
 -- | Offset of the first subscription to return as received from the
@@ -45272,7 +45274,7 @@ module TD.Query.SetChatMemberStatus
 --   administrator right to change restrictions of a user. This function is
 --   currently not suitable for transferring chat ownership; use
 --   transferChatOwnership instead. Use addChatMember or banChatMember if
---   some additional parameters needs to be passed. Returns <a>Ok</a>
+--   some additional parameters need to be passed. Returns <a>Ok</a>
 data SetChatMemberStatus
 SetChatMemberStatus :: Maybe Int -> Maybe MessageSender -> Maybe ChatMemberStatus -> SetChatMemberStatus
 
@@ -46363,7 +46365,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetPassportElement.SetPassportE
 
 module TD.Query.SetPassportElementErrors
 
--- | Informs the user who some of the elements in their Telegram Passport
+-- | Informs the user that some of the elements in their Telegram Passport
 --   contain errors; for bots only. The user will not be able to resend the
 --   elements, until the errors are fixed. Returns <a>Ok</a>
 data SetPassportElementErrors
@@ -48818,9 +48820,9 @@ UploadStickerFile :: Maybe Int -> Maybe StickerFormat -> Maybe InputFile -> Uplo
 -- | Sticker format
 [sticker_format] :: UploadStickerFile -> Maybe StickerFormat
 
--- | File file to upload; must fit in a 512x512 square. For WEBP stickers
---   the file must be in WEBP or PNG format, which will be converted to
---   WEBP server-side. See
+-- | File to upload; must fit in a 512x512 square. For WEBP stickers the
+--   file must be in WEBP or PNG format, which will be converted to WEBP
+--   server-side. See
 --   <a>https://core.telegram.org/animated_stickers#technical-requirements</a>
 --   for technical requirements
 [sticker] :: UploadStickerFile -> Maybe InputFile
