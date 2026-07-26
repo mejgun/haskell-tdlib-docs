@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.22.0
+@version 2.1.23.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -804,31 +804,6 @@ instance TD.Lib.Internal.ShortShow TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TopChatCategory.TopChatCategory
 
-module TD.Data.TonRevenueStatus
-data TonRevenueStatus
-
--- | Contains information about Toncoins earned by the current user
-TonRevenueStatus :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> TonRevenueStatus
-
--- | Total Toncoin amount earned; in the smallest units of the
---   cryptocurrency
-[total_amount] :: TonRevenueStatus -> Maybe Int
-
--- | The Toncoin amount that isn't withdrawn yet; in the smallest units of
---   the cryptocurrency
-[balance_amount] :: TonRevenueStatus -> Maybe Int
-
--- | The Toncoin amount that is available for withdrawal; in the smallest
---   units of the cryptocurrency
-[available_amount] :: TonRevenueStatus -> Maybe Int
-
--- | True, if Toncoins can be withdrawn
-[withdrawal_enabled] :: TonRevenueStatus -> Maybe Bool
-instance GHC.Show.Show TD.Data.TonRevenueStatus.TonRevenueStatus
-instance GHC.Classes.Eq TD.Data.TonRevenueStatus.TonRevenueStatus
-instance TD.Lib.Internal.ShortShow TD.Data.TonRevenueStatus.TonRevenueStatus
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonRevenueStatus.TonRevenueStatus
-
 module TD.Data.TimeZone
 data TimeZone
 
@@ -1195,12 +1170,12 @@ SuggestedPostPriceStar :: Maybe Int -> SuggestedPostPrice
 --   getOption("suggested_post_star_count_min")-getOption("suggested_post_star_count_max")
 [star_count] :: SuggestedPostPrice -> Maybe Int
 
--- | Describes price of a suggested post in Toncoins
-SuggestedPostPriceTon :: Maybe Int -> SuggestedPostPrice
+-- | Describes price of a suggested post in TON Grams
+SuggestedPostPriceGram :: Maybe Int -> SuggestedPostPrice
 
--- | The amount of 1/100 of Toncoin expected to be paid for the post;
---   getOption("suggested_post_toncoin_cent_count_min")-getOption("suggested_post_toncoin_cent_count_max")
-[toncoin_cent_count] :: SuggestedPostPrice -> Maybe Int
+-- | The amount of 1/100 of Gram expected to be paid for the post;
+--   getOption("suggested_post_gram_cent_count_min")-getOption("suggested_post_gram_cent_count_max")
+[gram_cent_count] :: SuggestedPostPrice -> Maybe Int
 instance GHC.Show.Show TD.Data.SuggestedPostPrice.SuggestedPostPrice
 instance GHC.Classes.Eq TD.Data.SuggestedPostPrice.SuggestedPostPrice
 instance TD.Lib.Internal.ShortShow TD.Data.SuggestedPostPrice.SuggestedPostPrice
@@ -1324,7 +1299,7 @@ data StoryList
 -- | The list of stories, shown in the main chat list and folder chat lists
 StoryListMain :: StoryList
 
--- | The list of stories, shown in the Arvhive chat list
+-- | The list of stories, shown in the Archive chat list
 StoryListArchive :: StoryList
 instance GHC.Show.Show TD.Data.StoryList.StoryList
 instance GHC.Classes.Eq TD.Data.StoryList.StoryList
@@ -1592,25 +1567,6 @@ instance GHC.Classes.Eq TD.Data.StatisticalGraph.StatisticalGraph
 instance TD.Lib.Internal.ShortShow TD.Data.StatisticalGraph.StatisticalGraph
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.StatisticalGraph.StatisticalGraph
 
-module TD.Data.TonRevenueStatistics
-data TonRevenueStatistics
-
--- | A detailed statistics about Toncoins earned by the current user
-TonRevenueStatistics :: Maybe StatisticalGraph -> Maybe TonRevenueStatus -> Maybe Double -> TonRevenueStatistics
-
--- | A graph containing amount of revenue in a given day
-[revenue_by_day_graph] :: TonRevenueStatistics -> Maybe StatisticalGraph
-
--- | Amount of earned revenue
-[status] :: TonRevenueStatistics -> Maybe TonRevenueStatus
-
--- | Current conversion rate of nanotoncoin to USD cents
-[usd_rate] :: TonRevenueStatistics -> Maybe Double
-instance GHC.Show.Show TD.Data.TonRevenueStatistics.TonRevenueStatistics
-instance GHC.Classes.Eq TD.Data.TonRevenueStatistics.TonRevenueStatistics
-instance TD.Lib.Internal.ShortShow TD.Data.TonRevenueStatistics.TonRevenueStatistics
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonRevenueStatistics.TonRevenueStatistics
-
 module TD.Data.StoryStatistics
 data StoryStatistics
 
@@ -1843,25 +1799,24 @@ StakeDiceState :: Maybe Text -> Maybe Int -> Maybe [Int] -> Maybe Int -> Maybe [
 --   the stake dice can't be sent by the current user
 [state_hash] :: StakeDiceState -> Maybe Text
 
--- | The Toncoin amount that was staked in the previous roll; in the
---   smallest units of the currency
-[stake_toncoin_amount] :: StakeDiceState -> Maybe Int
+-- | The amount of TON Grams staked in the previous roll; in the smallest
+--   units of the currency
+[stake_gram_amount] :: StakeDiceState -> Maybe Int
 
--- | The amounts of Toncoins that are suggested to be staked; in the
---   smallest units of the currency
-[suggested_stake_toncoin_amounts] :: StakeDiceState -> Maybe [Int]
+-- | The amounts of Grams that are suggested to be staked; in the smallest
+--   units of the currency
+[suggested_stake_gram_amounts] :: StakeDiceState -> Maybe [Int]
 
 -- | The number of rolled sixes towards the streak; 0-2
 [current_streak] :: StakeDiceState -> Maybe Int
 
--- | The number of Toncoins received by the user for each 1000 Toncoins
---   staked if the dice outcome is 1-6 correspondingly; may be empty if the
---   stake dice can't be sent by the current user
+-- | The number of Grams received by the user for each 1000 Grams staked if
+--   the dice outcome is 1-6 correspondingly; may be empty if the stake
+--   dice can't be sent by the current user
 [prize_per_mille] :: StakeDiceState -> Maybe [Int]
 
--- | The number of Toncoins received by the user for each 1000 Toncoins
---   staked if the dice outcome is 6 three times in a row with the same
---   stake
+-- | The number of Grams received by the user for each 1000 Grams staked if
+--   the dice outcome is 6 three times in a row with the same stake
 [streak_prize_per_mille] :: StakeDiceState -> Maybe Int
 instance GHC.Show.Show TD.Data.StakeDiceState.StakeDiceState
 instance GHC.Classes.Eq TD.Data.StakeDiceState.StakeDiceState
@@ -2162,8 +2117,8 @@ SettingsSectionMyStars :: Maybe Text -> SettingsSection
 --   "tap-for-next-media"
 [subsection] :: SettingsSection -> Maybe Text
 
--- | The Toncoin balance and transaction section
-SettingsSectionMyToncoins :: SettingsSection
+-- | The TON Gram balance and transaction section
+SettingsSectionMyGrams :: SettingsSection
 
 -- | The notification settings section
 SettingsSectionNotifications :: Maybe Text -> SettingsSection
@@ -2816,28 +2771,6 @@ instance GHC.Show.Show TD.Data.RtmpUrl.RtmpUrl
 instance GHC.Classes.Eq TD.Data.RtmpUrl.RtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Data.RtmpUrl.RtmpUrl
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RtmpUrl.RtmpUrl
-
-module TD.Data.RichMessageSource
-
--- | Describes source of a rich message
-data RichMessageSource
-
--- | A Markdown-formatted rich message; for bots only
-RichMessageSourceMarkdown :: Maybe Text -> RichMessageSource
-
--- | Markdown-formatted text of the message
-[text] :: RichMessageSource -> Maybe Text
-
--- | An HTML-formatted rich message; for bots only
-RichMessageSourceHtml :: Maybe Text -> RichMessageSource
-
--- | Markdown-formatted text of the message
-[text] :: RichMessageSource -> Maybe Text
-instance GHC.Show.Show TD.Data.RichMessageSource.RichMessageSource
-instance GHC.Classes.Eq TD.Data.RichMessageSource.RichMessageSource
-instance TD.Lib.Internal.ShortShow TD.Data.RichMessageSource.RichMessageSource
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessageSource.RichMessageSource
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessageSource.RichMessageSource
 
 module TD.Data.RevenueWithdrawalState
 
@@ -3778,6 +3711,9 @@ PremiumFeatureProtectPrivateChatContent :: PremiumFeature
 
 -- | The ability to compose text with AI
 PremiumFeatureTextComposition :: PremiumFeature
+
+-- | The ability to send rich messages
+PremiumFeatureRichMessages :: PremiumFeature
 instance GHC.Show.Show TD.Data.PremiumFeature.PremiumFeature
 instance GHC.Classes.Eq TD.Data.PremiumFeature.PremiumFeature
 instance TD.Lib.Internal.ShortShow TD.Data.PremiumFeature.PremiumFeature
@@ -5153,7 +5089,8 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 [can_be_pinned] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be replied in the same chat and forum topic
---   using inputMessageReplyToMessage
+--   using inputMessageReplyToMessage. Ephemeral messages can be replied
+--   only by other ephemeral messages
 [can_be_replied] :: MessageProperties -> Maybe Bool
 
 -- | True, if the message can be replied in another chat or forum topic
@@ -6533,7 +6470,16 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputStoryAreas.InputStoryAreas
 module TD.Data.InputRichMessage
 data InputRichMessage
 
--- | A rich message to send
+-- | A rich message to send. Total length of all texts, including custom
+--   emoji alternative text and formula source, must not exceed
+--   getOption("rich_message_text_length_max"). The total number of all
+--   blocks, list items and table rows must not exceed
+--   getOption("rich_message_block_count_max"). The maximum allowed depth
+--   of nested blocks and rich texts is
+--   getOption("rich_message_depth_max"). The total number of media in all
+--   blocks must not exceed getOption("rich_message_media_count_max"). The
+--   maximum allowed number of table columns is
+--   getOption("rich_message_table_column_count_max")
 InputRichMessage :: Maybe RichMessageSource -> Maybe Bool -> Maybe Bool -> InputRichMessage
 
 -- | Source of the rich message
@@ -6654,6 +6600,56 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputPassportElementError.InputPasspo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPassportElementError.InputPassportElementError
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPassportElementError.InputPassportElementError
 
+module TD.Data.InputPageBlockListItem
+data InputPageBlockListItem
+
+-- | Describes an item of a list page block to be sent
+InputPageBlockListItem :: Maybe [InputPageBlock] -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Text -> InputPageBlockListItem
+
+-- | Item blocks
+[blocks] :: InputPageBlockListItem -> Maybe [InputPageBlock]
+
+-- | True, if the item has a checkbox
+[has_checkbox] :: InputPageBlockListItem -> Maybe Bool
+
+-- | True, if the item is checked
+[is_checked] :: InputPageBlockListItem -> Maybe Bool
+
+-- | Value of the item; pass 0 for unordered lists
+[value] :: InputPageBlockListItem -> Maybe Int
+
+-- | Type of the item numbering type; must be one of "a" for a lowercase
+--   letter, <a>A</a> for an uppercase letter, "i" for lowercase Roman
+--   numerals, <a>I</a> for uppercase Roman numerals, "1" for decimal
+--   numbers, or empty for unordered lists
+[_type] :: InputPageBlockListItem -> Maybe Text
+defaultInputPageBlockListItem :: InputPageBlockListItem
+instance GHC.Show.Show TD.Data.InputPageBlockListItem.InputPageBlockListItem
+instance GHC.Classes.Eq TD.Data.InputPageBlockListItem.InputPageBlockListItem
+instance TD.Lib.Internal.ShortShow TD.Data.InputPageBlockListItem.InputPageBlockListItem
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPageBlockListItem.InputPageBlockListItem
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPageBlockListItem.InputPageBlockListItem
+
+module TD.Data.InputRichMessageMedia
+data InputRichMessageMedia
+
+-- | Describes a media to be used in a sent rich message
+InputRichMessageMedia :: Maybe Text -> Maybe InputMessageContent -> InputRichMessageMedia
+
+-- | Unique identifier of the media; 1-64 base64url characters
+[_id] :: InputRichMessageMedia -> Maybe Text
+
+-- | The media to send. Must be one of the following types:
+--   inputMessageAnimation, inputMessageAudio, inputMessagePhoto,
+--   inputMessageVideo, or inputMessageVoiceNote
+[media] :: InputRichMessageMedia -> Maybe InputMessageContent
+defaultInputRichMessageMedia :: InputRichMessageMedia
+instance GHC.Show.Show TD.Data.InputRichMessageMedia.InputRichMessageMedia
+instance GHC.Classes.Eq TD.Data.InputRichMessageMedia.InputRichMessageMedia
+instance TD.Lib.Internal.ShortShow TD.Data.InputRichMessageMedia.InputRichMessageMedia
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputRichMessageMedia.InputRichMessageMedia
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputRichMessageMedia.InputRichMessageMedia
+
 module TD.Data.InputGroupCall
 
 -- | Describes a non-joined group call that isn't bound to a chat
@@ -6731,6 +6727,61 @@ instance TD.Lib.Internal.ShortShow TD.Data.InputFile.InputFile
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputFile.InputFile
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputFile.InputFile
 
+module TD.Data.NewSticker
+data NewSticker
+
+-- | A sticker to be added to a sticker set
+NewSticker :: Maybe InputFile -> Maybe StickerFormat -> Maybe Text -> Maybe MaskPosition -> Maybe [Text] -> NewSticker
+
+-- | File with the sticker; must fit in a 512x512 square. For WEBP stickers
+--   the file must be in WEBP or PNG format, which will be converted to
+--   WEBP server-side. See
+--   <a>https://core.telegram.org/animated_stickers#technical-requirements</a>
+--   for technical requirements
+[sticker] :: NewSticker -> Maybe InputFile
+
+-- | Format of the sticker
+[format] :: NewSticker -> Maybe StickerFormat
+
+-- | String with 1-20 emoji corresponding to the sticker
+[emojis] :: NewSticker -> Maybe Text
+
+-- | Position where the mask is placed; pass null if not specified
+[mask_position] :: NewSticker -> Maybe MaskPosition
+
+-- | List of up to 20 keywords with total length up to 64 characters, which
+--   can be used to find the sticker
+[keywords] :: NewSticker -> Maybe [Text]
+defaultNewSticker :: NewSticker
+instance GHC.Show.Show TD.Data.NewSticker.NewSticker
+instance GHC.Classes.Eq TD.Data.NewSticker.NewSticker
+instance TD.Lib.Internal.ShortShow TD.Data.NewSticker.NewSticker
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.NewSticker.NewSticker
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.NewSticker.NewSticker
+
+module TD.Data.InputVoiceNote
+data InputVoiceNote
+
+-- | A video note to be sent
+InputVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> InputVoiceNote
+
+-- | Voice note file to be sent. The voice note must be encoded with the
+--   Opus codec and stored inside an OGG container with a single audio
+--   channel, or be in MP3 or M4A format as regular audio
+[voice_note] :: InputVoiceNote -> Maybe InputFile
+
+-- | Duration of the voice note, in seconds
+[duration] :: InputVoiceNote -> Maybe Int
+
+-- | Waveform representation of the voice note in 5-bit format
+[waveform] :: InputVoiceNote -> Maybe ByteString
+defaultInputVoiceNote :: InputVoiceNote
+instance GHC.Show.Show TD.Data.InputVoiceNote.InputVoiceNote
+instance GHC.Classes.Eq TD.Data.InputVoiceNote.InputVoiceNote
+instance TD.Lib.Internal.ShortShow TD.Data.InputVoiceNote.InputVoiceNote
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputVoiceNote.InputVoiceNote
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputVoiceNote.InputVoiceNote
+
 module TD.Data.InputThumbnail
 data InputThumbnail
 
@@ -6753,6 +6804,33 @@ instance GHC.Classes.Eq TD.Data.InputThumbnail.InputThumbnail
 instance TD.Lib.Internal.ShortShow TD.Data.InputThumbnail.InputThumbnail
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputThumbnail.InputThumbnail
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputThumbnail.InputThumbnail
+
+module TD.Data.InputVideoNote
+data InputVideoNote
+
+-- | A video note to be sent
+InputVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> InputVideoNote
+
+-- | Video note file to be sent. The video is expected to be encoded to
+--   MPEG4 format with H.264 codec and have no data outside of the visible
+--   circle
+[video_note] :: InputVideoNote -> Maybe InputFile
+
+-- | Video thumbnail; may be null if empty; pass null to skip thumbnail
+--   uploading
+[thumbnail] :: InputVideoNote -> Maybe InputThumbnail
+
+-- | Duration of the video, in seconds; 0-60
+[duration] :: InputVideoNote -> Maybe Int
+
+-- | Video width and height; must be positive and not greater than 640
+[_length] :: InputVideoNote -> Maybe Int
+defaultInputVideoNote :: InputVideoNote
+instance GHC.Show.Show TD.Data.InputVideoNote.InputVideoNote
+instance GHC.Classes.Eq TD.Data.InputVideoNote.InputVideoNote
+instance TD.Lib.Internal.ShortShow TD.Data.InputVideoNote.InputVideoNote
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputVideoNote.InputVideoNote
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputVideoNote.InputVideoNote
 
 module TD.Data.InputVideo
 data InputVideo
@@ -6838,28 +6916,20 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputStoryContent.InputStoryCont
 module TD.Data.InputSticker
 data InputSticker
 
--- | A sticker to be added to a sticker set
-InputSticker :: Maybe InputFile -> Maybe StickerFormat -> Maybe Text -> Maybe MaskPosition -> Maybe [Text] -> InputSticker
+-- | A sticker to be sent
+InputSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> InputSticker
 
--- | File with the sticker; must fit in a 512x512 square. For WEBP stickers
---   the file must be in WEBP or PNG format, which will be converted to
---   WEBP server-side. See
---   <a>https://core.telegram.org/animated_stickers#technical-requirements</a>
---   for technical requirements
+-- | Sticker to be sent
 [sticker] :: InputSticker -> Maybe InputFile
 
--- | Format of the sticker
-[format] :: InputSticker -> Maybe StickerFormat
+-- | Sticker thumbnail; pass null to skip thumbnail uploading
+[thumbnail] :: InputSticker -> Maybe InputThumbnail
 
--- | String with 1-20 emoji corresponding to the sticker
-[emojis] :: InputSticker -> Maybe Text
+-- | Sticker width
+[width] :: InputSticker -> Maybe Int
 
--- | Position where the mask is placed; pass null if not specified
-[mask_position] :: InputSticker -> Maybe MaskPosition
-
--- | List of up to 20 keywords with total length up to 64 characters, which
---   can be used to find the sticker
-[keywords] :: InputSticker -> Maybe [Text]
+-- | Sticker height
+[height] :: InputSticker -> Maybe Int
 defaultInputSticker :: InputSticker
 instance GHC.Show.Show TD.Data.InputSticker.InputSticker
 instance GHC.Classes.Eq TD.Data.InputSticker.InputSticker
@@ -7249,19 +7319,10 @@ InputPollMediaPhoto :: Maybe InputPhoto -> InputPollMedia
 [photo] :: InputPollMedia -> Maybe InputPhoto
 
 -- | A sticker
-InputPollMediaSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> InputPollMedia
+InputPollMediaSticker :: Maybe InputSticker -> InputPollMedia
 
 -- | Sticker to be sent
-[sticker] :: InputPollMedia -> Maybe InputFile
-
--- | Sticker thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputPollMedia -> Maybe InputThumbnail
-
--- | Sticker width
-[width] :: InputPollMedia -> Maybe Int
-
--- | Sticker height
-[height] :: InputPollMedia -> Maybe Int
+[sticker] :: InputPollMedia -> Maybe InputSticker
 
 -- | A venue
 InputPollMediaVenue :: Maybe Venue -> InputPollMedia
@@ -7889,6 +7950,49 @@ instance GHC.Classes.Eq TD.Data.GroupCall.GroupCall
 instance TD.Lib.Internal.ShortShow TD.Data.GroupCall.GroupCall
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GroupCall.GroupCall
 
+module TD.Data.GramRevenueStatus
+data GramRevenueStatus
+
+-- | Contains information about TON Grams earned by the current user
+GramRevenueStatus :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> GramRevenueStatus
+
+-- | Total Gram amount earned; in the smallest units of the cryptocurrency
+[total_amount] :: GramRevenueStatus -> Maybe Int
+
+-- | The Gram amount that isn't withdrawn yet; in the smallest units of the
+--   cryptocurrency
+[balance_amount] :: GramRevenueStatus -> Maybe Int
+
+-- | The Gram amount that is available for withdrawal; in the smallest
+--   units of the cryptocurrency
+[available_amount] :: GramRevenueStatus -> Maybe Int
+
+-- | True, if Grams can be withdrawn
+[withdrawal_enabled] :: GramRevenueStatus -> Maybe Bool
+instance GHC.Show.Show TD.Data.GramRevenueStatus.GramRevenueStatus
+instance GHC.Classes.Eq TD.Data.GramRevenueStatus.GramRevenueStatus
+instance TD.Lib.Internal.ShortShow TD.Data.GramRevenueStatus.GramRevenueStatus
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GramRevenueStatus.GramRevenueStatus
+
+module TD.Data.GramRevenueStatistics
+data GramRevenueStatistics
+
+-- | A detailed statistics about TON Grams earned by the current user
+GramRevenueStatistics :: Maybe StatisticalGraph -> Maybe GramRevenueStatus -> Maybe Double -> GramRevenueStatistics
+
+-- | A graph containing amount of revenue in a given day
+[revenue_by_day_graph] :: GramRevenueStatistics -> Maybe StatisticalGraph
+
+-- | Amount of earned revenue
+[status] :: GramRevenueStatistics -> Maybe GramRevenueStatus
+
+-- | Current conversion rate of nanogram to USD cents
+[usd_rate] :: GramRevenueStatistics -> Maybe Double
+instance GHC.Show.Show TD.Data.GramRevenueStatistics.GramRevenueStatistics
+instance GHC.Classes.Eq TD.Data.GramRevenueStatistics.GramRevenueStatistics
+instance TD.Lib.Internal.ShortShow TD.Data.GramRevenueStatistics.GramRevenueStatistics
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.GramRevenueStatistics.GramRevenueStatistics
+
 module TD.Data.GiveawayPrize
 
 -- | Contains information about a giveaway prize
@@ -7962,7 +8066,7 @@ GiveawayParticipantStatusAdministrator :: Maybe Int -> GiveawayParticipantStatus
 -- | Identifier of the chat administered by the user
 [chat_id] :: GiveawayParticipantStatus -> Maybe Int
 
--- | The user can't participate in the giveaway, because they phone number
+-- | The user can't participate in the giveaway, because their phone number
 --   is from a disallowed country
 GiveawayParticipantStatusDisallowedCountry :: Maybe Text -> GiveawayParticipantStatus
 
@@ -8108,13 +8212,13 @@ GiftResalePriceStar :: Maybe Int -> GiftResalePrice
 --   for gifts put for resale
 [star_count] :: GiftResalePrice -> Maybe Int
 
--- | Describes price of a resold gift in Toncoins
-GiftResalePriceTon :: Maybe Int -> GiftResalePrice
+-- | Describes price of a resold gift in TON Grams
+GiftResalePriceGram :: Maybe Int -> GiftResalePrice
 
--- | The amount of 1/100 of Toncoin expected to be paid for the gift. Must
---   be in the range
---   getOption("gift_resale_toncoin_cent_count_min")-getOption("gift_resale_toncoin_cent_count_max")
-[toncoin_cent_count] :: GiftResalePrice -> Maybe Int
+-- | The amount of 1/100 of Gram expected to be paid for the gift. Must be
+--   in the range
+--   getOption("gift_resale_gram_cent_count_min")-getOption("gift_resale_gram_cent_count_max")
+[gram_cent_count] :: GiftResalePrice -> Maybe Int
 instance GHC.Show.Show TD.Data.GiftResalePrice.GiftResalePrice
 instance GHC.Classes.Eq TD.Data.GiftResalePrice.GiftResalePrice
 instance TD.Lib.Internal.ShortShow TD.Data.GiftResalePrice.GiftResalePrice
@@ -8195,11 +8299,11 @@ GiftResaleParameters :: Maybe Int -> Maybe Int -> Maybe Bool -> GiftResaleParame
 -- | Resale price of the gift in Telegram Stars
 [star_count] :: GiftResaleParameters -> Maybe Int
 
--- | Resale price of the gift in 1/100 of Toncoin
-[toncoin_cent_count] :: GiftResaleParameters -> Maybe Int
+-- | Resale price of the gift in 1/100 of TON Gram
+[gram_cent_count] :: GiftResaleParameters -> Maybe Int
 
--- | True, if the gift can be bought only using Toncoins
-[toncoin_only] :: GiftResaleParameters -> Maybe Bool
+-- | True, if the gift can be bought only using Grams
+[gram_only] :: GiftResaleParameters -> Maybe Bool
 instance GHC.Show.Show TD.Data.GiftResaleParameters.GiftResaleParameters
 instance GHC.Classes.Eq TD.Data.GiftResaleParameters.GiftResaleParameters
 instance TD.Lib.Internal.ShortShow TD.Data.GiftResaleParameters.GiftResaleParameters
@@ -11140,10 +11244,10 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UpgradeGiftResult.UpgradeGif
 
 module TD.Data.TonTransactionType
 
--- | Describes type of transaction with Toncoins
+-- | Describes type of transaction with TON Grams
 data TonTransactionType
 
--- | The transaction is a deposit of Toncoins from Fragment
+-- | The transaction is a deposit of Grams from Fragment
 TonTransactionTypeFragmentDeposit :: Maybe Bool -> Maybe Sticker -> TonTransactionType
 
 -- | True, if the transaction is a gift from another user
@@ -11153,7 +11257,7 @@ TonTransactionTypeFragmentDeposit :: Maybe Bool -> Maybe Sticker -> TonTransacti
 --   unknown
 [sticker] :: TonTransactionType -> Maybe Sticker
 
--- | The transaction is a withdrawal of earned Toncoins to Fragment
+-- | The transaction is a withdrawal of earned Grams to Fragment
 TonTransactionTypeFragmentWithdrawal :: Maybe RevenueWithdrawalState -> TonTransactionType
 
 -- | State of the withdrawal; may be null for refunds from Fragment
@@ -11190,13 +11294,13 @@ TonTransactionTypeUpgradedGiftSale :: Maybe Int -> Maybe UpgradedGift -> Maybe I
 -- | The gift
 [gift] :: TonTransactionType -> Maybe UpgradedGift
 
--- | The number of Toncoins received by the Telegram for each 1000 Toncoins
+-- | The number of Grams received by the Telegram for each 1000 Grams
 --   received by the seller of the gift
 [commission_per_mille] :: TonTransactionType -> Maybe Int
 
--- | The Toncoin amount that was received by the Telegram; in the smallest
+-- | The Gram amount that was received by the Telegram; in the smallest
 --   units of the currency
-[commission_toncoin_amount] :: TonTransactionType -> Maybe Int
+[commission_gram_amount] :: TonTransactionType -> Maybe Int
 
 -- | True, if the gift was sold through a purchase offer
 [via_offer] :: TonTransactionType -> Maybe Bool
@@ -11217,14 +11321,15 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonTransactionType.TonTransa
 module TD.Data.TonTransaction
 data TonTransaction
 
--- | Represents a transaction changing the amount of owned Toncoins
+-- | Represents a transaction changing the amount of owned TON Grams
 TonTransaction :: Maybe Text -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe TonTransactionType -> TonTransaction
 
 -- | Unique identifier of the transaction
 [_id] :: TonTransaction -> Maybe Text
 
--- | The amount of added owned Toncoins; negative for outgoing transactions
-[ton_amount] :: TonTransaction -> Maybe Int
+-- | The amount of added owned Grams, in the smallest units of the
+--   cryptocurrency; negative for outgoing transactions
+[gram_amount] :: TonTransaction -> Maybe Int
 
 -- | True, if the transaction is a refund of a previous transaction
 [is_refund] :: TonTransaction -> Maybe Bool
@@ -11242,13 +11347,14 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonTransaction.TonTransactio
 module TD.Data.TonTransactions
 data TonTransactions
 
--- | Represents a list of Toncoin transactions
+-- | Represents a list of TON Gram transactions
 TonTransactions :: Maybe Int -> Maybe [TonTransaction] -> Maybe Text -> TonTransactions
 
--- | The total amount of owned Toncoins
-[ton_amount] :: TonTransactions -> Maybe Int
+-- | The total amount of owned Grams, in the smallest units of the
+--   cryptocurrency
+[gram_amount] :: TonTransactions -> Maybe Int
 
--- | List of Toncoin transactions
+-- | List of Gram transactions
 [transactions] :: TonTransactions -> Maybe [TonTransaction]
 
 -- | The offset for the next request. If empty, then there are no more
@@ -12230,6 +12336,12 @@ InputMessageReplyToStory :: Maybe Int -> Maybe Int -> InputMessageReplyTo
 
 -- | The identifier of the story
 [story_id] :: InputMessageReplyTo -> Maybe Int
+
+-- | Describes an ephemeral message to be replied; for bots only
+InputMessageReplyToEphemeralMessage :: Maybe Int -> InputMessageReplyTo
+
+-- | The identifier of the ephemeral message to be replied
+[ephemeral_message_id] :: InputMessageReplyTo -> Maybe Int
 instance GHC.Show.Show TD.Data.InputMessageReplyTo.InputMessageReplyTo
 instance GHC.Classes.Eq TD.Data.InputMessageReplyTo.InputMessageReplyTo
 instance TD.Lib.Internal.ShortShow TD.Data.InputMessageReplyTo.InputMessageReplyTo
@@ -12560,6 +12672,24 @@ RichTextSpoiler :: Maybe RichText -> RichText
 -- | Text
 [_text] :: RichText -> Maybe RichText
 
+-- | A subscript rich text
+RichTextSubscript :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A superscript rich text
+RichTextSuperscript :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | A marked rich text
+RichTextMarked :: Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
 -- | A date and time
 RichTextDateTime :: Maybe RichText -> Maybe Int -> Maybe DateTimeFormattingType -> RichText
 
@@ -12599,6 +12729,15 @@ RichTextCashtag :: Maybe RichText -> Maybe Text -> RichText
 
 -- | The cashtag
 [cashtag] :: RichText -> Maybe Text
+
+-- | A bank card number
+RichTextBankCardNumber :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The number of the bank card
+[bank_card_number] :: RichText -> Maybe Text
 
 -- | A bot command
 RichTextBotCommand :: Maybe RichText -> Maybe Text -> RichText
@@ -12646,33 +12785,6 @@ RichTextEmailAddress :: Maybe RichText -> Maybe Text -> RichText
 -- | Email address
 [email_address] :: RichText -> Maybe Text
 
--- | A bank card number
-RichTextBankCardNumber :: Maybe RichText -> Maybe Text -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | The number of the bank card
-[bank_card_number] :: RichText -> Maybe Text
-
--- | A subscript rich text
-RichTextSubscript :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A superscript rich text
-RichTextSuperscript :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
--- | A marked rich text
-RichTextMarked :: Maybe RichText -> RichText
-
--- | Text
-[_text] :: RichText -> Maybe RichText
-
 -- | A rich text phone number
 RichTextPhoneNumber :: Maybe RichText -> Maybe Text -> RichText
 
@@ -12710,6 +12822,16 @@ RichTextMathematicalExpression :: Maybe Text -> RichText
 
 -- | The expression in LaTeX format
 [expression] :: RichText -> Maybe Text
+
+-- | A rich text replacing another rich text; not supported in
+--   inputRichMessage
+RichTextDiff :: Maybe RichText -> Maybe RichText -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The old text
+[old_text] :: RichText -> Maybe RichText
 
 -- | A reference
 RichTextReference :: Maybe Text -> Maybe RichText -> RichText
@@ -12809,6 +12931,245 @@ instance GHC.Classes.Eq TD.Data.PageBlockCaption.PageBlockCaption
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockCaption.PageBlockCaption
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockCaption.PageBlockCaption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockCaption.PageBlockCaption
+
+module TD.Data.InputPageBlock
+
+-- | Describes a block of a rich message to send
+data InputPageBlock
+
+-- | A section heading
+InputPageBlockSectionHeading :: Maybe RichText -> Maybe Int -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Relative size of the text font; 1-6, 1 is the largest, 6 is the
+--   smallest
+[size] :: InputPageBlock -> Maybe Int
+
+-- | A text paragraph
+InputPageBlockParagraph :: Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | A preformatted text paragraph
+InputPageBlockPreformatted :: Maybe RichText -> Maybe Text -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Programming language for which the text needs to be formatted
+[language] :: InputPageBlock -> Maybe Text
+
+-- | The footer of the page
+InputPageBlockFooter :: Maybe RichText -> InputPageBlock
+
+-- | Footer
+[footer] :: InputPageBlock -> Maybe RichText
+
+-- | A "Thinking..." placeholder; for pending rich messages only; for bots
+--   only
+InputPageBlockThinking :: Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | An empty block separating the page
+InputPageBlockDivider :: InputPageBlock
+
+-- | A mathematical expression
+InputPageBlockMathematicalExpression :: Maybe Text -> InputPageBlock
+
+-- | The expression in LaTeX format
+[expression] :: InputPageBlock -> Maybe Text
+
+-- | An invisible anchor
+InputPageBlockAnchor :: Maybe Text -> InputPageBlock
+
+-- | Name of the anchor
+[name] :: InputPageBlock -> Maybe Text
+
+-- | A list of data blocks
+InputPageBlockList :: Maybe [InputPageBlockListItem] -> InputPageBlock
+
+-- | The items of the list
+[items] :: InputPageBlock -> Maybe [InputPageBlockListItem]
+
+-- | A block quote
+InputPageBlockBlockQuote :: Maybe [InputPageBlock] -> Maybe RichText -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Quote credit; pass null if none
+[credit] :: InputPageBlock -> Maybe RichText
+
+-- | A pull quote
+InputPageBlockPullQuote :: Maybe RichText -> Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Quote credit; pass null if none
+[credit] :: InputPageBlock -> Maybe RichText
+
+-- | An animation
+InputPageBlockAnimation :: Maybe InputAnimation -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The animation to be sent
+[animation] :: InputPageBlock -> Maybe InputAnimation
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | An audio file
+InputPageBlockAudio :: Maybe InputAudio -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | The audio to be sent
+[audio] :: InputPageBlock -> Maybe InputAudio
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A photo
+InputPageBlockPhoto :: Maybe InputPhoto -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The photo to be sent
+[photo] :: InputPageBlock -> Maybe InputPhoto
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | A video
+InputPageBlockVideo :: Maybe InputVideo -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The video to be sent
+[video] :: InputPageBlock -> Maybe InputVideo
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | A voice note
+InputPageBlockVoiceNote :: Maybe InputVoiceNote -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | The voice note to be sent
+[voice_note] :: InputPageBlock -> Maybe InputVoiceNote
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A collage
+InputPageBlockCollage :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A slideshow
+InputPageBlockSlideshow :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A table
+InputPageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> InputPageBlock
+
+-- | Table caption
+[_caption] :: InputPageBlock -> Maybe RichText
+
+-- | Table cells
+[cells] :: InputPageBlock -> Maybe [[PageBlockTableCell]]
+
+-- | True, if the table is bordered
+[is_bordered] :: InputPageBlock -> Maybe Bool
+
+-- | True, if the table is striped
+[is_striped] :: InputPageBlock -> Maybe Bool
+
+-- | A collapsible block
+InputPageBlockDetails :: Maybe RichText -> Maybe [InputPageBlock] -> Maybe Bool -> InputPageBlock
+
+-- | Always visible heading for the block
+[header] :: InputPageBlock -> Maybe RichText
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | True, if the block is open by default
+[is_open] :: InputPageBlock -> Maybe Bool
+
+-- | A map. The map's width and height must not exceed 10000 in total.
+--   Width and height ratio must be at most 20
+InputPageBlockMap :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Location of the map center
+[location] :: InputPageBlock -> Maybe Location
+
+-- | Map zoom level; 0-24
+[zoom] :: InputPageBlock -> Maybe Int
+
+-- | Map width; 0-10000
+[width] :: InputPageBlock -> Maybe Int
+
+-- | Map height; 0-10000
+[height] :: InputPageBlock -> Maybe Int
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+instance GHC.Show.Show TD.Data.InputPageBlock.InputPageBlock
+instance GHC.Classes.Eq TD.Data.InputPageBlock.InputPageBlock
+instance TD.Lib.Internal.ShortShow TD.Data.InputPageBlock.InputPageBlock
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPageBlock.InputPageBlock
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPageBlock.InputPageBlock
+
+module TD.Data.RichMessageSource
+
+-- | Describes source of a rich message
+data RichMessageSource
+
+-- | A rich message defined by blocks
+RichMessageSourceBlocks :: Maybe [InputPageBlock] -> RichMessageSource
+
+-- | Content of the message
+[blocks] :: RichMessageSource -> Maybe [InputPageBlock]
+
+-- | A Markdown-formatted rich message; for bots only
+RichMessageSourceMarkdown :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+
+-- | Media used in the message
+[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
+
+-- | An HTML-formatted rich message; for bots only
+RichMessageSourceHtml :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+
+-- | Media used in the message
+[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
+instance GHC.Show.Show TD.Data.RichMessageSource.RichMessageSource
+instance GHC.Classes.Eq TD.Data.RichMessageSource.RichMessageSource
+instance TD.Lib.Internal.ShortShow TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessageSource.RichMessageSource
 
 module TD.Data.DateRange
 data DateRange
@@ -13059,7 +13420,7 @@ module TD.Data.CountryInfo
 data CountryInfo
 
 -- | Contains information about a country
-CountryInfo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe [Text] -> CountryInfo
+CountryInfo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe [Text] -> CountryInfo
 
 -- | A two-letter ISO 3166-1 alpha-2 country code
 [country_code] :: CountryInfo -> Maybe Text
@@ -13069,6 +13430,9 @@ CountryInfo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> Maybe [Te
 
 -- | English name of the country
 [english_name] :: CountryInfo -> Maybe Text
+
+-- | An emoji for the flag of the country; may be empty if unknown
+[flag_emoji] :: CountryInfo -> Maybe Text
 
 -- | True, if the country must be hidden from the list of all countries
 [is_hidden] :: CountryInfo -> Maybe Bool
@@ -13277,19 +13641,10 @@ InputMessagePhoto :: Maybe InputPhoto -> Maybe FormattedText -> Maybe Bool -> Ma
 [has_spoiler] :: InputMessageContent -> Maybe Bool
 
 -- | A sticker message
-InputMessageSticker :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> Maybe Text -> InputMessageContent
+InputMessageSticker :: Maybe InputSticker -> Maybe Text -> InputMessageContent
 
 -- | Sticker to be sent
-[sticker] :: InputMessageContent -> Maybe InputFile
-
--- | Sticker thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Sticker width
-[width] :: InputMessageContent -> Maybe Int
-
--- | Sticker height
-[height] :: InputMessageContent -> Maybe Int
+[sticker] :: InputMessageContent -> Maybe InputSticker
 
 -- | Emoji used to choose the sticker
 [emoji] :: InputMessageContent -> Maybe Text
@@ -13317,37 +13672,19 @@ InputMessageVideo :: Maybe InputVideo -> Maybe FormattedText -> Maybe Bool -> Ma
 [has_spoiler] :: InputMessageContent -> Maybe Bool
 
 -- | A video note message
-InputMessageVideoNote :: Maybe InputFile -> Maybe InputThumbnail -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> InputMessageContent
+InputMessageVideoNote :: Maybe InputVideoNote -> Maybe MessageSelfDestructType -> InputMessageContent
 
--- | Video note to be sent. The video is expected to be encoded to MPEG4
---   format with H.264 codec and have no data outside of the visible circle
-[video_note] :: InputMessageContent -> Maybe InputFile
-
--- | Sticker thumbnail; pass null to skip thumbnail uploading
-[thumbnail] :: InputMessageContent -> Maybe InputThumbnail
-
--- | Duration of the video, in seconds; 0-60
-[duration] :: InputMessageContent -> Maybe Int
-
--- | Video width and height; must be positive and not greater than 640
-[_length] :: InputMessageContent -> Maybe Int
+-- | Video note to be sent
+[video_note] :: InputMessageContent -> Maybe InputVideoNote
 
 -- | Photo self-destruct type; pass null if none; private chats only
 [self_destruct_type] :: InputMessageContent -> Maybe MessageSelfDestructType
 
 -- | A voice note message
-InputMessageVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> Maybe FormattedText -> Maybe MessageSelfDestructType -> InputMessageContent
+InputMessageVoiceNote :: Maybe InputVoiceNote -> Maybe FormattedText -> Maybe MessageSelfDestructType -> InputMessageContent
 
--- | Voice note to be sent. The voice note must be encoded with the Opus
---   codec and stored inside an OGG container with a single audio channel,
---   or be in MP3 or M4A format as regular audio
-[voice_note] :: InputMessageContent -> Maybe InputFile
-
--- | Duration of the video, in seconds; 0-60
-[duration] :: InputMessageContent -> Maybe Int
-
--- | Waveform representation of the voice note in 5-bit format
-[waveform] :: InputMessageContent -> Maybe ByteString
+-- | Voice note to be sent
+[voice_note] :: InputMessageContent -> Maybe InputVoiceNote
 
 -- | Animation caption; pass null to use an empty caption;
 --   0-getOption("message_caption_length_max") characters
@@ -13519,10 +13856,10 @@ InputMessageStakeDice :: Maybe Text -> Maybe Int -> Maybe Bool -> InputMessageCo
 --   using getStakeDiceState
 [state_hash] :: InputMessageContent -> Maybe Text
 
--- | The Toncoin amount that will be staked; in the smallest units of the
+-- | The TON Gram amount that will be staked; in the smallest units of the
 --   currency. Must be in the range
 --   getOption("stake_dice_stake_amount_min")-getOption("stake_dice_stake_amount_max")
-[stake_toncoin_amount] :: InputMessageContent -> Maybe Int
+[stake_gram_amount] :: InputMessageContent -> Maybe Int
 
 -- | Pass true to delete message draft in the chat
 [clear_draft] :: InputMessageContent -> Maybe Bool
@@ -13654,6 +13991,82 @@ instance GHC.Show.Show TD.Data.ConnectedWebsites.ConnectedWebsites
 instance GHC.Classes.Eq TD.Data.ConnectedWebsites.ConnectedWebsites
 instance TD.Lib.Internal.ShortShow TD.Data.ConnectedWebsites.ConnectedWebsites
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ConnectedWebsites.ConnectedWebsites
+
+module TD.Data.CommunityPermissions
+data CommunityPermissions
+
+-- | Describes actions that a user is allowed to take in a community
+CommunityPermissions :: Maybe Bool -> CommunityPermissions
+
+-- | True, if the user can change the chats added to the community
+[can_edit_chat_list] :: CommunityPermissions -> Maybe Bool
+instance GHC.Show.Show TD.Data.CommunityPermissions.CommunityPermissions
+instance GHC.Classes.Eq TD.Data.CommunityPermissions.CommunityPermissions
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityPermissions.CommunityPermissions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityPermissions.CommunityPermissions
+
+module TD.Data.CommunityAdministratorRights
+data CommunityAdministratorRights
+
+-- | Describes rights of the administrator in a community
+CommunityAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> CommunityAdministratorRights
+
+-- | True, if the user is an administrator. Implied by any other privilege
+[can_manage_community] :: CommunityAdministratorRights -> Maybe Bool
+
+-- | True, if the administrator can change the community name, photo, and
+--   other settings
+[can_change_info] :: CommunityAdministratorRights -> Maybe Bool
+
+-- | True, if the user can change the chats added to the community
+[can_edit_chat_list] :: CommunityAdministratorRights -> Maybe Bool
+
+-- | True, if the administrator can add new administrators with a subset of
+--   their own privileges or demote administrators that were directly or
+--   indirectly promoted by them
+[can_promote_members] :: CommunityAdministratorRights -> Maybe Bool
+
+-- | True, if the administrator can ban, or unban community members
+[can_ban_members] :: CommunityAdministratorRights -> Maybe Bool
+instance GHC.Show.Show TD.Data.CommunityAdministratorRights.CommunityAdministratorRights
+instance GHC.Classes.Eq TD.Data.CommunityAdministratorRights.CommunityAdministratorRights
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityAdministratorRights.CommunityAdministratorRights
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityAdministratorRights.CommunityAdministratorRights
+
+module TD.Data.CommunityMemberStatus
+
+-- | Provides information about the status of a member in a community
+data CommunityMemberStatus
+
+-- | The user is the owner of the community and has all the administrator
+--   privileges
+CommunityMemberStatusCreator :: CommunityMemberStatus
+
+-- | The user is a member of the community and has some additional
+--   privileges
+CommunityMemberStatusAdministrator :: Maybe Bool -> Maybe CommunityAdministratorRights -> CommunityMemberStatus
+
+-- | True, if the current user can edit the administrator privileges for
+--   the called user
+[can_be_edited] :: CommunityMemberStatus -> Maybe Bool
+
+-- | Rights of the administrator
+[rights] :: CommunityMemberStatus -> Maybe CommunityAdministratorRights
+
+-- | The user is a member of the community, without any additional
+--   privileges or restrictions
+CommunityMemberStatusMember :: CommunityMemberStatus
+
+-- | The user or the chat is not a community member
+CommunityMemberStatusLeft :: CommunityMemberStatus
+
+-- | The user or the chat was banned in the community; implies ban in all
+--   chats in the community
+CommunityMemberStatusBanned :: CommunityMemberStatus
+instance GHC.Show.Show TD.Data.CommunityMemberStatus.CommunityMemberStatus
+instance GHC.Classes.Eq TD.Data.CommunityMemberStatus.CommunityMemberStatus
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityMemberStatus.CommunityMemberStatus
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityMemberStatus.CommunityMemberStatus
 
 module TD.Data.CollectibleItemType
 
@@ -14381,9 +14794,9 @@ data ChatRevenueTransactions
 -- | Contains a list of chat revenue transactions
 ChatRevenueTransactions :: Maybe Int -> Maybe [ChatRevenueTransaction] -> Maybe Text -> ChatRevenueTransactions
 
--- | The amount of owned Toncoins; in the smallest units of the
+-- | The amount of owned TON Grams; in the smallest units of the
 --   cryptocurrency
-[ton_amount] :: ChatRevenueTransactions -> Maybe Int
+[gram_amount] :: ChatRevenueTransactions -> Maybe Int
 
 -- | List of transactions
 [transactions] :: ChatRevenueTransactions -> Maybe [ChatRevenueTransaction]
@@ -14503,6 +14916,43 @@ instance GHC.Classes.Eq TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance TD.Lib.Internal.ShortShow TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatPhotoInfo.ChatPhotoInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.ChatPhotoInfo.ChatPhotoInfo
+
+module TD.Data.Community
+data Community
+
+-- | Represents a community consisting of supergroup chats, channel chats
+--   and chats with bots
+Community :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe CommunityMemberStatus -> Maybe CommunityPermissions -> Community
+
+-- | Community identifier
+[_id] :: Community -> Maybe Int
+
+-- | If false, the community is inaccessible, and the only information
+--   known about the community is inside this class. Identifier of the
+--   community can't be passed to any method
+[have_access] :: Community -> Maybe Bool
+
+-- | Community name
+[name] :: Community -> Maybe Text
+
+-- | Community photo; may be null
+[photo] :: Community -> Maybe ChatPhotoInfo
+
+-- | Point in time (Unix timestamp) when the community was joined, or the
+--   point in time when the community was created, in case the user is not
+--   a member of any chat in the community
+[date] :: Community -> Maybe Int
+
+-- | Status of the current user in the community
+[status] :: Community -> Maybe CommunityMemberStatus
+
+-- | Actions that non-administrator community members are allowed to take
+--   in the community
+[permissions] :: Community -> Maybe CommunityPermissions
+instance GHC.Show.Show TD.Data.Community.Community
+instance GHC.Classes.Eq TD.Data.Community.Community
+instance TD.Lib.Internal.ShortShow TD.Data.Community.Community
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Community.Community
 
 module TD.Data.ChatPermissions
 data ChatPermissions
@@ -14803,16 +15253,13 @@ ChatJoinResultRequestSent :: ChatJoinResult
 
 -- | An approval from a guard bot through a Web App is required to join the
 --   chat
-ChatJoinResultGuardBotApprovalRequired :: Maybe Int -> Maybe WebAppUrl -> Maybe Int -> ChatJoinResult
+ChatJoinResultGuardBotApprovalRequired :: Maybe Int -> Maybe Int -> ChatJoinResult
 
 -- | Identifier of the guard bot
 [bot_user_id] :: ChatJoinResult -> Maybe Int
 
--- | The URL of the Web App to open
-[url] :: ChatJoinResult -> Maybe WebAppUrl
-
 -- | Unique identifier of the join request, which will be used in
---   updateChatJoinResult
+--   getGuardBotWebAppUrl and updateChatJoinResult
 [query_id] :: ChatJoinResult -> Maybe Int
 
 -- | The join was declined by the guard bot
@@ -15856,7 +16303,8 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 
 -- | True, if the administrator can add new administrators with a subset of
 --   their own privileges or demote administrators that were directly or
---   indirectly promoted by them
+--   indirectly promoted by them; applicable to supergroups and channels
+--   only
 [can_promote_members] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator can manage video chats
@@ -16738,10 +17186,9 @@ ChatMemberStatusCreator :: Maybe Bool -> Maybe Bool -> ChatMemberStatus
 [is_member] :: ChatMemberStatus -> Maybe Bool
 
 -- | The user is a member of the chat and has some additional privileges.
---   In basic groups, administrators can edit and delete messages sent by
---   others, add new members, ban unprivileged members, and manage video
---   chats. In supergroups and channels, there are more detailed options
---   for administrator privileges
+--   In basic groups, administrators have all applicable rights. In
+--   supergroups and channels, any subset of the rights can be chosen for
+--   an administrator
 ChatMemberStatusAdministrator :: Maybe Bool -> Maybe ChatAdministratorRights -> ChatMemberStatus
 
 -- | True, if the current user can edit the administrator privileges for
@@ -18710,13 +19157,17 @@ module TD.Data.BotCommand
 data BotCommand
 
 -- | Represents a command supported by a bot
-BotCommand :: Maybe Text -> Maybe Text -> BotCommand
+BotCommand :: Maybe Text -> Maybe Text -> Maybe Bool -> BotCommand
 
 -- | Text of the bot command
 [command] :: BotCommand -> Maybe Text
 
 -- | Description of the bot command
 [description] :: BotCommand -> Maybe Text
+
+-- | True, if the command must send an ephemeral message instead of a
+--   regular one
+[is_ephemeral] :: BotCommand -> Maybe Bool
 defaultBotCommand :: BotCommand
 instance GHC.Show.Show TD.Data.BotCommand.BotCommand
 instance GHC.Classes.Eq TD.Data.BotCommand.BotCommand
@@ -20559,7 +21010,8 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PremiumFeaturePromotionAnima
 
 module TD.Data.PageBlock
 
--- | Describes a block of an instant view for a web page
+-- | Describes a block of an instant view for a web page or a block of a
+--   rich message
 data PageBlock
 
 -- | The title of a page; instant view only
@@ -21413,11 +21865,14 @@ module TD.Data.SupergroupFullInfo
 data SupergroupFullInfo
 
 -- | Contains full information about a supergroup or channel
-SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe Int -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Int -> Maybe Int -> SupergroupFullInfo
+SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Double -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatLocation -> Maybe ChatInviteLink -> Maybe Int -> Maybe [BotCommands] -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Int -> Maybe Int -> SupergroupFullInfo
 
 -- | Chat photo; may be null if empty or unknown. If non-null, then it is
 --   the same photo as in chat.photo
 [photo] :: SupergroupFullInfo -> Maybe ChatPhoto
+
+-- | Identifier of the community to which the corresponding chat was added
+[community_id] :: SupergroupFullInfo -> Maybe Int
 
 -- | Supergroup or channel description
 [description] :: SupergroupFullInfo -> Maybe Text
@@ -23805,13 +24260,13 @@ MessageStakeDice :: Maybe DiceStickers -> Maybe DiceStickers -> Maybe Int -> May
 --   state yet
 [value] :: MessageContent -> Maybe Int
 
--- | The Toncoin amount that was staked; in the smallest units of the
+-- | The TON Gram amount that was staked; in the smallest units of the
 --   currency
-[stake_toncoin_amount] :: MessageContent -> Maybe Int
+[stake_gram_amount] :: MessageContent -> Maybe Int
 
--- | The Toncoin amount that was gained from the roll; in the smallest
+-- | The TON Gram amount that was gained from the roll; in the smallest
 --   units of the currency; -1 if the dice don't have final state yet
-[prize_toncoin_amount] :: MessageContent -> Maybe Int
+[prize_gram_amount] :: MessageContent -> Maybe Int
 
 -- | A message with a forwarded story
 MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
@@ -24049,6 +24504,15 @@ MessageChatDeleteMember :: Maybe Int -> MessageContent
 
 -- | User identifier of the deleted chat member
 [user_id] :: MessageContent -> Maybe Int
+
+-- | The chat was added to a community
+MessageChatAddedToCommunity :: Maybe Int -> MessageContent
+
+-- | Identifier of the community to which the chat was added
+[community_id] :: MessageContent -> Maybe Int
+
+-- | The chat was removed from a community
+MessageChatRemovedFromCommunity :: MessageContent
 
 -- | A basic group was upgraded to a supergroup and was deactivated as the
 --   result
@@ -24475,7 +24939,7 @@ MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
--- | Toncoins were gifted to a user
+-- | TON Grams were gifted to a user
 MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> MessageContent
 
 -- | The identifier of a user who gifted Telegram Premium; 0 if the gift
@@ -24486,9 +24950,8 @@ MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe S
 --   is incoming
 [receiver_user_id] :: MessageContent -> Maybe Int
 
--- | The received Toncoin amount, in the smallest units of the
---   cryptocurrency
-[ton_amount] :: MessageContent -> Maybe Int
+-- | The received Gram amount, in the smallest units of the cryptocurrency
+[gram_amount] :: MessageContent -> Maybe Int
 
 -- | Identifier of the transaction for Telegram Stars purchase; for
 --   receiver only
@@ -24807,9 +25270,8 @@ MessageSuggestedPostPaid :: Maybe Int -> Maybe StarAmount -> Maybe Int -> Messag
 -- | The amount of received Telegram Stars
 [star_amount] :: MessageContent -> Maybe StarAmount
 
--- | The received Toncoin amount, in the smallest units of the
---   cryptocurrency
-[ton_amount] :: MessageContent -> Maybe Int
+-- | The received Gram amount, in the smallest units of the cryptocurrency
+[gram_amount] :: MessageContent -> Maybe Int
 
 -- | A suggested post was refunded
 MessageSuggestedPostRefunded :: Maybe Int -> Maybe SuggestedPostRefundReason -> MessageContent
@@ -25103,13 +25565,17 @@ module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Maybe Int -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
 
 -- | Identifier of the sender of the message
 [sender_id] :: Message -> Maybe MessageSender
+
+-- | Identifier of the user or the chat which received the ephemeral
+--   message; may be null. Always null for non-ephemeral messages
+[receiver_id] :: Message -> Maybe MessageSender
 
 -- | Chat identifier
 [chat_id] :: Message -> Maybe Int
@@ -25149,10 +25615,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 --   sending
 [is_paid_star_suggested_post] :: Message -> Maybe Bool
 
--- | True, if the message is a suggested channel post which was paid in
---   Toncoins; a warning must be shown if the message is deleted in less
---   than getOption("suggested_post_lifetime_min") seconds after sending
-[is_paid_ton_suggested_post] :: Message -> Maybe Bool
+-- | True, if the message is a suggested channel post which was paid in TON
+--   Grams; a warning must be shown if the message is deleted in less than
+--   getOption("suggested_post_lifetime_min") seconds after sending
+[is_paid_gram_suggested_post] :: Message -> Maybe Bool
 
 -- | True, if the message contains an unread mention for the current user
 [contains_unread_mention] :: Message -> Maybe Bool
@@ -25165,7 +25631,9 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 [date] :: Message -> Maybe Int
 
 -- | Point in time (Unix timestamp) when the message was last edited; 0 for
---   scheduled messages
+--   scheduled messages. If getOption("show_message_edit_date_by_default")
+--   is true, then the date must be shown along with the message instead of
+--   the date when the message was sent
 [edit_date] :: Message -> Maybe Int
 
 -- | Information about the initial message sender; may be null if none or
@@ -25260,6 +25728,10 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe MessageSending
 
 -- | Reply markup for the message; may be null if none
 [reply_markup] :: Message -> Maybe ReplyMarkup
+
+-- | Unique identifier of the ephemeral message if the message is
+--   ephemeral; for bots only
+[ephemeral_message_id] :: Message -> Maybe Int
 instance GHC.Show.Show TD.Data.Message.Message
 instance GHC.Classes.Eq TD.Data.Message.Message
 instance TD.Lib.Internal.ShortShow TD.Data.Message.Message
@@ -26686,12 +27158,7 @@ module TD.Data.Supergroup
 data Supergroup
 
 -- | Represents a supergroup or channel with zero or more members
---   (subscribers in the case of channels). From the point of view of the
---   system, a channel is a special kind of a supergroup: only
---   administrators can post and see the list of members, and posts from
---   all administrators use the name and photo of the channel instead of
---   individual names and profile photos. Unlike supergroups, channels can
---   have an unlimited number of subscribers
+--   (subscribers in the case of channels)
 Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Int -> Maybe ActiveStoryState -> Supergroup
 
 -- | Supergroup or channel identifier
@@ -26754,7 +27221,9 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 -- | True, if the slow mode is enabled in the supergroup
 [is_slow_mode_enabled] :: Supergroup -> Maybe Bool
 
--- | True, if the supergroup is a channel
+-- | True, if the supergroup is a channel, which can have an unlimited
+--   number of subscribers, but only administrators can post there and see
+--   the list of subscribers
 [is_channel] :: Supergroup -> Maybe Bool
 
 -- | True, if the supergroup is a broadcast group, i.e. only administrators
@@ -27127,7 +27596,7 @@ module TD.Data.UserFullInfo
 data UserFullInfo
 
 -- | Contains full information about a user
-UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GiftSettings -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Audio -> Maybe UserRating -> Maybe UserRating -> Maybe Int -> Maybe FormattedText -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
+UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe Int -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> Maybe Birthdate -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe GiftSettings -> Maybe BotVerification -> Maybe ProfileTab -> Maybe Audio -> Maybe UserRating -> Maybe UserRating -> Maybe Int -> Maybe FormattedText -> Maybe BusinessInfo -> Maybe BotInfo -> UserFullInfo
 
 -- | User profile photo set by the current user for the contact; may be
 --   null. If null and user.profile_photo is null, then the photo is empty;
@@ -27149,6 +27618,10 @@ UserFullInfo :: Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe ChatPhoto -> Maybe B
 --   user.profile_photo and chat.photo. This photo isn't returned in the
 --   list of user photos
 [public_photo] :: UserFullInfo -> Maybe ChatPhoto
+
+-- | Identifier of the community to which chat with the bot was added; for
+--   bots only
+[community_id] :: UserFullInfo -> Maybe Int
 
 -- | Block list to which the user is added; may be null if none
 [block_list] :: UserFullInfo -> Maybe BlockList
@@ -28085,6 +28558,13 @@ UpdatePendingMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageCont
 --   messageRichMessage
 [content] :: Update -> Maybe MessageContent
 
+-- | Some data of a community has changed. This update is guaranteed to
+--   come before the community identifier is returned to the application
+UpdateCommunity :: Maybe Community -> Update
+
+-- | New data about the community
+[community] :: Update -> Maybe Community
+
 -- | The user went online or offline
 UpdateUserStatus :: Maybe Int -> Maybe UserStatus -> Update
 
@@ -28794,12 +29274,12 @@ UpdateOwnedStarCount :: Maybe StarAmount -> Update
 -- | The new amount of owned Telegram Stars
 [star_amount] :: Update -> Maybe StarAmount
 
--- | The number of Toncoins owned by the current user has changed
-UpdateOwnedTonCount :: Maybe Int -> Update
+-- | The number of TON Grams owned by the current user has changed
+UpdateOwnedGramCount :: Maybe Int -> Update
 
--- | The new amount of owned Toncoins; in the smallest units of the
+-- | The new amount of owned Grams; in the smallest units of the
 --   cryptocurrency
-[ton_amount] :: Update -> Maybe Int
+[gram_amount] :: Update -> Maybe Int
 
 -- | The revenue earned from sponsored messages in a chat has changed. If
 --   chat revenue screen is opened, then getChatRevenueTransactions may be
@@ -28823,13 +29303,13 @@ UpdateStarRevenueStatus :: Maybe MessageSender -> Maybe StarRevenueStatus -> Upd
 -- | New Telegram Star revenue status
 [_status] :: Update -> Maybe StarRevenueStatus
 
--- | The Toncoin revenue earned by the current user has changed. If Toncoin
+-- | The TON Gram revenue earned by the current user has changed. If Gram
 --   transaction screen of the chat is opened, then getTonTransactions may
 --   be called to fetch new transactions
-UpdateTonRevenueStatus :: Maybe TonRevenueStatus -> Update
+UpdateGramRevenueStatus :: Maybe GramRevenueStatus -> Update
 
--- | New Toncoin revenue status
-[__status] :: Update -> Maybe TonRevenueStatus
+-- | New Gram revenue status
+[__status] :: Update -> Maybe GramRevenueStatus
 
 -- | The parameters of speech recognition without Telegram Premium
 --   subscription have changed
@@ -29153,6 +29633,24 @@ UpdateNewCustomQuery :: Maybe Int -> Maybe Text -> Maybe Int -> Update
 -- | Query timeout
 [timeout] :: Update -> Maybe Int
 
+-- | Subscription of a user to the bot was changed; for bots only
+UpdateUserSubscription :: Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Update
+
+-- | User identifier
+[user_id] :: Update -> Maybe Int
+
+-- | Bot-specified subscription invoice payload
+[_payload] :: Update -> Maybe Text
+
+-- | True, if the subscription was canceled
+[is_canceled] :: Update -> Maybe Bool
+
+-- | True, if the subscription was restored
+[is_restored] :: Update -> Maybe Bool
+
+-- | True, if the payment for the subscription has failed
+[is_payment_failed] :: Update -> Maybe Bool
+
 -- | A poll was updated; for bots only
 UpdatePoll :: Maybe Poll -> Update
 
@@ -29288,7 +29786,7 @@ UpdatePaidMediaPurchased :: Maybe Int -> Maybe Text -> Update
 -- | User identifier
 [user_id] :: Update -> Maybe Int
 
--- | Bot-specified payload for the paid media
+-- | Bot-specified subscription invoice payload
 [_payload] :: Update -> Maybe Text
 instance GHC.Show.Show TD.Data.Update.Update
 instance GHC.Classes.Eq TD.Data.Update.Update
@@ -29439,6 +29937,7 @@ GiftUpgradeVariants :: GiftUpgradeVariants -> GeneralResult
 GiftsForCrafting :: GiftsForCrafting -> GeneralResult
 GiftsForResale :: GiftsForResale -> GeneralResult
 GiveawayInfo :: GiveawayInfo -> GeneralResult
+GramRevenueStatistics :: GramRevenueStatistics -> GeneralResult
 GroupCall :: GroupCall -> GeneralResult
 GroupCallId :: GroupCallId -> GeneralResult
 GroupCallInfo :: GroupCallInfo -> GeneralResult
@@ -29574,7 +30073,6 @@ TextCompositionStyle :: TextCompositionStyle -> GeneralResult
 TextCompositionStyleExample :: TextCompositionStyleExample -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
 TimeZones :: TimeZones -> GeneralResult
-TonRevenueStatistics :: TonRevenueStatistics -> GeneralResult
 TonTransactions :: TonTransactions -> GeneralResult
 TrendingStickerSets :: TrendingStickerSets -> GeneralResult
 Update :: Update -> GeneralResult
@@ -29759,7 +30257,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatMember.AddChatMember
 module TD.Query.AddChatMembers
 
 -- | Adds multiple new members to a chat; requires can_invite_users member
---   right. Currently, this method is only available for supergroups and
+--   right. Currently, this method is available only in supergroups and
 --   channels. This method can't be used to join a chat. Members can't be
 --   added to a channel if it has more than 200 members. Returns
 --   information about members that weren't added. Returns
@@ -30152,23 +30650,10 @@ module TD.Query.AddProfileAudio
 -- | Adds an audio file to the beginning of the profile audio files of the
 --   current user. Returns <a>Ok</a>
 data AddProfileAudio
-AddProfileAudio :: Maybe InputFile -> Maybe Int -> Maybe Text -> Maybe Text -> AddProfileAudio
+AddProfileAudio :: Maybe InputAudio -> AddProfileAudio
 
--- | The audio file to be added
-[audio] :: AddProfileAudio -> Maybe InputFile
-
--- | Duration of the audio, in seconds; may be replaced by the server;
---   ignored for already uploaded files
-[duration] :: AddProfileAudio -> Maybe Int
-
--- | Title of the audio; 0-64 characters; may be replaced by the server;
---   ignored for already uploaded files
-[title] :: AddProfileAudio -> Maybe Text
-
--- | Performer of the audio; 0-64 characters, may be replaced by the
---   server; ignored for already uploaded files
-[performer] :: AddProfileAudio -> Maybe Text
-defaultAddProfileAudio :: AddProfileAudio
+-- | The audio to add
+[audio] :: AddProfileAudio -> Maybe InputAudio
 instance GHC.Show.Show TD.Query.AddProfileAudio.AddProfileAudio
 instance GHC.Classes.Eq TD.Query.AddProfileAudio.AddProfileAudio
 instance TD.Lib.Internal.ShortShow TD.Query.AddProfileAudio.AddProfileAudio
@@ -30362,7 +30847,7 @@ module TD.Query.AddStickerToSet
 
 -- | Adds a new sticker to a set. Returns <a>Ok</a>
 data AddStickerToSet
-AddStickerToSet :: Maybe Int -> Maybe Text -> Maybe InputSticker -> AddStickerToSet
+AddStickerToSet :: Maybe Int -> Maybe Text -> Maybe NewSticker -> AddStickerToSet
 
 -- | Sticker set owner; ignored for regular users
 [user_id] :: AddStickerToSet -> Maybe Int
@@ -30373,7 +30858,7 @@ AddStickerToSet :: Maybe Int -> Maybe Text -> Maybe InputSticker -> AddStickerTo
 [name] :: AddStickerToSet -> Maybe Text
 
 -- | Sticker to add to the set
-[sticker] :: AddStickerToSet -> Maybe InputSticker
+[sticker] :: AddStickerToSet -> Maybe NewSticker
 defaultAddStickerToSet :: AddStickerToSet
 instance GHC.Show.Show TD.Query.AddStickerToSet.AddStickerToSet
 instance GHC.Classes.Eq TD.Query.AddStickerToSet.AddStickerToSet
@@ -30410,8 +30895,9 @@ module TD.Query.AddTextCompositionStyle
 
 -- | Adds a custom text composition style to the list of used by the user
 --   styles. May return an error with a message <a>TONES_SAVED_TOO_MANY</a>
---   if the maximum number of added custom styles has been reached. Returns
---   <a>Ok</a>
+--   if the maximum number of added custom styles
+--   getOption("added_text_composition_style_count_max") has been reached.
+--   Returns <a>Ok</a>
 data AddTextCompositionStyle
 AddTextCompositionStyle :: Maybe Text -> AddTextCompositionStyle
 
@@ -31705,6 +32191,40 @@ instance GHC.Classes.Eq TD.Query.CommitPendingPaidMessageReactions.CommitPending
 instance TD.Lib.Internal.ShortShow TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CommitPendingPaidMessageReactions.CommitPendingPaidMessageReactions
 
+module TD.Query.ComposeRichMessageWithAi
+
+-- | Changes a rich message using an AI model. May return an error with a
+--   message <a>AICOMPOSE_FLOOD_PREMIUM</a> if Telegram Premium is required
+--   to send further requests. Returns <a>RichMessage</a>
+data ComposeRichMessageWithAi
+ComposeRichMessageWithAi :: Maybe InputRichMessage -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Bool -> ComposeRichMessageWithAi
+
+-- | The original message
+[message] :: ComposeRichMessageWithAi -> Maybe InputRichMessage
+
+-- | Pass a language code to which the text will be translated; pass an
+--   empty string if translation isn't needed. See
+--   translateText.to_language_code for the list of supported values
+[translate_to_language_code] :: ComposeRichMessageWithAi -> Maybe Text
+
+-- | Name of the style of the resulted text; handle
+--   updateTextCompositionStyles to get the list of supported styles; pass
+--   an empty string to keep the current style of the text or if a custom
+--   prompt is used
+[style_name] :: ComposeRichMessageWithAi -> Maybe Text
+
+-- | Custom prompt that will be used instead of style_name;
+--   0-getOption("text_composition_style_prompt_length_max") characters
+[custom_prompt] :: ComposeRichMessageWithAi -> Maybe Text
+
+-- | Pass true to add emoji to the text
+[add_emojis] :: ComposeRichMessageWithAi -> Maybe Bool
+defaultComposeRichMessageWithAi :: ComposeRichMessageWithAi
+instance GHC.Show.Show TD.Query.ComposeRichMessageWithAi.ComposeRichMessageWithAi
+instance GHC.Classes.Eq TD.Query.ComposeRichMessageWithAi.ComposeRichMessageWithAi
+instance TD.Lib.Internal.ShortShow TD.Query.ComposeRichMessageWithAi.ComposeRichMessageWithAi
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ComposeRichMessageWithAi.ComposeRichMessageWithAi
+
 module TD.Query.ComposeTextWithAi
 
 -- | Changes text using an AI model; must not be used in secret chats. May
@@ -31838,7 +32358,7 @@ module TD.Query.CreateBot
 -- | Creates a bot which will be managed by another bot. Returns the
 --   created bot. May return an error with a message
 --   <a>BOT_CREATE_LIMIT_EXCEEDED</a> if the user already owns the maximum
---   allowed number of bots as per premiumLimitTypeOwnedBotCount. An
+--   allowed number of bots as per getOption("owned_bot_count_max"). An
 --   internal link "<a>https://t.me/BotFather?start=deletebot"</a> can be
 --   processed to handle the error. Returns <a>User</a>
 data CreateBot
@@ -32127,7 +32647,7 @@ module TD.Query.CreateNewStickerSet
 -- | Creates a new sticker set. Returns the newly created sticker set.
 --   Returns <a>StickerSet</a>
 data CreateNewStickerSet
-CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerType -> Maybe Bool -> Maybe [InputSticker] -> Maybe Text -> CreateNewStickerSet
+CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerType -> Maybe Bool -> Maybe [NewSticker] -> Maybe Text -> CreateNewStickerSet
 
 -- | Sticker set owner; ignored for regular users
 [user_id] :: CreateNewStickerSet -> Maybe Int
@@ -32152,7 +32672,7 @@ CreateNewStickerSet :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe StickerTyp
 -- | List of stickers to be added to the set; 1-200 stickers for custom
 --   emoji sticker sets, and 1-120 stickers otherwise. For TGS stickers,
 --   uploadStickerFile must be used before the sticker is shown
-[stickers] :: CreateNewStickerSet -> Maybe [InputSticker]
+[stickers] :: CreateNewStickerSet -> Maybe [NewSticker]
 
 -- | Source of the sticker set; may be empty if unknown
 [source] :: CreateNewStickerSet -> Maybe Text
@@ -32219,6 +32739,29 @@ instance GHC.Show.Show TD.Query.CreatePrivateChat.CreatePrivateChat
 instance GHC.Classes.Eq TD.Query.CreatePrivateChat.CreatePrivateChat
 instance TD.Lib.Internal.ShortShow TD.Query.CreatePrivateChat.CreatePrivateChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreatePrivateChat.CreatePrivateChat
+
+module TD.Query.CreateRichMessageWithAi
+
+-- | Creates a new rich message using an AI model. May return an error with
+--   a message <a>AICOMPOSE_FLOOD_PREMIUM</a> if Telegram Premium is
+--   required to send further requests. Returns <a>RichMessage</a>
+data CreateRichMessageWithAi
+CreateRichMessageWithAi :: Maybe Text -> Maybe Text -> Maybe Bool -> CreateRichMessageWithAi
+
+-- | Prompt that will be used to create the message;
+--   0-getOption("text_composition_style_prompt_length_max") characters
+[prompt] :: CreateRichMessageWithAi -> Maybe Text
+
+-- | Pass a language code in which the text will be created
+[language_code] :: CreateRichMessageWithAi -> Maybe Text
+
+-- | Pass true to add emoji to the text
+[add_emojis] :: CreateRichMessageWithAi -> Maybe Bool
+defaultCreateRichMessageWithAi :: CreateRichMessageWithAi
+instance GHC.Show.Show TD.Query.CreateRichMessageWithAi.CreateRichMessageWithAi
+instance GHC.Classes.Eq TD.Query.CreateRichMessageWithAi.CreateRichMessageWithAi
+instance TD.Lib.Internal.ShortShow TD.Query.CreateRichMessageWithAi.CreateRichMessageWithAi
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateRichMessageWithAi.CreateRichMessageWithAi
 
 module TD.Query.CreateSecretChat
 
@@ -32823,6 +33366,26 @@ instance GHC.Show.Show TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.Dele
 instance GHC.Classes.Eq TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteDirectMessagesChatTopicMessagesByDate.DeleteDirectMessagesChatTopicMessagesByDate
+
+module TD.Query.DeleteEphemeralMessage
+
+-- | Deletes an ephemeral message; for bots only. Returns <a>Ok</a>
+data DeleteEphemeralMessage
+DeleteEphemeralMessage :: Maybe Int -> Maybe Int -> Maybe Int -> DeleteEphemeralMessage
+
+-- | Chat identifier
+[chat_id] :: DeleteEphemeralMessage -> Maybe Int
+
+-- | Identifier of the user who received the message
+[receiver_user_id] :: DeleteEphemeralMessage -> Maybe Int
+
+-- | Identifiers of the message to be deleted
+[ephemeral_message_id] :: DeleteEphemeralMessage -> Maybe Int
+defaultDeleteEphemeralMessage :: DeleteEphemeralMessage
+instance GHC.Show.Show TD.Query.DeleteEphemeralMessage.DeleteEphemeralMessage
+instance GHC.Classes.Eq TD.Query.DeleteEphemeralMessage.DeleteEphemeralMessage
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteEphemeralMessage.DeleteEphemeralMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteEphemeralMessage.DeleteEphemeralMessage
 
 module TD.Query.DeleteFile
 
@@ -33670,12 +34233,12 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatFolderInviteLink.EditCh
 
 module TD.Query.EditChatInviteLink
 
--- | Edits a non-primary invite link for a chat. Available for basic
---   groups, supergroups, and channels. If the link creates a subscription,
---   then expiration_date, member_limit and creates_join_request must not
---   be used. Requires administrator privileges and can_invite_users right
---   in the chat for own links and owner privileges for other links.
---   Returns <a>ChatInviteLink</a>
+-- | Edits a non-primary invite link for a chat. Available in basic groups,
+--   supergroups, and channels. If the link creates a subscription, then
+--   expiration_date, member_limit and creates_join_request must not be
+--   used. Requires administrator privileges and can_invite_users right in
+--   the chat for own links and owner privileges for other links. Returns
+--   <a>ChatInviteLink</a>
 data EditChatInviteLink
 EditChatInviteLink :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> EditChatInviteLink
 
@@ -33741,6 +34304,37 @@ instance GHC.Show.Show TD.Query.EditCustomLanguagePackInfo.EditCustomLanguagePac
 instance GHC.Classes.Eq TD.Query.EditCustomLanguagePackInfo.EditCustomLanguagePackInfo
 instance TD.Lib.Internal.ShortShow TD.Query.EditCustomLanguagePackInfo.EditCustomLanguagePackInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCustomLanguagePackInfo.EditCustomLanguagePackInfo
+
+module TD.Query.EditEphemeralMessage
+
+-- | Edits the text, caption or reply markup of an ephemeral message sent
+--   by the bot; for bots only. Returns <a>Ok</a>
+data EditEphemeralMessage
+EditEphemeralMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditEphemeralMessage
+
+-- | The chat the message belongs to
+[chat_id] :: EditEphemeralMessage -> Maybe Int
+
+-- | Identifier of the user who received the message
+[receiver_user_id] :: EditEphemeralMessage -> Maybe Int
+
+-- | Identifier of the ephemeral message
+[ephemeral_message_id] :: EditEphemeralMessage -> Maybe Int
+
+-- | The new message reply markup; pass null if none
+[reply_markup] :: EditEphemeralMessage -> Maybe ReplyMarkup
+
+-- | New content of the message; pass null to edit only reply markup. Must
+--   be one of the following types: inputMessageText,
+--   inputMessageAnimation, inputMessageAudio, inputMessageDocument,
+--   inputMessagePhoto, inputMessageSticker, inputMessageVideo,
+--   inputMessageVideoNote, inputMessageVoiceNote
+[input_message_content] :: EditEphemeralMessage -> Maybe InputMessageContent
+defaultEditEphemeralMessage :: EditEphemeralMessage
+instance GHC.Show.Show TD.Query.EditEphemeralMessage.EditEphemeralMessage
+instance GHC.Classes.Eq TD.Query.EditEphemeralMessage.EditEphemeralMessage
+instance TD.Lib.Internal.ShortShow TD.Query.EditEphemeralMessage.EditEphemeralMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditEphemeralMessage.EditEphemeralMessage
 
 module TD.Query.EditForumTopic
 
@@ -33871,7 +34465,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditInlineMessageReplyMarkup.Ed
 
 module TD.Query.EditInlineMessageText
 
--- | Edits the text of an inline text or game message sent via a bot; for
+-- | Edits the text of an inline text or game message sent via the bot; for
 --   bots only. Returns <a>Ok</a>
 data EditInlineMessageText
 EditInlineMessageText :: Maybe Text -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditInlineMessageText
@@ -33883,7 +34477,7 @@ EditInlineMessageText :: Maybe Text -> Maybe ReplyMarkup -> Maybe InputMessageCo
 [reply_markup] :: EditInlineMessageText -> Maybe ReplyMarkup
 
 -- | New text content of the message. Must be of type inputMessageText or
---   inputMessageRichMessage
+--   inputMessageRichMessage; file upload isn't supported
 [input_message_content] :: EditInlineMessageText -> Maybe InputMessageContent
 defaultEditInlineMessageText :: EditInlineMessageText
 instance GHC.Show.Show TD.Query.EditInlineMessageText.EditInlineMessageText
@@ -34356,6 +34950,21 @@ instance GHC.Show.Show TD.Query.FinishFileGeneration.FinishFileGeneration
 instance GHC.Classes.Eq TD.Query.FinishFileGeneration.FinishFileGeneration
 instance TD.Lib.Internal.ShortShow TD.Query.FinishFileGeneration.FinishFileGeneration
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.FinishFileGeneration.FinishFileGeneration
+
+module TD.Query.FixRichMessageWithAi
+
+-- | Fixes a rich message using an AI model. May return an error with a
+--   message <a>AICOMPOSE_FLOOD_PREMIUM</a> if Telegram Premium is required
+--   to send further requests. Returns <a>RichMessage</a>
+data FixRichMessageWithAi
+FixRichMessageWithAi :: Maybe InputRichMessage -> FixRichMessageWithAi
+
+-- | The original message
+[message] :: FixRichMessageWithAi -> Maybe InputRichMessage
+instance GHC.Show.Show TD.Query.FixRichMessageWithAi.FixRichMessageWithAi
+instance GHC.Classes.Eq TD.Query.FixRichMessageWithAi.FixRichMessageWithAi
+instance TD.Lib.Internal.ShortShow TD.Query.FixRichMessageWithAi.FixRichMessageWithAi
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.FixRichMessageWithAi.FixRichMessageWithAi
 
 module TD.Query.FixTextWithAi
 
@@ -35182,10 +35791,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatBoosts.GetChatBoosts
 module TD.Query.GetChatEventLog
 
 -- | Returns a list of service actions taken by chat members and
---   administrators in the last 48 hours. Available only for supergroups
---   and channels. Requires administrator rights. Returns results in
---   reverse chronological order (i.e., in order of decreasing event_id).
---   Returns <a>ChatEvents</a>
+--   administrators in the last 48 hours. Available only in supergroups and
+--   channels. Requires administrator rights. Returns results in reverse
+--   chronological order (i.e., in order of decreasing event_id). Returns
+--   <a>ChatEvents</a>
 data GetChatEventLog
 GetChatEventLog :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe ChatEventLogFilters -> Maybe [Int] -> GetChatEventLog
 
@@ -36126,8 +36735,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCountryCode.GetCountryCode
 
 module TD.Query.GetCountryFlagEmoji
 
--- | Returns an emoji for the given country. Returns an empty string on
---   failure. Can be called synchronously. Returns <a>Text</a>
+-- | Returns an emoji for the flag of the given country. Returns an empty
+--   string on failure. Can be called synchronously. Returns <a>Text</a>
 data GetCountryFlagEmoji
 GetCountryFlagEmoji :: Maybe Text -> GetCountryFlagEmoji
 
@@ -36838,6 +37447,35 @@ instance GHC.Classes.Eq TD.Query.GetGiveawayInfo.GetGiveawayInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetGiveawayInfo.GetGiveawayInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGiveawayInfo.GetGiveawayInfo
 
+module TD.Query.GetGramRevenueStatistics
+
+-- | Returns detailed TON Gram revenue statistics of the current user.
+--   Returns <a>GramRevenueStatistics</a>
+data GetGramRevenueStatistics
+GetGramRevenueStatistics :: Maybe Bool -> GetGramRevenueStatistics
+
+-- | Pass true if a dark theme is used by the application
+[is_dark] :: GetGramRevenueStatistics -> Maybe Bool
+instance GHC.Show.Show TD.Query.GetGramRevenueStatistics.GetGramRevenueStatistics
+instance GHC.Classes.Eq TD.Query.GetGramRevenueStatistics.GetGramRevenueStatistics
+instance TD.Lib.Internal.ShortShow TD.Query.GetGramRevenueStatistics.GetGramRevenueStatistics
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGramRevenueStatistics.GetGramRevenueStatistics
+
+module TD.Query.GetGramWithdrawalUrl
+
+-- | Returns a URL for TON Gram withdrawal from the current user's account.
+--   The user must have at least 10 Grams to withdraw and can withdraw up
+--   to 100000 Grams in one transaction. Returns <a>HttpUrl</a>
+data GetGramWithdrawalUrl
+GetGramWithdrawalUrl :: Maybe Text -> GetGramWithdrawalUrl
+
+-- | The 2-step verification password of the current user
+[password] :: GetGramWithdrawalUrl -> Maybe Text
+instance GHC.Show.Show TD.Query.GetGramWithdrawalUrl.GetGramWithdrawalUrl
+instance GHC.Classes.Eq TD.Query.GetGramWithdrawalUrl.GetGramWithdrawalUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetGramWithdrawalUrl.GetGramWithdrawalUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGramWithdrawalUrl.GetGramWithdrawalUrl
+
 module TD.Query.GetGreetingStickers
 
 -- | Returns greeting stickers from regular sticker sets that can be used
@@ -36964,6 +37602,26 @@ instance GHC.Show.Show TD.Query.GetGroupsInCommon.GetGroupsInCommon
 instance GHC.Classes.Eq TD.Query.GetGroupsInCommon.GetGroupsInCommon
 instance TD.Lib.Internal.ShortShow TD.Query.GetGroupsInCommon.GetGroupsInCommon
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGroupsInCommon.GetGroupsInCommon
+
+module TD.Query.GetGuardBotWebAppUrl
+
+-- | Returns an HTTPS URL of a Web App of a guard bot to open after
+--   receiving chatJoinResultGuardBotApprovalRequired. Returns
+--   <a>WebAppUrl</a>
+data GetGuardBotWebAppUrl
+GetGuardBotWebAppUrl :: Maybe Int -> Maybe WebAppOpenParameters -> GetGuardBotWebAppUrl
+
+-- | Unique identifier of the join request as received in
+--   chatJoinResultGuardBotApprovalRequired
+[query_id] :: GetGuardBotWebAppUrl -> Maybe Int
+
+-- | Parameters to use to open the Web App
+[parameters] :: GetGuardBotWebAppUrl -> Maybe WebAppOpenParameters
+defaultGetGuardBotWebAppUrl :: GetGuardBotWebAppUrl
+instance GHC.Show.Show TD.Query.GetGuardBotWebAppUrl.GetGuardBotWebAppUrl
+instance GHC.Classes.Eq TD.Query.GetGuardBotWebAppUrl.GetGuardBotWebAppUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetGuardBotWebAppUrl.GetGuardBotWebAppUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGuardBotWebAppUrl.GetGuardBotWebAppUrl
 
 module TD.Query.GetImportedContactCount
 
@@ -39681,24 +40339,10 @@ instance GHC.Classes.Eq TD.Query.GetTimeZones.GetTimeZones
 instance TD.Lib.Internal.ShortShow TD.Query.GetTimeZones.GetTimeZones
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTimeZones.GetTimeZones
 
-module TD.Query.GetTonRevenueStatistics
-
--- | Returns detailed Toncoin revenue statistics of the current user.
---   Returns <a>TonRevenueStatistics</a>
-data GetTonRevenueStatistics
-GetTonRevenueStatistics :: Maybe Bool -> GetTonRevenueStatistics
-
--- | Pass true if a dark theme is used by the application
-[is_dark] :: GetTonRevenueStatistics -> Maybe Bool
-instance GHC.Show.Show TD.Query.GetTonRevenueStatistics.GetTonRevenueStatistics
-instance GHC.Classes.Eq TD.Query.GetTonRevenueStatistics.GetTonRevenueStatistics
-instance TD.Lib.Internal.ShortShow TD.Query.GetTonRevenueStatistics.GetTonRevenueStatistics
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonRevenueStatistics.GetTonRevenueStatistics
-
 module TD.Query.GetTonTransactions
 
--- | Returns the list of Toncoin transactions of the current user. Returns
---   <a>TonTransactions</a>
+-- | Returns the list of TON blockchain transactions of the current user.
+--   Returns <a>TonTransactions</a>
 data GetTonTransactions
 GetTonTransactions :: Maybe TransactionDirection -> Maybe Text -> Maybe Int -> GetTonTransactions
 
@@ -39717,21 +40361,6 @@ instance GHC.Show.Show TD.Query.GetTonTransactions.GetTonTransactions
 instance GHC.Classes.Eq TD.Query.GetTonTransactions.GetTonTransactions
 instance TD.Lib.Internal.ShortShow TD.Query.GetTonTransactions.GetTonTransactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonTransactions.GetTonTransactions
-
-module TD.Query.GetTonWithdrawalUrl
-
--- | Returns a URL for Toncoin withdrawal from the current user's account.
---   The user must have at least 10 toncoins to withdraw and can withdraw
---   up to 100000 Toncoins in one transaction. Returns <a>HttpUrl</a>
-data GetTonWithdrawalUrl
-GetTonWithdrawalUrl :: Maybe Text -> GetTonWithdrawalUrl
-
--- | The 2-step verification password of the current user
-[password] :: GetTonWithdrawalUrl -> Maybe Text
-instance GHC.Show.Show TD.Query.GetTonWithdrawalUrl.GetTonWithdrawalUrl
-instance GHC.Classes.Eq TD.Query.GetTonWithdrawalUrl.GetTonWithdrawalUrl
-instance TD.Lib.Internal.ShortShow TD.Query.GetTonWithdrawalUrl.GetTonWithdrawalUrl
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWithdrawalUrl.GetTonWithdrawalUrl
 
 module TD.Query.GetTopChats
 
@@ -41373,10 +42002,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReadFilePart.ReadFilePart
 
 module TD.Query.ReaddQuickReplyShortcutMessages
 
--- | Readds quick reply messages which failed to add. Can be called only
+-- | Re-adds quick reply messages which failed to add. Can be called only
 --   for messages for which messageSendingStateFailed.can_retry is true and
 --   after specified in messageSendingStateFailed.retry_after time passed.
---   If a message is readded, the corresponding failed to send message is
+--   If a message is re-added, the corresponding failed to send message is
 --   deleted. Returns the sent messages in the same order as the message
 --   identifiers passed in message_ids. If a message can't be readded, null
 --   will be returned instead of the message. Returns
@@ -41387,7 +42016,7 @@ ReaddQuickReplyShortcutMessages :: Maybe Text -> Maybe [Int] -> ReaddQuickReplyS
 -- | Name of the target shortcut
 [shortcut_name] :: ReaddQuickReplyShortcutMessages -> Maybe Text
 
--- | Identifiers of the quick reply messages to readd. Message identifiers
+-- | Identifiers of the quick reply messages to re-add. Message identifiers
 --   must be in a strictly increasing order
 [message_ids] :: ReaddQuickReplyShortcutMessages -> Maybe [Int]
 defaultReaddQuickReplyShortcutMessages :: ReaddQuickReplyShortcutMessages
@@ -42232,7 +42861,7 @@ module TD.Query.ReplaceStickerInSet
 --   removeStickerFromSet, then addStickerToSet, then
 --   setStickerPositionInSet. Returns <a>Ok</a>
 data ReplaceStickerInSet
-ReplaceStickerInSet :: Maybe Int -> Maybe Text -> Maybe InputFile -> Maybe InputSticker -> ReplaceStickerInSet
+ReplaceStickerInSet :: Maybe Int -> Maybe Text -> Maybe InputFile -> Maybe NewSticker -> ReplaceStickerInSet
 
 -- | Sticker set owner; ignored for regular users
 [user_id] :: ReplaceStickerInSet -> Maybe Int
@@ -42244,7 +42873,7 @@ ReplaceStickerInSet :: Maybe Int -> Maybe Text -> Maybe InputFile -> Maybe Input
 [old_sticker] :: ReplaceStickerInSet -> Maybe InputFile
 
 -- | Sticker to add to the set
-[new_sticker] :: ReplaceStickerInSet -> Maybe InputSticker
+[new_sticker] :: ReplaceStickerInSet -> Maybe NewSticker
 defaultReplaceStickerInSet :: ReplaceStickerInSet
 instance GHC.Show.Show TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
 instance GHC.Classes.Eq TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
@@ -42720,7 +43349,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReuseStarSubscription.ReuseStar
 
 module TD.Query.RevokeChatInviteLink
 
--- | Revokes invite link for a chat. Available for basic groups,
+-- | Revokes invite link for a chat. Available in basic groups,
 --   supergroups, and channels. Requires administrator privileges and
 --   can_invite_users right in the chat for own links and owner privileges
 --   for other links. If a primary link is revoked, then additionally to
@@ -43980,6 +44609,56 @@ instance GHC.Classes.Eq TD.Query.SendEmailAddressVerificationCode.SendEmailAddre
 instance TD.Lib.Internal.ShortShow TD.Query.SendEmailAddressVerificationCode.SendEmailAddressVerificationCode
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendEmailAddressVerificationCode.SendEmailAddressVerificationCode
 
+module TD.Query.SendEphemeralMessage
+
+-- | Sends an ephemeral message which will be received only by one bot in a
+--   chat. Currently, only ephemeral bot commands and replies to bot
+--   ephemeral messages can be sent using the method. The message is
+--   persistent across application restarts only if the message database is
+--   used. Returns the sent message. Returns <a>Message</a>
+data SendEphemeralMessage
+SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe Int -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> SendEphemeralMessage
+
+-- | Target chat
+[chat_id] :: SendEphemeralMessage -> Maybe Int
+
+-- | Topic in which the message will be sent; pass null if none
+[topic_id] :: SendEphemeralMessage -> Maybe MessageTopic
+
+-- | Identifier of the user who will receive the message
+[receiver_user_id] :: SendEphemeralMessage -> Maybe Int
+
+-- | Identifier of the callback query which triggered the message; for bots
+--   only
+[callback_query_id] :: SendEphemeralMessage -> Maybe Int
+
+-- | Information about the message to be replied; pass null if none. The
+--   message can be an incoming ephemeral message
+[reply_to] :: SendEphemeralMessage -> Maybe InputMessageReplyTo
+
+-- | Non-persistent identifier, which will be returned back in
+--   messageSendingStatePending object and can be used to match sent
+--   messages and corresponding updateNewMessage updates
+[sending_id] :: SendEphemeralMessage -> Maybe Int
+
+-- | Pass true to get a fake message instead of actually sending them
+[only_preview] :: SendEphemeralMessage -> Maybe Bool
+
+-- | Markup for replying to the message; pass null if none; for bots only
+[reply_markup] :: SendEphemeralMessage -> Maybe ReplyMarkup
+
+-- | The content of the message to be sent. Must be one of the following
+--   types: inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto, inputMessageSticker,
+--   inputMessageVideo, inputMessageVideoNote, inputMessageVoiceNote,
+--   inputMessageLocation, inputMessageVenue, inputMessageContact
+[input_message_content] :: SendEphemeralMessage -> Maybe InputMessageContent
+defaultSendEphemeralMessage :: SendEphemeralMessage
+instance GHC.Show.Show TD.Query.SendEphemeralMessage.SendEphemeralMessage
+instance GHC.Classes.Eq TD.Query.SendEphemeralMessage.SendEphemeralMessage
+instance TD.Lib.Internal.ShortShow TD.Query.SendEphemeralMessage.SendEphemeralMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendEphemeralMessage.SendEphemeralMessage
+
 module TD.Query.SendGift
 
 -- | Sends a gift to another user or channel chat. May return an error with
@@ -44373,7 +45052,7 @@ SendRichMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe InputRichMe
 -- | Unique identifier of the draft
 [draft_id] :: SendRichMessageDraft -> Maybe Int
 
--- | Draft of the message
+-- | Draft of the message; file upload isn't supported
 [message] :: SendRichMessageDraft -> Maybe InputRichMessage
 defaultSendRichMessageDraft :: SendRichMessageDraft
 instance GHC.Show.Show TD.Query.SendRichMessageDraft.SendRichMessageDraft
@@ -45883,9 +46562,9 @@ SetGiftResalePrice :: Maybe Text -> Maybe GiftResalePrice -> SetGiftResalePrice
 --   The current user will receive
 --   getOption("gift_resale_star_earnings_per_mille") Telegram Stars for
 --   each 1000 Telegram Stars paid for the gift if the gift price is in
---   Telegram Stars or getOption("gift_resale_ton_earnings_per_mille")
---   Toncoins for each 1000 Toncoins paid for the gift if the gift price is
---   in Toncoins
+--   Telegram Stars or getOption("gift_resale_gram_earnings_per_mille") TON
+--   Grams for each 1000 Grams paid for the gift if the gift price is in
+--   Grams
 [price] :: SetGiftResalePrice -> Maybe GiftResalePrice
 defaultSetGiftResalePrice :: SetGiftResalePrice
 instance GHC.Show.Show TD.Query.SetGiftResalePrice.SetGiftResalePrice
@@ -48630,6 +49309,32 @@ instance GHC.Classes.Eq TD.Query.TransferGift.TransferGift
 instance TD.Lib.Internal.ShortShow TD.Query.TransferGift.TransferGift
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TransferGift.TransferGift
 
+module TD.Query.TranslateMessageRichMessage
+
+-- | Extracts rich message of the given message and translates it to the
+--   given language. Returns <a>RichMessage</a>
+data TranslateMessageRichMessage
+TranslateMessageRichMessage :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> TranslateMessageRichMessage
+
+-- | Identifier of the chat to which the message belongs
+[chat_id] :: TranslateMessageRichMessage -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: TranslateMessageRichMessage -> Maybe Int
+
+-- | Language code of the language to which the message is translated. See
+--   translateText.to_language_code for the list of supported values
+[to_language_code] :: TranslateMessageRichMessage -> Maybe Text
+
+-- | Tone of the translation; see translateText.tone for the list of
+--   supported values
+[tone] :: TranslateMessageRichMessage -> Maybe Text
+defaultTranslateMessageRichMessage :: TranslateMessageRichMessage
+instance GHC.Show.Show TD.Query.TranslateMessageRichMessage.TranslateMessageRichMessage
+instance GHC.Classes.Eq TD.Query.TranslateMessageRichMessage.TranslateMessageRichMessage
+instance TD.Lib.Internal.ShortShow TD.Query.TranslateMessageRichMessage.TranslateMessageRichMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TranslateMessageRichMessage.TranslateMessageRichMessage
+
 module TD.Query.TranslateMessageText
 
 -- | Extracts text or caption of the given message and translates it to the
@@ -48657,6 +49362,29 @@ instance GHC.Show.Show TD.Query.TranslateMessageText.TranslateMessageText
 instance GHC.Classes.Eq TD.Query.TranslateMessageText.TranslateMessageText
 instance TD.Lib.Internal.ShortShow TD.Query.TranslateMessageText.TranslateMessageText
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TranslateMessageText.TranslateMessageText
+
+module TD.Query.TranslateRichMessage
+
+-- | Translates a rich message to the given language. Returns
+--   <a>RichMessage</a>
+data TranslateRichMessage
+TranslateRichMessage :: Maybe InputRichMessage -> Maybe Text -> Maybe Text -> TranslateRichMessage
+
+-- | Rich message to translate
+[message] :: TranslateRichMessage -> Maybe InputRichMessage
+
+-- | Language code of the language to which the message is translated. See
+--   translateText.to_language_code for the list of supported values
+[to_language_code] :: TranslateRichMessage -> Maybe Text
+
+-- | Tone of the translation; see translateText.tone for the list of
+--   supported values
+[tone] :: TranslateRichMessage -> Maybe Text
+defaultTranslateRichMessage :: TranslateRichMessage
+instance GHC.Show.Show TD.Query.TranslateRichMessage.TranslateRichMessage
+instance GHC.Classes.Eq TD.Query.TranslateRichMessage.TranslateRichMessage
+instance TD.Lib.Internal.ShortShow TD.Query.TranslateRichMessage.TranslateRichMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.TranslateRichMessage.TranslateRichMessage
 
 module TD.Query.TranslateText
 

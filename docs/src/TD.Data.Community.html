@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.Community</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier">Community</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ChatPhotoInfo.html"><span class="hs-identifier">TD.Data.ChatPhotoInfo</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ChatPhotoInfo</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.CommunityMemberStatus.html"><span class="hs-identifier">TD.Data.CommunityMemberStatus</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">CommunityMemberStatus</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.CommunityPermissions.html"><span class="hs-identifier">TD.Data.CommunityPermissions</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">CommunityPermissions</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="Community"><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-var">Community</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="Community"><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-var">Community</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Represents a community consisting of supergroup chats, channel chats and chats with bots</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_id"><span class="annot"><span class="annottext">Community -&gt; Maybe Int
+</span><a href="TD.Data.Community.html#_id"><span class="hs-identifier hs-var hs-var">_id</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                         </span><span class="annot"><span class="hs-comment">-- ^ Community identifier</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="have_access"><span class="annot"><span class="annottext">Community -&gt; Maybe Bool
+</span><a href="TD.Data.Community.html#have_access"><span class="hs-identifier hs-var hs-var">have_access</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                        </span><span class="annot"><span class="hs-comment">-- ^ If false, the community is inaccessible, and the only information known about the community is inside this class. Identifier of the community can't be passed to any method</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="name"><span class="annot"><span class="annottext">Community -&gt; Maybe Text
+</span><a href="TD.Data.Community.html#name"><span class="hs-identifier hs-var hs-var">name</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                      </span><span class="annot"><span class="hs-comment">-- ^ Community name</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="photo"><span class="annot"><span class="annottext">Community -&gt; Maybe ChatPhotoInfo
+</span><a href="TD.Data.Community.html#photo"><span class="hs-identifier hs-var hs-var">photo</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ChatPhotoInfo.html#ChatPhotoInfo"><span class="hs-identifier hs-type">ChatPhotoInfo.ChatPhotoInfo</span></a></span><span>                 </span><span class="annot"><span class="hs-comment">-- ^ Community photo; may be null</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="date"><span class="annot"><span class="annottext">Community -&gt; Maybe Int
+</span><a href="TD.Data.Community.html#date"><span class="hs-identifier hs-var hs-var">date</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                         </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the community was joined, or the point in time when the community was created, in case the user is not a member of any chat in the community</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="status"><span class="annot"><span class="annottext">Community -&gt; Maybe CommunityMemberStatus
+</span><a href="TD.Data.Community.html#status"><span class="hs-identifier hs-var hs-var">status</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.CommunityMemberStatus.html#CommunityMemberStatus"><span class="hs-identifier hs-type">CommunityMemberStatus.CommunityMemberStatus</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Status of the current user in the community</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="permissions"><span class="annot"><span class="annottext">Community -&gt; Maybe CommunityPermissions
+</span><a href="TD.Data.Community.html#permissions"><span class="hs-identifier hs-var hs-var">permissions</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.CommunityPermissions.html#CommunityPermissions"><span class="hs-identifier hs-type">CommunityPermissions.CommunityPermissions</span></a></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ Actions that non-administrator community members are allowed to take in the community</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679933895"><span id="local-6989586621679933911"><span class="annot"><span class="annottext">Community -&gt; Community -&gt; Bool
+(Community -&gt; Community -&gt; Bool)
+-&gt; (Community -&gt; Community -&gt; Bool) -&gt; Eq Community
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: Community -&gt; Community -&gt; Bool
+== :: Community -&gt; Community -&gt; Bool
+$c/= :: Community -&gt; Community -&gt; Bool
+/= :: Community -&gt; Community -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679933922"><span id="local-6989586621679933940"><span id="local-6989586621679933944"><span class="annot"><span class="annottext">Int -&gt; Community -&gt; ShowS
+[Community] -&gt; ShowS
+Community -&gt; String
+(Int -&gt; Community -&gt; ShowS)
+-&gt; (Community -&gt; String)
+-&gt; ([Community] -&gt; ShowS)
+-&gt; Show Community
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; Community -&gt; ShowS
+showsPrec :: Int -&gt; Community -&gt; ShowS
+$cshow :: Community -&gt; String
+show :: Community -&gt; String
+$cshowList :: [Community] -&gt; ShowS
+showList :: [Community] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-type">Community</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>  </span><span id="local-6989586621679933972"><span class="annot"><span class="annottext">shortShow :: Community -&gt; String
+</span><a href="#local-6989586621679933972"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-type">Community</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: Community -&gt; Maybe Int
+</span><a href="TD.Data.Community.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933974"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679933974"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">have_access :: Community -&gt; Maybe Bool
+</span><a href="TD.Data.Community.html#have_access"><span class="hs-identifier hs-var">have_access</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933975"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679933975"><span class="hs-identifier hs-var">have_access_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: Community -&gt; Maybe Text
+</span><a href="TD.Data.Community.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933976"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679933976"><span class="hs-identifier hs-var">name_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">photo :: Community -&gt; Maybe ChatPhotoInfo
+</span><a href="TD.Data.Community.html#photo"><span class="hs-identifier hs-var">photo</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933977"><span class="annot"><span class="annottext">Maybe ChatPhotoInfo
+</span><a href="#local-6989586621679933977"><span class="hs-identifier hs-var">photo_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: Community -&gt; Maybe Int
+</span><a href="TD.Data.Community.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933978"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679933978"><span class="hs-identifier hs-var">date_</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">status :: Community -&gt; Maybe CommunityMemberStatus
+</span><a href="TD.Data.Community.html#status"><span class="hs-identifier hs-var">status</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933979"><span class="annot"><span class="annottext">Maybe CommunityMemberStatus
+</span><a href="#local-6989586621679933979"><span class="hs-identifier hs-var">status_</span></a></span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">permissions :: Community -&gt; Maybe CommunityPermissions
+</span><a href="TD.Data.Community.html#permissions"><span class="hs-identifier hs-var">permissions</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679933980"><span class="annot"><span class="annottext">Maybe CommunityPermissions
+</span><a href="#local-6989586621679933980"><span class="hs-identifier hs-var">permissions_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Community&quot;</span></span><span>
+</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_id&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679933974"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;have_access&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679933975"><span class="hs-identifier hs-var">have_access_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;name&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679933976"><span class="hs-identifier hs-var">name_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;photo&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe ChatPhotoInfo -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ChatPhotoInfo
+</span><a href="#local-6989586621679933977"><span class="hs-identifier hs-var">photo_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;date&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679933978"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;status&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe CommunityMemberStatus -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe CommunityMemberStatus
+</span><a href="#local-6989586621679933979"><span class="hs-identifier hs-var">status_</span></a></span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;permissions&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe CommunityPermissions -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe CommunityPermissions
+</span><a href="#local-6989586621679933980"><span class="hs-identifier hs-var">permissions_</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679933985"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-type">Community</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>  </span><span id="local-6989586621679934035"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser Community
+</span><a href="#local-6989586621679934035"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679934037"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679934037"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679934039"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934039"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span id="local-6989586621679934040"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679934040"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934039"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679934040"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-50"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;community&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser Community
+</span><a href="#local-6989586621679934042"><span class="hs-identifier hs-var">parseCommunity</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679934037"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>           </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser Community
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-52"></span><span>    </span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><a href="#local-6989586621679934042"><span class="hs-identifier hs-type">parseCommunity</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-type">Community</span></a></span><span>
+</span><span id="line-55"></span><span>      </span><span id="local-6989586621679934042"><span class="annot"><span class="annottext">parseCommunity :: Value -&gt; Parser Community
+</span><a href="#local-6989586621679934042"><span class="hs-identifier hs-var hs-var">parseCommunity</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; (Object -&gt; Parser Community) -&gt; Value -&gt; Parser Community
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Community&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser Community) -&gt; Value -&gt; Parser Community)
+-&gt; (Object -&gt; Parser Community) -&gt; Value -&gt; Parser Community
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679934044"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-56"></span><span>        </span><span id="local-6989586621679934045"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679934045"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>         </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;id&quot;</span></span><span>
+</span><span id="line-57"></span><span>        </span><span id="local-6989586621679934047"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679934047"><span class="hs-identifier hs-var">have_access_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;have_access&quot;</span></span><span>
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679934048"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679934048"><span class="hs-identifier hs-var">name_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;name&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679934049"><span class="annot"><span class="annottext">Maybe ChatPhotoInfo
+</span><a href="#local-6989586621679934049"><span class="hs-identifier hs-var">photo_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe ChatPhotoInfo)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;photo&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679934050"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679934050"><span class="hs-identifier hs-var">date_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;date&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679934051"><span class="annot"><span class="annottext">Maybe CommunityMemberStatus
+</span><a href="#local-6989586621679934051"><span class="hs-identifier hs-var">status_</span></a></span></span><span>      </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe CommunityMemberStatus)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;status&quot;</span></span><span>
+</span><span id="line-62"></span><span>        </span><span id="local-6989586621679934052"><span class="annot"><span class="annottext">Maybe CommunityPermissions
+</span><a href="#local-6989586621679934052"><span class="hs-identifier hs-var">permissions_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679934044"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe CommunityPermissions)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;permissions&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><span class="annottext">Community -&gt; Parser Community
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(Community -&gt; Parser Community) -&gt; Community -&gt; Parser Community
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.Community.html#Community"><span class="hs-identifier hs-type">Community</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: Maybe Int
+</span><a href="TD.Data.Community.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679934045"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-65"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">have_access :: Maybe Bool
+</span><a href="TD.Data.Community.html#have_access"><span class="hs-identifier hs-var">have_access</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679934047"><span class="hs-identifier hs-var">have_access_</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">name :: Maybe Text
+</span><a href="TD.Data.Community.html#name"><span class="hs-identifier hs-var">name</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679934048"><span class="hs-identifier hs-var">name_</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">photo :: Maybe ChatPhotoInfo
+</span><a href="TD.Data.Community.html#photo"><span class="hs-identifier hs-var">photo</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ChatPhotoInfo
+</span><a href="#local-6989586621679934049"><span class="hs-identifier hs-var">photo_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">date :: Maybe Int
+</span><a href="TD.Data.Community.html#date"><span class="hs-identifier hs-var">date</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679934050"><span class="hs-identifier hs-var">date_</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">status :: Maybe CommunityMemberStatus
+</span><a href="TD.Data.Community.html#status"><span class="hs-identifier hs-var">status</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe CommunityMemberStatus
+</span><a href="#local-6989586621679934051"><span class="hs-identifier hs-var">status_</span></a></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">permissions :: Maybe CommunityPermissions
+</span><a href="TD.Data.Community.html#permissions"><span class="hs-identifier hs-var">permissions</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe CommunityPermissions
+</span><a href="#local-6989586621679934052"><span class="hs-identifier hs-var">permissions_</span></a></span><span>
+</span><span id="line-71"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-72"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser Community
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span></pre></body></html>

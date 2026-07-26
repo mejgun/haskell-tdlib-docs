@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.SendEphemeralMessage</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier">SendEphemeralMessage</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#defaultSendEphemeralMessage"><span class="hs-identifier">defaultSendEphemeralMessage</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html"><span class="hs-identifier">TD.Data.MessageTopic</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MessageTopic</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputMessageReplyTo.html"><span class="hs-identifier">TD.Data.InputMessageReplyTo</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputMessageReplyTo</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html"><span class="hs-identifier">TD.Data.ReplyMarkup</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">ReplyMarkup</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputMessageContent.html"><span class="hs-identifier">TD.Data.InputMessageContent</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputMessageContent</span></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="annot"><span class="hs-comment">-- | Sends an ephemeral message which will be received only by one bot in a chat. Currently, only ephemeral bot commands and replies to bot ephemeral messages can be sent using the method. The message is persistent across application restarts only if the message database is used. Returns the sent message. Returns 'TD.Data.Message.Message'</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">data</span><span> </span><span id="SendEphemeralMessage"><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-var">SendEphemeralMessage</span></a></span></span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SendEphemeralMessage"><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-var">SendEphemeralMessage</span></a></span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="chat_id"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#chat_id"><span class="hs-identifier hs-var hs-var">chat_id</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                     </span><span class="annot"><span class="hs-comment">-- ^ Target chat</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="topic_id"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SendEphemeralMessage.html#topic_id"><span class="hs-identifier hs-var hs-var">topic_id</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.MessageTopic.html#MessageTopic"><span class="hs-identifier hs-type">MessageTopic.MessageTopic</span></a></span><span>               </span><span class="annot"><span class="hs-comment">-- ^ Topic in which the message will be sent; pass null if none</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="receiver_user_id"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#receiver_user_id"><span class="hs-identifier hs-var hs-var">receiver_user_id</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                     </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the user who will receive the message</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="callback_query_id"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#callback_query_id"><span class="hs-identifier hs-var hs-var">callback_query_id</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                     </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the callback query which triggered the message; for bots only</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="reply_to"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe InputMessageReplyTo
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_to"><span class="hs-identifier hs-var hs-var">reply_to</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.InputMessageReplyTo.html#InputMessageReplyTo"><span class="hs-identifier hs-type">InputMessageReplyTo.InputMessageReplyTo</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Information about the message to be replied; pass null if none. The message can be an incoming ephemeral message</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="sending_id"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#sending_id"><span class="hs-identifier hs-var hs-var">sending_id</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                     </span><span class="annot"><span class="hs-comment">-- ^ Non-persistent identifier, which will be returned back in messageSendingStatePending object and can be used to match sent messages and corresponding updateNewMessage updates</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="only_preview"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe Bool
+</span><a href="TD.Query.SendEphemeralMessage.html#only_preview"><span class="hs-identifier hs-var hs-var">only_preview</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>                                    </span><span class="annot"><span class="hs-comment">-- ^ Pass true to get a fake message instead of actually sending them</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="reply_markup"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_markup"><span class="hs-identifier hs-var hs-var">reply_markup</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.ReplyMarkup.html#ReplyMarkup"><span class="hs-identifier hs-type">ReplyMarkup.ReplyMarkup</span></a></span><span>                 </span><span class="annot"><span class="hs-comment">-- ^ Markup for replying to the message; pass null if none; for bots only</span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="input_message_content"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; Maybe InputMessageContent
+</span><a href="TD.Query.SendEphemeralMessage.html#input_message_content"><span class="hs-identifier hs-var hs-var">input_message_content</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.InputMessageContent.html#InputMessageContent"><span class="hs-identifier hs-type">InputMessageContent.InputMessageContent</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageAnimation, inputMessageAudio, inputMessageDocument, inputMessagePhoto, inputMessageSticker, inputMessageVideo, inputMessageVideoNote, inputMessageVoiceNote, inputMessageLocation, inputMessageVenue, inputMessageContact</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621680095172"><span id="local-6989586621680095190"><span class="annot"><span class="annottext">SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool
+(SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool)
+-&gt; (SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool)
+-&gt; Eq SendEphemeralMessage
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool
+== :: SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool
+$c/= :: SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool
+/= :: SendEphemeralMessage -&gt; SendEphemeralMessage -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621680095201"><span id="local-6989586621680095221"><span id="local-6989586621680095225"><span class="annot"><span class="annottext">Int -&gt; SendEphemeralMessage -&gt; ShowS
+[SendEphemeralMessage] -&gt; ShowS
+SendEphemeralMessage -&gt; String
+(Int -&gt; SendEphemeralMessage -&gt; ShowS)
+-&gt; (SendEphemeralMessage -&gt; String)
+-&gt; ([SendEphemeralMessage] -&gt; ShowS)
+-&gt; Show SendEphemeralMessage
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; SendEphemeralMessage -&gt; ShowS
+showsPrec :: Int -&gt; SendEphemeralMessage -&gt; ShowS
+$cshow :: SendEphemeralMessage -&gt; String
+show :: SendEphemeralMessage -&gt; String
+$cshowList :: [SendEphemeralMessage] -&gt; ShowS
+showList :: [SendEphemeralMessage] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-30"></span><span>  </span><span id="local-6989586621680095255"><span class="annot"><span class="annottext">shortShow :: SendEphemeralMessage -&gt; String
+</span><a href="#local-6989586621680095255"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span><span>
+</span><span id="line-32"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095257"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095257"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-33"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: SendEphemeralMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SendEphemeralMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095258"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621680095258"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095259"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095259"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">callback_query_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#callback_query_id"><span class="hs-identifier hs-var">callback_query_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095260"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095260"><span class="hs-identifier hs-var">callback_query_id_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_to :: SendEphemeralMessage -&gt; Maybe InputMessageReplyTo
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_to"><span class="hs-identifier hs-var">reply_to</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095261"><span class="annot"><span class="annottext">Maybe InputMessageReplyTo
+</span><a href="#local-6989586621680095261"><span class="hs-identifier hs-var">reply_to_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sending_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#sending_id"><span class="hs-identifier hs-var">sending_id</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095262"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095262"><span class="hs-identifier hs-var">sending_id_</span></a></span></span><span>
+</span><span id="line-38"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">only_preview :: SendEphemeralMessage -&gt; Maybe Bool
+</span><a href="TD.Query.SendEphemeralMessage.html#only_preview"><span class="hs-identifier hs-var">only_preview</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095263"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621680095263"><span class="hs-identifier hs-var">only_preview_</span></a></span></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: SendEphemeralMessage -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095264"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621680095264"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">input_message_content :: SendEphemeralMessage -&gt; Maybe InputMessageContent
+</span><a href="TD.Query.SendEphemeralMessage.html#input_message_content"><span class="hs-identifier hs-var">input_message_content</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095265"><span class="annot"><span class="annottext">Maybe InputMessageContent
+</span><a href="#local-6989586621680095265"><span class="hs-identifier hs-var">input_message_content_</span></a></span></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SendEphemeralMessage&quot;</span></span><span>
+</span><span id="line-43"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095257"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe MessageTopic -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621680095258"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;receiver_user_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095259"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;callback_query_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095260"><span class="hs-identifier hs-var">callback_query_id_</span></a></span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;reply_to&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe InputMessageReplyTo -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageReplyTo
+</span><a href="#local-6989586621680095261"><span class="hs-identifier hs-var">reply_to_</span></a></span><span>
+</span><span id="line-49"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sending_id&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095262"><span class="hs-identifier hs-var">sending_id_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;only_preview&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621680095263"><span class="hs-identifier hs-var">only_preview_</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe ReplyMarkup -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621680095264"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;input_message_content&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe InputMessageContent -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageContent
+</span><a href="#local-6989586621680095265"><span class="hs-identifier hs-var">input_message_content_</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621680095270"><span id="local-6989586621680095274"><span id="local-6989586621680095277"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-56"></span><span>  </span><span id="local-6989586621680095332"><span class="annot"><span class="annottext">toJSON :: SendEphemeralMessage -&gt; Value
+</span><a href="#local-6989586621680095332"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-57"></span><span>    </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095334"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095334"><span class="hs-identifier hs-var">chat_id_</span></a></span></span><span>
+</span><span id="line-59"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: SendEphemeralMessage -&gt; Maybe MessageTopic
+</span><a href="TD.Query.SendEphemeralMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095335"><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621680095335"><span class="hs-identifier hs-var">topic_id_</span></a></span></span><span>
+</span><span id="line-60"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095336"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095336"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span></span><span>
+</span><span id="line-61"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">callback_query_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#callback_query_id"><span class="hs-identifier hs-var">callback_query_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095337"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095337"><span class="hs-identifier hs-var">callback_query_id_</span></a></span></span><span>
+</span><span id="line-62"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_to :: SendEphemeralMessage -&gt; Maybe InputMessageReplyTo
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_to"><span class="hs-identifier hs-var">reply_to</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095338"><span class="annot"><span class="annottext">Maybe InputMessageReplyTo
+</span><a href="#local-6989586621680095338"><span class="hs-identifier hs-var">reply_to_</span></a></span></span><span>
+</span><span id="line-63"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sending_id :: SendEphemeralMessage -&gt; Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#sending_id"><span class="hs-identifier hs-var">sending_id</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095339"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095339"><span class="hs-identifier hs-var">sending_id_</span></a></span></span><span>
+</span><span id="line-64"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">only_preview :: SendEphemeralMessage -&gt; Maybe Bool
+</span><a href="TD.Query.SendEphemeralMessage.html#only_preview"><span class="hs-identifier hs-var">only_preview</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095340"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621680095340"><span class="hs-identifier hs-var">only_preview_</span></a></span></span><span>
+</span><span id="line-65"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: SendEphemeralMessage -&gt; Maybe ReplyMarkup
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095341"><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621680095341"><span class="hs-identifier hs-var">reply_markup_</span></a></span></span><span>
+</span><span id="line-66"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">input_message_content :: SendEphemeralMessage -&gt; Maybe InputMessageContent
+</span><a href="TD.Query.SendEphemeralMessage.html#input_message_content"><span class="hs-identifier hs-var">input_message_content</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680095342"><span class="annot"><span class="annottext">Maybe InputMessageContent
+</span><a href="#local-6989586621680095342"><span class="hs-identifier hs-var">input_message_content_</span></a></span></span><span>
+</span><span id="line-67"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-68"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;sendEphemeralMessage&quot;</span></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;chat_id&quot;</span></span><span>               </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095334"><span class="hs-identifier hs-var">chat_id_</span></a></span><span>
+</span><span id="line-71"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;topic_id&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe MessageTopic -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+</span><a href="#local-6989586621680095335"><span class="hs-identifier hs-var">topic_id_</span></a></span><span>
+</span><span id="line-72"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;receiver_user_id&quot;</span></span><span>      </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095336"><span class="hs-identifier hs-var">receiver_user_id_</span></a></span><span>
+</span><span id="line-73"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;callback_query_id&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Value) -&gt; Maybe Int -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeInt64"><span class="hs-identifier hs-var">I.writeInt64</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095337"><span class="hs-identifier hs-var">callback_query_id_</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reply_to&quot;</span></span><span>              </span><span class="annot"><span class="annottext">Key -&gt; Maybe InputMessageReplyTo -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageReplyTo
+</span><a href="#local-6989586621680095338"><span class="hs-identifier hs-var">reply_to_</span></a></span><span>
+</span><span id="line-75"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sending_id&quot;</span></span><span>            </span><span class="annot"><span class="annottext">Key -&gt; Maybe Int -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621680095339"><span class="hs-identifier hs-var">sending_id_</span></a></span><span>
+</span><span id="line-76"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;only_preview&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621680095340"><span class="hs-identifier hs-var">only_preview_</span></a></span><span>
+</span><span id="line-77"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;reply_markup&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe ReplyMarkup -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+</span><a href="#local-6989586621680095341"><span class="hs-identifier hs-var">reply_markup_</span></a></span><span>
+</span><span id="line-78"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;input_message_content&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe InputMessageContent -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageContent
+</span><a href="#local-6989586621680095342"><span class="hs-identifier hs-var">input_message_content_</span></a></span><span>
+</span><span id="line-79"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#defaultSendEphemeralMessage"><span class="hs-identifier hs-type">defaultSendEphemeralMessage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span><span>
+</span><span id="line-82"></span><span id="defaultSendEphemeralMessage"><span class="annot"><span class="annottext">defaultSendEphemeralMessage :: SendEphemeralMessage
+</span><a href="TD.Query.SendEphemeralMessage.html#defaultSendEphemeralMessage"><span class="hs-identifier hs-var hs-var">defaultSendEphemeralMessage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-83"></span><span>  </span><span class="annot"><a href="TD.Query.SendEphemeralMessage.html#SendEphemeralMessage"><span class="hs-identifier hs-type">SendEphemeralMessage</span></a></span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">chat_id :: Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#chat_id"><span class="hs-identifier hs-var">chat_id</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">topic_id :: Maybe MessageTopic
+</span><a href="TD.Query.SendEphemeralMessage.html#topic_id"><span class="hs-identifier hs-var">topic_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe MessageTopic
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">receiver_user_id :: Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#receiver_user_id"><span class="hs-identifier hs-var">receiver_user_id</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">callback_query_id :: Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#callback_query_id"><span class="hs-identifier hs-var">callback_query_id</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_to :: Maybe InputMessageReplyTo
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_to"><span class="hs-identifier hs-var">reply_to</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageReplyTo
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sending_id :: Maybe Int
+</span><a href="TD.Query.SendEphemeralMessage.html#sending_id"><span class="hs-identifier hs-var">sending_id</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">only_preview :: Maybe Bool
+</span><a href="TD.Query.SendEphemeralMessage.html#only_preview"><span class="hs-identifier hs-var">only_preview</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-91"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">reply_markup :: Maybe ReplyMarkup
+</span><a href="TD.Query.SendEphemeralMessage.html#reply_markup"><span class="hs-identifier hs-var">reply_markup</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ReplyMarkup
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-92"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">input_message_content :: Maybe InputMessageContent
+</span><a href="TD.Query.SendEphemeralMessage.html#input_message_content"><span class="hs-identifier hs-var">input_message_content</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe InputMessageContent
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span></pre></body></html>
