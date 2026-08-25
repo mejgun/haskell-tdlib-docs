@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.23.0
+@version 2.1.24.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -2629,6 +2629,12 @@ SearchMessagesChatTypeFilterGroup :: SearchMessagesChatTypeFilter
 
 -- | Returns only messages in channel chats
 SearchMessagesChatTypeFilterChannel :: SearchMessagesChatTypeFilter
+
+-- | Returns only messages in the specified community
+SearchMessagesChatTypeFilterCommunity :: Maybe Int -> SearchMessagesChatTypeFilter
+
+-- | Identifier of the community to search in
+[community_id] :: SearchMessagesChatTypeFilter -> Maybe Int
 instance GHC.Show.Show TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
 instance GHC.Classes.Eq TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
 instance TD.Lib.Internal.ShortShow TD.Data.SearchMessagesChatTypeFilter.SearchMessagesChatTypeFilter
@@ -3585,7 +3591,7 @@ PremiumGiveawayPaymentOption :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe In
 -- | The amount to pay, in the smallest units of the currency
 [amount] :: PremiumGiveawayPaymentOption -> Maybe Int
 
--- | Number of users which will be able to activate the gift codes
+-- | Number of users who will be able to activate the gift codes
 [winner_count] :: PremiumGiveawayPaymentOption -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active
@@ -4138,7 +4144,7 @@ Passkey :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Pa
 [last_usage_date] :: Passkey -> Maybe Int
 
 -- | Identifier of the custom emoji that is used as the icon of the
---   software, which created the passkey; 0 if unknown
+--   software that created the passkey; 0 if unknown
 [software_icon_custom_emoji_id] :: Passkey -> Maybe Int
 instance GHC.Show.Show TD.Data.Passkey.Passkey
 instance GHC.Classes.Eq TD.Data.Passkey.Passkey
@@ -4546,8 +4552,8 @@ data SupergroupMembersFilter
 -- | Returns recently active users in reverse chronological order
 SupergroupMembersFilterRecent :: SupergroupMembersFilter
 
--- | Returns contacts of the user, which are members of the supergroup or
---   channel
+-- | Returns contacts of the current user who are members of the supergroup
+--   or channel
 SupergroupMembersFilterContacts :: Maybe Text -> SupergroupMembersFilter
 
 -- | Query to search for
@@ -4576,7 +4582,7 @@ SupergroupMembersFilterBanned :: Maybe Text -> SupergroupMembersFilter
 -- | Query to search for
 [query] :: SupergroupMembersFilter -> Maybe Text
 
--- | Returns users which can be mentioned in the supergroup
+-- | Returns users who can be mentioned in the supergroup
 SupergroupMembersFilterMention :: Maybe Text -> Maybe MessageTopic -> SupergroupMembersFilter
 
 -- | Query to search for
@@ -5243,7 +5249,7 @@ MessageOriginUser :: Maybe Int -> MessageOrigin
 -- | Identifier of the user who originally sent the message
 [sender_user_id] :: MessageOrigin -> Maybe Int
 
--- | The message was originally sent by a user, which is hidden by their
+-- | The message was originally sent by a user who is hidden by their
 --   privacy settings
 MessageOriginHiddenUser :: Maybe Text -> MessageOrigin
 
@@ -7409,7 +7415,8 @@ InlineKeyboardButtonTypeUrl :: Maybe Text -> InlineKeyboardButtonType
 [url] :: InlineKeyboardButtonType -> Maybe Text
 
 -- | A button that opens a specified URL and automatically authorize the
---   current user by calling getLoginUrlInfo
+--   current user by calling getLoginUrlInfo; not supported in ephemeral
+--   messages
 InlineKeyboardButtonTypeLoginUrl :: Maybe Text -> Maybe Int -> Maybe Text -> InlineKeyboardButtonType
 
 -- | HTTP or tg:// URL to open. If the link is of the type
@@ -7476,6 +7483,9 @@ InlineKeyboardButtonTypeCopyText :: Maybe Text -> InlineKeyboardButtonType
 
 -- | The text to copy to clipboard
 [text] :: InlineKeyboardButtonType -> Maybe Text
+
+-- | A disabled button
+InlineKeyboardButtonTypeDisabled :: InlineKeyboardButtonType
 instance GHC.Show.Show TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
 instance GHC.Classes.Eq TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
 instance TD.Lib.Internal.ShortShow TD.Data.InlineKeyboardButtonType.InlineKeyboardButtonType
@@ -8024,7 +8034,7 @@ PrepaidGiveaway :: Maybe Int -> Maybe Int -> Maybe GiveawayPrize -> Maybe Int ->
 -- | Unique identifier of the prepaid giveaway
 [_id] :: PrepaidGiveaway -> Maybe Int
 
--- | Number of users which will receive giveaway prize
+-- | Number of users who will receive giveaway prize
 [winner_count] :: PrepaidGiveaway -> Maybe Int
 
 -- | Prize of the giveaway
@@ -11546,7 +11556,7 @@ TelegramPaymentPurposePremiumGift :: Maybe Text -> Maybe Int -> Maybe Int -> May
 -- | Paid amount, in the smallest units of the currency
 [amount] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Identifier of the user which will receive Telegram Premium
+-- | Identifier of the user who will receive Telegram Premium
 [user_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active for
@@ -11575,7 +11585,7 @@ TelegramPaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -
 -- | Paid amount, in the smallest units of the currency
 [amount] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Identifiers of the users which can activate the gift codes
+-- | Identifiers of the users who can activate the gift codes
 [user_ids] :: TelegramPaymentPurpose -> Maybe [Int]
 
 -- | Number of months the Telegram Premium subscription will be active for
@@ -11601,7 +11611,7 @@ TelegramPaymentPurposePremiumGiveaway :: Maybe GiveawayParameters -> Maybe Text 
 -- | Paid amount, in the smallest units of the currency
 [amount] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Number of users which will be able to activate the gift codes
+-- | Number of users who will be able to activate the gift codes
 [winner_count] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | Number of months the Telegram Premium subscription will be active for
@@ -11628,7 +11638,7 @@ TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int
 -- | The user buying Telegram Stars for other users
 TelegramPaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> TelegramPaymentPurpose
 
--- | Identifier of the user which will receive Telegram Premium
+-- | Identifier of the user who will receive Telegram Premium
 [user_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency, or <a>XTR</a> for
@@ -11654,7 +11664,7 @@ TelegramPaymentPurposeStarGiveaway :: Maybe GiveawayParameters -> Maybe Text -> 
 -- | Paid amount, in the smallest units of the currency
 [amount] :: TelegramPaymentPurpose -> Maybe Int
 
--- | Number of users which will be able to activate the gift codes
+-- | Number of users who will be able to activate the gift codes
 [winner_count] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | Number of bought Telegram Stars
@@ -11978,7 +11988,7 @@ StorePaymentPurposePremiumGift :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe 
 -- | Paid amount, in the smallest units of the currency
 [amount] :: StorePaymentPurpose -> Maybe Int
 
--- | Identifiers of the user which will receive Telegram Premium
+-- | Identifier of the user who will receive Telegram Premium
 [user_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | Text to show along with the gift codes;
@@ -12002,7 +12012,7 @@ StorePaymentPurposePremiumGiftCodes :: Maybe Int -> Maybe Text -> Maybe Int -> M
 -- | Paid amount, in the smallest units of the currency
 [amount] :: StorePaymentPurpose -> Maybe Int
 
--- | Identifiers of the users which can activate the gift codes
+-- | Identifiers of the users who can activate the gift codes
 [user_ids] :: StorePaymentPurpose -> Maybe [Int]
 
 -- | Text to show along with the gift codes;
@@ -12060,7 +12070,7 @@ StorePaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int ->
 -- | The user buying Telegram Stars for other users
 StorePaymentPurposeGiftedStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> StorePaymentPurpose
 
--- | Identifiers of the user which will receive Telegram Premium
+-- | Identifier of the user who will receive Telegram Premium
 [user_id] :: StorePaymentPurpose -> Maybe Int
 
 -- | ISO 4217 currency code of the payment currency
@@ -12393,10 +12403,10 @@ InputPollOption :: Maybe FormattedText -> Maybe InputPollMedia -> InputPollOptio
 --   to be added and only by Premium users
 [text] :: InputPollOption -> Maybe FormattedText
 
--- | Option media; pass null if none; ignored in addPollOption. Must be one
---   of the following types: inputPollMediaAnimation, inputPollMediaLink,
---   inputPollMediaLocation, inputPollMediaPhoto, inputPollMediaSticker,
---   inputPollMediaVenue, or inputPollMediaVideo without caption
+-- | Option media; pass null if none. Must be one of the following types:
+--   inputPollMediaAnimation, inputPollMediaLink, inputPollMediaLocation,
+--   inputPollMediaPhoto, inputPollMediaSticker, inputPollMediaVenue, or
+--   inputPollMediaVideo without caption
 [media] :: InputPollOption -> Maybe InputPollMedia
 defaultInputPollOption :: InputPollOption
 instance GHC.Show.Show TD.Data.InputPollOption.InputPollOption
@@ -12823,6 +12833,12 @@ RichTextMathematicalExpression :: Maybe Text -> RichText
 -- | The expression in LaTeX format
 [expression] :: RichText -> Maybe Text
 
+-- | A button
+RichTextButton :: Maybe InlineButton -> RichText
+
+-- | The button
+[button] :: RichText -> Maybe InlineButton
+
 -- | A rich text replacing another rich text; not supported in
 --   inputRichMessage
 RichTextDiff :: Maybe RichText -> Maybe RichText -> RichText
@@ -12931,245 +12947,6 @@ instance GHC.Classes.Eq TD.Data.PageBlockCaption.PageBlockCaption
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlockCaption.PageBlockCaption
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PageBlockCaption.PageBlockCaption
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PageBlockCaption.PageBlockCaption
-
-module TD.Data.InputPageBlock
-
--- | Describes a block of a rich message to send
-data InputPageBlock
-
--- | A section heading
-InputPageBlockSectionHeading :: Maybe RichText -> Maybe Int -> InputPageBlock
-
--- | Text of the section heading
-[text] :: InputPageBlock -> Maybe RichText
-
--- | Relative size of the text font; 1-6, 1 is the largest, 6 is the
---   smallest
-[size] :: InputPageBlock -> Maybe Int
-
--- | A text paragraph
-InputPageBlockParagraph :: Maybe RichText -> InputPageBlock
-
--- | Text of the section heading
-[text] :: InputPageBlock -> Maybe RichText
-
--- | A preformatted text paragraph
-InputPageBlockPreformatted :: Maybe RichText -> Maybe Text -> InputPageBlock
-
--- | Text of the section heading
-[text] :: InputPageBlock -> Maybe RichText
-
--- | Programming language for which the text needs to be formatted
-[language] :: InputPageBlock -> Maybe Text
-
--- | The footer of the page
-InputPageBlockFooter :: Maybe RichText -> InputPageBlock
-
--- | Footer
-[footer] :: InputPageBlock -> Maybe RichText
-
--- | A "Thinking..." placeholder; for pending rich messages only; for bots
---   only
-InputPageBlockThinking :: Maybe RichText -> InputPageBlock
-
--- | Text of the section heading
-[text] :: InputPageBlock -> Maybe RichText
-
--- | An empty block separating the page
-InputPageBlockDivider :: InputPageBlock
-
--- | A mathematical expression
-InputPageBlockMathematicalExpression :: Maybe Text -> InputPageBlock
-
--- | The expression in LaTeX format
-[expression] :: InputPageBlock -> Maybe Text
-
--- | An invisible anchor
-InputPageBlockAnchor :: Maybe Text -> InputPageBlock
-
--- | Name of the anchor
-[name] :: InputPageBlock -> Maybe Text
-
--- | A list of data blocks
-InputPageBlockList :: Maybe [InputPageBlockListItem] -> InputPageBlock
-
--- | The items of the list
-[items] :: InputPageBlock -> Maybe [InputPageBlockListItem]
-
--- | A block quote
-InputPageBlockBlockQuote :: Maybe [InputPageBlock] -> Maybe RichText -> InputPageBlock
-
--- | Quote blocks
-[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
-
--- | Quote credit; pass null if none
-[credit] :: InputPageBlock -> Maybe RichText
-
--- | A pull quote
-InputPageBlockPullQuote :: Maybe RichText -> Maybe RichText -> InputPageBlock
-
--- | Text of the section heading
-[text] :: InputPageBlock -> Maybe RichText
-
--- | Quote credit; pass null if none
-[credit] :: InputPageBlock -> Maybe RichText
-
--- | An animation
-InputPageBlockAnimation :: Maybe InputAnimation -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
-
--- | The animation to be sent
-[animation] :: InputPageBlock -> Maybe InputAnimation
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | True, if the animation preview must be covered by a spoiler animation
-[has_spoiler] :: InputPageBlock -> Maybe Bool
-
--- | An audio file
-InputPageBlockAudio :: Maybe InputAudio -> Maybe PageBlockCaption -> InputPageBlock
-
--- | The audio to be sent
-[audio] :: InputPageBlock -> Maybe InputAudio
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | A photo
-InputPageBlockPhoto :: Maybe InputPhoto -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
-
--- | The photo to be sent
-[photo] :: InputPageBlock -> Maybe InputPhoto
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | True, if the animation preview must be covered by a spoiler animation
-[has_spoiler] :: InputPageBlock -> Maybe Bool
-
--- | A video
-InputPageBlockVideo :: Maybe InputVideo -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
-
--- | The video to be sent
-[video] :: InputPageBlock -> Maybe InputVideo
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | True, if the animation preview must be covered by a spoiler animation
-[has_spoiler] :: InputPageBlock -> Maybe Bool
-
--- | A voice note
-InputPageBlockVoiceNote :: Maybe InputVoiceNote -> Maybe PageBlockCaption -> InputPageBlock
-
--- | The voice note to be sent
-[voice_note] :: InputPageBlock -> Maybe InputVoiceNote
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | A collage
-InputPageBlockCollage :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
-
--- | Quote blocks
-[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | A slideshow
-InputPageBlockSlideshow :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
-
--- | Quote blocks
-[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-
--- | A table
-InputPageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> InputPageBlock
-
--- | Table caption
-[_caption] :: InputPageBlock -> Maybe RichText
-
--- | Table cells
-[cells] :: InputPageBlock -> Maybe [[PageBlockTableCell]]
-
--- | True, if the table is bordered
-[is_bordered] :: InputPageBlock -> Maybe Bool
-
--- | True, if the table is striped
-[is_striped] :: InputPageBlock -> Maybe Bool
-
--- | A collapsible block
-InputPageBlockDetails :: Maybe RichText -> Maybe [InputPageBlock] -> Maybe Bool -> InputPageBlock
-
--- | Always visible heading for the block
-[header] :: InputPageBlock -> Maybe RichText
-
--- | Quote blocks
-[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
-
--- | True, if the block is open by default
-[is_open] :: InputPageBlock -> Maybe Bool
-
--- | A map. The map's width and height must not exceed 10000 in total.
---   Width and height ratio must be at most 20
-InputPageBlockMap :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe PageBlockCaption -> InputPageBlock
-
--- | Location of the map center
-[location] :: InputPageBlock -> Maybe Location
-
--- | Map zoom level; 0-24
-[zoom] :: InputPageBlock -> Maybe Int
-
--- | Map width; 0-10000
-[width] :: InputPageBlock -> Maybe Int
-
--- | Map height; 0-10000
-[height] :: InputPageBlock -> Maybe Int
-
--- | Animation caption; pass null if none
-[caption] :: InputPageBlock -> Maybe PageBlockCaption
-instance GHC.Show.Show TD.Data.InputPageBlock.InputPageBlock
-instance GHC.Classes.Eq TD.Data.InputPageBlock.InputPageBlock
-instance TD.Lib.Internal.ShortShow TD.Data.InputPageBlock.InputPageBlock
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPageBlock.InputPageBlock
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPageBlock.InputPageBlock
-
-module TD.Data.RichMessageSource
-
--- | Describes source of a rich message
-data RichMessageSource
-
--- | A rich message defined by blocks
-RichMessageSourceBlocks :: Maybe [InputPageBlock] -> RichMessageSource
-
--- | Content of the message
-[blocks] :: RichMessageSource -> Maybe [InputPageBlock]
-
--- | A Markdown-formatted rich message; for bots only
-RichMessageSourceMarkdown :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
-
--- | Markdown-formatted text of the message
-[text] :: RichMessageSource -> Maybe Text
-
--- | Media used in the message
-[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
-
--- | An HTML-formatted rich message; for bots only
-RichMessageSourceHtml :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
-
--- | Markdown-formatted text of the message
-[text] :: RichMessageSource -> Maybe Text
-
--- | Media used in the message
-[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
-instance GHC.Show.Show TD.Data.RichMessageSource.RichMessageSource
-instance GHC.Classes.Eq TD.Data.RichMessageSource.RichMessageSource
-instance TD.Lib.Internal.ShortShow TD.Data.RichMessageSource.RichMessageSource
-instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessageSource.RichMessageSource
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessageSource.RichMessageSource
 
 module TD.Data.DateRange
 data DateRange
@@ -14004,6 +13781,39 @@ instance GHC.Show.Show TD.Data.CommunityPermissions.CommunityPermissions
 instance GHC.Classes.Eq TD.Data.CommunityPermissions.CommunityPermissions
 instance TD.Lib.Internal.ShortShow TD.Data.CommunityPermissions.CommunityPermissions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityPermissions.CommunityPermissions
+
+module TD.Data.CommunityId
+data CommunityId
+
+-- | Contains identifier of a community
+CommunityId :: Maybe Int -> CommunityId
+
+-- | Community identifier
+[_id] :: CommunityId -> Maybe Int
+instance GHC.Show.Show TD.Data.CommunityId.CommunityId
+instance GHC.Classes.Eq TD.Data.CommunityId.CommunityId
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityId.CommunityId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityId.CommunityId
+
+module TD.Data.CommunityChat
+data CommunityChat
+
+-- | Describes a chat in a community
+CommunityChat :: Maybe Int -> Maybe Bool -> Maybe Bool -> CommunityChat
+
+-- | Identifier of the chat in the community
+[chat_id] :: CommunityChat -> Maybe Int
+
+-- | True, if message history of the chat can be viewed
+[can_view_history] :: CommunityChat -> Maybe Bool
+
+-- | True, if the chat is hidden in the list of community chats; for
+--   community administrators only
+[is_hidden] :: CommunityChat -> Maybe Bool
+instance GHC.Show.Show TD.Data.CommunityChat.CommunityChat
+instance GHC.Classes.Eq TD.Data.CommunityChat.CommunityChat
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityChat.CommunityChat
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityChat.CommunityChat
 
 module TD.Data.CommunityAdministratorRights
 data CommunityAdministratorRights
@@ -15135,7 +14945,7 @@ ChatMembersFilterAdministrators :: ChatMembersFilter
 -- | Returns all chat members, including restricted chat members
 ChatMembersFilterMembers :: ChatMembersFilter
 
--- | Returns users which can be mentioned in the chat
+-- | Returns users who can be mentioned in the chat
 ChatMembersFilterMention :: Maybe MessageTopic -> ChatMembersFilter
 
 -- | Identifier of the topic in which the users will be mentioned; pass
@@ -16262,7 +16072,7 @@ module TD.Data.ChatAdministratorRights
 data ChatAdministratorRights
 
 -- | Describes rights of the administrator
-ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatAdministratorRights
+ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatAdministratorRights
 
 -- | True, if the administrator can access the chat event log, get boost
 --   list, see hidden supergroup and channel members, report supergroup
@@ -16330,6 +16140,9 @@ ChatAdministratorRights :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool 
 -- | True, if the administrator can change tags of other users; applicable
 --   to basic groups and supergroups only
 [can_manage_tags] :: ChatAdministratorRights -> Maybe Bool
+
+-- | True, if the administrator can manage and send welcome messages
+[can_send_welcome_messages] :: ChatAdministratorRights -> Maybe Bool
 
 -- | True, if the administrator isn't shown in the chat member list and
 --   sends messages anonymously; applicable to supergroups only
@@ -17920,6 +17733,10 @@ ButtonStyleDanger :: ButtonStyle
 
 -- | The button has green color
 ButtonStyleSuccess :: ButtonStyle
+
+-- | The button must be shown as a link. The style is allowed only for
+--   callback buttons in inlineButton
+ButtonStyleLink :: ButtonStyle
 instance GHC.Show.Show TD.Data.ButtonStyle.ButtonStyle
 instance GHC.Classes.Eq TD.Data.ButtonStyle.ButtonStyle
 instance TD.Lib.Internal.ShortShow TD.Data.ButtonStyle.ButtonStyle
@@ -18004,7 +17821,7 @@ ReplyMarkupForceReply :: Maybe Bool -> Maybe Text -> ReplyMarkup
 [input_field_placeholder] :: ReplyMarkup -> Maybe Text
 
 -- | Contains a custom keyboard layout to quickly reply to bots
-ReplyMarkupShowKeyboard :: Maybe [[KeyboardButton]] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> ReplyMarkup
+ReplyMarkupShowKeyboard :: Maybe [[KeyboardButton]] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> ReplyMarkup
 
 -- | A list of rows of bot keyboard buttons
 [rows] :: ReplyMarkup -> Maybe [[KeyboardButton]]
@@ -18023,15 +17840,23 @@ ReplyMarkupShowKeyboard :: Maybe [[KeyboardButton]] -> Maybe Bool -> Maybe Bool 
 --   target user of a reply
 [is_personal] :: ReplyMarkup -> Maybe Bool
 
+-- | True, if the keyboard must force reply to the message with the
+--   keyboard
+[force_reply] :: ReplyMarkup -> Maybe Bool
+
 -- | If non-empty, the placeholder to be shown in the input field when the
 --   reply is active; 0-64 characters
 [input_field_placeholder] :: ReplyMarkup -> Maybe Text
 
 -- | Contains an inline keyboard layout
-ReplyMarkupInlineKeyboard :: Maybe [[InlineKeyboardButton]] -> ReplyMarkup
+ReplyMarkupInlineKeyboard :: Maybe [[InlineKeyboardButton]] -> Maybe Bool -> ReplyMarkup
 
 -- | A list of rows of inline keyboard buttons
 [_rows] :: ReplyMarkup -> Maybe [[InlineKeyboardButton]]
+
+-- | True, if the keyboard must force reply to the message with the
+--   keyboard
+[force_reply] :: ReplyMarkup -> Maybe Bool
 instance GHC.Show.Show TD.Data.ReplyMarkup.ReplyMarkup
 instance GHC.Classes.Eq TD.Data.ReplyMarkup.ReplyMarkup
 instance TD.Lib.Internal.ShortShow TD.Data.ReplyMarkup.ReplyMarkup
@@ -18425,6 +18250,306 @@ instance GHC.Classes.Eq TD.Data.InputInlineQueryResult.InputInlineQueryResult
 instance TD.Lib.Internal.ShortShow TD.Data.InputInlineQueryResult.InputInlineQueryResult
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputInlineQueryResult.InputInlineQueryResult
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputInlineQueryResult.InputInlineQueryResult
+
+module TD.Data.InlineButton
+data InlineButton
+
+-- | Represents a button inside a rich message
+InlineButton :: Maybe RichText -> Maybe ButtonStyle -> Maybe InlineKeyboardButtonType -> InlineButton
+
+-- | Text of the button; only richTexts, richTextPlain, and
+--   richTextCustomEmoji are allowed
+[text] :: InlineButton -> Maybe RichText
+
+-- | Style of the button
+[style] :: InlineButton -> Maybe ButtonStyle
+
+-- | Type of the button; must be one of inlineKeyboardButtonTypeUrl,
+--   inlineKeyboardButtonTypeLoginUrl, inlineKeyboardButtonTypeWebApp,
+--   inlineKeyboardButtonTypeCallback,
+--   inlineKeyboardButtonTypeSwitchInline, inlineKeyboardButtonTypeUser,
+--   inlineKeyboardButtonTypeCopyText. Additionally,
+--   inlineKeyboardButtonTypeCallbackWithPassword and
+--   inlineKeyboardButtonTypeDisabled may be received in incoming messages.
+--   Regular users may use only inlineKeyboardButtonTypeUrl,
+--   inlineKeyboardButtonTypeUser and inlineKeyboardButtonTypeCopyText
+[_type] :: InlineButton -> Maybe InlineKeyboardButtonType
+defaultInlineButton :: InlineButton
+instance GHC.Show.Show TD.Data.InlineButton.InlineButton
+instance GHC.Classes.Eq TD.Data.InlineButton.InlineButton
+instance TD.Lib.Internal.ShortShow TD.Data.InlineButton.InlineButton
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InlineButton.InlineButton
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InlineButton.InlineButton
+
+module TD.Data.InputPageBlock
+
+-- | Describes a block of a rich message to send
+data InputPageBlock
+
+-- | A section heading
+InputPageBlockSectionHeading :: Maybe RichText -> Maybe Int -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Relative size of the text font; 1-6, 1 is the largest, 6 is the
+--   smallest
+[size] :: InputPageBlock -> Maybe Int
+
+-- | A text paragraph
+InputPageBlockParagraph :: Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | A preformatted text paragraph
+InputPageBlockPreformatted :: Maybe RichText -> Maybe Text -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Programming language for which the text needs to be formatted
+[language] :: InputPageBlock -> Maybe Text
+
+-- | The footer of the page
+InputPageBlockFooter :: Maybe RichText -> InputPageBlock
+
+-- | Footer
+[footer] :: InputPageBlock -> Maybe RichText
+
+-- | A "Thinking..." placeholder; for pending rich messages only; for bots
+--   only
+InputPageBlockThinking :: Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | An empty block separating the page
+InputPageBlockDivider :: InputPageBlock
+
+-- | A mathematical expression
+InputPageBlockMathematicalExpression :: Maybe Text -> InputPageBlock
+
+-- | The expression in LaTeX format
+[expression] :: InputPageBlock -> Maybe Text
+
+-- | An invisible anchor
+InputPageBlockAnchor :: Maybe Text -> InputPageBlock
+
+-- | Name of the anchor
+[name] :: InputPageBlock -> Maybe Text
+
+-- | A list of data blocks
+InputPageBlockList :: Maybe [InputPageBlockListItem] -> InputPageBlock
+
+-- | The items of the list
+[items] :: InputPageBlock -> Maybe [InputPageBlockListItem]
+
+-- | A block quote
+InputPageBlockBlockQuote :: Maybe [InputPageBlock] -> Maybe RichText -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Quote credit; pass null if none
+[credit] :: InputPageBlock -> Maybe RichText
+
+-- | An expandable block quote
+InputPageBlockExpandableBlockQuote :: Maybe RichText -> Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Quote credit; pass null if none
+[credit] :: InputPageBlock -> Maybe RichText
+
+-- | A pull quote
+InputPageBlockPullQuote :: Maybe RichText -> Maybe RichText -> InputPageBlock
+
+-- | Text of the section heading
+[text] :: InputPageBlock -> Maybe RichText
+
+-- | Quote credit; pass null if none
+[credit] :: InputPageBlock -> Maybe RichText
+
+-- | An animation
+InputPageBlockAnimation :: Maybe InputAnimation -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The animation to be sent
+[animation] :: InputPageBlock -> Maybe InputAnimation
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | An audio file
+InputPageBlockAudio :: Maybe InputAudio -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | The audio to be sent
+[audio] :: InputPageBlock -> Maybe InputAudio
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A general file
+InputPageBlockDocument :: Maybe InputDocument -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | The file to be sent
+[document] :: InputPageBlock -> Maybe InputDocument
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A photo
+InputPageBlockPhoto :: Maybe InputPhoto -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The photo to be sent
+[photo] :: InputPageBlock -> Maybe InputPhoto
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | A video
+InputPageBlockVideo :: Maybe InputVideo -> Maybe PageBlockCaption -> Maybe Bool -> InputPageBlock
+
+-- | The video to be sent
+[video] :: InputPageBlock -> Maybe InputVideo
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | True, if the animation preview must be covered by a spoiler animation
+[has_spoiler] :: InputPageBlock -> Maybe Bool
+
+-- | A voice note
+InputPageBlockVoiceNote :: Maybe InputVoiceNote -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | The voice note to be sent
+[voice_note] :: InputPageBlock -> Maybe InputVoiceNote
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A collage
+InputPageBlockCollage :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A slideshow
+InputPageBlockSlideshow :: Maybe [InputPageBlock] -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A table
+InputPageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> InputPageBlock
+
+-- | Table caption
+[_caption] :: InputPageBlock -> Maybe RichText
+
+-- | Table cells
+[cells] :: InputPageBlock -> Maybe [[PageBlockTableCell]]
+
+-- | Pass true if the table is bordered
+[is_bordered] :: InputPageBlock -> Maybe Bool
+
+-- | Pass true if the table is striped
+[is_striped] :: InputPageBlock -> Maybe Bool
+
+-- | Pass true if table cells must have smaller indents
+[is_compact] :: InputPageBlock -> Maybe Bool
+
+-- | A collapsible block
+InputPageBlockDetails :: Maybe RichText -> Maybe [InputPageBlock] -> Maybe Bool -> InputPageBlock
+
+-- | Always visible heading for the block
+[header] :: InputPageBlock -> Maybe RichText
+
+-- | Quote blocks
+[blocks] :: InputPageBlock -> Maybe [InputPageBlock]
+
+-- | True, if the block is open by default
+[is_open] :: InputPageBlock -> Maybe Bool
+
+-- | A map. The map's width and height must not exceed 10000 in total.
+--   Width and height ratio must be at most 20
+InputPageBlockMap :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe PageBlockCaption -> InputPageBlock
+
+-- | Location of the map center
+[location] :: InputPageBlock -> Maybe Location
+
+-- | Map zoom level; 0-24
+[zoom] :: InputPageBlock -> Maybe Int
+
+-- | Map width; 0-10000
+[width] :: InputPageBlock -> Maybe Int
+
+-- | Map height; 0-10000
+[height] :: InputPageBlock -> Maybe Int
+
+-- | Animation caption; pass null if none
+[caption] :: InputPageBlock -> Maybe PageBlockCaption
+
+-- | A list of buttons shown in a row
+InputPageBlockButtonRow :: Maybe [InlineButton] -> Maybe PageBlockHorizontalAlignment -> InputPageBlock
+
+-- | The buttons
+[buttons] :: InputPageBlock -> Maybe [InlineButton]
+
+-- | Horizontal alignment of the buttons; pass null if the buttons must be
+--   shown full-width
+[align] :: InputPageBlock -> Maybe PageBlockHorizontalAlignment
+instance GHC.Show.Show TD.Data.InputPageBlock.InputPageBlock
+instance GHC.Classes.Eq TD.Data.InputPageBlock.InputPageBlock
+instance TD.Lib.Internal.ShortShow TD.Data.InputPageBlock.InputPageBlock
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.InputPageBlock.InputPageBlock
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.InputPageBlock.InputPageBlock
+
+module TD.Data.RichMessageSource
+
+-- | Describes source of a rich message
+data RichMessageSource
+
+-- | A rich message defined by blocks
+RichMessageSourceBlocks :: Maybe [InputPageBlock] -> RichMessageSource
+
+-- | Content of the message
+[blocks] :: RichMessageSource -> Maybe [InputPageBlock]
+
+-- | A Markdown-formatted rich message; for bots only
+RichMessageSourceMarkdown :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+
+-- | Media used in the message
+[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
+
+-- | An HTML-formatted rich message; for bots only
+RichMessageSourceHtml :: Maybe Text -> Maybe [InputRichMessageMedia] -> RichMessageSource
+
+-- | Markdown-formatted text of the message
+[text] :: RichMessageSource -> Maybe Text
+
+-- | Media used in the message
+[media] :: RichMessageSource -> Maybe [InputRichMessageMedia]
+instance GHC.Show.Show TD.Data.RichMessageSource.RichMessageSource
+instance GHC.Classes.Eq TD.Data.RichMessageSource.RichMessageSource
+instance TD.Lib.Internal.ShortShow TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.RichMessageSource.RichMessageSource
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.RichMessageSource.RichMessageSource
 
 module TD.Data.BusinessStartPage
 data BusinessStartPage
@@ -20749,8 +20874,7 @@ PushMessageContentPremiumGiftCode :: Maybe Int -> PushMessageContent
 -- | A message with a giveaway
 PushMessageContentGiveaway :: Maybe Int -> Maybe GiveawayPrize -> Maybe Bool -> PushMessageContent
 
--- | Number of users which will receive giveaway prizes; 0 for pinned
---   message
+-- | Number of users who will receive giveaway prizes; 0 for pinned message
 [winner_count] :: PushMessageContent -> Maybe Int
 
 -- | Prize of the giveaway; may be null for pinned message
@@ -21122,6 +21246,15 @@ PageBlockBlockQuote :: Maybe [PageBlock] -> Maybe RichText -> PageBlock
 -- | Quote credit; may be null if none
 [credit] :: PageBlock -> Maybe RichText
 
+-- | An expandable block quote
+PageBlockExpandableBlockQuote :: Maybe RichText -> Maybe RichText -> PageBlock
+
+-- | Text of the section heading
+[text] :: PageBlock -> Maybe RichText
+
+-- | Quote credit; may be null if none
+[credit] :: PageBlock -> Maybe RichText
+
 -- | A pull quote
 PageBlockPullQuote :: Maybe RichText -> Maybe RichText -> PageBlock
 
@@ -21149,8 +21282,17 @@ PageBlockAnimation :: Maybe Animation -> Maybe PageBlockCaption -> Maybe Bool ->
 -- | An audio file
 PageBlockAudio :: Maybe Audio -> Maybe PageBlockCaption -> PageBlock
 
--- | Audio file; may be null
+-- | Audio file
 [audio] :: PageBlock -> Maybe Audio
+
+-- | Animation caption; may be null if none
+[caption] :: PageBlock -> Maybe PageBlockCaption
+
+-- | A general file
+PageBlockDocument :: Maybe Document -> Maybe PageBlockCaption -> PageBlock
+
+-- | The file
+[document] :: PageBlock -> Maybe Document
 
 -- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
@@ -21192,7 +21334,7 @@ PageBlockVideo :: Maybe Video -> Maybe PageBlockCaption -> Maybe Bool -> Maybe B
 -- | A voice note
 PageBlockVoiceNote :: Maybe VoiceNote -> Maybe PageBlockCaption -> PageBlock
 
--- | Voice note; may be null
+-- | Voice note
 [voice_note] :: PageBlock -> Maybe VoiceNote
 
 -- | Animation caption; may be null if none
@@ -21290,7 +21432,7 @@ PageBlockChatLink :: Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Tex
 [username] :: PageBlock -> Maybe Text
 
 -- | A table
-PageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> PageBlock
+PageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> PageBlock
 
 -- | Table caption; may be null if none
 [_caption] :: PageBlock -> Maybe RichText
@@ -21303,6 +21445,9 @@ PageBlockTable :: Maybe RichText -> Maybe [[PageBlockTableCell]] -> Maybe Bool -
 
 -- | True, if the table is striped
 [is_striped] :: PageBlock -> Maybe Bool
+
+-- | True, if table cells must have smaller indents
+[is_compact] :: PageBlock -> Maybe Bool
 
 -- | A collapsible block
 PageBlockDetails :: Maybe RichText -> Maybe [PageBlock] -> Maybe Bool -> PageBlock
@@ -21342,6 +21487,19 @@ PageBlockMap :: Maybe Location -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe P
 
 -- | Animation caption; may be null if none
 [caption] :: PageBlock -> Maybe PageBlockCaption
+
+-- | A list of buttons shown in a row
+PageBlockButtonRow :: Maybe [InlineButton] -> Maybe PageBlockHorizontalAlignment -> PageBlock
+
+-- | The buttons
+[buttons] :: PageBlock -> Maybe [InlineButton]
+
+-- | Horizontal alignment of the buttons; may be null if the buttons must
+--   be shown full-width
+[align] :: PageBlock -> Maybe PageBlockHorizontalAlignment
+
+-- | Represents a block unsupported by the current application version
+PageBlockUnsupported :: PageBlock
 instance GHC.Show.Show TD.Data.PageBlock.PageBlock
 instance GHC.Classes.Eq TD.Data.PageBlock.PageBlock
 instance TD.Lib.Internal.ShortShow TD.Data.PageBlock.PageBlock
@@ -21418,8 +21576,14 @@ DraftMessageContentText :: Maybe FormattedText -> Maybe LinkPreviewOptions -> Dr
 -- | A rich message draft; not supported in setChatDraftMessage
 DraftMessageContentRichMessage :: Maybe RichMessage -> DraftMessageContent
 
--- | The rich message; the message must not have not yet uploaded media
+-- | The rich message
 [message] :: DraftMessageContent -> Maybe RichMessage
+
+-- | A rich message draft; only for setChatDraftMessage
+DraftMessageContentInputRichMessage :: Maybe InputRichMessage -> DraftMessageContent
+
+-- | The rich message
+[_message] :: DraftMessageContent -> Maybe InputRichMessage
 
 -- | A video note message draft
 DraftMessageContentVideoNote :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe MessageSelfDestructType -> DraftMessageContent
@@ -22424,6 +22588,34 @@ instance GHC.Show.Show TD.Data.LinkPreview.LinkPreview
 instance GHC.Classes.Eq TD.Data.LinkPreview.LinkPreview
 instance TD.Lib.Internal.ShortShow TD.Data.LinkPreview.LinkPreview
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.LinkPreview.LinkPreview
+
+module TD.Data.CommunityFullInfo
+data CommunityFullInfo
+
+-- | Contains full information about a community
+CommunityFullInfo :: Maybe ChatPhoto -> Maybe [CommunityChat] -> Maybe Int -> Maybe Int -> Maybe Int -> CommunityFullInfo
+
+-- | Photo of the community
+[photo] :: CommunityFullInfo -> Maybe ChatPhoto
+
+-- | Chats belonging to the community
+[chats] :: CommunityFullInfo -> Maybe [CommunityChat]
+
+-- | Number of privileged users in the community; 0 if the current user
+--   isn't an administrator of the community
+[administrator_count] :: CommunityFullInfo -> Maybe Int
+
+-- | Number of users banned from the community; 0 if the current user isn't
+--   an administrator of the community
+[banned_count] :: CommunityFullInfo -> Maybe Int
+
+-- | Number of pending requests for addition of chats to the community; 0
+--   if the current user isn't an administrator of the community
+[add_chat_request_count] :: CommunityFullInfo -> Maybe Int
+instance GHC.Show.Show TD.Data.CommunityFullInfo.CommunityFullInfo
+instance GHC.Classes.Eq TD.Data.CommunityFullInfo.CommunityFullInfo
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityFullInfo.CommunityFullInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityFullInfo.CommunityFullInfo
 
 module TD.Data.ChatPhotos
 data ChatPhotos
@@ -24499,6 +24691,12 @@ MessageChatJoinByLink :: MessageContent
 -- | A new member was accepted to the chat by an administrator
 MessageChatJoinByRequest :: MessageContent
 
+-- | A new member joined the chat from a community
+MessageChatJoinFromCommunity :: Maybe Int -> MessageContent
+
+-- | Identifier of the community from which the user joined the chat
+[community_id] :: MessageContent -> Maybe Int
+
 -- | A chat member was deleted
 MessageChatDeleteMember :: Maybe Int -> MessageContent
 
@@ -24508,7 +24706,7 @@ MessageChatDeleteMember :: Maybe Int -> MessageContent
 -- | The chat was added to a community
 MessageChatAddedToCommunity :: Maybe Int -> MessageContent
 
--- | Identifier of the community to which the chat was added
+-- | Identifier of the community from which the user joined the chat
 [community_id] :: MessageContent -> Maybe Int
 
 -- | The chat was removed from a community
@@ -24648,10 +24846,13 @@ MessageGameScore :: Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 [score] :: MessageContent -> Maybe Int
 
 -- | A bot managed by another bot was created by the user
-MessageManagedBotCreated :: Maybe Int -> MessageContent
+MessageManagedBotCreated :: Maybe Int -> Maybe Int -> MessageContent
 
 -- | User identifier of the created bot
 [bot_user_id] :: MessageContent -> Maybe Int
+
+-- | Identifier of the bot which will manage the new bot
+[manager_bot_user_id] :: MessageContent -> Maybe Int
 
 -- | A payment has been sent to a bot or a business account
 MessagePaymentSuccessful :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Text -> MessageContent
@@ -24836,7 +25037,7 @@ MessageGiveaway :: Maybe GiveawayParameters -> Maybe Int -> Maybe GiveawayPrize 
 -- | Giveaway parameters
 [parameters] :: MessageContent -> Maybe GiveawayParameters
 
--- | Number of users which will receive Telegram Premium subscription gift
+-- | Number of users who will receive Telegram Premium subscription gift
 --   codes
 [winner_count] :: MessageContent -> Maybe Int
 
@@ -24853,7 +25054,7 @@ MessageGiveawayCompleted :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Int ->
 --   of a deleted message
 [giveaway_message_id] :: MessageContent -> Maybe Int
 
--- | Number of users which will receive Telegram Premium subscription gift
+-- | Number of users who will receive Telegram Premium subscription gift
 --   codes
 [winner_count] :: MessageContent -> Maybe Int
 
@@ -24894,7 +25095,7 @@ MessageGiveawayWinners :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Ma
 -- | Additional description of the giveaway prize
 [prize_description] :: MessageContent -> Maybe Text
 
--- | Number of users which will receive Telegram Premium subscription gift
+-- | Number of users who will receive Telegram Premium subscription gift
 --   codes
 [winner_count] :: MessageContent -> Maybe Int
 
@@ -24940,7 +25141,7 @@ MessageGiftedStars :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe
 [sticker] :: MessageContent -> Maybe Sticker
 
 -- | TON Grams were gifted to a user
-MessageGiftedTon :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> MessageContent
+MessageGiftedGrams :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Sticker -> MessageContent
 
 -- | The identifier of a user who gifted Telegram Premium; 0 if the gift
 --   was anonymous or is outgoing
@@ -25062,7 +25263,7 @@ MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe
 
 -- | An upgraded gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
-MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe MessageSender -> Maybe UpgradedGiftOrigin -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
+MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe MessageSender -> Maybe UpgradedGiftOrigin -> Maybe Text -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> MessageContent
 
 -- | The gift
 [_gift] :: MessageContent -> Maybe UpgradedGift
@@ -25080,6 +25281,13 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Messag
 -- | Unique identifier of the received gift for the current user; only for
 --   the receiver of the gift
 [received_gift_id] :: MessageContent -> Maybe Text
+
+-- | Text of the message
+[text] :: MessageContent -> Maybe FormattedText
+
+-- | True, if the sender and gift text are shown only to the gift receiver;
+--   otherwise, everyone will be able to see them
+[is_private] :: MessageContent -> Maybe Bool
 
 -- | True, if the gift is displayed on the user's or the channel's profile
 --   page; only for the receiver of the gift
@@ -25286,7 +25494,7 @@ MessageSuggestedPostRefunded :: Maybe Int -> Maybe SuggestedPostRefundReason -> 
 -- | A contact has registered with Telegram
 MessageContactRegistered :: MessageContent
 
--- | The current user shared users, which were requested by the bot
+-- | The current user shared users who were requested by the bot
 MessageUsersShared :: Maybe [SharedUser] -> Maybe Int -> MessageContent
 
 -- | The shared users
@@ -25359,6 +25567,23 @@ instance GHC.Show.Show TD.Data.MessageContent.MessageContent
 instance GHC.Classes.Eq TD.Data.MessageContent.MessageContent
 instance TD.Lib.Internal.ShortShow TD.Data.MessageContent.MessageContent
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageContent.MessageContent
+
+module TD.Data.WelcomeMessage
+data WelcomeMessage
+
+-- | Describes a set up welcome message
+WelcomeMessage :: Maybe Int -> Maybe MessageContent -> WelcomeMessage
+
+-- | Welcome message identifier; unique for the chat to which the welcome
+--   message belongs
+[_id] :: WelcomeMessage -> Maybe Int
+
+-- | Content of the welcome message
+[content] :: WelcomeMessage -> Maybe MessageContent
+instance GHC.Show.Show TD.Data.WelcomeMessage.WelcomeMessage
+instance GHC.Classes.Eq TD.Data.WelcomeMessage.WelcomeMessage
+instance TD.Lib.Internal.ShortShow TD.Data.WelcomeMessage.WelcomeMessage
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WelcomeMessage.WelcomeMessage
 
 module TD.Data.SponsoredMessage
 data SponsoredMessage
@@ -25561,11 +25786,35 @@ instance GHC.Classes.Eq TD.Data.MessageReplyTo.MessageReplyTo
 instance TD.Lib.Internal.ShortShow TD.Data.MessageReplyTo.MessageReplyTo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.MessageReplyTo.MessageReplyTo
 
+module TD.Data.EphemeralMessageContent
+data EphemeralMessageContent
+
+-- | Describes an ephemeral content of a regular message, which must be
+--   shown instead of the regular content
+EphemeralMessageContent :: Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Maybe ReplyMarkup -> EphemeralMessageContent
+
+-- | True, if content of the message can be saved locally
+[can_be_saved] :: EphemeralMessageContent -> Maybe Bool
+
+-- | True, if media timestamp entities refers to a media in this message as
+--   opposed to a media in the replied message
+[has_timestamped_media] :: EphemeralMessageContent -> Maybe Bool
+
+-- | Content of the message
+[content] :: EphemeralMessageContent -> Maybe MessageContent
+
+-- | Reply markup for the message; may be null if none
+[reply_markup] :: EphemeralMessageContent -> Maybe ReplyMarkup
+instance GHC.Show.Show TD.Data.EphemeralMessageContent.EphemeralMessageContent
+instance GHC.Classes.Eq TD.Data.EphemeralMessageContent.EphemeralMessageContent
+instance TD.Lib.Internal.ShortShow TD.Data.EphemeralMessageContent.EphemeralMessageContent
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.EphemeralMessageContent.EphemeralMessageContent
+
 module TD.Data.Message
 data Message
 
 -- | Describes a message
-Message :: Maybe Int -> Maybe MessageSender -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe ReplyMarkup -> Maybe Int -> Message
+Message :: Maybe Int -> Maybe MessageSender -> Maybe MessageSender -> Maybe Int -> Maybe MessageSendingState -> Maybe MessageSchedulingState -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe MessageForwardInfo -> Maybe MessageImportInfo -> Maybe MessageInteractionInfo -> Maybe [UnreadReaction] -> Maybe FactCheck -> Maybe SuggestedPostInfo -> Maybe MessageReplyTo -> Maybe MessageTopic -> Maybe MessageSelfDestructType -> Maybe Double -> Maybe Double -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe RestrictionInfo -> Maybe Text -> Maybe MessageContent -> Maybe EphemeralMessageContent -> Maybe ReplyMarkup -> Maybe Int -> Maybe Int -> Message
 
 -- | Message identifier; unique for the chat to which the message belongs
 [_id] :: Message -> Maybe Int
@@ -25726,12 +25975,20 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe MessageSender -> Maybe Int 
 -- | Content of the message
 [content] :: Message -> Maybe MessageContent
 
+-- | Content of the message, which is visible only to the current user and
+--   must be shown instead of the regular content; may be null if none
+[ephemeral_content] :: Message -> Maybe EphemeralMessageContent
+
 -- | Reply markup for the message; may be null if none
 [reply_markup] :: Message -> Maybe ReplyMarkup
 
 -- | Unique identifier of the ephemeral message if the message is
 --   ephemeral; for bots only
 [ephemeral_message_id] :: Message -> Maybe Int
+
+-- | Identifier that uniquely corresponds to the chat to which the message
+--   was sent; for bots only
+[chat_instance] :: Message -> Maybe Int
 instance GHC.Show.Show TD.Data.Message.Message
 instance GHC.Classes.Eq TD.Data.Message.Message
 instance TD.Lib.Internal.ShortShow TD.Data.Message.Message
@@ -27386,7 +27643,7 @@ data Chat
 
 -- | A chat. (Can be a private chat, basic group, supergroup, or secret
 --   chat)
-Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe UpgradedGiftColors -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe ChatTheme -> Maybe ChatActionBar -> Maybe BusinessBotManageBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
+Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe Int -> Maybe UpgradedGiftColors -> Maybe Int -> Maybe Int -> Maybe ChatPermissions -> Maybe Message -> Maybe [ChatPosition] -> Maybe [ChatList] -> Maybe MessageSender -> Maybe BlockList -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> Maybe ChatAvailableReactions -> Maybe Int -> Maybe EmojiStatus -> Maybe ChatBackground -> Maybe ChatTheme -> Maybe ChatActionBar -> Maybe BusinessBotManageBar -> Maybe VideoChat -> Maybe ChatJoinRequestsInfo -> Maybe Int -> Maybe DraftMessage -> Maybe Text -> Chat
 
 -- | Chat unique identifier
 [_id] :: Chat -> Maybe Int
@@ -27459,6 +27716,10 @@ Chat :: Maybe Int -> Maybe ChatType -> Maybe Text -> Maybe ChatPhotoInfo -> Mayb
 
 -- | True, if the chat has scheduled messages
 [has_scheduled_messages] :: Chat -> Maybe Bool
+
+-- | True, if the chat has welcome messages; for chat administrators with
+--   can_change_info administrator right only
+[has_welcome_messages] :: Chat -> Maybe Bool
 
 -- | True, if the chat messages can be deleted only for the current user
 --   while other users will continue to see the messages
@@ -27819,6 +28080,18 @@ UpdateMessageContent :: Maybe Int -> Maybe Int -> Maybe MessageContent -> Update
 
 -- | New message content
 [new_content] :: Update -> Maybe MessageContent
+
+-- | The message ephemeral content has changed
+UpdateMessageEphemeralContent :: Maybe Int -> Maybe Int -> Maybe EphemeralMessageContent -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | A temporary message identifier
+[message_id] :: Update -> Maybe Int
+
+-- | New ephemeral content of the message; may be null if none
+[ephemeral_content] :: Update -> Maybe EphemeralMessageContent
 
 -- | A message was edited. Changes in the message content will come in a
 --   separate updateMessageContent
@@ -28300,6 +28573,15 @@ UpdateChatHasScheduledMessages :: Maybe Int -> Maybe Bool -> Update
 -- | New value of has_scheduled_messages
 [has_scheduled_messages] :: Update -> Maybe Bool
 
+-- | A chat's has_welcome_messages field has changed
+UpdateChatHasWelcomeMessages :: Maybe Int -> Maybe Bool -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | New value of has_welcome_messages
+[has_welcome_messages] :: Update -> Maybe Bool
+
 -- | The list of chat folders or a chat folder has changed
 UpdateChatFolders :: Maybe [ChatFolderInfo] -> Maybe Int -> Maybe Bool -> Update
 
@@ -28389,6 +28671,16 @@ UpdateQuickReplyShortcutMessages :: Maybe Int -> Maybe [QuickReplyMessage] -> Up
 -- | The new list of quick reply messages for the shortcut in order from
 --   the first to the last sent
 [messages] :: Update -> Maybe [QuickReplyMessage]
+
+-- | The list of welcome messages of a chat has changed
+UpdateChatWelcomeMessages :: Maybe Int -> Maybe [WelcomeMessage] -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | The new list of welcome messages of the chat in the order from the
+--   first to the last sent
+[_messages] :: Update -> Maybe [WelcomeMessage]
 
 -- | Basic information about a topic in a forum chat was changed
 UpdateForumTopicInfo :: Maybe ForumTopicInfo -> Update
@@ -28541,9 +28833,10 @@ UpdateChatAction :: Maybe Int -> Maybe MessageTopic -> Maybe MessageSender -> Ma
 -- | A new pending text or rich message was received in a chat with a bot.
 --   The message must be shown in the chat for at most
 --   getOption("pending_text_message_period") seconds, replace any other
---   pending message with the same draft_id, and be deleted whenever any
---   incoming message from the bot in the message thread is received
-UpdatePendingMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageContent -> Update
+--   pending message with the same draft_id with animation, and be deleted
+--   whenever any incoming message or a pending message with another
+--   draft_id is received in the message thread
+UpdatePendingMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe MessageContent -> Update
 
 -- | The chat identifier of the sent message
 [chat_id] :: Update -> Maybe Int
@@ -28554,9 +28847,29 @@ UpdatePendingMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe MessageCont
 -- | Unique identifier of the message draft within the message thread
 [draft_id] :: Update -> Maybe Int
 
+-- | True, if a button that calls stopPendingMessage to stop further
+--   message generation must be shown
+[can_stop] :: Update -> Maybe Bool
+
+-- | True, if the pending message must not be automatically deleted when
+--   the user presses the Stop button
+[keep_on_stop] :: Update -> Maybe Bool
+
 -- | Content of the message; always of the type messageText or
 --   messageRichMessage
 [content] :: Update -> Maybe MessageContent
+
+-- | A message draft generation was stopped by the user
+UpdateStopMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Update
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | Forum topic identifier of the topic
+[forum_topic_id] :: Update -> Maybe Int
+
+-- | Unique identifier of the message draft within the message thread
+[draft_id] :: Update -> Maybe Int
 
 -- | Some data of a community has changed. This update is guaranteed to
 --   come before the community identifier is returned to the application
@@ -28630,6 +28943,15 @@ UpdateSupergroupFullInfo :: Maybe Int -> Maybe SupergroupFullInfo -> Update
 -- | New full information about the supergroup
 [supergroup_full_info] :: Update -> Maybe SupergroupFullInfo
 
+-- | Some data in communityFullInfo has been changed
+UpdateCommunityFullInfo :: Maybe Int -> Maybe CommunityFullInfo -> Update
+
+-- | Identifier of the community
+[community_id] :: Update -> Maybe Int
+
+-- | New full information about the community
+[community_full_info] :: Update -> Maybe CommunityFullInfo
+
 -- | A service notification from the server was received. Upon receiving
 --   this the application must show a popup with the content of the
 --   notification
@@ -28680,7 +29002,7 @@ UpdateFileGenerationStart :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text
 --   path, it can use writeGeneratedFilePart to generate the file
 [destination_path] :: Update -> Maybe Text
 
--- | If the conversion is "" than original_path contains an HTTP/HTTPS URL
+-- | If the conversion is "", then original_path contains an HTTP/HTTPS URL
 --   of a file that must be downloaded by the application. Otherwise, this
 --   is the conversion specified by the application in inputFileGenerated
 [conversion] :: Update -> Maybe Text
@@ -29266,7 +29588,7 @@ UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 UpdateActiveLiveLocationMessages :: Maybe [Message] -> Update
 
 -- | The list of messages with active live locations
-[_messages] :: Update -> Maybe [Message]
+[__messages] :: Update -> Maybe [Message]
 
 -- | The number of Telegram Stars owned by the current user has changed
 UpdateOwnedStarCount :: Maybe StarAmount -> Update
@@ -29884,6 +30206,7 @@ Chats :: Chats -> GeneralResult
 CheckChatUsernameResult :: CheckChatUsernameResult -> GeneralResult
 CheckStickerSetNameResult :: CheckStickerSetNameResult -> GeneralResult
 CollectibleItemInfo :: CollectibleItemInfo -> GeneralResult
+CommunityId :: CommunityId -> GeneralResult
 ConnectedAffiliateProgram :: ConnectedAffiliateProgram -> GeneralResult
 ConnectedAffiliatePrograms :: ConnectedAffiliatePrograms -> GeneralResult
 ConnectedWebsites :: ConnectedWebsites -> GeneralResult
@@ -30295,6 +30618,31 @@ instance GHC.Show.Show TD.Query.AddChatToList.AddChatToList
 instance GHC.Classes.Eq TD.Query.AddChatToList.AddChatToList
 instance TD.Lib.Internal.ShortShow TD.Query.AddChatToList.AddChatToList
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatToList.AddChatToList
+
+module TD.Query.AddChatWelcomeMessage
+
+-- | Adds a message to the list of welcome messages of a chat; requires
+--   can_send_welcome_messages administrator right in the chat. There can
+--   be up to getOption("welcome_message_count_max") welcome messages in a
+--   chat. Returns <a>Ok</a>
+data AddChatWelcomeMessage
+AddChatWelcomeMessage :: Maybe Int -> Maybe InputMessageContent -> AddChatWelcomeMessage
+
+-- | The identifier of the chat
+[chat_id] :: AddChatWelcomeMessage -> Maybe Int
+
+-- | The content of the message to be sent. Must be one of the following
+--   types: inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
+--   inputMessageVoiceNote, inputMessageLocation, inputMessageVenue,
+--   inputMessageContact
+[input_message_content] :: AddChatWelcomeMessage -> Maybe InputMessageContent
+defaultAddChatWelcomeMessage :: AddChatWelcomeMessage
+instance GHC.Show.Show TD.Query.AddChatWelcomeMessage.AddChatWelcomeMessage
+instance GHC.Classes.Eq TD.Query.AddChatWelcomeMessage.AddChatWelcomeMessage
+instance TD.Lib.Internal.ShortShow TD.Query.AddChatWelcomeMessage.AddChatWelcomeMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChatWelcomeMessage.AddChatWelcomeMessage
 
 module TD.Query.AddChecklistTasks
 
@@ -32514,6 +32862,30 @@ instance GHC.Classes.Eq TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubs
 instance TD.Lib.Internal.ShortShow TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateChatSubscriptionInviteLink.CreateChatSubscriptionInviteLink
 
+module TD.Query.CreateCommunity
+
+-- | Creates a new community for the given chat. Returns identifier of the
+--   created community. Returns <a>CommunityId</a>
+data CreateCommunity
+CreateCommunity :: Maybe Text -> Maybe Int -> Maybe Bool -> CreateCommunity
+
+-- | Name of the new community
+[name] :: CreateCommunity -> Maybe Text
+
+-- | Identifier of the chat in the community; only chats with owned bots
+--   and owned basic group, supergroup and channel chats are allowed; basic
+--   group chats will be automatically upgraded to supergroup chats
+[chat_id] :: CreateCommunity -> Maybe Int
+
+-- | Pass true if the chat will be visible only to administrators of the
+--   community
+[is_chat_hidden] :: CreateCommunity -> Maybe Bool
+defaultCreateCommunity :: CreateCommunity
+instance GHC.Show.Show TD.Query.CreateCommunity.CreateCommunity
+instance GHC.Classes.Eq TD.Query.CreateCommunity.CreateCommunity
+instance TD.Lib.Internal.ShortShow TD.Query.CreateCommunity.CreateCommunity
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateCommunity.CreateCommunity
+
 module TD.Query.CreateForumTopic
 
 -- | Creates a topic in a forum supergroup chat or a chat with a bot with
@@ -33007,6 +33379,21 @@ instance GHC.Classes.Eq TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllCallMessages.DeleteAllCallMessages
 
+module TD.Query.DeleteAllChatWelcomeMessages
+
+-- | Deletes all welcome messages of a chat; requires
+--   can_send_welcome_messages administrator right in the chat. Returns
+--   <a>Ok</a>
+data DeleteAllChatWelcomeMessages
+DeleteAllChatWelcomeMessages :: Maybe Int -> DeleteAllChatWelcomeMessages
+
+-- | The identifier of the chat
+[chat_id] :: DeleteAllChatWelcomeMessages -> Maybe Int
+instance GHC.Show.Show TD.Query.DeleteAllChatWelcomeMessages.DeleteAllChatWelcomeMessages
+instance GHC.Classes.Eq TD.Query.DeleteAllChatWelcomeMessages.DeleteAllChatWelcomeMessages
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteAllChatWelcomeMessages.DeleteAllChatWelcomeMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteAllChatWelcomeMessages.DeleteAllChatWelcomeMessages
+
 module TD.Query.DeleteAllRecentMessageReactionsFromSender
 
 -- | Deletes all recent reactions added by the specified sender in a chat.
@@ -33291,6 +33678,25 @@ instance GHC.Classes.Eq TD.Query.DeleteChatReplyMarkup.DeleteChatReplyMarkup
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteChatReplyMarkup.DeleteChatReplyMarkup
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteChatReplyMarkup.DeleteChatReplyMarkup
 
+module TD.Query.DeleteChatWelcomeMessage
+
+-- | Deletes a welcome message of a chat; requires
+--   can_send_welcome_messages administrator right in the chat. Returns
+--   <a>Ok</a>
+data DeleteChatWelcomeMessage
+DeleteChatWelcomeMessage :: Maybe Int -> Maybe Int -> DeleteChatWelcomeMessage
+
+-- | The identifier of the chat
+[chat_id] :: DeleteChatWelcomeMessage -> Maybe Int
+
+-- | The identifier of the welcome message
+[welcome_message_id] :: DeleteChatWelcomeMessage -> Maybe Int
+defaultDeleteChatWelcomeMessage :: DeleteChatWelcomeMessage
+instance GHC.Show.Show TD.Query.DeleteChatWelcomeMessage.DeleteChatWelcomeMessage
+instance GHC.Classes.Eq TD.Query.DeleteChatWelcomeMessage.DeleteChatWelcomeMessage
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteChatWelcomeMessage.DeleteChatWelcomeMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteChatWelcomeMessage.DeleteChatWelcomeMessage
+
 module TD.Query.DeleteCommands
 
 -- | Deletes commands supported by the bot for the given user scope and
@@ -33379,7 +33785,7 @@ DeleteEphemeralMessage :: Maybe Int -> Maybe Int -> Maybe Int -> DeleteEphemeral
 -- | Identifier of the user who received the message
 [receiver_user_id] :: DeleteEphemeralMessage -> Maybe Int
 
--- | Identifiers of the message to be deleted
+-- | Identifier of the message to be deleted
 [ephemeral_message_id] :: DeleteEphemeralMessage -> Maybe Int
 defaultDeleteEphemeralMessage :: DeleteEphemeralMessage
 instance GHC.Show.Show TD.Query.DeleteEphemeralMessage.DeleteEphemeralMessage
@@ -33498,6 +33904,24 @@ instance GHC.Show.Show TD.Query.DeleteLanguagePack.DeleteLanguagePack
 instance GHC.Classes.Eq TD.Query.DeleteLanguagePack.DeleteLanguagePack
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteLanguagePack.DeleteLanguagePack
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteLanguagePack.DeleteLanguagePack
+
+module TD.Query.DeleteMessageEphemeralContent
+
+-- | Removes message ephemeral content and reverts message state to the
+--   original. Returns <a>Ok</a>
+data DeleteMessageEphemeralContent
+DeleteMessageEphemeralContent :: Maybe Int -> Maybe Int -> DeleteMessageEphemeralContent
+
+-- | The chat the message belongs to
+[chat_id] :: DeleteMessageEphemeralContent -> Maybe Int
+
+-- | Identifier of the message
+[message_id] :: DeleteMessageEphemeralContent -> Maybe Int
+defaultDeleteMessageEphemeralContent :: DeleteMessageEphemeralContent
+instance GHC.Show.Show TD.Query.DeleteMessageEphemeralContent.DeleteMessageEphemeralContent
+instance GHC.Classes.Eq TD.Query.DeleteMessageEphemeralContent.DeleteMessageEphemeralContent
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteMessageEphemeralContent.DeleteMessageEphemeralContent
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteMessageEphemeralContent.DeleteMessageEphemeralContent
 
 module TD.Query.DeleteMessageReactionsFromSender
 
@@ -34187,6 +34611,35 @@ instance GHC.Classes.Eq TD.Query.EditBusinessStory.EditBusinessStory
 instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessStory.EditBusinessStory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessStory.EditBusinessStory
 
+module TD.Query.EditCallbackQueryMessage
+
+-- | Edits the message from which a callback query has originated with an
+--   ephemeral message; for bots only. Returns <a>Ok</a>
+data EditCallbackQueryMessage
+EditCallbackQueryMessage :: Maybe Int -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditCallbackQueryMessage
+
+-- | Identifier of the callback query
+[callback_query_id] :: EditCallbackQueryMessage -> Maybe Int
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving
+[protect_content] :: EditCallbackQueryMessage -> Maybe Bool
+
+-- | The new message reply markup; pass null if none
+[reply_markup] :: EditCallbackQueryMessage -> Maybe ReplyMarkup
+
+-- | New content of the message. Must be one of the following types:
+--   inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
+--   inputMessageVoiceNote
+[input_message_content] :: EditCallbackQueryMessage -> Maybe InputMessageContent
+defaultEditCallbackQueryMessage :: EditCallbackQueryMessage
+instance GHC.Show.Show TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
+instance GHC.Classes.Eq TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
+instance TD.Lib.Internal.ShortShow TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
+
 module TD.Query.EditChatFolder
 
 -- | Edits existing chat folder. Returns information about the edited chat
@@ -34290,6 +34743,31 @@ instance GHC.Classes.Eq TD.Query.EditChatSubscriptionInviteLink.EditChatSubscrip
 instance TD.Lib.Internal.ShortShow TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatSubscriptionInviteLink.EditChatSubscriptionInviteLink
 
+module TD.Query.EditChatWelcomeMessage
+
+-- | Edits a welcome message of a chat; requires can_send_welcome_messages
+--   administrator right in the chat. Returns <a>Ok</a>
+data EditChatWelcomeMessage
+EditChatWelcomeMessage :: Maybe Int -> Maybe Int -> Maybe InputMessageContent -> EditChatWelcomeMessage
+
+-- | The identifier of the chat
+[chat_id] :: EditChatWelcomeMessage -> Maybe Int
+
+-- | The identifier of the welcome message
+[welcome_message_id] :: EditChatWelcomeMessage -> Maybe Int
+
+-- | New content of the message. Must be one of the following types:
+--   inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
+--   inputMessageVoiceNote
+[input_message_content] :: EditChatWelcomeMessage -> Maybe InputMessageContent
+defaultEditChatWelcomeMessage :: EditChatWelcomeMessage
+instance GHC.Show.Show TD.Query.EditChatWelcomeMessage.EditChatWelcomeMessage
+instance GHC.Classes.Eq TD.Query.EditChatWelcomeMessage.EditChatWelcomeMessage
+instance TD.Lib.Internal.ShortShow TD.Query.EditChatWelcomeMessage.EditChatWelcomeMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditChatWelcomeMessage.EditChatWelcomeMessage
+
 module TD.Query.EditCustomLanguagePackInfo
 
 -- | Edits information about a custom local language pack in the current
@@ -34307,8 +34785,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCustomLanguagePackInfo.Edit
 
 module TD.Query.EditEphemeralMessage
 
--- | Edits the text, caption or reply markup of an ephemeral message sent
---   by the bot; for bots only. Returns <a>Ok</a>
+-- | Edits the text, media, or reply markup of an ephemeral message sent by
+--   the bot; for bots only. Returns <a>Ok</a>
 data EditEphemeralMessage
 EditEphemeralMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditEphemeralMessage
 
@@ -34327,14 +34805,47 @@ EditEphemeralMessage :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup
 -- | New content of the message; pass null to edit only reply markup. Must
 --   be one of the following types: inputMessageText,
 --   inputMessageAnimation, inputMessageAudio, inputMessageDocument,
---   inputMessagePhoto, inputMessageSticker, inputMessageVideo,
---   inputMessageVideoNote, inputMessageVoiceNote
+--   inputMessagePhoto, inputMessageRichMessage, inputMessageSticker,
+--   inputMessageVideo, inputMessageVideoNote, inputMessageVoiceNote
 [input_message_content] :: EditEphemeralMessage -> Maybe InputMessageContent
 defaultEditEphemeralMessage :: EditEphemeralMessage
 instance GHC.Show.Show TD.Query.EditEphemeralMessage.EditEphemeralMessage
 instance GHC.Classes.Eq TD.Query.EditEphemeralMessage.EditEphemeralMessage
 instance TD.Lib.Internal.ShortShow TD.Query.EditEphemeralMessage.EditEphemeralMessage
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditEphemeralMessage.EditEphemeralMessage
+
+module TD.Query.EditEphemeralMessageCaption
+
+-- | Edits the caption and reply markup of an ephemeral message sent by the
+--   bot; for bots only. Returns <a>Ok</a>
+data EditEphemeralMessageCaption
+EditEphemeralMessageCaption :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe FormattedText -> Maybe Bool -> EditEphemeralMessageCaption
+
+-- | The chat the message belongs to
+[chat_id] :: EditEphemeralMessageCaption -> Maybe Int
+
+-- | Identifier of the user who received the message
+[receiver_user_id] :: EditEphemeralMessageCaption -> Maybe Int
+
+-- | Identifier of the ephemeral message
+[ephemeral_message_id] :: EditEphemeralMessageCaption -> Maybe Int
+
+-- | The new message reply markup; pass null if none
+[reply_markup] :: EditEphemeralMessageCaption -> Maybe ReplyMarkup
+
+-- | New message content caption; pass null to remove caption;
+--   0-getOption("message_caption_length_max") characters
+[caption] :: EditEphemeralMessageCaption -> Maybe FormattedText
+
+-- | Pass true to show the caption above the media; otherwise, the caption
+--   will be shown below the media. May be true only for animation, photo,
+--   and video messages
+[show_caption_above_media] :: EditEphemeralMessageCaption -> Maybe Bool
+defaultEditEphemeralMessageCaption :: EditEphemeralMessageCaption
+instance GHC.Show.Show TD.Query.EditEphemeralMessageCaption.EditEphemeralMessageCaption
+instance GHC.Classes.Eq TD.Query.EditEphemeralMessageCaption.EditEphemeralMessageCaption
+instance TD.Lib.Internal.ShortShow TD.Query.EditEphemeralMessageCaption.EditEphemeralMessageCaption
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditEphemeralMessageCaption.EditEphemeralMessageCaption
 
 module TD.Query.EditForumTopic
 
@@ -40789,7 +41300,7 @@ module TD.Query.GiftPremiumWithStars
 data GiftPremiumWithStars
 GiftPremiumWithStars :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> GiftPremiumWithStars
 
--- | Identifier of the user which will receive Telegram Premium
+-- | Identifier of the user who will receive Telegram Premium
 [user_id] :: GiftPremiumWithStars -> Maybe Int
 
 -- | The number of Telegram Stars to pay for subscription
@@ -41136,6 +41647,21 @@ instance GHC.Classes.Eq TD.Query.LoadActiveStories.LoadActiveStories
 instance TD.Lib.Internal.ShortShow TD.Query.LoadActiveStories.LoadActiveStories
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadActiveStories.LoadActiveStories
 
+module TD.Query.LoadChatWelcomeMessages
+
+-- | Loads welcome messages of a chat; requires can_send_welcome_messages
+--   administrator right in the chat. The loaded messages will be sent
+--   through updateChatWelcomeMessages. Returns <a>Ok</a>
+data LoadChatWelcomeMessages
+LoadChatWelcomeMessages :: Maybe Int -> LoadChatWelcomeMessages
+
+-- | The identifier of the chat
+[chat_id] :: LoadChatWelcomeMessages -> Maybe Int
+instance GHC.Show.Show TD.Query.LoadChatWelcomeMessages.LoadChatWelcomeMessages
+instance GHC.Classes.Eq TD.Query.LoadChatWelcomeMessages.LoadChatWelcomeMessages
+instance TD.Lib.Internal.ShortShow TD.Query.LoadChatWelcomeMessages.LoadChatWelcomeMessages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadChatWelcomeMessages.LoadChatWelcomeMessages
+
 module TD.Query.LoadChats
 
 -- | Loads more chats from a chat list. The loaded chats and their
@@ -41158,6 +41684,20 @@ instance GHC.Show.Show TD.Query.LoadChats.LoadChats
 instance GHC.Classes.Eq TD.Query.LoadChats.LoadChats
 instance TD.Lib.Internal.ShortShow TD.Query.LoadChats.LoadChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadChats.LoadChats
+
+module TD.Query.LoadCommunityFullInfo
+
+-- | Returns full information about a community. The data will be sent
+--   through update.. Returns <a>Ok</a>
+data LoadCommunityFullInfo
+LoadCommunityFullInfo :: Maybe Int -> LoadCommunityFullInfo
+
+-- | Community identifier
+[community_id] :: LoadCommunityFullInfo -> Maybe Int
+instance GHC.Show.Show TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
+instance GHC.Classes.Eq TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
+instance TD.Lib.Internal.ShortShow TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
 
 module TD.Query.LoadDirectMessagesChatTopics
 
@@ -42007,8 +42547,8 @@ module TD.Query.ReaddQuickReplyShortcutMessages
 --   after specified in messageSendingStateFailed.retry_after time passed.
 --   If a message is re-added, the corresponding failed to send message is
 --   deleted. Returns the sent messages in the same order as the message
---   identifiers passed in message_ids. If a message can't be readded, null
---   will be returned instead of the message. Returns
+--   identifiers passed in message_ids. If a message can't be re-added,
+--   null will be returned instead of the message. Returns
 --   <a>QuickReplyMessages</a>
 data ReaddQuickReplyShortcutMessages
 ReaddQuickReplyShortcutMessages :: Maybe Text -> Maybe [Int] -> ReaddQuickReplyShortcutMessages
@@ -44617,7 +45157,7 @@ module TD.Query.SendEphemeralMessage
 --   persistent across application restarts only if the message database is
 --   used. Returns the sent message. Returns <a>Message</a>
 data SendEphemeralMessage
-SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe Int -> Maybe InputMessageReplyTo -> Maybe Int -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> SendEphemeralMessage
+SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe InputMessageReplyTo -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> SendEphemeralMessage
 
 -- | Target chat
 [chat_id] :: SendEphemeralMessage -> Maybe Int
@@ -44632,9 +45172,17 @@ SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe In
 --   only
 [callback_query_id] :: SendEphemeralMessage -> Maybe Int
 
+-- | Pass true if the ephemeral message must replace the message from which
+--   the callback query originated; for bots only
+[replace_callback_query_message] :: SendEphemeralMessage -> Maybe Bool
+
 -- | Information about the message to be replied; pass null if none. The
 --   message can be an incoming ephemeral message
 [reply_to] :: SendEphemeralMessage -> Maybe InputMessageReplyTo
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving; for bots only
+[protect_content] :: SendEphemeralMessage -> Maybe Bool
 
 -- | Non-persistent identifier, which will be returned back in
 --   messageSendingStatePending object and can be used to match sent
@@ -44649,9 +45197,10 @@ SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe In
 
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageAnimation, inputMessageAudio,
---   inputMessageDocument, inputMessagePhoto, inputMessageSticker,
---   inputMessageVideo, inputMessageVideoNote, inputMessageVoiceNote,
---   inputMessageLocation, inputMessageVenue, inputMessageContact
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
+--   inputMessageVoiceNote, inputMessageLocation, inputMessageVenue,
+--   inputMessageContact
 [input_message_content] :: SendEphemeralMessage -> Maybe InputMessageContent
 defaultSendEphemeralMessage :: SendEphemeralMessage
 instance GHC.Show.Show TD.Query.SendEphemeralMessage.SendEphemeralMessage
@@ -45019,7 +45568,7 @@ module TD.Query.SendResoldGift
 --   transferred using transferGift and can't be passed to the method.
 --   Returns <a>GiftResaleResult</a>
 data SendResoldGift
-SendResoldGift :: Maybe Text -> Maybe MessageSender -> Maybe GiftResalePrice -> SendResoldGift
+SendResoldGift :: Maybe Text -> Maybe MessageSender -> Maybe GiftResalePrice -> Maybe FormattedText -> Maybe Bool -> SendResoldGift
 
 -- | Name of the upgraded gift to send
 [gift_name] :: SendResoldGift -> Maybe Text
@@ -45029,6 +45578,17 @@ SendResoldGift :: Maybe Text -> Maybe MessageSender -> Maybe GiftResalePrice -> 
 
 -- | The price that the user agreed to pay for the gift
 [price] :: SendResoldGift -> Maybe GiftResalePrice
+
+-- | Text to show along with the gift; 0-getOption("gift_text_length_max")
+--   characters. Only Bold, Italic, Underline, Strikethrough, Spoiler,
+--   CustomEmoji, and DateTime entities are allowed. Must be empty if the
+--   receiver enabled paid messages and the price of the gift is less than
+--   the price of a paid message to the user
+[text] :: SendResoldGift -> Maybe FormattedText
+
+-- | Pass true to show gift text and sender only to the gift receiver;
+--   otherwise, everyone will be able to see them
+[is_private] :: SendResoldGift -> Maybe Bool
 defaultSendResoldGift :: SendResoldGift
 instance GHC.Show.Show TD.Query.SendResoldGift.SendResoldGift
 instance GHC.Classes.Eq TD.Query.SendResoldGift.SendResoldGift
@@ -45040,7 +45600,7 @@ module TD.Query.SendRichMessageDraft
 -- | Sends a draft for a being generated rich message; for bots only.
 --   Returns <a>Ok</a>
 data SendRichMessageDraft
-SendRichMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe InputRichMessage -> SendRichMessageDraft
+SendRichMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe InputRichMessage -> SendRichMessageDraft
 
 -- | Chat identifier
 [chat_id] :: SendRichMessageDraft -> Maybe Int
@@ -45051,6 +45611,13 @@ SendRichMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe InputRichMe
 
 -- | Unique identifier of the draft
 [draft_id] :: SendRichMessageDraft -> Maybe Int
+
+-- | Pass true to show the user a button to stop further drafts
+[can_stop] :: SendRichMessageDraft -> Maybe Bool
+
+-- | Pass true to keep the current draft when the user stops further
+--   generation
+[keep_on_stop] :: SendRichMessageDraft -> Maybe Bool
 
 -- | Draft of the message; file upload isn't supported
 [message] :: SendRichMessageDraft -> Maybe InputRichMessage
@@ -45065,7 +45632,7 @@ module TD.Query.SendTextMessageDraft
 -- | Sends a draft for a being generated text message; for bots only.
 --   Returns <a>Ok</a>
 data SendTextMessageDraft
-SendTextMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedText -> SendTextMessageDraft
+SendTextMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe FormattedText -> SendTextMessageDraft
 
 -- | Chat identifier
 [chat_id] :: SendTextMessageDraft -> Maybe Int
@@ -45076,6 +45643,13 @@ SendTextMessageDraft :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe FormattedTe
 
 -- | Unique identifier of the draft
 [draft_id] :: SendTextMessageDraft -> Maybe Int
+
+-- | Pass true to show the user a button to stop further drafts
+[can_stop] :: SendTextMessageDraft -> Maybe Bool
+
+-- | Pass true to keep the current draft when the user stops further
+--   generation
+[keep_on_stop] :: SendTextMessageDraft -> Maybe Bool
 
 -- | Draft text of the message; pass null to show a "Thinking..."
 --   placeholder
@@ -45896,9 +46470,7 @@ SetChatDraftMessage :: Maybe Int -> Maybe MessageTopic -> Maybe DraftMessage -> 
 --   draft for the chat itself
 [topic_id] :: SetChatDraftMessage -> Maybe MessageTopic
 
--- | New draft message; pass null to remove the draft. All files in draft
---   message content must be of the type inputFileLocal. Media thumbnails
---   and captions are ignored
+-- | New draft message; pass null to remove the draft
 [draft_message] :: SetChatDraftMessage -> Maybe DraftMessage
 defaultSetChatDraftMessage :: SetChatDraftMessage
 instance GHC.Show.Show TD.Query.SetChatDraftMessage.SetChatDraftMessage
@@ -45983,7 +46555,7 @@ SetChatMemberTag :: Maybe Int -> Maybe Int -> Maybe Text -> SetChatMemberTag
 -- | Chat identifier
 [chat_id] :: SetChatMemberTag -> Maybe Int
 
--- | Identifier of the user, which tag is changed. Chats can't have member
+-- | Identifier of the user whose tag is changed. Chats can't have member
 --   tags
 [user_id] :: SetChatMemberTag -> Maybe Int
 
@@ -46260,6 +46832,24 @@ instance GHC.Show.Show TD.Query.SetCommands.SetCommands
 instance GHC.Classes.Eq TD.Query.SetCommands.SetCommands
 instance TD.Lib.Internal.ShortShow TD.Query.SetCommands.SetCommands
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommands.SetCommands
+
+module TD.Query.SetCommunityName
+
+-- | Changes name of the given community; requires can_change_info
+--   administrator right in the community. Returns <a>Ok</a>
+data SetCommunityName
+SetCommunityName :: Maybe Int -> Maybe Text -> SetCommunityName
+
+-- | Identifier of the community
+[community_id] :: SetCommunityName -> Maybe Int
+
+-- | New name of the community
+[name] :: SetCommunityName -> Maybe Text
+defaultSetCommunityName :: SetCommunityName
+instance GHC.Show.Show TD.Query.SetCommunityName.SetCommunityName
+instance GHC.Classes.Eq TD.Query.SetCommunityName.SetCommunityName
+instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityName.SetCommunityName
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityName.SetCommunityName
 
 module TD.Query.SetCustomEmojiStickerSetThumbnail
 
@@ -48058,6 +48648,27 @@ instance GHC.Show.Show TD.Query.StopBusinessPoll.StopBusinessPoll
 instance GHC.Classes.Eq TD.Query.StopBusinessPoll.StopBusinessPoll
 instance TD.Lib.Internal.ShortShow TD.Query.StopBusinessPoll.StopBusinessPoll
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StopBusinessPoll.StopBusinessPoll
+
+module TD.Query.StopPendingMessage
+
+-- | Stops a pending message generation by a bot. Returns <a>Ok</a>
+data StopPendingMessage
+StopPendingMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> StopPendingMessage
+
+-- | Identifier of the chat with the bot
+[chat_id] :: StopPendingMessage -> Maybe Int
+
+-- | Identifier of the topic in which the action is performed; pass null if
+--   none
+[topic_id] :: StopPendingMessage -> Maybe MessageTopic
+
+-- | Unique identifier of the message draft within the message thread
+[draft_id] :: StopPendingMessage -> Maybe Int
+defaultStopPendingMessage :: StopPendingMessage
+instance GHC.Show.Show TD.Query.StopPendingMessage.StopPendingMessage
+instance GHC.Classes.Eq TD.Query.StopPendingMessage.StopPendingMessage
+instance TD.Lib.Internal.ShortShow TD.Query.StopPendingMessage.StopPendingMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.StopPendingMessage.StopPendingMessage
 
 module TD.Query.StopPoll
 
