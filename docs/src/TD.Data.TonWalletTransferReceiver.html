@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.TonWalletTransferReceiver</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier">TonWalletTransferReceiver</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="annot"><span class="hs-comment">-- | Represents expected receiver of a TON wallet transfer</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="TonWalletTransferReceiver"><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-var">TonWalletTransferReceiver</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TonWalletTransferReceiverUser"><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverUser"><span class="hs-identifier hs-var">TonWalletTransferReceiverUser</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The receiver is specified by its username</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="username"><span class="annot"><span class="annottext">TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#username"><span class="hs-identifier hs-var hs-var">username</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Username of the user. Use searchPublicChat to find the user, check that it is a regular user, and then use createUserTonWallet to get information about the user's TON wallet</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="TonWalletTransferReceiverAddress"><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverAddress"><span class="hs-identifier hs-var">TonWalletTransferReceiverAddress</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The receiver is specified by its address</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="address"><span class="annot"><span class="annottext">TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#address"><span class="hs-identifier hs-var hs-var">address</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Address of the receiver. Use getAddressTonWallet to get information about the user's TON wallet</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679889515"><span id="local-6989586621679889521"><span class="annot"><span class="annottext">TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool
+(TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool)
+-&gt; (TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool)
+-&gt; Eq TonWalletTransferReceiver
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool
+== :: TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool
+$c/= :: TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool
+/= :: TonWalletTransferReceiver -&gt; TonWalletTransferReceiver -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679889527"><span id="local-6989586621679889536"><span id="local-6989586621679889540"><span class="annot"><span class="annottext">Int -&gt; TonWalletTransferReceiver -&gt; ShowS
+[TonWalletTransferReceiver] -&gt; ShowS
+TonWalletTransferReceiver -&gt; String
+(Int -&gt; TonWalletTransferReceiver -&gt; ShowS)
+-&gt; (TonWalletTransferReceiver -&gt; String)
+-&gt; ([TonWalletTransferReceiver] -&gt; ShowS)
+-&gt; Show TonWalletTransferReceiver
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; TonWalletTransferReceiver -&gt; ShowS
+showsPrec :: Int -&gt; TonWalletTransferReceiver -&gt; ShowS
+$cshow :: TonWalletTransferReceiver -&gt; String
+show :: TonWalletTransferReceiver -&gt; String
+$cshowList :: [TonWalletTransferReceiver] -&gt; ShowS
+showList :: [TonWalletTransferReceiver] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-type">TonWalletTransferReceiver</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-20"></span><span>  </span><span id="local-6989586621679889554"><span class="annot"><span class="annottext">shortShow :: TonWalletTransferReceiver -&gt; String
+</span><a href="#local-6989586621679889554"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverUser"><span class="hs-identifier hs-type">TonWalletTransferReceiverUser</span></a></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">username :: TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#username"><span class="hs-identifier hs-var">username</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679889556"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889556"><span class="hs-identifier hs-var">username_</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonWalletTransferReceiverUser&quot;</span></span><span>
+</span><span id="line-24"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-25"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;username&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889556"><span class="hs-identifier hs-var">username_</span></a></span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-27"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverAddress"><span class="hs-identifier hs-type">TonWalletTransferReceiverAddress</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">address :: TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#address"><span class="hs-identifier hs-var">address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679889559"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889559"><span class="hs-identifier hs-var">address_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-30"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonWalletTransferReceiverAddress&quot;</span></span><span>
+</span><span id="line-31"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;address&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889559"><span class="hs-identifier hs-var">address_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679889562"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-type">TonWalletTransferReceiver</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679889595"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser TonWalletTransferReceiver
+</span><a href="#local-6989586621679889595"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679889597"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679889597"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679889599"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889599"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-37"></span><span>    </span><span id="local-6989586621679889600"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679889600"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889599"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679889600"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-40"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonWalletTransferReceiverUser&quot;</span></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser TonWalletTransferReceiver
+</span><a href="#local-6989586621679889602"><span class="hs-identifier hs-var">parseTonWalletTransferReceiverUser</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679889597"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonWalletTransferReceiverAddress&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser TonWalletTransferReceiver
+</span><a href="#local-6989586621679889603"><span class="hs-identifier hs-var">parseTonWalletTransferReceiverAddress</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679889597"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser TonWalletTransferReceiver
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-43"></span><span>    </span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-45"></span><span>      </span><span class="annot"><a href="#local-6989586621679889602"><span class="hs-identifier hs-type">parseTonWalletTransferReceiverUser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-type">TonWalletTransferReceiver</span></a></span><span>
+</span><span id="line-46"></span><span>      </span><span id="local-6989586621679889602"><span class="annot"><span class="annottext">parseTonWalletTransferReceiverUser :: Value -&gt; Parser TonWalletTransferReceiver
+</span><a href="#local-6989586621679889602"><span class="hs-identifier hs-var hs-var">parseTonWalletTransferReceiverUser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser TonWalletTransferReceiver)
+-&gt; Value
+-&gt; Parser TonWalletTransferReceiver
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonWalletTransferReceiverUser&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser TonWalletTransferReceiver)
+ -&gt; Value -&gt; Parser TonWalletTransferReceiver)
+-&gt; (Object -&gt; Parser TonWalletTransferReceiver)
+-&gt; Value
+-&gt; Parser TonWalletTransferReceiver
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679889605"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889605"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679889606"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889606"><span class="hs-identifier hs-var">username_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889605"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;username&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span class="annot"><span class="annottext">TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver)
+-&gt; TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverUser"><span class="hs-identifier hs-type">TonWalletTransferReceiverUser</span></a></span><span>
+</span><span id="line-49"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">username :: Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#username"><span class="hs-identifier hs-var">username</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889606"><span class="hs-identifier hs-var">username_</span></a></span><span>
+</span><span id="line-50"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><a href="#local-6989586621679889603"><span class="hs-identifier hs-type">parseTonWalletTransferReceiverAddress</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-type">TonWalletTransferReceiver</span></a></span><span>
+</span><span id="line-52"></span><span>      </span><span id="local-6989586621679889603"><span class="annot"><span class="annottext">parseTonWalletTransferReceiverAddress :: Value -&gt; Parser TonWalletTransferReceiver
+</span><a href="#local-6989586621679889603"><span class="hs-identifier hs-var hs-var">parseTonWalletTransferReceiverAddress</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser TonWalletTransferReceiver)
+-&gt; Value
+-&gt; Parser TonWalletTransferReceiver
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonWalletTransferReceiverAddress&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser TonWalletTransferReceiver)
+ -&gt; Value -&gt; Parser TonWalletTransferReceiver)
+-&gt; (Object -&gt; Parser TonWalletTransferReceiver)
+-&gt; Value
+-&gt; Parser TonWalletTransferReceiver
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679889608"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889608"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679889609"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889609"><span class="hs-identifier hs-var">address_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679889608"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;address&quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span class="annot"><span class="annottext">TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver)
+-&gt; TonWalletTransferReceiver -&gt; Parser TonWalletTransferReceiver
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverAddress"><span class="hs-identifier hs-type">TonWalletTransferReceiverAddress</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">address :: Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#address"><span class="hs-identifier hs-var">address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889609"><span class="hs-identifier hs-var">address_</span></a></span><span>
+</span><span id="line-56"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-57"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser TonWalletTransferReceiver
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679889612"><span id="local-6989586621679889616"><span id="local-6989586621679889619"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiver"><span class="hs-identifier hs-type">TonWalletTransferReceiver</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>  </span><span id="local-6989586621679889644"><span class="annot"><span class="annottext">toJSON :: TonWalletTransferReceiver -&gt; Value
+</span><a href="#local-6989586621679889644"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverUser"><span class="hs-identifier hs-type">TonWalletTransferReceiverUser</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">username :: TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#username"><span class="hs-identifier hs-var">username</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679889646"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889646"><span class="hs-identifier hs-var">username_</span></a></span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-63"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-64"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;tonWalletTransferReceiverUser&quot;</span></span><span>
+</span><span id="line-65"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;username&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889646"><span class="hs-identifier hs-var">username_</span></a></span><span>
+</span><span id="line-66"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-67"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletTransferReceiver.html#TonWalletTransferReceiverAddress"><span class="hs-identifier hs-type">TonWalletTransferReceiverAddress</span></a></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">address :: TonWalletTransferReceiver -&gt; Maybe Text
+</span><a href="TD.Data.TonWalletTransferReceiver.html#address"><span class="hs-identifier hs-var">address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679889650"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889650"><span class="hs-identifier hs-var">address_</span></a></span></span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-70"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;tonWalletTransferReceiverAddress&quot;</span></span><span>
+</span><span id="line-72"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;address&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679889650"><span class="hs-identifier hs-var">address_</span></a></span><span>
+</span><span id="line-73"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span></pre></body></html>

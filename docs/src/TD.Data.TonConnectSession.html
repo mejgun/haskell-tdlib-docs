@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.TonConnectSession</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier">TonConnectSession</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.TonConnectManifest.html"><span class="hs-identifier">TD.Data.TonConnectManifest</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TonConnectManifest</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.TonConnectSessionState.html"><span class="hs-identifier">TD.Data.TonConnectSessionState</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TonConnectSessionState</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">data</span><span> </span><span id="TonConnectSession"><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-var">TonConnectSession</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TonConnectSession"><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-var">TonConnectSession</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Represents a TON Connect session. See https://github.com/ton-blockchain/ton-connect/tree/main/spec for full TON Connect protocol documentation</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_id"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#_id"><span class="hs-identifier hs-var hs-var">_id</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                           </span><span class="annot"><span class="hs-comment">-- ^ Unique identifier of the session</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="dapp_client_id"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#dapp_client_id"><span class="hs-identifier hs-var hs-var">dapp_client_id</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                        </span><span class="annot"><span class="hs-comment">-- ^ Hex-encoded public X25519 key of the dApp</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="wallet_client_id"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#wallet_client_id"><span class="hs-identifier hs-var hs-var">wallet_client_id</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                        </span><span class="annot"><span class="hs-comment">-- ^ Hex-encoded public X25519 key of the current user's application; may be empty if none</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="creation_date"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#creation_date"><span class="hs-identifier hs-var hs-var">creation_date</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                                           </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the session was created</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="manifest"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe TonConnectManifest
+</span><a href="TD.Data.TonConnectSession.html#manifest"><span class="hs-identifier hs-var hs-var">manifest</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectManifest.html#TonConnectManifest"><span class="hs-identifier hs-type">TonConnectManifest.TonConnectManifest</span></a></span><span>         </span><span class="annot"><span class="hs-comment">-- ^ Manifest of the dApp</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="nonce"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe ByteString
+</span><a href="TD.Data.TonConnectSession.html#nonce"><span class="hs-identifier hs-var hs-var">nonce</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span>                                 </span><span class="annot"><span class="hs-comment">-- ^ Nonce used for the session</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="state"><span class="annot"><span class="annottext">TonConnectSession -&gt; Maybe TonConnectSessionState
+</span><a href="TD.Data.TonConnectSession.html#state"><span class="hs-identifier hs-var hs-var">state</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSessionState.html#TonConnectSessionState"><span class="hs-identifier hs-type">TonConnectSessionState.TonConnectSessionState</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Session state</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679954214"><span id="local-6989586621679954229"><span class="annot"><span class="annottext">TonConnectSession -&gt; TonConnectSession -&gt; Bool
+(TonConnectSession -&gt; TonConnectSession -&gt; Bool)
+-&gt; (TonConnectSession -&gt; TonConnectSession -&gt; Bool)
+-&gt; Eq TonConnectSession
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: TonConnectSession -&gt; TonConnectSession -&gt; Bool
+== :: TonConnectSession -&gt; TonConnectSession -&gt; Bool
+$c/= :: TonConnectSession -&gt; TonConnectSession -&gt; Bool
+/= :: TonConnectSession -&gt; TonConnectSession -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679954239"><span id="local-6989586621679954256"><span id="local-6989586621679954260"><span class="annot"><span class="annottext">Int -&gt; TonConnectSession -&gt; ShowS
+[TonConnectSession] -&gt; ShowS
+TonConnectSession -&gt; String
+(Int -&gt; TonConnectSession -&gt; ShowS)
+-&gt; (TonConnectSession -&gt; String)
+-&gt; ([TonConnectSession] -&gt; ShowS)
+-&gt; Show TonConnectSession
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; TonConnectSession -&gt; ShowS
+showsPrec :: Int -&gt; TonConnectSession -&gt; ShowS
+$cshow :: TonConnectSession -&gt; String
+show :: TonConnectSession -&gt; String
+$cshowList :: [TonConnectSession] -&gt; ShowS
+showList :: [TonConnectSession] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-type">TonConnectSession</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-25"></span><span>  </span><span id="local-6989586621679954286"><span class="annot"><span class="annottext">shortShow :: TonConnectSession -&gt; String
+</span><a href="#local-6989586621679954286"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-type">TonConnectSession</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: TonConnectSession -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954288"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954288"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">dapp_client_id :: TonConnectSession -&gt; Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#dapp_client_id"><span class="hs-identifier hs-var">dapp_client_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954289"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954289"><span class="hs-identifier hs-var">dapp_client_id_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">wallet_client_id :: TonConnectSession -&gt; Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#wallet_client_id"><span class="hs-identifier hs-var">wallet_client_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954290"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954290"><span class="hs-identifier hs-var">wallet_client_id_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">creation_date :: TonConnectSession -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954291"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954291"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">manifest :: TonConnectSession -&gt; Maybe TonConnectManifest
+</span><a href="TD.Data.TonConnectSession.html#manifest"><span class="hs-identifier hs-var">manifest</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954292"><span class="annot"><span class="annottext">Maybe TonConnectManifest
+</span><a href="#local-6989586621679954292"><span class="hs-identifier hs-var">manifest_</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">nonce :: TonConnectSession -&gt; Maybe ByteString
+</span><a href="TD.Data.TonConnectSession.html#nonce"><span class="hs-identifier hs-var">nonce</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954293"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954293"><span class="hs-identifier hs-var">nonce_</span></a></span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">state :: TonConnectSession -&gt; Maybe TonConnectSessionState
+</span><a href="TD.Data.TonConnectSession.html#state"><span class="hs-identifier hs-var">state</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679954294"><span class="annot"><span class="annottext">Maybe TonConnectSessionState
+</span><a href="#local-6989586621679954294"><span class="hs-identifier hs-var">state_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectSession&quot;</span></span><span>
+</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_id&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954288"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;dapp_client_id&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954289"><span class="hs-identifier hs-var">dapp_client_id_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;wallet_client_id&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954290"><span class="hs-identifier hs-var">wallet_client_id_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954291"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;manifest&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe TonConnectManifest -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonConnectManifest
+</span><a href="#local-6989586621679954292"><span class="hs-identifier hs-var">manifest_</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;nonce&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954293"><span class="hs-identifier hs-var">nonce_</span></a></span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;state&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe TonConnectSessionState -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonConnectSessionState
+</span><a href="#local-6989586621679954294"><span class="hs-identifier hs-var">state_</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679954299"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-type">TonConnectSession</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-46"></span><span>  </span><span id="local-6989586621679954353"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser TonConnectSession
+</span><a href="#local-6989586621679954353"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679954355"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679954355"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679954357"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954357"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span id="local-6989586621679954358"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679954358"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954357"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679954358"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-50"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonConnectSession&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser TonConnectSession
+</span><a href="#local-6989586621679954360"><span class="hs-identifier hs-var">parseTonConnectSession</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679954355"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser TonConnectSession
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-52"></span><span>    </span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><a href="#local-6989586621679954360"><span class="hs-identifier hs-type">parseTonConnectSession</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-type">TonConnectSession</span></a></span><span>
+</span><span id="line-55"></span><span>      </span><span id="local-6989586621679954360"><span class="annot"><span class="annottext">parseTonConnectSession :: Value -&gt; Parser TonConnectSession
+</span><a href="#local-6989586621679954360"><span class="hs-identifier hs-var hs-var">parseTonConnectSession</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser TonConnectSession)
+-&gt; Value
+-&gt; Parser TonConnectSession
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectSession&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser TonConnectSession)
+ -&gt; Value -&gt; Parser TonConnectSession)
+-&gt; (Object -&gt; Parser TonConnectSession)
+-&gt; Value
+-&gt; Parser TonConnectSession
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679954362"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-56"></span><span>        </span><span id="local-6989586621679954363"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954363"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>              </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;id&quot;</span></span><span>
+</span><span id="line-57"></span><span>        </span><span id="local-6989586621679954367"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954367"><span class="hs-identifier hs-var">dapp_client_id_</span></a></span></span><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;dapp_client_id&quot;</span></span><span>
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679954368"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954368"><span class="hs-identifier hs-var">wallet_client_id_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;wallet_client_id&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679954369"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954369"><span class="hs-identifier hs-var">creation_date_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;creation_date&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679954370"><span class="annot"><span class="annottext">Maybe TonConnectManifest
+</span><a href="#local-6989586621679954370"><span class="hs-identifier hs-var">manifest_</span></a></span></span><span>         </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe TonConnectManifest)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;manifest&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679954371"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954371"><span class="hs-identifier hs-var">nonce_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; ByteString) -&gt; Maybe String -&gt; Maybe ByteString
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ByteString
+</span><a href="TD.Lib.Internal.html#readBytes"><span class="hs-identifier hs-var">I.readBytes</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe ByteString)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe ByteString)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;nonce&quot;</span></span><span>
+</span><span id="line-62"></span><span>        </span><span id="local-6989586621679954373"><span class="annot"><span class="annottext">Maybe TonConnectSessionState
+</span><a href="#local-6989586621679954373"><span class="hs-identifier hs-var">state_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679954362"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe TonConnectSessionState)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;state&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><span class="annottext">TonConnectSession -&gt; Parser TonConnectSession
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TonConnectSession -&gt; Parser TonConnectSession)
+-&gt; TonConnectSession -&gt; Parser TonConnectSession
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectSession.html#TonConnectSession"><span class="hs-identifier hs-type">TonConnectSession</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954363"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-65"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">dapp_client_id :: Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#dapp_client_id"><span class="hs-identifier hs-var">dapp_client_id</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954367"><span class="hs-identifier hs-var">dapp_client_id_</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">wallet_client_id :: Maybe Text
+</span><a href="TD.Data.TonConnectSession.html#wallet_client_id"><span class="hs-identifier hs-var">wallet_client_id</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679954368"><span class="hs-identifier hs-var">wallet_client_id_</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">creation_date :: Maybe Int
+</span><a href="TD.Data.TonConnectSession.html#creation_date"><span class="hs-identifier hs-var">creation_date</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679954369"><span class="hs-identifier hs-var">creation_date_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">manifest :: Maybe TonConnectManifest
+</span><a href="TD.Data.TonConnectSession.html#manifest"><span class="hs-identifier hs-var">manifest</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonConnectManifest
+</span><a href="#local-6989586621679954370"><span class="hs-identifier hs-var">manifest_</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">nonce :: Maybe ByteString
+</span><a href="TD.Data.TonConnectSession.html#nonce"><span class="hs-identifier hs-var">nonce</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679954371"><span class="hs-identifier hs-var">nonce_</span></a></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">state :: Maybe TonConnectSessionState
+</span><a href="TD.Data.TonConnectSession.html#state"><span class="hs-identifier hs-var">state</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonConnectSessionState
+</span><a href="#local-6989586621679954373"><span class="hs-identifier hs-var">state_</span></a></span><span>
+</span><span id="line-71"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-72"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser TonConnectSession
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span></pre></body></html>

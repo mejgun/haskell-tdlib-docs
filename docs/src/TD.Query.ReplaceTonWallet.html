@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.ReplaceTonWallet</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier">ReplaceTonWallet</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#defaultReplaceTonWallet"><span class="hs-identifier">defaultReplaceTonWallet</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.TonWalletOwnershipProof.html"><span class="hs-identifier">TD.Data.TonWalletOwnershipProof</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TonWalletOwnershipProof</span></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><span class="hs-comment">-- | Replaces the current TON wallet with another existing v6r2 wallet or changes private key of the current TON wallet; can be used only if getOption(&quot;can_use_ton_wallet&quot;). Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">data</span><span> </span><span id="ReplaceTonWallet"><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-var">ReplaceTonWallet</span></a></span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="ReplaceTonWallet"><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-var">ReplaceTonWallet</span></a></span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="password"><span class="annot"><span class="annottext">ReplaceTonWallet -&gt; Maybe Text
+</span><a href="TD.Query.ReplaceTonWallet.html#password"><span class="hs-identifier hs-var hs-var">password</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                          </span><span class="annot"><span class="hs-comment">-- ^ Password of the current user; pass an empty string unless receive an error with a message &quot;PASSWORD_MISSING&quot; for a passwordless request</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="anchor_public_key"><span class="annot"><span class="annottext">ReplaceTonWallet -&gt; Maybe ByteString
+</span><a href="TD.Query.ReplaceTonWallet.html#anchor_public_key"><span class="hs-identifier hs-var hs-var">anchor_public_key</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span>                                   </span><span class="annot"><span class="hs-comment">-- ^ Original public key of the new TON wallet</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="proof"><span class="annot"><span class="annottext">ReplaceTonWallet -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.ReplaceTonWallet.html#proof"><span class="hs-identifier hs-var hs-var">proof</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletOwnershipProof.html#TonWalletOwnershipProof"><span class="hs-identifier hs-type">TonWalletOwnershipProof.TonWalletOwnershipProof</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Proof of ownership of the new private key of the TON wallet; use getTonWalletOwnershipProofChallenge to get a challenge for the proof</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-20"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621680138505"><span id="local-6989586621680138514"><span class="annot"><span class="annottext">ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool
+(ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool)
+-&gt; (ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool)
+-&gt; Eq ReplaceTonWallet
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool
+== :: ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool
+$c/= :: ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool
+/= :: ReplaceTonWallet -&gt; ReplaceTonWallet -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621680138522"><span id="local-6989586621680138533"><span id="local-6989586621680138537"><span class="annot"><span class="annottext">Int -&gt; ReplaceTonWallet -&gt; ShowS
+[ReplaceTonWallet] -&gt; ShowS
+ReplaceTonWallet -&gt; String
+(Int -&gt; ReplaceTonWallet -&gt; ShowS)
+-&gt; (ReplaceTonWallet -&gt; String)
+-&gt; ([ReplaceTonWallet] -&gt; ShowS)
+-&gt; Show ReplaceTonWallet
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; ReplaceTonWallet -&gt; ShowS
+showsPrec :: Int -&gt; ReplaceTonWallet -&gt; ShowS
+$cshow :: ReplaceTonWallet -&gt; String
+show :: ReplaceTonWallet -&gt; String
+$cshowList :: [ReplaceTonWallet] -&gt; ShowS
+showList :: [ReplaceTonWallet] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-23"></span><span>  </span><span id="local-6989586621680138555"><span class="annot"><span class="annottext">shortShow :: ReplaceTonWallet -&gt; String
+</span><a href="#local-6989586621680138555"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">password :: ReplaceTonWallet -&gt; Maybe Text
+</span><a href="TD.Query.ReplaceTonWallet.html#password"><span class="hs-identifier hs-var">password</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138557"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680138557"><span class="hs-identifier hs-var">password_</span></a></span></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">anchor_public_key :: ReplaceTonWallet -&gt; Maybe ByteString
+</span><a href="TD.Query.ReplaceTonWallet.html#anchor_public_key"><span class="hs-identifier hs-var">anchor_public_key</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138558"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621680138558"><span class="hs-identifier hs-var">anchor_public_key_</span></a></span></span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: ReplaceTonWallet -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.ReplaceTonWallet.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138559"><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680138559"><span class="hs-identifier hs-var">proof_</span></a></span></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;ReplaceTonWallet&quot;</span></span><span>
+</span><span id="line-30"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-31"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;password&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680138557"><span class="hs-identifier hs-var">password_</span></a></span><span>
+</span><span id="line-32"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;anchor_public_key&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621680138558"><span class="hs-identifier hs-var">anchor_public_key_</span></a></span><span>
+</span><span id="line-33"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;proof&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe TonWalletOwnershipProof -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680138559"><span class="hs-identifier hs-var">proof_</span></a></span><span>
+</span><span id="line-34"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621680138564"><span id="local-6989586621680138568"><span id="local-6989586621680138571"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621680138600"><span class="annot"><span class="annottext">toJSON :: ReplaceTonWallet -&gt; Value
+</span><a href="#local-6989586621680138600"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-38"></span><span>    </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span><span>
+</span><span id="line-39"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">password :: ReplaceTonWallet -&gt; Maybe Text
+</span><a href="TD.Query.ReplaceTonWallet.html#password"><span class="hs-identifier hs-var">password</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138602"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680138602"><span class="hs-identifier hs-var">password_</span></a></span></span><span>
+</span><span id="line-40"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">anchor_public_key :: ReplaceTonWallet -&gt; Maybe ByteString
+</span><a href="TD.Query.ReplaceTonWallet.html#anchor_public_key"><span class="hs-identifier hs-var">anchor_public_key</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138603"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621680138603"><span class="hs-identifier hs-var">anchor_public_key_</span></a></span></span><span>
+</span><span id="line-41"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: ReplaceTonWallet -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.ReplaceTonWallet.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680138604"><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680138604"><span class="hs-identifier hs-var">proof_</span></a></span></span><span>
+</span><span id="line-42"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-44"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;replaceTonWallet&quot;</span></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;password&quot;</span></span><span>          </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680138602"><span class="hs-identifier hs-var">password_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;anchor_public_key&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Value) -&gt; Maybe ByteString -&gt; Maybe Value
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Value
+</span><a href="TD.Lib.Internal.html#writeBytes"><span class="hs-identifier hs-var">I.writeBytes</span></a></span><span>  </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621680138603"><span class="hs-identifier hs-var">anchor_public_key_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;proof&quot;</span></span><span>             </span><span class="annot"><span class="annottext">Key -&gt; Maybe TonWalletOwnershipProof -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680138604"><span class="hs-identifier hs-var">proof_</span></a></span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#defaultReplaceTonWallet"><span class="hs-identifier hs-type">defaultReplaceTonWallet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span><span>
+</span><span id="line-51"></span><span id="defaultReplaceTonWallet"><span class="annot"><span class="annottext">defaultReplaceTonWallet :: ReplaceTonWallet
+</span><a href="TD.Query.ReplaceTonWallet.html#defaultReplaceTonWallet"><span class="hs-identifier hs-var hs-var">defaultReplaceTonWallet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-52"></span><span>  </span><span class="annot"><a href="TD.Query.ReplaceTonWallet.html#ReplaceTonWallet"><span class="hs-identifier hs-type">ReplaceTonWallet</span></a></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">password :: Maybe Text
+</span><a href="TD.Query.ReplaceTonWallet.html#password"><span class="hs-identifier hs-var">password</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">anchor_public_key :: Maybe ByteString
+</span><a href="TD.Query.ReplaceTonWallet.html#anchor_public_key"><span class="hs-identifier hs-var">anchor_public_key</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.ReplaceTonWallet.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span></pre></body></html>

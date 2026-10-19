@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.25.0
+@version 2.1.26.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -149,6 +149,23 @@ instance GHC.Classes.Eq TD.Data.WebAppInfo.WebAppInfo
 instance TD.Lib.Internal.ShortShow TD.Data.WebAppInfo.WebAppInfo
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppInfo.WebAppInfo
 
+module TD.Data.WalletBotBalance
+data WalletBotBalance
+
+-- | Describes balance of the current user in the bot
+--   <a>https://t.me/walt</a>
+WalletBotBalance :: Maybe Bool -> Maybe Text -> WalletBotBalance
+
+-- | True, if the user has positive TON Gram balance
+[has_balance] :: WalletBotBalance -> Maybe Bool
+
+-- | The URL to open to launch the bot; may be empty if none
+[url] :: WalletBotBalance -> Maybe Text
+instance GHC.Show.Show TD.Data.WalletBotBalance.WalletBotBalance
+instance GHC.Classes.Eq TD.Data.WalletBotBalance.WalletBotBalance
+instance TD.Lib.Internal.ShortShow TD.Data.WalletBotBalance.WalletBotBalance
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WalletBotBalance.WalletBotBalance
+
 module TD.Data.VerificationStatus
 data VerificationStatus
 
@@ -192,11 +209,11 @@ module TD.Data.Usernames
 data Usernames
 
 -- | Describes usernames assigned to a user, a supergroup, or a channel
-Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Maybe [Text] -> Usernames
+Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Maybe [Text] -> Maybe Text -> Usernames
 
 -- | List of active usernames; the first one must be shown as the primary
 --   username. The order of active usernames can be changed with
---   reorderActiveUsernames, reorderBotActiveUsernames or
+--   reorderActiveUsernames, reorderBotActiveUsernames, or
 --   reorderSupergroupActiveUsernames
 [active_usernames] :: Usernames -> Maybe [Text]
 
@@ -213,6 +230,13 @@ Usernames :: Maybe [Text] -> Maybe [Text] -> Maybe Text -> Maybe [Text] -> Usern
 --   <a>https://fragment.com</a> and can be passed to
 --   getCollectibleItemInfo for more details
 [collectible_usernames] :: Usernames -> Maybe [Text]
+
+-- | Secondary non-collectible username. Currently, must be non-empty only
+--   for bot accounts. Can't be used in toggleBotUsernameIsActive; use
+--   addBotSecondaryUsername or deleteBotSecondaryUsername to edit it. If
+--   the username is disabled, then Telegram Premium subscription is
+--   required to re-enable it
+[secondary_username] :: Usernames -> Maybe Text
 instance GHC.Show.Show TD.Data.Usernames.Usernames
 instance GHC.Classes.Eq TD.Data.Usernames.Usernames
 instance TD.Lib.Internal.ShortShow TD.Data.Usernames.Usernames
@@ -297,6 +321,38 @@ instance GHC.Show.Show TD.Data.UserType.UserType
 instance GHC.Classes.Eq TD.Data.UserType.UserType
 instance TD.Lib.Internal.ShortShow TD.Data.UserType.UserType
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserType.UserType
+
+module TD.Data.UserTonWalletAddress
+data UserTonWalletAddress
+
+-- | Contains TON wallet address of a user
+UserTonWalletAddress :: Maybe Int -> Maybe Text -> Maybe ByteString -> UserTonWalletAddress
+
+-- | Identifier of the user; 0 if unknown
+[user_id] :: UserTonWalletAddress -> Maybe Int
+
+-- | Address of the user's wallet in the TON blockchain
+[wallet_address] :: UserTonWalletAddress -> Maybe Text
+
+-- | Public key of the user
+[public_key] :: UserTonWalletAddress -> Maybe ByteString
+instance GHC.Show.Show TD.Data.UserTonWalletAddress.UserTonWalletAddress
+instance GHC.Classes.Eq TD.Data.UserTonWalletAddress.UserTonWalletAddress
+instance TD.Lib.Internal.ShortShow TD.Data.UserTonWalletAddress.UserTonWalletAddress
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTonWalletAddress.UserTonWalletAddress
+
+module TD.Data.UserTonWalletAddresses
+data UserTonWalletAddresses
+
+-- | Represents a list of TON wallet addresses of users
+UserTonWalletAddresses :: Maybe [UserTonWalletAddress] -> UserTonWalletAddresses
+
+-- | A list of TON wallet addresses
+[addresses] :: UserTonWalletAddresses -> Maybe [UserTonWalletAddress]
+instance GHC.Show.Show TD.Data.UserTonWalletAddresses.UserTonWalletAddresses
+instance GHC.Classes.Eq TD.Data.UserTonWalletAddresses.UserTonWalletAddresses
+instance TD.Lib.Internal.ShortShow TD.Data.UserTonWalletAddresses.UserTonWalletAddresses
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.UserTonWalletAddresses.UserTonWalletAddresses
 
 module TD.Data.UserStatus
 
@@ -399,7 +455,7 @@ UserPrivacySettingRuleAllowUsers :: Maybe [Int] -> UserPrivacySettingRule
 [user_ids] :: UserPrivacySettingRule -> Maybe [Int]
 
 -- | A rule to allow all members of certain specified basic groups and
---   supergroups to doing something
+--   supergroups to do something
 UserPrivacySettingRuleAllowChatMembers :: Maybe [Int] -> UserPrivacySettingRule
 
 -- | The chat identifiers, total number of chats in all rules must not
@@ -712,7 +768,7 @@ UpgradedGiftBackdropCount :: Maybe UpgradedGiftBackdrop -> Maybe Int -> Upgraded
 -- | The backdrop
 [backdrop] :: UpgradedGiftBackdropCount -> Maybe UpgradedGiftBackdrop
 
--- | Total number of gifts with the symbol
+-- | Total number of gifts with the backdrop
 [total_count] :: UpgradedGiftBackdropCount -> Maybe Int
 instance GHC.Show.Show TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
 instance GHC.Classes.Eq TD.Data.UpgradedGiftBackdropCount.UpgradedGiftBackdropCount
@@ -803,6 +859,340 @@ instance GHC.Classes.Eq TD.Data.TopChatCategory.TopChatCategory
 instance TD.Lib.Internal.ShortShow TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TopChatCategory.TopChatCategory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TopChatCategory.TopChatCategory
+
+module TD.Data.TonWalletTransferReceiver
+
+-- | Represents expected receiver of a TON wallet transfer
+data TonWalletTransferReceiver
+
+-- | The receiver is specified by its username
+TonWalletTransferReceiverUser :: Maybe Text -> TonWalletTransferReceiver
+
+-- | Username of the user. Use searchPublicChat to find the user, check
+--   that it is a regular user, and then use createUserTonWallet to get
+--   information about the user's TON wallet
+[username] :: TonWalletTransferReceiver -> Maybe Text
+
+-- | The receiver is specified by its address
+TonWalletTransferReceiverAddress :: Maybe Text -> TonWalletTransferReceiver
+
+-- | Address of the receiver. Use getAddressTonWallet to get information
+--   about the user's TON wallet
+[address] :: TonWalletTransferReceiver -> Maybe Text
+instance GHC.Show.Show TD.Data.TonWalletTransferReceiver.TonWalletTransferReceiver
+instance GHC.Classes.Eq TD.Data.TonWalletTransferReceiver.TonWalletTransferReceiver
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransferReceiver.TonWalletTransferReceiver
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransferReceiver.TonWalletTransferReceiver
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TonWalletTransferReceiver.TonWalletTransferReceiver
+
+module TD.Data.TonWalletTransactionState
+
+-- | Describes state of a transaction with a TON wallet
+data TonWalletTransactionState
+
+-- | The transaction succeeded
+TonWalletTransactionStateSucceeded :: Maybe Text -> TonWalletTransactionState
+
+-- | Hash of the transaction
+[tx_hash] :: TonWalletTransactionState -> Maybe Text
+
+-- | The transaction failed
+TonWalletTransactionStateFailed :: TonWalletTransactionState
+instance GHC.Show.Show TD.Data.TonWalletTransactionState.TonWalletTransactionState
+instance GHC.Classes.Eq TD.Data.TonWalletTransactionState.TonWalletTransactionState
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransactionState.TonWalletTransactionState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransactionState.TonWalletTransactionState
+
+module TD.Data.TonWalletState
+data TonWalletState
+
+-- | Describes state of the wallet of the current user in the TON
+--   blockchain
+TonWalletState :: Maybe Text -> Maybe ByteString -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> TonWalletState
+
+-- | Address of the wallet; may be empty if none
+[address] :: TonWalletState -> Maybe Text
+
+-- | Public key of the wallet; may be empty if none
+[public_key] :: TonWalletState -> Maybe ByteString
+
+-- | The total amount of owned TON Grams, in the smallest units of the
+--   cryptocurrency
+[gram_amount] :: TonWalletState -> Maybe Int
+
+-- | True, if the wallet is being created
+[is_being_created] :: TonWalletState -> Maybe Bool
+
+-- | True, if backup for the wallet key is enabled
+[is_backup_enabled] :: TonWalletState -> Maybe Bool
+
+-- | True, if the user can enable backup for the wallet key
+[can_enable_backup] :: TonWalletState -> Maybe Bool
+
+-- | True, if the wallet key can be exported using getTonWalletSecretPhrase
+[can_export_phrase] :: TonWalletState -> Maybe Bool
+instance GHC.Show.Show TD.Data.TonWalletState.TonWalletState
+instance GHC.Classes.Eq TD.Data.TonWalletState.TonWalletState
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletState.TonWalletState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletState.TonWalletState
+
+module TD.Data.TonWalletOwnershipProofChallenge
+data TonWalletOwnershipProofChallenge
+
+-- | Represents a challenge for TON wallet ownership proof
+TonWalletOwnershipProofChallenge :: Maybe Text -> Maybe Text -> TonWalletOwnershipProofChallenge
+
+-- | Payload of the challenge
+[payload] :: TonWalletOwnershipProofChallenge -> Maybe Text
+
+-- | Domain of the proof requester
+[domain] :: TonWalletOwnershipProofChallenge -> Maybe Text
+instance GHC.Show.Show TD.Data.TonWalletOwnershipProofChallenge.TonWalletOwnershipProofChallenge
+instance GHC.Classes.Eq TD.Data.TonWalletOwnershipProofChallenge.TonWalletOwnershipProofChallenge
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletOwnershipProofChallenge.TonWalletOwnershipProofChallenge
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletOwnershipProofChallenge.TonWalletOwnershipProofChallenge
+
+module TD.Data.TonWalletOwnershipProof
+data TonWalletOwnershipProof
+
+-- | Represents a proof of TON wallet ownership
+TonWalletOwnershipProof :: Maybe ByteString -> Maybe Int -> Maybe ByteString -> TonWalletOwnershipProof
+
+-- | Public key of the wallet
+[public_key] :: TonWalletOwnershipProof -> Maybe ByteString
+
+-- | The current UNIX timestamp which was used to create the proof
+[timestamp] :: TonWalletOwnershipProof -> Maybe Int
+
+-- | The signature proving the ownership
+[signature] :: TonWalletOwnershipProof -> Maybe ByteString
+defaultTonWalletOwnershipProof :: TonWalletOwnershipProof
+instance GHC.Show.Show TD.Data.TonWalletOwnershipProof.TonWalletOwnershipProof
+instance GHC.Classes.Eq TD.Data.TonWalletOwnershipProof.TonWalletOwnershipProof
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletOwnershipProof.TonWalletOwnershipProof
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletOwnershipProof.TonWalletOwnershipProof
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TonWalletOwnershipProof.TonWalletOwnershipProof
+
+module TD.Data.TonWalletGaslessTransfersInfo
+data TonWalletGaslessTransfersInfo
+
+-- | Represents state of gasless transfers for the current user
+TonWalletGaslessTransfersInfo :: Maybe Int -> Maybe Int -> Maybe Text -> TonWalletGaslessTransfersInfo
+
+-- | Number of left gasless transfers. The daily available number of
+--   gasless transfers is available as
+--   getOption("ton_wallet_gasless_transfer_daily_count_max")
+[left_count] :: TonWalletGaslessTransfersInfo -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the number of left transfers will
+--   be reset; 0 if never
+[reset_date] :: TonWalletGaslessTransfersInfo -> Maybe Int
+
+-- | Address of the relayer for gasless transfers; may be empty if
+--   unavailable
+[relayer_address] :: TonWalletGaslessTransfersInfo -> Maybe Text
+instance GHC.Show.Show TD.Data.TonWalletGaslessTransfersInfo.TonWalletGaslessTransfersInfo
+instance GHC.Classes.Eq TD.Data.TonWalletGaslessTransfersInfo.TonWalletGaslessTransfersInfo
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletGaslessTransfersInfo.TonWalletGaslessTransfersInfo
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletGaslessTransfersInfo.TonWalletGaslessTransfersInfo
+
+module TD.Data.TonNftAttribute
+data TonNftAttribute
+
+-- | Represents an attribute of an NFT in the TON blockchain
+TonNftAttribute :: Maybe Text -> Maybe Text -> TonNftAttribute
+
+-- | Trait type
+[trait_type] :: TonNftAttribute -> Maybe Text
+
+-- | Value of the attribute
+[value] :: TonNftAttribute -> Maybe Text
+instance GHC.Show.Show TD.Data.TonNftAttribute.TonNftAttribute
+instance GHC.Classes.Eq TD.Data.TonNftAttribute.TonNftAttribute
+instance TD.Lib.Internal.ShortShow TD.Data.TonNftAttribute.TonNftAttribute
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonNftAttribute.TonNftAttribute
+
+module TD.Data.TonConnectSessionState
+
+-- | Describes state of a TON Connect session
+data TonConnectSessionState
+
+-- | The session is pending
+TonConnectSessionStatePending :: TonConnectSessionState
+
+-- | The session is ready
+TonConnectSessionStateReady :: TonConnectSessionState
+
+-- | The session is being closed
+TonConnectSessionStateClosing :: TonConnectSessionState
+
+-- | The session is closed
+TonConnectSessionStateClosed :: TonConnectSessionState
+instance GHC.Show.Show TD.Data.TonConnectSessionState.TonConnectSessionState
+instance GHC.Classes.Eq TD.Data.TonConnectSessionState.TonConnectSessionState
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectSessionState.TonConnectSessionState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectSessionState.TonConnectSessionState
+
+module TD.Data.TonConnectSessionEventId
+data TonConnectSessionEventId
+
+-- | Represents identifier of an event in a TON Connect session
+TonConnectSessionEventId :: Maybe Int -> TonConnectSessionEventId
+
+-- | The event identifier
+[event_id] :: TonConnectSessionEventId -> Maybe Int
+instance GHC.Show.Show TD.Data.TonConnectSessionEventId.TonConnectSessionEventId
+instance GHC.Classes.Eq TD.Data.TonConnectSessionEventId.TonConnectSessionEventId
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectSessionEventId.TonConnectSessionEventId
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectSessionEventId.TonConnectSessionEventId
+
+module TD.Data.TonConnectRequestState
+
+-- | Describes state of a request received from a dApp through TON Connect
+data TonConnectRequestState
+
+-- | The request must be accepted or rejected if it isn't expired yet
+TonConnectRequestStatePending :: Maybe Int -> TonConnectRequestState
+
+-- | Point in time (Unix timestamp) when the request will expire or has
+--   expired
+[expiration_date] :: TonConnectRequestState -> Maybe Int
+
+-- | The request was accepted
+TonConnectRequestStateAccepted :: TonConnectRequestState
+
+-- | The request was rejected
+TonConnectRequestStateRejected :: TonConnectRequestState
+instance GHC.Show.Show TD.Data.TonConnectRequestState.TonConnectRequestState
+instance GHC.Classes.Eq TD.Data.TonConnectRequestState.TonConnectRequestState
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectRequestState.TonConnectRequestState
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectRequestState.TonConnectRequestState
+
+module TD.Data.TonConnectRequest
+data TonConnectRequest
+
+-- | Represents a pending TON Connect request
+TonConnectRequest :: Maybe Int -> Maybe Int -> Maybe ByteString -> Maybe Int -> Maybe Text -> Maybe Text -> TonConnectRequest
+
+-- | Unique identifier of the session
+[session_id] :: TonConnectRequest -> Maybe Int
+
+-- | Unique identifier of the service message in the chat 777000 with the
+--   request
+[message_id] :: TonConnectRequest -> Maybe Int
+
+-- | Body of the request
+[body] :: TonConnectRequest -> Maybe ByteString
+
+-- | Point in time (Unix timestamp) when the request will expire; 0 if
+--   never
+[expiration_date] :: TonConnectRequest -> Maybe Int
+
+-- | Topic of the request; may be empty if none
+[topic] :: TonConnectRequest -> Maybe Text
+
+-- | Identifier to trace the request; may be empty if none
+[trace_id] :: TonConnectRequest -> Maybe Text
+instance GHC.Show.Show TD.Data.TonConnectRequest.TonConnectRequest
+instance GHC.Classes.Eq TD.Data.TonConnectRequest.TonConnectRequest
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectRequest.TonConnectRequest
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectRequest.TonConnectRequest
+
+module TD.Data.TonConnectConnectItem
+
+-- | Represents a data item to share with a dApp
+data TonConnectConnectItem
+
+-- | Address of the wallet
+TonConnectConnectItemAddress :: Maybe Text -> TonConnectConnectItem
+
+-- | Stringified TON network global_id (e.g. "-239" for mainnet); may be
+--   empty
+[network] :: TonConnectConnectItem -> Maybe Text
+
+-- | Proof of the wallet ownership
+TonConnectConnectItemProof :: Maybe Text -> TonConnectConnectItem
+
+-- | Payload to be used for the proof (e.g. nonce + expiration timestamp)
+[payload] :: TonConnectConnectItem -> Maybe Text
+instance GHC.Show.Show TD.Data.TonConnectConnectItem.TonConnectConnectItem
+instance GHC.Classes.Eq TD.Data.TonConnectConnectItem.TonConnectConnectItem
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectConnectItem.TonConnectConnectItem
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectConnectItem.TonConnectConnectItem
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TonConnectConnectItem.TonConnectConnectItem
+
+module TD.Data.TonConnectConnectRequest
+data TonConnectConnectRequest
+
+-- | Contains information about a request to connect the user's TON wallet
+--   to a dApp using TON Connect
+TonConnectConnectRequest :: Maybe Text -> Maybe [TonConnectConnectItem] -> TonConnectConnectRequest
+
+-- | URL of the manifest of the dApp
+[manifest_url] :: TonConnectConnectRequest -> Maybe Text
+
+-- | Items requested from the wallet
+[items] :: TonConnectConnectRequest -> Maybe [TonConnectConnectItem]
+defaultTonConnectConnectRequest :: TonConnectConnectRequest
+instance GHC.Show.Show TD.Data.TonConnectConnectRequest.TonConnectConnectRequest
+instance GHC.Classes.Eq TD.Data.TonConnectConnectRequest.TonConnectConnectRequest
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectConnectRequest.TonConnectConnectRequest
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectConnectRequest.TonConnectConnectRequest
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TonConnectConnectRequest.TonConnectConnectRequest
+
+module TD.Data.TonConnectChallenge
+data TonConnectChallenge
+
+-- | Represents a TON Connect challenge
+TonConnectChallenge :: Maybe ByteString -> Maybe Int -> TonConnectChallenge
+
+-- | 104-byte challenge
+[challenge] :: TonConnectChallenge -> Maybe ByteString
+
+-- | Unique identifier of the first outgoing event
+[event_id] :: TonConnectChallenge -> Maybe Int
+instance GHC.Show.Show TD.Data.TonConnectChallenge.TonConnectChallenge
+instance GHC.Classes.Eq TD.Data.TonConnectChallenge.TonConnectChallenge
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectChallenge.TonConnectChallenge
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectChallenge.TonConnectChallenge
+
+module TD.Data.TonCenterStreamingApiUrl
+data TonCenterStreamingApiUrl
+
+-- | Contains an HTTP URL for TON Center Streaming API
+TonCenterStreamingApiUrl :: Maybe Text -> Maybe Int -> TonCenterStreamingApiUrl
+
+-- | The URL
+[url] :: TonCenterStreamingApiUrl -> Maybe Text
+
+-- | Time after which the URL expires
+[expires_in] :: TonCenterStreamingApiUrl -> Maybe Int
+instance GHC.Show.Show TD.Data.TonCenterStreamingApiUrl.TonCenterStreamingApiUrl
+instance GHC.Classes.Eq TD.Data.TonCenterStreamingApiUrl.TonCenterStreamingApiUrl
+instance TD.Lib.Internal.ShortShow TD.Data.TonCenterStreamingApiUrl.TonCenterStreamingApiUrl
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonCenterStreamingApiUrl.TonCenterStreamingApiUrl
+
+module TD.Data.TonCenterApiRequestType
+
+-- | Describes type of a request to TON Center API
+data TonCenterApiRequestType
+
+-- | A GET request
+TonCenterApiRequestTypeGet :: Maybe Text -> TonCenterApiRequestType
+
+-- | URL-encoded query of the request
+[query] :: TonCenterApiRequestType -> Maybe Text
+
+-- | A POST request
+TonCenterApiRequestTypePost :: Maybe Text -> TonCenterApiRequestType
+
+-- | Payload of the request
+[payload] :: TonCenterApiRequestType -> Maybe Text
+instance GHC.Show.Show TD.Data.TonCenterApiRequestType.TonCenterApiRequestType
+instance GHC.Classes.Eq TD.Data.TonCenterApiRequestType.TonCenterApiRequestType
+instance TD.Lib.Internal.ShortShow TD.Data.TonCenterApiRequestType.TonCenterApiRequestType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonCenterApiRequestType.TonCenterApiRequestType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.TonCenterApiRequestType.TonCenterApiRequestType
 
 module TD.Data.TimeZone
 data TimeZone
@@ -1782,7 +2172,7 @@ StarRevenueStatistics :: Maybe StatisticalGraph -> Maybe StarRevenueStatus -> Ma
 -- | Telegram Star revenue status
 [status] :: StarRevenueStatistics -> Maybe StarRevenueStatus
 
--- | Current conversion rate of a Telegram Star to USD
+-- | Current exchange rate of a Telegram Star to USD
 [usd_rate] :: StarRevenueStatistics -> Maybe Double
 instance GHC.Show.Show TD.Data.StarRevenueStatistics.StarRevenueStatistics
 instance GHC.Classes.Eq TD.Data.StarRevenueStatistics.StarRevenueStatistics
@@ -2729,7 +3119,7 @@ module TD.Data.SavedMessagesTopicType
 -- | Describes type of Saved Messages topic
 data SavedMessagesTopicType
 
--- | Topic containing messages sent by the current user of forwarded from
+-- | Topic containing messages sent by the current user or forwarded from
 --   an unknown chat
 SavedMessagesTopicTypeMyNotes :: SavedMessagesTopicType
 
@@ -3091,7 +3481,7 @@ ReadDatePrivacySettings :: Maybe Bool -> ReadDatePrivacySettings
 
 -- | True, if message read date is shown to other users in private chats.
 --   If false and the current user isn't a Telegram Premium user, then they
---   will not be able to see other's message read date
+--   will not be able to see others' message read date
 [show_read_date] :: ReadDatePrivacySettings -> Maybe Bool
 defaultReadDatePrivacySettings :: ReadDatePrivacySettings
 instance GHC.Show.Show TD.Data.ReadDatePrivacySettings.ReadDatePrivacySettings
@@ -3455,7 +3845,7 @@ data PremiumStoryFeature
 --   non-Premium contacts, supergroups, and channels
 PremiumStoryFeaturePriorityOrder :: PremiumStoryFeature
 
--- | The ability to hide the fact that the user viewed other's stories
+-- | The ability to hide the fact that the user viewed others' stories
 PremiumStoryFeatureStealthMode :: PremiumStoryFeature
 
 -- | The ability to check who opened the current user's stories after they
@@ -3465,7 +3855,7 @@ PremiumStoryFeaturePermanentViewsHistory :: PremiumStoryFeature
 -- | The ability to set custom expiration duration for stories
 PremiumStoryFeatureCustomExpirationDuration :: PremiumStoryFeature
 
--- | The ability to save other's unprotected stories
+-- | The ability to save others' unprotected stories
 PremiumStoryFeatureSaveStories :: PremiumStoryFeature
 
 -- | The ability to use links and formatting in story caption, and use
@@ -3668,7 +4058,7 @@ PremiumFeatureAnimatedProfilePhoto :: PremiumFeature
 -- | The ability to set a custom emoji as a forum topic icon
 PremiumFeatureForumTopicIcon :: PremiumFeature
 
--- | Allowed to set a premium application icons
+-- | Allowed to set premium application icons
 PremiumFeatureAppIcons :: PremiumFeature
 
 -- | Allowed to translate chat messages real-time
@@ -4188,7 +4578,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.PaidReactionType.PaidReactionTyp
 
 module TD.Data.PageBlockVerticalAlignment
 
--- | Describes a Vertical alignment of a table cell content
+-- | Describes a vertical alignment of a table cell content
 data PageBlockVerticalAlignment
 
 -- | The content must be top-aligned
@@ -4287,6 +4677,174 @@ instance GHC.Classes.Eq TD.Data.OptionValue.OptionValue
 instance TD.Lib.Internal.ShortShow TD.Data.OptionValue.OptionValue
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OptionValue.OptionValue
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.OptionValue.OptionValue
+
+module TD.Data.OnRampProvider
+data OnRampProvider
+
+-- | Describes an on-ramp provider
+OnRampProvider :: Maybe Text -> Maybe Text -> Maybe [Text] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> OnRampProvider
+
+-- | Unique identifier of the provider
+[_id] :: OnRampProvider -> Maybe Text
+
+-- | Name of the provider
+[name] :: OnRampProvider -> Maybe Text
+
+-- | List of cryptocurrencies supported by the provider
+[cryptocurrencies] :: OnRampProvider -> Maybe [Text]
+
+-- | True, if the provider supports base currencies and can be used in the
+--   method getOnRampProviderBaseCurrencies
+[supports_base_currencies] :: OnRampProvider -> Maybe Bool
+
+-- | True, if the provider supports limits retrieval using the method
+--   getOnRampPaymentLimits
+[supports_limits] :: OnRampProvider -> Maybe Bool
+
+-- | True, if the provider supports quote retrieval using the method
+--   getOnRampPaymentQuote
+[supports_quote] :: OnRampProvider -> Maybe Bool
+instance GHC.Show.Show TD.Data.OnRampProvider.OnRampProvider
+instance GHC.Classes.Eq TD.Data.OnRampProvider.OnRampProvider
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampProvider.OnRampProvider
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampProvider.OnRampProvider
+
+module TD.Data.OnRampProviders
+data OnRampProviders
+
+-- | Represents a list of on-ramp providers
+OnRampProviders :: Maybe [OnRampProvider] -> OnRampProviders
+
+-- | A list of providers
+[providers] :: OnRampProviders -> Maybe [OnRampProvider]
+instance GHC.Show.Show TD.Data.OnRampProviders.OnRampProviders
+instance GHC.Classes.Eq TD.Data.OnRampProviders.OnRampProviders
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampProviders.OnRampProviders
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampProviders.OnRampProviders
+
+module TD.Data.OnRampPaymentSession
+data OnRampPaymentSession
+
+-- | Describes a session for an on-ramp purchase
+OnRampPaymentSession :: Maybe Text -> Maybe Int -> Maybe Text -> OnRampPaymentSession
+
+-- | Identifier of the session
+[session_id] :: OnRampPaymentSession -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the session will expire
+[expiration_date] :: OnRampPaymentSession -> Maybe Int
+
+-- | HTTPS URL to be opened in a WebView to complete the purchase
+[url] :: OnRampPaymentSession -> Maybe Text
+instance GHC.Show.Show TD.Data.OnRampPaymentSession.OnRampPaymentSession
+instance GHC.Classes.Eq TD.Data.OnRampPaymentSession.OnRampPaymentSession
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampPaymentSession.OnRampPaymentSession
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampPaymentSession.OnRampPaymentSession
+
+module TD.Data.OnRampPaymentQuote
+data OnRampPaymentQuote
+
+-- | Describes a quote for an on-ramp purchase
+OnRampPaymentQuote :: Maybe Text -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> OnRampPaymentQuote
+
+-- | The payment method to be used
+[payment_method] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the quote will expire
+[expiration_date] :: OnRampPaymentQuote -> Maybe Int
+
+-- | Paid amount of the base currency
+[base_currency_amount] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Purchased amount of the cryptocurrency
+[cryptocurrency_amount] :: OnRampPaymentQuote -> Maybe Text
+
+-- | The price of the cryptocurrency
+[cryptocurrency_price] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Fee amount
+[fee_amount] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Extra fee amount
+[extra_fee_amount] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Network fee amount
+[network_fee_amount] :: OnRampPaymentQuote -> Maybe Text
+
+-- | Total paid amount
+[total_amount] :: OnRampPaymentQuote -> Maybe Text
+instance GHC.Show.Show TD.Data.OnRampPaymentQuote.OnRampPaymentQuote
+instance GHC.Classes.Eq TD.Data.OnRampPaymentQuote.OnRampPaymentQuote
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampPaymentQuote.OnRampPaymentQuote
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampPaymentQuote.OnRampPaymentQuote
+
+module TD.Data.OnRampPaymentMethod
+data OnRampPaymentMethod
+
+-- | Describes a payment method of an on-ramp provider
+OnRampPaymentMethod :: Maybe Text -> Maybe Bool -> OnRampPaymentMethod
+
+-- | Name of the method
+[name] :: OnRampPaymentMethod -> Maybe Text
+
+-- | True, if the method is available to the user
+[is_available] :: OnRampPaymentMethod -> Maybe Bool
+instance GHC.Show.Show TD.Data.OnRampPaymentMethod.OnRampPaymentMethod
+instance GHC.Classes.Eq TD.Data.OnRampPaymentMethod.OnRampPaymentMethod
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampPaymentMethod.OnRampPaymentMethod
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampPaymentMethod.OnRampPaymentMethod
+
+module TD.Data.OnRampPaymentLimits
+data OnRampPaymentLimits
+
+-- | Describes limits for an on-ramp purchase
+OnRampPaymentLimits :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> OnRampPaymentLimits
+
+-- | The payment method to be used
+[payment_method] :: OnRampPaymentLimits -> Maybe Text
+
+-- | The minimum allowed amount of the base currency
+[base_currency_min_amount] :: OnRampPaymentLimits -> Maybe Text
+
+-- | The maximum allowed amount of the base currency
+[base_currency_max_amount] :: OnRampPaymentLimits -> Maybe Text
+
+-- | The minimum allowed amount of the bought cryptocurrency
+[cryptocurrency_min_amount] :: OnRampPaymentLimits -> Maybe Text
+
+-- | The maximum allowed amount of the bought cryptocurrency
+[cryptocurrency_max_amount] :: OnRampPaymentLimits -> Maybe Text
+instance GHC.Show.Show TD.Data.OnRampPaymentLimits.OnRampPaymentLimits
+instance GHC.Classes.Eq TD.Data.OnRampPaymentLimits.OnRampPaymentLimits
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampPaymentLimits.OnRampPaymentLimits
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampPaymentLimits.OnRampPaymentLimits
+
+module TD.Data.OnRampPaymentAvailability
+data OnRampPaymentAvailability
+
+-- | Describes availability of cryptocurrency purchase through an on-ramp
+--   provider
+OnRampPaymentAvailability :: Maybe Bool -> Maybe Bool -> Maybe [OnRampPaymentMethod] -> Maybe Text -> Maybe Text -> OnRampPaymentAvailability
+
+-- | True, if the current user can use the provider
+[is_allowed] :: OnRampPaymentAvailability -> Maybe Bool
+
+-- | True, if the current user can purchase through the provider
+[is_purchase_allowed] :: OnRampPaymentAvailability -> Maybe Bool
+
+-- | The list of available payment methods
+[methods] :: OnRampPaymentAvailability -> Maybe [OnRampPaymentMethod]
+
+-- | A two-letter ISO 3166-1 alpha-2 country code of the current user's
+--   country
+[country_code] :: OnRampPaymentAvailability -> Maybe Text
+
+-- | Code of the state of the current user; may be empty if unknown
+[state] :: OnRampPaymentAvailability -> Maybe Text
+instance GHC.Show.Show TD.Data.OnRampPaymentAvailability.OnRampPaymentAvailability
+instance GHC.Classes.Eq TD.Data.OnRampPaymentAvailability.OnRampPaymentAvailability
+instance TD.Lib.Internal.ShortShow TD.Data.OnRampPaymentAvailability.OnRampPaymentAvailability
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.OnRampPaymentAvailability.OnRampPaymentAvailability
 
 module TD.Data.Ok
 data Ok
@@ -5041,7 +5599,7 @@ data MessageProperties
 
 -- | Contains properties of a message and describes actions that can be
 --   done with the message right now
-MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
+MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe [Int] -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageProperties
 
 -- | True, if an offer can be added to the message using addOffer
 [can_add_offer] :: MessageProperties -> Maybe Bool
@@ -5078,7 +5636,7 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 
 -- | True, if the message can be edited using the methods editMessageText,
 --   editMessageCaption, or editMessageReplyMarkup. For live location,
---   poll, and checklist messages this fields shows whether
+--   poll, and checklist messages this field shows whether
 --   editMessageLiveLocation, stopPoll, or editMessageChecklist
 --   respectively can be used with this message
 [can_be_edited] :: MessageProperties -> Maybe Bool
@@ -5136,7 +5694,7 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 [can_get_link] :: MessageProperties -> Maybe Bool
 
 -- | True, if media timestamp links can be generated for media timestamp
---   entities in the message text, caption or link preview description
+--   entities in the message text, caption, or link preview description
 --   using getMessageLink
 [can_get_media_timestamp_links] :: MessageProperties -> Maybe Bool
 
@@ -5186,6 +5744,9 @@ MessageProperties :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> May
 -- | True, if fact check for the message can be changed through
 --   setMessageFactCheck
 [can_set_fact_check] :: MessageProperties -> Maybe Bool
+
+-- | Identifiers of custom emoji used in the message
+[custom_emoji_ids] :: MessageProperties -> Maybe [Int]
 
 -- | True, if content of the message can't be saved locally, because it is
 --   protected by the current user; if true, then can_be_saved is false
@@ -5664,7 +6225,7 @@ StoryAreaTypeMessage :: Maybe Int -> Maybe Int -> StoryAreaType
 -- | Identifier of the message
 [message_id] :: StoryAreaType -> Maybe Int
 
--- | An area pointing to a HTTP or tg:// link
+-- | An area pointing to an HTTP or tg:// link
 StoryAreaTypeLink :: Maybe Text -> StoryAreaType
 
 -- | HTTP or tg:// URL to be opened when the area is clicked
@@ -5757,7 +6318,7 @@ data LiveStoryDonors
 --   messages and reactions in a live story
 LiveStoryDonors :: Maybe Int -> Maybe [PaidReactor] -> LiveStoryDonors
 
--- | Total amount of spend Telegram Stars
+-- | Total amount of spent Telegram Stars
 [total_star_count] :: LiveStoryDonors -> Maybe Int
 
 -- | List of top donors in the live story
@@ -6315,9 +6876,9 @@ MessageSendOptions :: Maybe InputSuggestedPostInfo -> Maybe Bool -> Maybe Bool -
 --   messages
 [paid_message_star_count] :: MessageSendOptions -> Maybe Int
 
--- | Pass true if the user explicitly chosen a sticker or a custom emoji
---   from an installed sticker set; applicable only to sendMessage and
---   sendMessageAlbum
+-- | Pass true if the user has explicitly chosen a sticker or a custom
+--   emoji from an installed sticker set; applicable only to sendMessage
+--   and sendMessageAlbum
 [update_order_of_installed_sticker_sets] :: MessageSendOptions -> Maybe Bool
 
 -- | Message scheduling state; pass null to send message immediately.
@@ -6363,7 +6924,7 @@ InputStoryAreaTypeLocation :: Maybe Location -> Maybe LocationAddress -> InputSt
 --   getOption("venue_search_bot_username")
 InputStoryAreaTypeFoundVenue :: Maybe Int -> Maybe Text -> InputStoryAreaType
 
--- | Identifier of the inline query, used to found the venue
+-- | Identifier of the inline query, used to find the venue
 [query_id] :: InputStoryAreaType -> Maybe Int
 
 -- | Identifier of the inline query result
@@ -6402,7 +6963,7 @@ InputStoryAreaTypeMessage :: Maybe Int -> Maybe Int -> InputStoryAreaType
 --   is suitable
 [message_id] :: InputStoryAreaType -> Maybe Int
 
--- | An area pointing to a HTTP or tg:// link
+-- | An area pointing to an HTTP or tg:// link
 InputStoryAreaTypeLink :: Maybe Text -> InputStoryAreaType
 
 -- | HTTP or tg:// URL to be opened when the area is clicked
@@ -6768,7 +7329,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.NewSticker.NewSticker
 module TD.Data.InputVoiceNote
 data InputVoiceNote
 
--- | A video note to be sent
+-- | A voice note to be sent
 InputVoiceNote :: Maybe InputFile -> Maybe Int -> Maybe ByteString -> InputVoiceNote
 
 -- | Voice note file to be sent. The voice note must be encoded with the
@@ -7615,7 +8176,7 @@ GroupCallRecentSpeaker :: Maybe MessageSender -> Maybe Bool -> GroupCallRecentSp
 -- | Group call participant identifier
 [participant_id] :: GroupCallRecentSpeaker -> Maybe MessageSender
 
--- | True, is the user has spoken recently
+-- | True, if the user has spoken recently
 [is_speaking] :: GroupCallRecentSpeaker -> Maybe Bool
 instance GHC.Show.Show TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
 instance GHC.Classes.Eq TD.Data.GroupCallRecentSpeaker.GroupCallRecentSpeaker
@@ -7759,7 +8320,7 @@ GroupCallMessageLevel :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> May
 -- | The second color used to show the message text in the RGB format
 [second_color] :: GroupCallMessageLevel -> Maybe Int
 
--- | Background color for the message the RGB format
+-- | Background color for the message in the RGB format
 [background_color] :: GroupCallMessageLevel -> Maybe Int
 instance GHC.Show.Show TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
 instance GHC.Classes.Eq TD.Data.GroupCallMessageLevel.GroupCallMessageLevel
@@ -7996,7 +8557,7 @@ GramRevenueStatistics :: Maybe StatisticalGraph -> Maybe GramRevenueStatus -> Ma
 -- | Amount of earned revenue
 [status] :: GramRevenueStatistics -> Maybe GramRevenueStatus
 
--- | Current conversion rate of nanogram to USD cents
+-- | Current exchange rate of nanogram to USD cents
 [usd_rate] :: GramRevenueStatistics -> Maybe Double
 instance GHC.Show.Show TD.Data.GramRevenueStatistics.GramRevenueStatistics
 instance GHC.Classes.Eq TD.Data.GramRevenueStatistics.GramRevenueStatistics
@@ -8257,7 +8818,8 @@ UpgradedGiftOriginResale :: Maybe GiftResalePrice -> UpgradedGiftOrigin
 [price] :: UpgradedGiftOrigin -> Maybe GiftResalePrice
 
 -- | The gift was assigned from blockchain and isn't owned by the current
---   user. The gift can't be transferred, resold or withdrawn to blockchain
+--   user. The gift can't be transferred, resold, or withdrawn to
+--   blockchain
 UpgradedGiftOriginBlockchain :: UpgradedGiftOrigin
 
 -- | The sender or receiver of the message has paid for upgrade of the
@@ -9493,7 +10055,7 @@ Gift :: Maybe Int -> Maybe Int -> Maybe Sticker -> Maybe Int -> Maybe Int -> May
 --   not limited
 [overall_limits] :: Gift -> Maybe GiftPurchaseLimits
 
--- | Background of the gift
+-- | Background of the gift; may be null if the gift has no background
 [background] :: Gift -> Maybe GiftBackground
 
 -- | Point in time (Unix timestamp) when the gift was sent for the first
@@ -10557,6 +11119,302 @@ instance TD.Lib.Internal.ShortShow TD.Data.Document.Document
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Document.Document
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.Document.Document
 
+module TD.Data.TonNft
+data TonNft
+
+-- | Represents an NFT in the TON blockchain
+TonNft :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe PhotoSize -> Maybe PhotoSize -> Maybe Document -> Maybe Sticker -> Maybe [TonNftAttribute] -> Maybe JsonValue -> TonNft
+
+-- | Address of the collection to which the NFT belongs; may be empty if
+--   unknown
+[collection_address] :: TonNft -> Maybe Text
+
+-- | Address of the NFT
+[address] :: TonNft -> Maybe Text
+
+-- | Address of the owner of the NFT
+[owner_address] :: TonNft -> Maybe Text
+
+-- | Index of the NFT among all NFTs from the collection as a decimal
+--   number
+[index] :: TonNft -> Maybe Text
+
+-- | Name of the NFT
+[name] :: TonNft -> Maybe Text
+
+-- | Description of the NFT
+[description] :: TonNft -> Maybe Text
+
+-- | Image of the NFT; may be null if none
+[image] :: TonNft -> Maybe PhotoSize
+
+-- | Thumbnail of the NFT; may be null if none
+[thumbnail] :: TonNft -> Maybe PhotoSize
+
+-- | Content of the NFT; may be null if none
+[content] :: TonNft -> Maybe Document
+
+-- | Sticker of the NFT; may be null if none
+[sticker] :: TonNft -> Maybe Sticker
+
+-- | Attributes of the NFT
+[attributes] :: TonNft -> Maybe [TonNftAttribute]
+
+-- | Additional data about the NFT; may be null if none
+[extra] :: TonNft -> Maybe JsonValue
+instance GHC.Show.Show TD.Data.TonNft.TonNft
+instance GHC.Classes.Eq TD.Data.TonNft.TonNft
+instance TD.Lib.Internal.ShortShow TD.Data.TonNft.TonNft
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonNft.TonNft
+
+module TD.Data.TonWalletTransactionType
+
+-- | Describes type of transaction with a TON wallet
+data TonWalletTransactionType
+
+-- | The transaction is a deposit from an on-ramp provider
+TonWalletTransactionTypeOnRampDeposit :: Maybe Int -> Maybe Text -> TonWalletTransactionType
+
+-- | The amount of received cryptocurrency, in the smallest units of the
+--   cryptocurrency
+[amount] :: TonWalletTransactionType -> Maybe Int
+
+-- | Name of the on-ramp provider
+[provider_name] :: TonWalletTransactionType -> Maybe Text
+
+-- | A transfer of TON Grams to or from the wallet
+TonWalletTransactionTypeTransfer :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Bool -> TonWalletTransactionType
+
+-- | The amount of received cryptocurrency, in the smallest units of the
+--   cryptocurrency
+[amount] :: TonWalletTransactionType -> Maybe Int
+
+-- | True, if the fee was paid by Telegram
+[is_gasless] :: TonWalletTransactionType -> Maybe Bool
+
+-- | Comment added to the transaction
+[comment] :: TonWalletTransactionType -> Maybe Text
+
+-- | True, if the comment is encrypted and must be decrypted using the
+--   user's private key
+[is_comment_encrypted] :: TonWalletTransactionType -> Maybe Bool
+
+-- | A transfer of a TON NFT to or from the wallet
+TonWalletTransactionTypeNftTransfer :: Maybe TonNft -> Maybe Bool -> Maybe Text -> Maybe Bool -> TonWalletTransactionType
+
+-- | The transferred NFT
+[nft] :: TonWalletTransactionType -> Maybe TonNft
+
+-- | True, if the transfer is outgoing
+[is_outgoing] :: TonWalletTransactionType -> Maybe Bool
+
+-- | Comment added to the transaction
+[comment] :: TonWalletTransactionType -> Maybe Text
+
+-- | True, if the comment is encrypted and must be decrypted using the
+--   user's private key
+[is_comment_encrypted] :: TonWalletTransactionType -> Maybe Bool
+
+-- | Change of the wallet key
+TonWalletTransactionTypeKeyChange :: TonWalletTransactionType
+instance GHC.Show.Show TD.Data.TonWalletTransactionType.TonWalletTransactionType
+instance GHC.Classes.Eq TD.Data.TonWalletTransactionType.TonWalletTransactionType
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransactionType.TonWalletTransactionType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransactionType.TonWalletTransactionType
+
+module TD.Data.TonWalletTransaction
+data TonWalletTransaction
+
+-- | Represents a transaction with the TON wallet of the current user
+TonWalletTransaction :: Maybe Text -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe TonWalletTransactionState -> Maybe TonWalletTransactionType -> TonWalletTransaction
+
+-- | Unique identifier of the transaction
+[_id] :: TonWalletTransaction -> Maybe Text
+
+-- | Address in the TON blockchain of the transaction peer; may be empty if
+--   the transaction isn't a wallet transfer
+[peer_address] :: TonWalletTransaction -> Maybe Text
+
+-- | Identifier of the other user who participated in the transaction; 0 if
+--   unknown
+[peer_user_id] :: TonWalletTransaction -> Maybe Int
+
+-- | Identifier of the domain assigned to the peer address; may be empty if
+--   none
+[peer_domain] :: TonWalletTransaction -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the transaction was completed
+[date] :: TonWalletTransaction -> Maybe Int
+
+-- | The fee amount paid for the transaction in TON Grams, in the smallest
+--   units of the cryptocurrency
+[fee_amount] :: TonWalletTransaction -> Maybe Int
+
+-- | State of the transaction
+[state] :: TonWalletTransaction -> Maybe TonWalletTransactionState
+
+-- | Type of the transaction
+[_type] :: TonWalletTransaction -> Maybe TonWalletTransactionType
+instance GHC.Show.Show TD.Data.TonWalletTransaction.TonWalletTransaction
+instance GHC.Classes.Eq TD.Data.TonWalletTransaction.TonWalletTransaction
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransaction.TonWalletTransaction
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransaction.TonWalletTransaction
+
+module TD.Data.TonWalletTransferResult
+data TonWalletTransferResult
+
+-- | Represents result of cryptocurrency transfer from the current user's
+--   TON wallet
+TonWalletTransferResult :: Maybe Bool -> Maybe ByteString -> Maybe TonWalletTransaction -> TonWalletTransferResult
+
+-- | True, if the transfer is gasless
+[is_gasless] :: TonWalletTransferResult -> Maybe Bool
+
+-- | Unique identifier of the sent message; use
+--   getTonWalletTransactionByMsgHash to poll information about the
+--   transaction
+[msg_hash] :: TonWalletTransferResult -> Maybe ByteString
+
+-- | The completed transaction; may be null if the transaction is still
+--   pending
+[transaction] :: TonWalletTransferResult -> Maybe TonWalletTransaction
+instance GHC.Show.Show TD.Data.TonWalletTransferResult.TonWalletTransferResult
+instance GHC.Classes.Eq TD.Data.TonWalletTransferResult.TonWalletTransferResult
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransferResult.TonWalletTransferResult
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransferResult.TonWalletTransferResult
+
+module TD.Data.TonWalletTransactions
+data TonWalletTransactions
+
+-- | Represents a list of TON Gram transactions
+TonWalletTransactions :: Maybe Int -> Maybe [TonWalletTransaction] -> Maybe Text -> TonWalletTransactions
+
+-- | The total amount of owned TON Grams, in the smallest units of the
+--   cryptocurrency
+[gram_amount] :: TonWalletTransactions -> Maybe Int
+
+-- | List of transactions
+[transactions] :: TonWalletTransactions -> Maybe [TonWalletTransaction]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: TonWalletTransactions -> Maybe Text
+instance GHC.Show.Show TD.Data.TonWalletTransactions.TonWalletTransactions
+instance GHC.Classes.Eq TD.Data.TonWalletTransactions.TonWalletTransactions
+instance TD.Lib.Internal.ShortShow TD.Data.TonWalletTransactions.TonWalletTransactions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonWalletTransactions.TonWalletTransactions
+
+module TD.Data.TonNfts
+data TonNfts
+
+-- | Represents a list of TON NFTs
+TonNfts :: Maybe [TonNft] -> Maybe Text -> TonNfts
+
+-- | List of NFTs
+[nfts] :: TonNfts -> Maybe [TonNft]
+
+-- | The offset for the next request. If empty, then there are no more
+--   results
+[next_offset] :: TonNfts -> Maybe Text
+instance GHC.Show.Show TD.Data.TonNfts.TonNfts
+instance GHC.Classes.Eq TD.Data.TonNfts.TonNfts
+instance TD.Lib.Internal.ShortShow TD.Data.TonNfts.TonNfts
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonNfts.TonNfts
+
+module TD.Data.TonConnectManifest
+
+-- | Describes manifest of the dApp that is being connected using TON
+--   Connect
+data TonConnectManifest
+
+-- | The manifest is being downloaded
+TonConnectManifestPending :: TonConnectManifest
+
+-- | The manifest is available
+TonConnectManifestInfo :: Maybe Text -> Maybe Text -> Maybe Document -> TonConnectManifest
+
+-- | URL of the dApp
+[url] :: TonConnectManifest -> Maybe Text
+
+-- | Name of the dApp
+[name] :: TonConnectManifest -> Maybe Text
+
+-- | App icon in PNG or ICO format
+[icon] :: TonConnectManifest -> Maybe Document
+
+-- | The manifest has failed to download
+TonConnectManifestFailed :: TonConnectManifest
+
+-- | The manifest is invalid
+TonConnectManifestInvalid :: TonConnectManifest
+instance GHC.Show.Show TD.Data.TonConnectManifest.TonConnectManifest
+instance GHC.Classes.Eq TD.Data.TonConnectManifest.TonConnectManifest
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectManifest.TonConnectManifest
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectManifest.TonConnectManifest
+
+module TD.Data.TonConnectSession
+data TonConnectSession
+
+-- | Represents a TON Connect session. See
+--   <a>https://github.com/ton-blockchain/ton-connect/tree/main/spec</a>
+--   for full TON Connect protocol documentation
+TonConnectSession :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe TonConnectManifest -> Maybe ByteString -> Maybe TonConnectSessionState -> TonConnectSession
+
+-- | Unique identifier of the session
+[_id] :: TonConnectSession -> Maybe Int
+
+-- | Hex-encoded public X25519 key of the dApp
+[dapp_client_id] :: TonConnectSession -> Maybe Text
+
+-- | Hex-encoded public X25519 key of the current user's application; may
+--   be empty if none
+[wallet_client_id] :: TonConnectSession -> Maybe Text
+
+-- | Point in time (Unix timestamp) when the session was created
+[creation_date] :: TonConnectSession -> Maybe Int
+
+-- | Manifest of the dApp
+[manifest] :: TonConnectSession -> Maybe TonConnectManifest
+
+-- | Nonce used for the session
+[nonce] :: TonConnectSession -> Maybe ByteString
+
+-- | Session state
+[state] :: TonConnectSession -> Maybe TonConnectSessionState
+instance GHC.Show.Show TD.Data.TonConnectSession.TonConnectSession
+instance GHC.Classes.Eq TD.Data.TonConnectSession.TonConnectSession
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectSession.TonConnectSession
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectSession.TonConnectSession
+
+module TD.Data.TonConnectSessions
+data TonConnectSessions
+
+-- | Contains a list of TON Connect sessions
+TonConnectSessions :: Maybe [TonConnectSession] -> TonConnectSessions
+
+-- | The list of sessions
+[sessions] :: TonConnectSessions -> Maybe [TonConnectSession]
+instance GHC.Show.Show TD.Data.TonConnectSessions.TonConnectSessions
+instance GHC.Classes.Eq TD.Data.TonConnectSessions.TonConnectSessions
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectSessions.TonConnectSessions
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectSessions.TonConnectSessions
+
+module TD.Data.TonConnectRequests
+data TonConnectRequests
+
+-- | Represents a session with its pending TON Connect requests
+TonConnectRequests :: Maybe TonConnectSession -> Maybe [TonConnectRequest] -> TonConnectRequests
+
+-- | The session
+[session] :: TonConnectRequests -> Maybe TonConnectSession
+
+-- | The requests
+[requests] :: TonConnectRequests -> Maybe [TonConnectRequest]
+instance GHC.Show.Show TD.Data.TonConnectRequests.TonConnectRequests
+instance GHC.Classes.Eq TD.Data.TonConnectRequests.TonConnectRequests
+instance TD.Lib.Internal.ShortShow TD.Data.TonConnectRequests.TonConnectRequests
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TonConnectRequests.TonConnectRequests
+
 module TD.Data.DiffEntityType
 
 -- | Represents a change of a text
@@ -10806,7 +11664,8 @@ EncryptedPassportElement :: Maybe PassportElementType -> Maybe ByteString -> May
 -- | Encrypted JSON-encoded data about the user
 [_data] :: EncryptedPassportElement -> Maybe ByteString
 
--- | The front side of an identity document
+-- | The front side of an identity document; may be null if the element
+--   isn't an identity document
 [front_side] :: EncryptedPassportElement -> Maybe DatedFile
 
 -- | The reverse side of an identity document; may be null
@@ -10910,6 +11769,9 @@ TextEntityTypePhoneNumber :: TextEntityType
 --   information about the bank card
 TextEntityTypeBankCardNumber :: TextEntityType
 
+-- | An address in the TON blockchain
+TextEntityTypeTonAddress :: TextEntityType
+
 -- | A bold text
 TextEntityTypeBold :: TextEntityType
 
@@ -10952,7 +11814,7 @@ TextEntityTypeTextUrl :: Maybe Text -> TextEntityType
 -- | HTTP or tg:// URL to be opened when the link is clicked
 [url] :: TextEntityType -> Maybe Text
 
--- | A text shows instead of a raw mention of the user (e.g., when the user
+-- | A text shown instead of a raw mention of the user (e.g., when the user
 --   has no username)
 TextEntityTypeMentionName :: Maybe Int -> TextEntityType
 
@@ -11632,7 +12494,9 @@ TelegramPaymentPurposeStars :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int
 [star_count] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | Identifier of the chat that is supposed to receive the Telegram Stars;
---   pass 0 if none
+--   pass 0 if none. If non-zero and getOption("star_top_up_disabled"),
+--   then the payment isn't allowed and the user can't buy Telegram Stars
+--   in this place
 [chat_id] :: TelegramPaymentPurpose -> Maybe Int
 
 -- | The user buying Telegram Stars for other users
@@ -11737,6 +12601,10 @@ SuggestedActionCheckPhoneNumber :: SuggestedAction
 -- | Suggests the user to view a hint about the meaning of one and two
 --   check marks on sent messages
 SuggestedActionViewChecksHint :: SuggestedAction
+
+-- | Suggests the user to view a hint about receiving of the first TON
+--   wallet transfer
+SuggestedActionViewFirstTonWalletTransferHint :: SuggestedAction
 
 -- | Suggests the user to convert specified supergroup to a broadcast group
 SuggestedActionConvertToBroadcastGroup :: Maybe Int -> SuggestedAction
@@ -12109,7 +12977,7 @@ ReceivedGift :: Maybe Text -> Maybe MessageSender -> Maybe FormattedText -> Mayb
 [unique_gift_number] :: ReceivedGift -> Maybe Int
 
 -- | True, if the sender and gift text are shown only to the gift receiver;
---   otherwise, everyone are able to see them
+--   otherwise, everyone is able to see them
 [is_private] :: ReceivedGift -> Maybe Bool
 
 -- | True, if the gift is displayed on the chat's profile page; only for
@@ -12749,6 +13617,15 @@ RichTextBankCardNumber :: Maybe RichText -> Maybe Text -> RichText
 -- | The number of the bank card
 [bank_card_number] :: RichText -> Maybe Text
 
+-- | An address in the TON blockchain
+RichTextTonAddress :: Maybe RichText -> Maybe Text -> RichText
+
+-- | Text
+[_text] :: RichText -> Maybe RichText
+
+-- | The address
+[address] :: RichText -> Maybe Text
+
 -- | A bot command
 RichTextBotCommand :: Maybe RichText -> Maybe Text -> RichText
 
@@ -12816,7 +13693,7 @@ RichTextCustomEmoji :: Maybe Int -> Maybe Text -> RichText
 -- | A small image inside the text; instant view only
 RichTextIcon :: Maybe Document -> Maybe Int -> Maybe Int -> RichText
 
--- | The image represented as a document. The image can be in GIF, JPEG or
+-- | The image represented as a document. The image can be in GIF, JPEG, or
 --   PNG format
 [document] :: RichText -> Maybe Document
 
@@ -13144,6 +14021,48 @@ instance GHC.Show.Show TD.Data.CurrentWeather.CurrentWeather
 instance GHC.Classes.Eq TD.Data.CurrentWeather.CurrentWeather
 instance TD.Lib.Internal.ShortShow TD.Data.CurrentWeather.CurrentWeather
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CurrentWeather.CurrentWeather
+
+module TD.Data.CurrencyExchangeRate
+data CurrencyExchangeRate
+
+-- | Describes exchange rate of a currency to USD
+CurrencyExchangeRate :: Maybe Text -> Maybe Double -> CurrencyExchangeRate
+
+-- | ISO 4217 currency code of the payment currency
+[currency] :: CurrencyExchangeRate -> Maybe Text
+
+-- | Exchange rate of the currency to USD
+[rate] :: CurrencyExchangeRate -> Maybe Double
+instance GHC.Show.Show TD.Data.CurrencyExchangeRate.CurrencyExchangeRate
+instance GHC.Classes.Eq TD.Data.CurrencyExchangeRate.CurrencyExchangeRate
+instance TD.Lib.Internal.ShortShow TD.Data.CurrencyExchangeRate.CurrencyExchangeRate
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CurrencyExchangeRate.CurrencyExchangeRate
+
+module TD.Data.CurrencyExchangeRates
+data CurrencyExchangeRates
+
+-- | Represents a list of currency exchange rates
+CurrencyExchangeRates :: Maybe [CurrencyExchangeRate] -> CurrencyExchangeRates
+
+-- | A list of currency exchange rates
+[rates] :: CurrencyExchangeRates -> Maybe [CurrencyExchangeRate]
+instance GHC.Show.Show TD.Data.CurrencyExchangeRates.CurrencyExchangeRates
+instance GHC.Classes.Eq TD.Data.CurrencyExchangeRates.CurrencyExchangeRates
+instance TD.Lib.Internal.ShortShow TD.Data.CurrencyExchangeRates.CurrencyExchangeRates
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CurrencyExchangeRates.CurrencyExchangeRates
+
+module TD.Data.Currencies
+data Currencies
+
+-- | Represents a list of currencies
+Currencies :: Maybe [Text] -> Currencies
+
+-- | A list of ISO 4217 currency codes
+[currencies] :: Currencies -> Maybe [Text]
+instance GHC.Show.Show TD.Data.Currencies.Currencies
+instance GHC.Classes.Eq TD.Data.Currencies.Currencies
+instance TD.Lib.Internal.ShortShow TD.Data.Currencies.Currencies
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Currencies.Currencies
 
 module TD.Data.CreatedBasicGroupChat
 data CreatedBasicGroupChat
@@ -13777,10 +14696,12 @@ CommunityPermissions :: Maybe Bool -> CommunityPermissions
 
 -- | True, if the user can change the chats added to the community
 [can_edit_chat_list] :: CommunityPermissions -> Maybe Bool
+defaultCommunityPermissions :: CommunityPermissions
 instance GHC.Show.Show TD.Data.CommunityPermissions.CommunityPermissions
 instance GHC.Classes.Eq TD.Data.CommunityPermissions.CommunityPermissions
 instance TD.Lib.Internal.ShortShow TD.Data.CommunityPermissions.CommunityPermissions
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityPermissions.CommunityPermissions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.CommunityPermissions.CommunityPermissions
 
 module TD.Data.CommunityId
 data CommunityId
@@ -14582,7 +15503,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.ChatRevenueTransactionType.C
 module TD.Data.ChatRevenueTransaction
 data ChatRevenueTransaction
 
--- | Contains a chat revenue transactions
+-- | Contains a chat revenue transaction
 ChatRevenueTransaction :: Maybe Text -> Maybe Int -> Maybe ChatRevenueTransactionType -> ChatRevenueTransaction
 
 -- | Cryptocurrency in which revenue is calculated
@@ -14641,7 +15562,7 @@ ChatRevenueAmount :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe 
 --   units of the cryptocurrency
 [available_amount] :: ChatRevenueAmount -> Maybe Int
 
--- | True, if Telegram Stars can be withdrawn now or later
+-- | True, if the cryptocurrency can be withdrawn now or later
 [withdrawal_enabled] :: ChatRevenueAmount -> Maybe Bool
 instance GHC.Show.Show TD.Data.ChatRevenueAmount.ChatRevenueAmount
 instance GHC.Classes.Eq TD.Data.ChatRevenueAmount.ChatRevenueAmount
@@ -14664,7 +15585,7 @@ ChatRevenueStatistics :: Maybe StatisticalGraph -> Maybe StatisticalGraph -> May
 -- | Amount of earned revenue
 [revenue_amount] :: ChatRevenueStatistics -> Maybe ChatRevenueAmount
 
--- | Current conversion rate of the cryptocurrency in which revenue is
+-- | Current exchange rate of the cryptocurrency in which revenue is
 --   calculated to USD
 [usd_rate] :: ChatRevenueStatistics -> Maybe Double
 instance GHC.Show.Show TD.Data.ChatRevenueStatistics.ChatRevenueStatistics
@@ -15057,7 +15978,7 @@ ChatJoinResultSuccess :: Maybe Int -> ChatJoinResult
 -- | Identifier of the chat
 [chat_id] :: ChatJoinResult -> Maybe Int
 
--- | The join request was sent and have to be approved by administrators of
+-- | The join request was sent and has to be approved by administrators of
 --   the chat
 ChatJoinResultRequestSent :: ChatJoinResult
 
@@ -16306,7 +17227,7 @@ data InternalLinkType
 --   isn't added to attachment menu, then show a disclaimer about Mini Apps
 --   being third-party applications, ask the user to accept their Terms of
 --   service and confirm adding the bot to side and attachment menu. If the
---   user accept the terms and confirms adding, then use
+--   user accepts the terms and confirms adding, then use
 --   toggleBotIsAddedToAttachmentMenu to add the bot. If the attachment
 --   menu bot can't be used in the opened chat, show an error to the user.
 --   If the bot is added to attachment menu and can be used in the chat,
@@ -16621,7 +17542,7 @@ InternalLinkTypeNewStory :: Maybe StoryContentType -> InternalLinkType
 --   process the link if the link was received from outside of the
 --   application; otherwise, ignore it. After getOauthLinkInfo, show the
 --   user confirmation dialog and process it with
---   checkOauthRequestMatchCode, acceptOauthRequest or declineOauthRequest
+--   checkOauthRequestMatchCode, acceptOauthRequest, or declineOauthRequest
 InternalLinkTypeOauth :: Maybe Text -> InternalLinkType
 
 -- | URL to be passed to openWebApp
@@ -16735,8 +17656,8 @@ InternalLinkTypeRequestManagedBot :: Maybe Text -> Maybe Text -> Maybe Text -> I
 -- | Username of the bot which will manage the new bot
 [manager_bot_username] :: InternalLinkType -> Maybe Text
 
--- | Suggested username for the bot; always ends with "bot"
---   case-insensitive
+-- | Suggested username for the bot; always ends with "bot" or a string
+--   from updateAllowedBotUsernamePremiumSuffixes case-insensitive
 [suggested_bot_username] :: InternalLinkType -> Maybe Text
 
 -- | Suggested name for the bot; may be empty if not specified
@@ -16821,6 +17742,37 @@ InternalLinkTypeTheme :: Maybe Text -> InternalLinkType
 -- | Name of the theme
 [theme_name] :: InternalLinkType -> Maybe Text
 
+-- | The link is a universal TON Connect link
+InternalLinkTypeTonConnect :: Maybe Int -> Maybe Text -> Maybe TonConnectConnectRequest -> Maybe Text -> Maybe Text -> Maybe Text -> InternalLinkType
+
+-- | TON Connect version
+[version] :: InternalLinkType -> Maybe Int
+
+-- | Hex-encoded public X25519 key of the dApp
+[dapp_client_id] :: InternalLinkType -> Maybe Text
+
+-- | TON Connect connect request
+[connect_request] :: InternalLinkType -> Maybe TonConnectConnectRequest
+
+-- | Request return strategy; one of "back", "none", or a URL to open
+[return_strategy] :: InternalLinkType -> Maybe Text
+
+-- | Embedded RPC request represented as base64url-encoded JSON
+[rpc_request] :: InternalLinkType -> Maybe Text
+
+-- | Identifier to trace the connection request
+[trace_id] :: InternalLinkType -> Maybe Text
+
+-- | The link is a link for sending Grams from the user's TON wallet
+InternalLinkTypeTonWalletTransfer :: Maybe TonWalletTransferReceiver -> Maybe Int -> InternalLinkType
+
+-- | Chosen receiver of the transfer; may be null if none
+[receiver] :: InternalLinkType -> Maybe TonWalletTransferReceiver
+
+-- | The pre-filled amount of TON Grams to send; in the smallest units of
+--   the cryptocurrency
+[gram_amount] :: InternalLinkType -> Maybe Int
+
 -- | The link is an unknown tg: link. Call getDeepLinkInfo to process the
 --   link
 InternalLinkTypeUnknownDeepLink :: Maybe Text -> InternalLinkType
@@ -16884,7 +17836,7 @@ InternalLinkTypeVideoChat :: Maybe Text -> Maybe Text -> Maybe Bool -> InternalL
 --   needed. If the bot can be added to attachment or side menu, but isn't
 --   added yet, then show a disclaimer about Mini Apps being third-party
 --   applications instead of the dialog and ask the user to accept their
---   Terms of service. If the user accept the terms and confirms adding,
+--   Terms of service. If the user accepts the terms and confirms adding,
 --   then use toggleBotIsAddedToAttachmentMenu to add the bot. Then, call
 --   getWebAppLinkUrl and open the returned URL as a Web App
 InternalLinkTypeWebApp :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe WebAppOpenMode -> InternalLinkType
@@ -17909,7 +18861,7 @@ InputInlineQueryResultAnimation :: Maybe Text -> Maybe Text -> Maybe Text -> May
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an article or web page
@@ -17943,7 +18895,7 @@ InputInlineQueryResultArticle :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an MP3 audio file
@@ -17971,7 +18923,7 @@ InputInlineQueryResultAudio :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a user contact
@@ -17999,7 +18951,7 @@ InputInlineQueryResultContact :: Maybe Text -> Maybe Contact -> Maybe Text -> Ma
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a file
@@ -18037,7 +18989,7 @@ InputInlineQueryResultDocument :: Maybe Text -> Maybe Text -> Maybe Text -> Mayb
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a game
@@ -18085,7 +19037,7 @@ InputInlineQueryResultLocation :: Maybe Text -> Maybe Location -> Maybe Int -> M
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents link to a JPEG image
@@ -18119,7 +19071,7 @@ InputInlineQueryResultPhoto :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a WEBP, TGS, or WEBM sticker
@@ -18148,7 +19100,7 @@ InputInlineQueryResultSticker :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents information about a venue
@@ -18176,7 +19128,7 @@ InputInlineQueryResultVenue :: Maybe Text -> Maybe Venue -> Maybe Text -> Maybe 
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a page containing an embedded video player or a
@@ -18218,7 +19170,7 @@ InputInlineQueryResultVideo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an opus-encoded audio file within an OGG
@@ -18244,7 +19196,7 @@ InputInlineQueryResultVoiceNote :: Maybe Text -> Maybe Text -> Maybe Text -> May
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 instance GHC.Show.Show TD.Data.InputInlineQueryResult.InputInlineQueryResult
 instance GHC.Classes.Eq TD.Data.InputInlineQueryResult.InputInlineQueryResult
@@ -18753,7 +19705,7 @@ PremiumSourceFeature :: Maybe PremiumFeature -> PremiumSource
 -- | A user tried to use a Business feature
 PremiumSourceBusinessFeature :: Maybe BusinessFeature -> PremiumSource
 
--- | The used feature; pass null if none specific feature was used
+-- | The used feature; pass null if no specific feature was used
 [_feature] :: PremiumSource -> Maybe BusinessFeature
 
 -- | A user tried to use a Premium story feature
@@ -19160,8 +20112,8 @@ BotVerification :: Maybe Int -> Maybe Int -> Maybe FormattedText -> BotVerificat
 [icon_custom_emoji_id] :: BotVerification -> Maybe Int
 
 -- | Custom description of verification reason set by the bot. Can contain
---   only Mention, Hashtag, Cashtag, PhoneNumber, BankCardNumber, Url, and
---   EmailAddress entities
+--   only Mention, Hashtag, Cashtag, PhoneNumber, BankCardNumber,
+--   TonAddress, Url, and EmailAddress entities
 [custom_description] :: BotVerification -> Maybe FormattedText
 instance GHC.Show.Show TD.Data.BotVerification.BotVerification
 instance GHC.Classes.Eq TD.Data.BotVerification.BotVerification
@@ -19635,7 +20587,7 @@ module TD.Data.ThemeSettings
 data ThemeSettings
 
 -- | Describes theme settings
-ThemeSettings :: Maybe BuiltInTheme -> Maybe Int -> Maybe Background -> Maybe BackgroundFill -> Maybe Bool -> Maybe Int -> ThemeSettings
+ThemeSettings :: Maybe BuiltInTheme -> Maybe Int -> Maybe Background -> Maybe BackgroundFill -> Maybe Bool -> Maybe Bool -> Maybe Int -> ThemeSettings
 
 -- | Base theme for this theme
 [base_theme] :: ThemeSettings -> Maybe BuiltInTheme
@@ -19654,7 +20606,12 @@ ThemeSettings :: Maybe BuiltInTheme -> Maybe Int -> Maybe Background -> Maybe Ba
 --   message
 [animate_outgoing_message_fill] :: ThemeSettings -> Maybe Bool
 
--- | Accent color of outgoing messages in ARGB format
+-- | True, if there is chosen accent color for outgoing messages;
+--   otherwise, the color must be deduced from other theme settings
+[has_outgoing_message_accent_color] :: ThemeSettings -> Maybe Bool
+
+-- | Accent color of outgoing messages in ARGB format; must be ignored if
+--   has_outgoing_message_accent_color is false
 [outgoing_message_accent_color] :: ThemeSettings -> Maybe Int
 instance GHC.Show.Show TD.Data.ThemeSettings.ThemeSettings
 instance GHC.Classes.Eq TD.Data.ThemeSettings.ThemeSettings
@@ -20418,7 +21375,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.AuctionState.AuctionState
 module TD.Data.GiftAuctionState
 data GiftAuctionState
 
--- | Represent auction state of a gift
+-- | Represents auction state of a gift
 GiftAuctionState :: Maybe Gift -> Maybe AuctionState -> GiftAuctionState
 
 -- | The gift
@@ -20442,7 +21399,7 @@ AttributeCraftPersistenceProbability :: Maybe [Int] -> AttributeCraftPersistence
 --   the same attribute as one of the original gifts if 1, 2, 3, or 4 gifts
 --   with the attribute are used in the craft. Each number represents the
 --   number of crafted gifts with the original attribute per 1000
---   successful craftings
+--   successful crafts
 [persistence_chance_per_mille] :: AttributeCraftPersistenceProbability -> Maybe [Int]
 instance GHC.Show.Show TD.Data.AttributeCraftPersistenceProbability.AttributeCraftPersistenceProbability
 instance GHC.Classes.Eq TD.Data.AttributeCraftPersistenceProbability.AttributeCraftPersistenceProbability
@@ -20463,7 +21420,7 @@ GiftsForCrafting :: Maybe Int -> Maybe [ReceivedGift] -> Maybe [AttributeCraftPe
 
 -- | The 4 objects that describe probabilities of the crafted gift to have
 --   the backdrop or symbol of one of the original gifts for the cases when
---   1, 2, 3 or 4 gifts are used in the craft correspondingly
+--   1-4 gifts are used in the craft correspondingly
 [attribute_persistence_probabilities] :: GiftsForCrafting -> Maybe [AttributeCraftPersistenceProbability]
 
 -- | The offset for the next request. If empty, then there are no more
@@ -20884,6 +21841,24 @@ PushMessageContentGiveaway :: Maybe Int -> Maybe GiveawayPrize -> Maybe Bool -> 
 -- | True, if the message is a pinned message with the specified content
 [is_pinned] :: PushMessageContent -> Maybe Bool
 
+-- | A message with a TON wallet transfer
+PushMessageContentTonWalletTransfer :: Maybe Int -> Maybe Text -> Maybe Text -> PushMessageContent
+
+-- | Sender of the transfer; 0 if unknown
+[sender_user_id] :: PushMessageContent -> Maybe Int
+
+-- | String representation of the received amount
+[amount] :: PushMessageContent -> Maybe Text
+
+-- | Comment added to the transaction if it is public
+[comment] :: PushMessageContent -> Maybe Text
+
+-- | A message with a request from a dApp was received through TON Connect
+PushMessageContentTonConnectRequest :: Maybe Text -> PushMessageContent
+
+-- | Name of the dApp; may be empty if unknown
+[dapp_name] :: PushMessageContent -> Maybe Text
+
 -- | A message with a gift
 PushMessageContentGift :: Maybe Int -> Maybe Bool -> PushMessageContent
 
@@ -21055,7 +22030,7 @@ PushMessageContentChatJoinByRequest :: PushMessageContent
 -- | A new recurring payment was made by the current user
 PushMessageContentRecurringPayment :: Maybe Text -> PushMessageContent
 
--- | The paid amount
+-- | String representation of the received amount
 [amount] :: PushMessageContent -> Maybe Text
 
 -- | A profile photo was suggested to the user
@@ -21089,7 +22064,7 @@ PushMessageContentPollOptionAdded :: Maybe Text -> PushMessageContent
 -- | Message text
 [text] :: PushMessageContent -> Maybe Text
 
--- | A forwarded messages
+-- | Forwarded messages
 PushMessageContentMessageForwards :: Maybe Int -> PushMessageContent
 
 -- | Number of forwarded messages
@@ -21948,7 +22923,7 @@ module TD.Data.AnimatedEmoji
 data AnimatedEmoji
 
 -- | Describes an animated or custom representation of an emoji
-AnimatedEmoji :: Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe File -> AnimatedEmoji
+AnimatedEmoji :: Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe File -> Maybe Bool -> AnimatedEmoji
 
 -- | Sticker for the emoji; may be null if yet unknown for a custom emoji.
 --   If the sticker is a custom emoji, then it can have arbitrary format
@@ -21969,6 +22944,9 @@ AnimatedEmoji :: Maybe Sticker -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe F
 --   may be null. The sound is encoded with the Opus codec, and stored
 --   inside an OGG container
 [sound] :: AnimatedEmoji -> Maybe File
+
+-- | True, if the emoji is a regular emoji
+[is_regular_emoji] :: AnimatedEmoji -> Maybe Bool
 instance GHC.Show.Show TD.Data.AnimatedEmoji.AnimatedEmoji
 instance GHC.Classes.Eq TD.Data.AnimatedEmoji.AnimatedEmoji
 instance TD.Lib.Internal.ShortShow TD.Data.AnimatedEmoji.AnimatedEmoji
@@ -22008,7 +22986,7 @@ ChatPhoto :: Maybe Int -> Maybe Int -> Maybe Minithumbnail -> Maybe [PhotoSize] 
 -- | Photo minithumbnail; may be null
 [minithumbnail] :: ChatPhoto -> Maybe Minithumbnail
 
--- | Available variants of the photo in JPEG format, in different size
+-- | Available variants of the photo in JPEG format, in different sizes
 [sizes] :: ChatPhoto -> Maybe [PhotoSize]
 
 -- | A big (up to 1280x1280) animated variant of the photo in MPEG4 format;
@@ -22118,7 +23096,7 @@ SupergroupFullInfo :: Maybe ChatPhoto -> Maybe Int -> Maybe Text -> Maybe Int ->
 [can_toggle_aggressive_anti_spam] :: SupergroupFullInfo -> Maybe Bool
 
 -- | True, if new chat members will have access to old messages. In public,
---   discussion, of forum groups and all channels, old messages are always
+--   discussion, or forum groups and all channels, old messages are always
 --   available, so this option affects only private non-forum supergroups
 --   without a linked chat. The value of this field is only available to
 --   chat administrators
@@ -22410,7 +23388,7 @@ LinkPreviewTypePhoto :: Maybe Photo -> LinkPreviewType
 -- | The link is a link to a Telegram Premium gift code
 LinkPreviewTypePremiumGiftCode :: LinkPreviewType
 
--- | The link is a link to a dialog for creating of a managed bot
+-- | The link is a link to a dialog for creating a managed bot
 LinkPreviewTypeRequestManagedBot :: LinkPreviewType
 
 -- | The link is a link to a shareable chat folder
@@ -22912,8 +23890,9 @@ Poll :: Maybe Int -> Maybe FormattedText -> Maybe [PollOption] -> Maybe Int -> M
 --   participate in the poll
 [country_codes] :: Poll -> Maybe [Text]
 
--- | The list of 0-based poll identifiers in which the options of the poll
---   must be shown; empty if the order of options must not be changed
+-- | The list of 0-based poll option identifiers in which the options of
+--   the poll must be shown; empty if the order of options must not be
+--   changed
 [option_order] :: Poll -> Maybe [Int]
 
 -- | Type of the poll
@@ -23034,7 +24013,7 @@ ConnectedAffiliateProgram :: Maybe Text -> Maybe Int -> Maybe AffiliateProgramPa
 --   active
 [url] :: ConnectedAffiliateProgram -> Maybe Text
 
--- | User identifier of the bot created the program
+-- | User identifier of the bot that created the program
 [bot_user_id] :: ConnectedAffiliateProgram -> Maybe Int
 
 -- | The parameters of the affiliate program
@@ -23110,7 +24089,7 @@ data FoundAffiliateProgram
 -- | Describes a found affiliate program
 FoundAffiliateProgram :: Maybe Int -> Maybe AffiliateProgramInfo -> FoundAffiliateProgram
 
--- | User identifier of the bot created the program
+-- | User identifier of the bot that created the program
 [bot_user_id] :: FoundAffiliateProgram -> Maybe Int
 
 -- | Information about the affiliate program
@@ -23656,8 +24635,8 @@ StarTransactionTypePaidGroupCallMessageReceive :: Maybe MessageSender -> Maybe I
 --   negative for refunds
 [commission_star_amount] :: StarTransactionType -> Maybe StarAmount
 
--- | The transaction is a sending of a paid group reaction; relevant for
---   regular users only
+-- | The transaction is a sending of a paid group call reaction; relevant
+--   for regular users only
 StarTransactionTypePaidGroupCallReactionSend :: Maybe Int -> StarTransactionType
 
 -- | Identifier of a supergroup or a channel chat that created the giveaway
@@ -23982,7 +24961,7 @@ instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.PassportElement.PassportElem
 module TD.Data.PassportElementsWithErrors
 data PassportElementsWithErrors
 
--- | Contains information about a Telegram Passport elements and
+-- | Contains information about Telegram Passport elements and
 --   corresponding errors
 PassportElementsWithErrors :: Maybe [PassportElement] -> Maybe [PassportElementError] -> PassportElementsWithErrors
 
@@ -24534,7 +25513,7 @@ MessageCall :: Maybe Int -> Maybe Bool -> Maybe CallDiscardReason -> Maybe Int -
 --   call screen must be shown to the user. Use getGroupCallParticipants to
 --   show current group call participants on the screen. Use joinGroupCall
 --   to accept the call or declineGroupCallInvitation to decline it. If the
---   call become active or missed, then the call screen must be hidden
+--   call becomes active or missed, then the call screen must be hidden
 MessageGroupCall :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe [MessageSender] -> MessageContent
 
 -- | Persistent unique call identifier; 0 for calls from other devices,
@@ -24650,14 +25629,14 @@ MessageChatDeletePhoto :: MessageContent
 MessageChatOwnerLeft :: Maybe Int -> MessageContent
 
 -- | Identifier of the user who will become the new owner of the chat if
---   the previous owner isn't return; 0 if none
+--   the previous owner doesn't return; 0 if none
 [new_owner_user_id] :: MessageContent -> Maybe Int
 
 -- | The owner of the chat has changed
 MessageChatOwnerChanged :: Maybe Int -> MessageContent
 
 -- | Identifier of the user who will become the new owner of the chat if
---   the previous owner isn't return; 0 if none
+--   the previous owner doesn't return; 0 if none
 [new_owner_user_id] :: MessageContent -> Maybe Int
 
 -- | Chat has_protected_content setting was changed or request to change it
@@ -25188,6 +26167,47 @@ MessageGiveawayPrizeStars :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -
 -- | The sticker description
 [sticker] :: MessageContent -> Maybe Sticker
 
+-- | Represents a transfer with the TON wallet of the current user
+MessageTonWalletTransfer :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> MessageContent
+
+-- | Sender of the transfer; 0 if unknown
+[sender_user_id] :: MessageContent -> Maybe Int
+
+-- | Identifier of the transaction for Telegram Stars purchase; for
+--   receiver only
+[transaction_id] :: MessageContent -> Maybe Text
+
+-- | Address in the TON blockchain of the transaction peer
+[peer_address] :: MessageContent -> Maybe Text
+
+-- | The paid amount, in the smallest units of the currency
+[amount] :: MessageContent -> Maybe Int
+
+-- | Comment added to the transaction
+[comment] :: MessageContent -> Maybe Text
+
+-- | True, if the comment is encrypted and must be decrypted using the
+--   receiver's or sender's private key
+[is_comment_encrypted] :: MessageContent -> Maybe Bool
+
+-- | A request from a dApp was received through TON Connect
+MessageTonConnectRequest :: Maybe Int -> Maybe TonConnectRequestState -> Maybe Text -> Maybe Text -> Maybe Text -> MessageContent
+
+-- | Unique identifier of the TON Connect session
+[session_id] :: MessageContent -> Maybe Int
+
+-- | State of the request
+[state] :: MessageContent -> Maybe TonConnectRequestState
+
+-- | Name of the dApp; may be empty if unknown
+[dapp_name] :: MessageContent -> Maybe Text
+
+-- | Topic of the request; may be empty if none
+[topic] :: MessageContent -> Maybe Text
+
+-- | Identifier to trace the request; may be empty if none
+[trace_id] :: MessageContent -> Maybe Text
+
 -- | A regular gift was received or sent by the current user, or the
 --   current user was notified about a channel gift
 MessageGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe Text -> Maybe FormattedText -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Text -> MessageContent
@@ -25331,7 +26351,7 @@ MessageUpgradedGift :: Maybe UpgradedGift -> Maybe MessageSender -> Maybe Messag
 --   another gift; can be in the past; only for the receiver of the gift
 [craft_date] :: MessageContent -> Maybe Int
 
--- | A gift which purchase, upgrade or transfer were refunded
+-- | A gift which purchase, upgrade, or transfer were refunded
 MessageRefundedUpgradedGift :: Maybe Gift -> Maybe MessageSender -> Maybe MessageSender -> Maybe UpgradedGiftOrigin -> MessageContent
 
 -- | The gift
@@ -25354,7 +26374,7 @@ MessageUpgradedGiftPurchaseOffer :: Maybe UpgradedGift -> Maybe GiftPurchaseOffe
 [_gift] :: MessageContent -> Maybe UpgradedGift
 
 -- | State of the offer
-[state] :: MessageContent -> Maybe GiftPurchaseOfferState
+[_state] :: MessageContent -> Maybe GiftPurchaseOfferState
 
 -- | The proposed price
 [price] :: MessageContent -> Maybe GiftResalePrice
@@ -25463,8 +26483,7 @@ MessageSuggestedPostDeclined :: Maybe Int -> Maybe Text -> MessageContent
 --   identifier of a deleted message
 [suggested_post_message_id] :: MessageContent -> Maybe Int
 
--- | Comment added by administrator of the channel when the post was
---   declined
+-- | Comment added to the transaction
 [comment] :: MessageContent -> Maybe Text
 
 -- | A suggested post was published for
@@ -25947,8 +26966,8 @@ Message :: Maybe Int -> Maybe MessageSender -> Maybe MessageSender -> Maybe Int 
 
 -- | Tag of the sender of the message in the supergroup at the time the
 --   message was sent; may be empty if none or unknown. For messages sent
---   in basic groups or supergroup administrators, the current custom title
---   or tag must be used instead
+--   in basic groups or by supergroup administrators, the current custom
+--   title or tag must be used instead
 [sender_tag] :: Message -> Maybe Text
 
 -- | The number of Telegram Stars the sender paid to send the message
@@ -29346,6 +30365,14 @@ UpdateStoryStealthMode :: Maybe Int -> Maybe Int -> Update
 --   0 if there is no active cooldown
 [cooldown_until_date] :: Update -> Maybe Int
 
+-- | Lists of suffixes allowed in secondary bot usernames, which can be
+--   added additionally to the main username if the bot's owner has a
+--   Telegram Premium subscription
+UpdateAllowedBotUsernamePremiumSuffixes :: Maybe [Text] -> Update
+
+-- | The list of allowed suffixes
+[suffixes] :: Update -> Maybe [Text]
+
 -- | Lists of bots which Mini Apps must be allowed to read text from
 --   clipboard and must be opened without a warning
 UpdateTrustedMiniAppBots :: Maybe [Int] -> Update
@@ -29577,7 +30604,7 @@ UpdateDefaultPaidReactionType :: Maybe PaidReactionType -> Update
 UpdateSavedMessagesTags :: Maybe Int -> Maybe SavedMessagesTags -> Update
 
 -- | Identifier of Saved Messages topic which tags were changed; 0 if tags
---   for the whole chat has changed
+--   for the whole chat have changed
 [saved_messages_topic_id] :: Update -> Maybe Int
 
 -- | The new tags
@@ -29603,6 +30630,30 @@ UpdateOwnedGramCount :: Maybe Int -> Update
 -- | The new amount of owned Grams; in the smallest units of the
 --   cryptocurrency
 [gram_amount] :: Update -> Maybe Int
+
+-- | The state of the TON wallet of the current user has changed
+UpdateTonWalletState :: Maybe TonWalletState -> Update
+
+-- | The new state of the wallet
+[__state] :: Update -> Maybe TonWalletState
+
+-- | The information about gasless transfers has changed
+UpdateTonWalletGaslessTransfersInfo :: Maybe TonWalletGaslessTransfersInfo -> Update
+
+-- | The new information about gasless transfers
+[_info] :: Update -> Maybe TonWalletGaslessTransfersInfo
+
+-- | A session of a TON Connect has changed
+UpdateTonWalletTonConnectSession :: Maybe TonConnectSession -> Update
+
+-- | The new state of the session
+[_session] :: Update -> Maybe TonConnectSession
+
+-- | TON Connect sessions must be disconnected in a regular way
+UpdateTonWalletTonConnectSessionDisconnectRequired :: Maybe [Int] -> Update
+
+-- | Identifiers of the sessions
+[session_ids] :: Update -> Maybe [Int]
 
 -- | The revenue earned from sponsored messages in a chat has changed. If
 --   chat revenue screen is opened, then getChatRevenueTransactions may be
@@ -29672,7 +30723,7 @@ UpdateStakeDiceState :: Maybe StakeDiceState -> Update
 -- | The new state. The state can be used only if it was received recently
 --   enough. Otherwise, a new state must be requested using
 --   getStakeDiceState
-[__state] :: Update -> Maybe StakeDiceState
+[___state] :: Update -> Maybe StakeDiceState
 
 -- | Some animated emoji message was clicked and a big animated sticker
 --   must be played if the message is visible on the screen.
@@ -30207,6 +31258,7 @@ Chats :: Chats -> GeneralResult
 CheckChatUsernameResult :: CheckChatUsernameResult -> GeneralResult
 CheckStickerSetNameResult :: CheckStickerSetNameResult -> GeneralResult
 CollectibleItemInfo :: CollectibleItemInfo -> GeneralResult
+CommunityFullInfo :: CommunityFullInfo -> GeneralResult
 CommunityId :: CommunityId -> GeneralResult
 ConnectedAffiliateProgram :: ConnectedAffiliateProgram -> GeneralResult
 ConnectedAffiliatePrograms :: ConnectedAffiliatePrograms -> GeneralResult
@@ -30216,6 +31268,8 @@ Countries :: Countries -> GeneralResult
 CountryInfo :: CountryInfo -> GeneralResult
 CraftGiftResult :: CraftGiftResult -> GeneralResult
 CreatedBasicGroupChat :: CreatedBasicGroupChat -> GeneralResult
+Currencies :: Currencies -> GeneralResult
+CurrencyExchangeRates :: CurrencyExchangeRates -> GeneralResult
 CurrentWeather :: CurrentWeather -> GeneralResult
 CustomRequestResult :: CustomRequestResult -> GeneralResult
 Data :: Data -> GeneralResult
@@ -30310,6 +31364,11 @@ NotificationSound :: NotificationSound -> GeneralResult
 NotificationSounds :: NotificationSounds -> GeneralResult
 OauthLinkInfo :: OauthLinkInfo -> GeneralResult
 Ok :: Ok -> GeneralResult
+OnRampPaymentAvailability :: OnRampPaymentAvailability -> GeneralResult
+OnRampPaymentLimits :: OnRampPaymentLimits -> GeneralResult
+OnRampPaymentQuote :: OnRampPaymentQuote -> GeneralResult
+OnRampPaymentSession :: OnRampPaymentSession -> GeneralResult
+OnRampProviders :: OnRampProviders -> GeneralResult
 OptionValue :: OptionValue -> GeneralResult
 OrderInfo :: OrderInfo -> GeneralResult
 Outline :: Outline -> GeneralResult
@@ -30397,7 +31456,18 @@ TextCompositionStyle :: TextCompositionStyle -> GeneralResult
 TextCompositionStyleExample :: TextCompositionStyleExample -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
 TimeZones :: TimeZones -> GeneralResult
+TonCenterStreamingApiUrl :: TonCenterStreamingApiUrl -> GeneralResult
+TonConnectChallenge :: TonConnectChallenge -> GeneralResult
+TonConnectRequests :: TonConnectRequests -> GeneralResult
+TonConnectSession :: TonConnectSession -> GeneralResult
+TonConnectSessionEventId :: TonConnectSessionEventId -> GeneralResult
+TonConnectSessions :: TonConnectSessions -> GeneralResult
+TonNfts :: TonNfts -> GeneralResult
 TonTransactions :: TonTransactions -> GeneralResult
+TonWalletOwnershipProofChallenge :: TonWalletOwnershipProofChallenge -> GeneralResult
+TonWalletTransaction :: TonWalletTransaction -> GeneralResult
+TonWalletTransactions :: TonWalletTransactions -> GeneralResult
+TonWalletTransferResult :: TonWalletTransferResult -> GeneralResult
 TrendingStickerSets :: TrendingStickerSets -> GeneralResult
 Update :: Update -> GeneralResult
 Updates :: Updates -> GeneralResult
@@ -30409,9 +31479,12 @@ UserFullInfo :: UserFullInfo -> GeneralResult
 UserLink :: UserLink -> GeneralResult
 UserPrivacySettingRules :: UserPrivacySettingRules -> GeneralResult
 UserSupportInfo :: UserSupportInfo -> GeneralResult
+UserTonWalletAddress :: UserTonWalletAddress -> GeneralResult
+UserTonWalletAddresses :: UserTonWalletAddresses -> GeneralResult
 Users :: Users -> GeneralResult
 ValidatedOrderInfo :: ValidatedOrderInfo -> GeneralResult
 VideoMessageAdvertisements :: VideoMessageAdvertisements -> GeneralResult
+WalletBotBalance :: WalletBotBalance -> GeneralResult
 WebAppInfo :: WebAppInfo -> GeneralResult
 WebAppUrl :: WebAppUrl -> GeneralResult
 WebBrowserType :: WebBrowserType -> GeneralResult
@@ -30535,6 +31608,30 @@ instance GHC.Show.Show TD.Query.AddBotMediaPreview.AddBotMediaPreview
 instance GHC.Classes.Eq TD.Query.AddBotMediaPreview.AddBotMediaPreview
 instance TD.Lib.Internal.ShortShow TD.Query.AddBotMediaPreview.AddBotMediaPreview
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddBotMediaPreview.AddBotMediaPreview
+
+module TD.Query.AddBotSecondaryUsername
+
+-- | Adds a secondary username to a bot. Can be called only if
+--   userTypeBot.can_be_edited, the bot has no secondary username and the
+--   current user has Telegram Premium subscription. May return an error
+--   with a message <a>OWNER_USERNAMES_LIMIT_EXCEEDED</a> if the current
+--   user already owns at least
+--   getOption("secondary_bot_username_count_max") bots with a secondary
+--   username. Returns <a>Ok</a>
+data AddBotSecondaryUsername
+AddBotSecondaryUsername :: Maybe Int -> Maybe Text -> AddBotSecondaryUsername
+
+-- | Identifier of the target bot
+[bot_user_id] :: AddBotSecondaryUsername -> Maybe Int
+
+-- | The new secondary username; must be non-empty. Use checkBotUsername to
+--   check username validness
+[username] :: AddBotSecondaryUsername -> Maybe Text
+defaultAddBotSecondaryUsername :: AddBotSecondaryUsername
+instance GHC.Show.Show TD.Query.AddBotSecondaryUsername.AddBotSecondaryUsername
+instance GHC.Classes.Eq TD.Query.AddBotSecondaryUsername.AddBotSecondaryUsername
+instance TD.Lib.Internal.ShortShow TD.Query.AddBotSecondaryUsername.AddBotSecondaryUsername
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddBotSecondaryUsername.AddBotSecondaryUsername
 
 module TD.Query.AddChatFolderByInviteLink
 
@@ -30775,7 +31872,7 @@ AddGiftCollectionGifts :: Maybe MessageSender -> Maybe Int -> Maybe [Text] -> Ad
 -- | Identifier of the gifts to add to the collection;
 --   1-getOption("gift_collection_size_max") identifiers. If after addition
 --   the collection has more than getOption("gift_collection_size_max")
---   gifts, then the last one are removed from the collection
+--   gifts, then the last ones are removed from the collection
 [received_gift_ids] :: AddGiftCollectionGifts -> Maybe [Text]
 defaultAddGiftCollectionGifts :: AddGiftCollectionGifts
 instance GHC.Show.Show TD.Query.AddGiftCollectionGifts.AddGiftCollectionGifts
@@ -31084,7 +32181,7 @@ AddQuickReplyShortcutMessage :: Maybe Text -> Maybe Int -> Maybe InputMessageCon
 [reply_to_message_id] :: AddQuickReplyShortcutMessage -> Maybe Int
 
 -- | The content of the message to be added; inputMessagePaidMedia,
---   inputMessageForwarded and inputMessageLiveLocation
+--   inputMessageForwarded and inputMessageLiveLocation aren't supported
 [input_message_content] :: AddQuickReplyShortcutMessage -> Maybe InputMessageContent
 defaultAddQuickReplyShortcutMessage :: AddQuickReplyShortcutMessage
 instance GHC.Show.Show TD.Query.AddQuickReplyShortcutMessage.AddQuickReplyShortcutMessage
@@ -31232,7 +32329,7 @@ AddStoryAlbumStories :: Maybe Int -> Maybe Int -> Maybe [Int] -> AddStoryAlbumSt
 -- | Identifier of the stories to add to the album;
 --   1-getOption("story_album_size_max") identifiers. If after addition the
 --   album has more than getOption("story_album_size_max") stories, then
---   the last one are removed from the album
+--   the last ones are removed from the album
 [story_ids] :: AddStoryAlbumStories -> Maybe [Int]
 defaultAddStoryAlbumStories :: AddStoryAlbumStories
 instance GHC.Show.Show TD.Query.AddStoryAlbumStories.AddStoryAlbumStories
@@ -31345,10 +32442,10 @@ AnswerChatJoinRequestQuery :: Maybe Int -> Maybe ChatJoinRequestResult -> Maybe 
 -- | Identifier of the query
 [query_id] :: AnswerChatJoinRequestQuery -> Maybe Int
 
--- | The result
+-- | The result; must be null if a URL is passed
 [result] :: AnswerChatJoinRequestQuery -> Maybe ChatJoinRequestResult
 
--- | URL of the Web App to open
+-- | URL of the Web App to open; must be empty if a result is passed
 [url] :: AnswerChatJoinRequestQuery -> Maybe Text
 defaultAnswerChatJoinRequestQuery :: AnswerChatJoinRequestQuery
 instance GHC.Show.Show TD.Query.AnswerChatJoinRequestQuery.AnswerChatJoinRequestQuery
@@ -31460,6 +32557,30 @@ instance GHC.Show.Show TD.Query.AnswerShippingQuery.AnswerShippingQuery
 instance GHC.Classes.Eq TD.Query.AnswerShippingQuery.AnswerShippingQuery
 instance TD.Lib.Internal.ShortShow TD.Query.AnswerShippingQuery.AnswerShippingQuery
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerShippingQuery.AnswerShippingQuery
+
+module TD.Query.AnswerTonConnectRequest
+
+-- | Sends an answer for a request received through TON Connect. Returns
+--   <a>Ok</a>
+data AnswerTonConnectRequest
+AnswerTonConnectRequest :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe ByteString -> AnswerTonConnectRequest
+
+-- | Unique identifier of the TON Connect session
+[session_id] :: AnswerTonConnectRequest -> Maybe Int
+
+-- | Identifier of the message with the request
+[message_id] :: AnswerTonConnectRequest -> Maybe Int
+
+-- | Identifier to trace the request
+[trace_id] :: AnswerTonConnectRequest -> Maybe Text
+
+-- | Body of the response
+[body] :: AnswerTonConnectRequest -> Maybe ByteString
+defaultAnswerTonConnectRequest :: AnswerTonConnectRequest
+instance GHC.Show.Show TD.Query.AnswerTonConnectRequest.AnswerTonConnectRequest
+instance GHC.Classes.Eq TD.Query.AnswerTonConnectRequest.AnswerTonConnectRequest
+instance TD.Lib.Internal.ShortShow TD.Query.AnswerTonConnectRequest.AnswerTonConnectRequest
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerTonConnectRequest.AnswerTonConnectRequest
 
 module TD.Query.AnswerWebAppQuery
 
@@ -32012,14 +33133,20 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckAuthenticationWebToken.Che
 
 module TD.Query.CheckBotUsername
 
--- | Checks whether a username can be set for a new bot. Use
---   checkChatUsername to check username for other chat types. Returns
---   <a>CheckChatUsernameResult</a>
+-- | Checks whether a username can be set for a new bot or assigned as a
+--   secondary username to an existing bot. Use checkChatUsername to check
+--   username for other chat types. Returns <a>CheckChatUsernameResult</a>
 data CheckBotUsername
-CheckBotUsername :: Maybe Text -> CheckBotUsername
+CheckBotUsername :: Maybe Text -> Maybe Bool -> CheckBotUsername
 
 -- | Username to be checked
 [username] :: CheckBotUsername -> Maybe Text
+
+-- | Pass true to check whether the username is suitable as a secondary
+--   username for an existing bot; pass false to check whether the username
+--   is suitable for createBot
+[is_secondary] :: CheckBotUsername -> Maybe Bool
+defaultCheckBotUsername :: CheckBotUsername
 instance GHC.Show.Show TD.Query.CheckBotUsername.CheckBotUsername
 instance GHC.Classes.Eq TD.Query.CheckBotUsername.CheckBotUsername
 instance TD.Lib.Internal.ShortShow TD.Query.CheckBotUsername.CheckBotUsername
@@ -32220,6 +33347,18 @@ instance GHC.Classes.Eq TD.Query.CheckStickerSetName.CheckStickerSetName
 instance TD.Lib.Internal.ShortShow TD.Query.CheckStickerSetName.CheckStickerSetName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckStickerSetName.CheckStickerSetName
 
+module TD.Query.CheckWalletBotBalance
+
+-- | Returns information about balance of the current user in the bot
+--   <a>https://t.me/walt;</a> can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>WalletBotBalance</a>
+data CheckWalletBotBalance
+CheckWalletBotBalance :: CheckWalletBotBalance
+instance GHC.Show.Show TD.Query.CheckWalletBotBalance.CheckWalletBotBalance
+instance GHC.Classes.Eq TD.Query.CheckWalletBotBalance.CheckWalletBotBalance
+instance TD.Lib.Internal.ShortShow TD.Query.CheckWalletBotBalance.CheckWalletBotBalance
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckWalletBotBalance.CheckWalletBotBalance
+
 module TD.Query.CheckWebAppFileDownload
 
 -- | Checks whether a file can be downloaded and saved locally by Web App
@@ -32240,6 +33379,30 @@ instance GHC.Show.Show TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
 instance GHC.Classes.Eq TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
 instance TD.Lib.Internal.ShortShow TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CheckWebAppFileDownload.CheckWebAppFileDownload
+
+module TD.Query.ClaimTonConnectRequest
+
+-- | Claims a request received through TON Connect for processing on this
+--   device. Returns <a>Ok</a>
+data ClaimTonConnectRequest
+ClaimTonConnectRequest :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Bool -> ClaimTonConnectRequest
+
+-- | Unique identifier of the TON Connect session
+[session_id] :: ClaimTonConnectRequest -> Maybe Int
+
+-- | Identifier of the message with the request
+[message_id] :: ClaimTonConnectRequest -> Maybe Int
+
+-- | Identifier of the request assigned by the dApp
+[dapp_request_id] :: ClaimTonConnectRequest -> Maybe Text
+
+-- | Pass true to reject the request
+[is_rejected] :: ClaimTonConnectRequest -> Maybe Bool
+defaultClaimTonConnectRequest :: ClaimTonConnectRequest
+instance GHC.Show.Show TD.Query.ClaimTonConnectRequest.ClaimTonConnectRequest
+instance GHC.Classes.Eq TD.Query.ClaimTonConnectRequest.ClaimTonConnectRequest
+instance TD.Lib.Internal.ShortShow TD.Query.ClaimTonConnectRequest.ClaimTonConnectRequest
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ClaimTonConnectRequest.ClaimTonConnectRequest
 
 module TD.Query.CleanFileName
 
@@ -32556,7 +33719,7 @@ ComposeRichMessageWithAi :: Maybe InputRichMessage -> Maybe Text -> Maybe Text -
 --   translateText.to_language_code for the list of supported values
 [translate_to_language_code] :: ComposeRichMessageWithAi -> Maybe Text
 
--- | Name of the style of the resulted text; handle
+-- | Name of the style of the resulting text; handle
 --   updateTextCompositionStyles to get the list of supported styles; pass
 --   an empty string to keep the current style of the text or if a custom
 --   prompt is used
@@ -32591,7 +33754,7 @@ ComposeTextWithAi :: Maybe FormattedText -> Maybe Text -> Maybe Text -> Maybe Bo
 --   translateText.to_language_code for the list of supported values
 [translate_to_language_code] :: ComposeTextWithAi -> Maybe Text
 
--- | Name of the style of the resulted text; handle
+-- | Name of the style of the resulting text; handle
 --   updateTextCompositionStyles to get the list of supported styles; pass
 --   an empty string to keep the current style of the text
 [style_name] :: ComposeTextWithAi -> Maybe Text
@@ -32719,8 +33882,13 @@ CreateBot :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Bool -> CreateBot
 -- | Name of the bot; 1-64 characters
 [name] :: CreateBot -> Maybe Text
 
--- | Username of the bot. The username must end with "bot". Use
---   checkBotUsername to find whether the name is suitable
+-- | Username of the bot. The username must end with "bot" or a string from
+--   updateAllowedBotUsernamePremiumSuffixes case-insensitive. Use
+--   checkBotUsername to find whether the name is suitable. If the username
+--   doesn't end with "bot", then the current user must have Telegram
+--   Premium subscription, the chosen username will be assigned as
+--   secondary and an additional regular username ending with "bot" will be
+--   automatically assigned to the created bot
 [username] :: CreateBot -> Maybe Text
 
 -- | Pass true if the bot is created from an
@@ -33093,6 +34261,55 @@ instance GHC.Classes.Eq TD.Query.CreateNewSupergroupChat.CreateNewSupergroupChat
 instance TD.Lib.Internal.ShortShow TD.Query.CreateNewSupergroupChat.CreateNewSupergroupChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateNewSupergroupChat.CreateNewSupergroupChat
 
+module TD.Query.CreateOnRampPaymentSession
+
+-- | Creates a session for an on-ramp payment. Returns
+--   <a>OnRampPaymentSession</a>
+data CreateOnRampPaymentSession
+CreateOnRampPaymentSession :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> CreateOnRampPaymentSession
+
+-- | Unique identifier of the on-ramp provider
+[provider_id] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | The cryptocurrency that will be bought
+[cryptocurrency] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | Address to which the cryptocurrency will be sent
+[address] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | Name of the chosen payment method; pass an empty string if none
+[payment_method_name] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | ISO 4217 currency code of the currency that will be used for the
+--   purchase; pass an empty string if unknown
+[base_currency] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | The amount of the cryptocurrency to buy; pass an empty string if the
+--   user selected base_currency_amount
+[cryptocurrency_amount] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | The amount of the base currency to spend; pass an empty string if the
+--   user selected cryptocurrency_amount
+[base_currency_amount] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | Memo for the query; pass an empty string if none
+[memo] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | Preferred theme for the WebView; pass "light" for a light theme,
+--   "dark" for a dark theme, or leave empty for a default theme
+[theme] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | The URL opened on successful payment; pass an empty string if none
+[success_return_url] :: CreateOnRampPaymentSession -> Maybe Text
+
+-- | The URL opened on failed payment; pass an empty string if none
+[fail_return_url] :: CreateOnRampPaymentSession -> Maybe Text
+defaultCreateOnRampPaymentSession :: CreateOnRampPaymentSession
+instance GHC.Show.Show TD.Query.CreateOnRampPaymentSession.CreateOnRampPaymentSession
+instance GHC.Classes.Eq TD.Query.CreateOnRampPaymentSession.CreateOnRampPaymentSession
+instance TD.Lib.Internal.ShortShow TD.Query.CreateOnRampPaymentSession.CreateOnRampPaymentSession
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateOnRampPaymentSession.CreateOnRampPaymentSession
+
 module TD.Query.CreatePrivateChat
 
 -- | Returns an existing chat corresponding to a given user. Returns
@@ -33238,6 +34455,39 @@ instance GHC.Show.Show TD.Query.CreateTextCompositionStyle.CreateTextComposition
 instance GHC.Classes.Eq TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
 instance TD.Lib.Internal.ShortShow TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateTextCompositionStyle.CreateTextCompositionStyle
+
+module TD.Query.CreateTonConnectSession
+
+-- | Creates a TON Connect session; can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>TonConnectSession</a>
+data CreateTonConnectSession
+CreateTonConnectSession :: Maybe Text -> Maybe Text -> CreateTonConnectSession
+
+-- | Hex-encoded public X25519 key of the dApp
+[dapp_client_id] :: CreateTonConnectSession -> Maybe Text
+
+-- | URL of the manifest of the dApp
+[manifest_url] :: CreateTonConnectSession -> Maybe Text
+defaultCreateTonConnectSession :: CreateTonConnectSession
+instance GHC.Show.Show TD.Query.CreateTonConnectSession.CreateTonConnectSession
+instance GHC.Classes.Eq TD.Query.CreateTonConnectSession.CreateTonConnectSession
+instance TD.Lib.Internal.ShortShow TD.Query.CreateTonConnectSession.CreateTonConnectSession
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateTonConnectSession.CreateTonConnectSession
+
+module TD.Query.CreateUserTonWallet
+
+-- | Creates a TON wallet for the specified regular user; can be used only
+--   if getOption("can_use_ton_wallet"). The current user must have
+--   positive TON wallet balance. Returns <a>UserTonWalletAddress</a>
+data CreateUserTonWallet
+CreateUserTonWallet :: Maybe Int -> CreateUserTonWallet
+
+-- | Identifier of the user
+[user_id] :: CreateUserTonWallet -> Maybe Int
+instance GHC.Show.Show TD.Query.CreateUserTonWallet.CreateUserTonWallet
+instance GHC.Classes.Eq TD.Query.CreateUserTonWallet.CreateUserTonWallet
+instance TD.Lib.Internal.ShortShow TD.Query.CreateUserTonWallet.CreateUserTonWallet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.CreateUserTonWallet.CreateUserTonWallet
 
 module TD.Query.CreateVideoChat
 
@@ -33456,6 +34706,21 @@ instance GHC.Show.Show TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
 instance GHC.Classes.Eq TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBotMediaPreviews.DeleteBotMediaPreviews
+
+module TD.Query.DeleteBotSecondaryUsername
+
+-- | Removes a secondary username from a bot. Can be called only if
+--   userTypeBot.can_be_edited == true and the bot has a secondary
+--   username. Returns <a>Ok</a>
+data DeleteBotSecondaryUsername
+DeleteBotSecondaryUsername :: Maybe Int -> DeleteBotSecondaryUsername
+
+-- | Identifier of the target bot
+[bot_user_id] :: DeleteBotSecondaryUsername -> Maybe Int
+instance GHC.Show.Show TD.Query.DeleteBotSecondaryUsername.DeleteBotSecondaryUsername
+instance GHC.Classes.Eq TD.Query.DeleteBotSecondaryUsername.DeleteBotSecondaryUsername
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteBotSecondaryUsername.DeleteBotSecondaryUsername
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteBotSecondaryUsername.DeleteBotSecondaryUsername
 
 module TD.Query.DeleteBusinessChatLink
 
@@ -33716,6 +34981,19 @@ instance GHC.Show.Show TD.Query.DeleteCommands.DeleteCommands
 instance GHC.Classes.Eq TD.Query.DeleteCommands.DeleteCommands
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteCommands.DeleteCommands
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteCommands.DeleteCommands
+
+module TD.Query.DeleteCommunity
+
+-- | Deletes a community; requires owner privileges. Returns <a>Ok</a>
+data DeleteCommunity
+DeleteCommunity :: Maybe Int -> DeleteCommunity
+
+-- | Identifier of the community
+[community_id] :: DeleteCommunity -> Maybe Int
+instance GHC.Show.Show TD.Query.DeleteCommunity.DeleteCommunity
+instance GHC.Classes.Eq TD.Query.DeleteCommunity.DeleteCommunity
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteCommunity.DeleteCommunity
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteCommunity.DeleteCommunity
 
 module TD.Query.DeleteDefaultBackground
 
@@ -34052,7 +35330,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteQuickReplyShortcutMessage
 
 module TD.Query.DeleteRevokedChatInviteLink
 
--- | Deletes revoked chat invite links. Requires administrator privileges
+-- | Deletes a revoked chat invite link. Requires administrator privileges
 --   and can_invite_users right in the chat for own links and owner
 --   privileges for other links. Returns <a>Ok</a>
 data DeleteRevokedChatInviteLink
@@ -34061,7 +35339,7 @@ DeleteRevokedChatInviteLink :: Maybe Int -> Maybe Text -> DeleteRevokedChatInvit
 -- | Chat identifier
 [chat_id] :: DeleteRevokedChatInviteLink -> Maybe Int
 
--- | Invite link to revoke
+-- | Invite link to delete
 [invite_link] :: DeleteRevokedChatInviteLink -> Maybe Text
 defaultDeleteRevokedChatInviteLink :: DeleteRevokedChatInviteLink
 instance GHC.Show.Show TD.Query.DeleteRevokedChatInviteLink.DeleteRevokedChatInviteLink
@@ -34189,6 +35467,22 @@ instance GHC.Classes.Eq TD.Query.DeleteTextCompositionStyle.DeleteTextCompositio
 instance TD.Lib.Internal.ShortShow TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteTextCompositionStyle.DeleteTextCompositionStyle
 
+module TD.Query.DeleteTonWallet
+
+-- | Deletes the current TON wallet of the user and creates a new one; can
+--   be used only if getOption("can_use_ton_wallet"). Returns <a>Ok</a>
+data DeleteTonWallet
+DeleteTonWallet :: Maybe Text -> DeleteTonWallet
+
+-- | Password of the current user; pass an empty string unless receive an
+--   error with a message <a>PASSWORD_MISSING</a> for a passwordless
+--   request
+[password] :: DeleteTonWallet -> Maybe Text
+instance GHC.Show.Show TD.Query.DeleteTonWallet.DeleteTonWallet
+instance GHC.Classes.Eq TD.Query.DeleteTonWallet.DeleteTonWallet
+instance TD.Lib.Internal.ShortShow TD.Query.DeleteTonWallet.DeleteTonWallet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DeleteTonWallet.DeleteTonWallet
+
 module TD.Query.Destroy
 
 -- | Closes the TDLib instance, destroying all local data without a proper
@@ -34228,6 +35522,38 @@ instance GHC.Show.Show TD.Query.DisableProxy.DisableProxy
 instance GHC.Classes.Eq TD.Query.DisableProxy.DisableProxy
 instance TD.Lib.Internal.ShortShow TD.Query.DisableProxy.DisableProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisableProxy.DisableProxy
+
+module TD.Query.DisableTonWalletBackup
+
+-- | Disables backup of the TON wallet of the user. Works only if
+--   tonWalletState.is_backup_enabled is true. Returns <a>Ok</a>
+data DisableTonWalletBackup
+DisableTonWalletBackup :: Maybe Text -> DisableTonWalletBackup
+
+-- | Password of the current user; pass an empty string unless receive an
+--   error with a message <a>PASSWORD_MISSING</a> for a passwordless
+--   request
+[password] :: DisableTonWalletBackup -> Maybe Text
+instance GHC.Show.Show TD.Query.DisableTonWalletBackup.DisableTonWalletBackup
+instance GHC.Classes.Eq TD.Query.DisableTonWalletBackup.DisableTonWalletBackup
+instance TD.Lib.Internal.ShortShow TD.Query.DisableTonWalletBackup.DisableTonWalletBackup
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisableTonWalletBackup.DisableTonWalletBackup
+
+module TD.Query.DisableTonWalletBackupWithProof
+
+-- | Disables backup of the TON wallet of the user using proof of wallet
+--   ownership instead of the password. Works only if
+--   tonWalletState.is_backup_enabled is true. Returns <a>Ok</a>
+data DisableTonWalletBackupWithProof
+DisableTonWalletBackupWithProof :: Maybe TonWalletOwnershipProof -> DisableTonWalletBackupWithProof
+
+-- | Proof of the TON wallet ownership; use
+--   getTonWalletOwnershipProofChallenge to get a challenge for the proof
+[proof] :: DisableTonWalletBackupWithProof -> Maybe TonWalletOwnershipProof
+instance GHC.Show.Show TD.Query.DisableTonWalletBackupWithProof.DisableTonWalletBackupWithProof
+instance GHC.Classes.Eq TD.Query.DisableTonWalletBackupWithProof.DisableTonWalletBackupWithProof
+instance TD.Lib.Internal.ShortShow TD.Query.DisableTonWalletBackupWithProof.DisableTonWalletBackupWithProof
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisableTonWalletBackupWithProof.DisableTonWalletBackupWithProof
 
 module TD.Query.DiscardCall
 
@@ -34290,6 +35616,25 @@ instance GHC.Classes.Eq TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 instance TD.Lib.Internal.ShortShow TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisconnectAllWebsites.DisconnectAllWebsites
 
+module TD.Query.DisconnectTonConnectSession
+
+-- | Closes a TON Connect session. Returns <a>Ok</a>
+data DisconnectTonConnectSession
+DisconnectTonConnectSession :: Maybe Int -> Maybe ByteString -> DisconnectTonConnectSession
+
+-- | Unique identifier of the TON Connect session to close
+[session_id] :: DisconnectTonConnectSession -> Maybe Int
+
+-- | Encrypted body of the disconnect event; may be empty if the session
+--   has already been closed. Use getTonConnectSessionNextEventId to get
+--   event identifier for the event
+[body] :: DisconnectTonConnectSession -> Maybe ByteString
+defaultDisconnectTonConnectSession :: DisconnectTonConnectSession
+instance GHC.Show.Show TD.Query.DisconnectTonConnectSession.DisconnectTonConnectSession
+instance GHC.Classes.Eq TD.Query.DisconnectTonConnectSession.DisconnectTonConnectSession
+instance TD.Lib.Internal.ShortShow TD.Query.DisconnectTonConnectSession.DisconnectTonConnectSession
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisconnectTonConnectSession.DisconnectTonConnectSession
+
 module TD.Query.DisconnectWebsite
 
 -- | Disconnects website from the current user's Telegram account. Returns
@@ -34303,6 +35648,20 @@ instance GHC.Show.Show TD.Query.DisconnectWebsite.DisconnectWebsite
 instance GHC.Classes.Eq TD.Query.DisconnectWebsite.DisconnectWebsite
 instance TD.Lib.Internal.ShortShow TD.Query.DisconnectWebsite.DisconnectWebsite
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DisconnectWebsite.DisconnectWebsite
+
+module TD.Query.DismissWebToken
+
+-- | Dismisses a received web token without consumption; for official
+--   Telegram apps only. Returns <a>Ok</a>
+data DismissWebToken
+DismissWebToken :: Maybe Text -> DismissWebToken
+
+-- | The token to dismiss
+[token] :: DismissWebToken -> Maybe Text
+instance GHC.Show.Show TD.Query.DismissWebToken.DismissWebToken
+instance GHC.Classes.Eq TD.Query.DismissWebToken.DismissWebToken
+instance TD.Lib.Internal.ShortShow TD.Query.DismissWebToken.DismissWebToken
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.DismissWebToken.DismissWebToken
 
 module TD.Query.DownloadFile
 
@@ -34520,7 +35879,7 @@ EditBusinessMessageMedia :: Maybe Text -> Maybe Int -> Maybe Int -> Maybe ReplyM
 
 -- | New content of the message. Must be one of the following types:
 --   inputMessageAnimation, inputMessageAudio, inputMessageDocument,
---   inputMessagePhoto or inputMessageVideo
+--   inputMessagePhoto, or inputMessageVideo
 [input_message_content] :: EditBusinessMessageMedia -> Maybe InputMessageContent
 defaultEditBusinessMessageMedia :: EditBusinessMessageMedia
 instance GHC.Show.Show TD.Query.EditBusinessMessageMedia.EditBusinessMessageMedia
@@ -34611,35 +35970,6 @@ instance GHC.Show.Show TD.Query.EditBusinessStory.EditBusinessStory
 instance GHC.Classes.Eq TD.Query.EditBusinessStory.EditBusinessStory
 instance TD.Lib.Internal.ShortShow TD.Query.EditBusinessStory.EditBusinessStory
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditBusinessStory.EditBusinessStory
-
-module TD.Query.EditCallbackQueryMessage
-
--- | Edits the message from which a callback query has originated with an
---   ephemeral message; for bots only. Returns <a>Ok</a>
-data EditCallbackQueryMessage
-EditCallbackQueryMessage :: Maybe Int -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> EditCallbackQueryMessage
-
--- | Identifier of the callback query
-[callback_query_id] :: EditCallbackQueryMessage -> Maybe Int
-
--- | Pass true if the content of the message must be protected from
---   forwarding and saving
-[protect_content] :: EditCallbackQueryMessage -> Maybe Bool
-
--- | The new message reply markup; pass null if none
-[reply_markup] :: EditCallbackQueryMessage -> Maybe ReplyMarkup
-
--- | New content of the message. Must be one of the following types:
---   inputMessageText, inputMessageAnimation, inputMessageAudio,
---   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
---   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
---   inputMessageVoiceNote
-[input_message_content] :: EditCallbackQueryMessage -> Maybe InputMessageContent
-defaultEditCallbackQueryMessage :: EditCallbackQueryMessage
-instance GHC.Show.Show TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
-instance GHC.Classes.Eq TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
-instance TD.Lib.Internal.ShortShow TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditCallbackQueryMessage.EditCallbackQueryMessage
 
 module TD.Query.EditChatFolder
 
@@ -34949,7 +36279,7 @@ EditInlineMessageMedia :: Maybe Text -> Maybe ReplyMarkup -> Maybe InputMessageC
 
 -- | New content of the message. Must be one of the following types:
 --   inputMessageAnimation, inputMessageAudio, inputMessageDocument,
---   inputMessagePhoto or inputMessageVideo
+--   inputMessagePhoto, or inputMessageVideo
 [input_message_content] :: EditInlineMessageMedia -> Maybe InputMessageContent
 defaultEditInlineMessageMedia :: EditInlineMessageMedia
 instance GHC.Show.Show TD.Query.EditInlineMessageMedia.EditInlineMessageMedia
@@ -35107,7 +36437,7 @@ EditMessageMedia :: Maybe Int -> Maybe Int -> Maybe ReplyMarkup -> Maybe InputMe
 
 -- | New content of the message. Must be one of the following types:
 --   inputMessageAnimation, inputMessageAudio, inputMessageDocument,
---   inputMessagePhoto or inputMessageVideo
+--   inputMessagePhoto, or inputMessageVideo
 [input_message_content] :: EditMessageMedia -> Maybe InputMessageContent
 defaultEditMessageMedia :: EditMessageMedia
 instance GHC.Show.Show TD.Query.EditMessageMedia.EditMessageMedia
@@ -35217,7 +36547,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditProxy.EditProxy
 
 module TD.Query.EditQuickReplyMessage
 
--- | Asynchronously edits the text, media or caption of a quick reply
+-- | Asynchronously edits the text, media, or caption of a quick reply
 --   message. Use quickReplyMessage.can_be_edited to check whether a
 --   message can be edited. Media message can be edited only to a media
 --   message. Checklist messages can be edited only to a checklist message.
@@ -35377,6 +36707,26 @@ instance GHC.Show.Show TD.Query.EnableProxy.EnableProxy
 instance GHC.Classes.Eq TD.Query.EnableProxy.EnableProxy
 instance TD.Lib.Internal.ShortShow TD.Query.EnableProxy.EnableProxy
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EnableProxy.EnableProxy
+
+module TD.Query.EnableTonWalletBackup
+
+-- | Enables backup of the TON wallet of the user. Works only if
+--   tonWalletState.can_enable_backup is true. Returns <a>Ok</a>
+data EnableTonWalletBackup
+EnableTonWalletBackup :: Maybe Text -> Maybe TonWalletOwnershipProof -> EnableTonWalletBackup
+
+-- | The secret phrase of the user's TON wallet as a space separated list
+--   of words
+[secret_phrase] :: EnableTonWalletBackup -> Maybe Text
+
+-- | Proof of the TON wallet ownership; use
+--   getTonWalletOwnershipProofChallenge to get a challenge for the proof
+[proof] :: EnableTonWalletBackup -> Maybe TonWalletOwnershipProof
+defaultEnableTonWalletBackup :: EnableTonWalletBackup
+instance GHC.Show.Show TD.Query.EnableTonWalletBackup.EnableTonWalletBackup
+instance GHC.Classes.Eq TD.Query.EnableTonWalletBackup.EnableTonWalletBackup
+instance TD.Lib.Internal.ShortShow TD.Query.EnableTonWalletBackup.EnableTonWalletBackup
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EnableTonWalletBackup.EnableTonWalletBackup
 
 module TD.Query.EncryptGroupCallData
 
@@ -35561,6 +36911,21 @@ instance GHC.Show.Show TD.Query.GetActiveSessions.GetActiveSessions
 instance GHC.Classes.Eq TD.Query.GetActiveSessions.GetActiveSessions
 instance TD.Lib.Internal.ShortShow TD.Query.GetActiveSessions.GetActiveSessions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetActiveSessions.GetActiveSessions
+
+module TD.Query.GetAddressTonWallet
+
+-- | Returns information about a TON wallet with the given address; can be
+--   used only if getOption("can_use_ton_wallet"). Returns
+--   <a>UserTonWalletAddress</a>
+data GetAddressTonWallet
+GetAddressTonWallet :: Maybe Text -> GetAddressTonWallet
+
+-- | Address in the TON blockchain
+[address] :: GetAddressTonWallet -> Maybe Text
+instance GHC.Show.Show TD.Query.GetAddressTonWallet.GetAddressTonWallet
+instance GHC.Classes.Eq TD.Query.GetAddressTonWallet.GetAddressTonWallet
+instance TD.Lib.Internal.ShortShow TD.Query.GetAddressTonWallet.GetAddressTonWallet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetAddressTonWallet.GetAddressTonWallet
 
 module TD.Query.GetAllPassportElements
 
@@ -36776,8 +38141,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatOwnerAfterLeaving.GetCha
 
 module TD.Query.GetChatPinnedMessage
 
--- | Returns information about a newest pinned message in the chat. Returns
---   a 404 error if the message doesn't exist. Returns <a>Message</a>
+-- | Returns information about the newest pinned message in the chat.
+--   Returns a 404 error if the message doesn't exist. Returns
+--   <a>Message</a>
 data GetChatPinnedMessage
 GetChatPinnedMessage :: Maybe Int -> GetChatPinnedMessage
 
@@ -36790,11 +38156,11 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatPinnedMessage.GetChatPin
 
 module TD.Query.GetChatPostedToChatPageStories
 
--- | Returns the list of stories that posted by the given chat to its chat
---   page. If from_story_id == 0, then pinned stories are returned first.
---   Then, stories are returned in reverse chronological order (i.e., in
---   order of decreasing story_id). For optimal performance, the number of
---   returned stories is chosen by TDLib. Returns <a>Stories</a>
+-- | Returns the list of stories that were posted by the given chat to its
+--   chat page. If from_story_id == 0, then pinned stories are returned
+--   first. Then, stories are returned in reverse chronological order
+--   (i.e., in order of decreasing story_id). For optimal performance, the
+--   number of returned stories is chosen by TDLib. Returns <a>Stories</a>
 data GetChatPostedToChatPageStories
 GetChatPostedToChatPageStories :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatPostedToChatPageStories
 
@@ -37146,6 +38512,20 @@ instance GHC.Classes.Eq TD.Query.GetCommands.GetCommands
 instance TD.Lib.Internal.ShortShow TD.Query.GetCommands.GetCommands
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommands.GetCommands
 
+module TD.Query.GetCommunityFullInfo
+
+-- | Returns full information about a community. Returns
+--   <a>CommunityFullInfo</a>
+data GetCommunityFullInfo
+GetCommunityFullInfo :: Maybe Int -> GetCommunityFullInfo
+
+-- | Community identifier
+[community_id] :: GetCommunityFullInfo -> Maybe Int
+instance GHC.Show.Show TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
+instance GHC.Classes.Eq TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
+instance TD.Lib.Internal.ShortShow TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
+
 module TD.Query.GetConnectedAffiliateProgram
 
 -- | Returns an affiliate program that was connected to the given affiliate
@@ -37154,7 +38534,7 @@ module TD.Query.GetConnectedAffiliateProgram
 data GetConnectedAffiliateProgram
 GetConnectedAffiliateProgram :: Maybe AffiliateType -> Maybe Int -> GetConnectedAffiliateProgram
 
--- | The affiliate to which the affiliate program will be connected
+-- | The affiliate to which the affiliate program is connected
 [affiliate] :: GetConnectedAffiliateProgram -> Maybe AffiliateType
 
 -- | Identifier of the bot that created the program
@@ -37189,7 +38569,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetConnectedAffiliatePrograms.G
 
 module TD.Query.GetConnectedWebsites
 
--- | Returns all website where the current user used Telegram to log in.
+-- | Returns all websites where the current user used Telegram to log in.
 --   Returns <a>ConnectedWebsites</a>
 data GetConnectedWebsites
 GetConnectedWebsites :: GetConnectedWebsites
@@ -37273,6 +38653,17 @@ instance GHC.Show.Show TD.Query.GetCreatedPublicChats.GetCreatedPublicChats
 instance GHC.Classes.Eq TD.Query.GetCreatedPublicChats.GetCreatedPublicChats
 instance TD.Lib.Internal.ShortShow TD.Query.GetCreatedPublicChats.GetCreatedPublicChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCreatedPublicChats.GetCreatedPublicChats
+
+module TD.Query.GetCurrencyExchangeRates
+
+-- | Returns exchange rates of currencies to USD. Returns
+--   <a>CurrencyExchangeRates</a>
+data GetCurrencyExchangeRates
+GetCurrencyExchangeRates :: GetCurrencyExchangeRates
+instance GHC.Show.Show TD.Query.GetCurrencyExchangeRates.GetCurrencyExchangeRates
+instance GHC.Classes.Eq TD.Query.GetCurrencyExchangeRates.GetCurrencyExchangeRates
+instance TD.Lib.Internal.ShortShow TD.Query.GetCurrencyExchangeRates.GetCurrencyExchangeRates
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCurrencyExchangeRates.GetCurrencyExchangeRates
 
 module TD.Query.GetCurrentState
 
@@ -37811,7 +39202,7 @@ module TD.Query.GetFullRichMessage
 data GetFullRichMessage
 GetFullRichMessage :: Maybe Int -> Maybe Int -> GetFullRichMessage
 
--- | Identifier of the chat the messages belong to
+-- | Identifier of the chat the message belongs to
 [chat_id] :: GetFullRichMessage -> Maybe Int
 
 -- | Identifier of the message
@@ -37920,8 +39311,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetGiftUpgradePreview.GetGiftUp
 
 module TD.Query.GetGiftsForCrafting
 
--- | Returns upgraded gifts of the current user who can be used to craft
---   another gifts. Returns <a>GiftsForCrafting</a>
+-- | Returns upgraded gifts of the current user, which can be used to craft
+--   other gifts. Returns <a>GiftsForCrafting</a>
 data GetGiftsForCrafting
 GetGiftsForCrafting :: Maybe Int -> Maybe Text -> Maybe Int -> GetGiftsForCrafting
 
@@ -38809,7 +40200,7 @@ GetMessageAvailableReactions :: Maybe Int -> Maybe Int -> Maybe Int -> GetMessag
 -- | Identifier of the message
 [message_id] :: GetMessageAvailableReactions -> Maybe Int
 
--- | Number of reaction per row, 5-25
+-- | Number of reactions per row, 5-25
 [row_size] :: GetMessageAvailableReactions -> Maybe Int
 defaultGetMessageAvailableReactions :: GetMessageAvailableReactions
 instance GHC.Show.Show TD.Query.GetMessageAvailableReactions.GetMessageAvailableReactions
@@ -39172,7 +40563,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetNewChatPrivacySettings.GetNe
 module TD.Query.GetOauthLinkInfo
 
 -- | Returns information about an OAuth deep link. Use
---   checkOauthRequestMatchCode, acceptOauthRequest or declineOauthRequest
+--   checkOauthRequestMatchCode, acceptOauthRequest, or declineOauthRequest
 --   to process the link. Returns <a>OauthLinkInfo</a>
 data GetOauthLinkInfo
 GetOauthLinkInfo :: Maybe Text -> Maybe Text -> GetOauthLinkInfo
@@ -39188,6 +40579,119 @@ instance GHC.Show.Show TD.Query.GetOauthLinkInfo.GetOauthLinkInfo
 instance GHC.Classes.Eq TD.Query.GetOauthLinkInfo.GetOauthLinkInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetOauthLinkInfo.GetOauthLinkInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOauthLinkInfo.GetOauthLinkInfo
+
+module TD.Query.GetOnRampPaymentAvailability
+
+-- | Returns the available on-ramp payment methods based on the current
+--   user location. Returns <a>OnRampPaymentAvailability</a>
+data GetOnRampPaymentAvailability
+GetOnRampPaymentAvailability :: Maybe Text -> Maybe Text -> Maybe Text -> GetOnRampPaymentAvailability
+
+-- | Unique identifier of the on-ramp provider
+[provider_id] :: GetOnRampPaymentAvailability -> Maybe Text
+
+-- | The cryptocurrency that will be bought
+[cryptocurrency] :: GetOnRampPaymentAvailability -> Maybe Text
+
+-- | ISO 4217 currency code of the currency that will be used for the
+--   purchase; pass an empty string if unknown
+[base_currency] :: GetOnRampPaymentAvailability -> Maybe Text
+defaultGetOnRampPaymentAvailability :: GetOnRampPaymentAvailability
+instance GHC.Show.Show TD.Query.GetOnRampPaymentAvailability.GetOnRampPaymentAvailability
+instance GHC.Classes.Eq TD.Query.GetOnRampPaymentAvailability.GetOnRampPaymentAvailability
+instance TD.Lib.Internal.ShortShow TD.Query.GetOnRampPaymentAvailability.GetOnRampPaymentAvailability
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOnRampPaymentAvailability.GetOnRampPaymentAvailability
+
+module TD.Query.GetOnRampPaymentLimits
+
+-- | Returns the limits for an on-ramp payment; only for providers that
+--   support limits retrieval. Returns <a>OnRampPaymentLimits</a>
+data GetOnRampPaymentLimits
+GetOnRampPaymentLimits :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> GetOnRampPaymentLimits
+
+-- | Unique identifier of the on-ramp provider
+[provider_id] :: GetOnRampPaymentLimits -> Maybe Text
+
+-- | The cryptocurrency that will be bought
+[cryptocurrency] :: GetOnRampPaymentLimits -> Maybe Text
+
+-- | ISO 4217 currency code of the currency that will be used for the
+--   purchase
+[base_currency] :: GetOnRampPaymentLimits -> Maybe Text
+
+-- | Name of the chosen payment method; pass an empty string if none
+[payment_method_name] :: GetOnRampPaymentLimits -> Maybe Text
+defaultGetOnRampPaymentLimits :: GetOnRampPaymentLimits
+instance GHC.Show.Show TD.Query.GetOnRampPaymentLimits.GetOnRampPaymentLimits
+instance GHC.Classes.Eq TD.Query.GetOnRampPaymentLimits.GetOnRampPaymentLimits
+instance TD.Lib.Internal.ShortShow TD.Query.GetOnRampPaymentLimits.GetOnRampPaymentLimits
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOnRampPaymentLimits.GetOnRampPaymentLimits
+
+module TD.Query.GetOnRampPaymentQuote
+
+-- | Returns a quote for an on-ramp payment; only for providers that
+--   support quote retrieval. Returns <a>OnRampPaymentQuote</a>
+data GetOnRampPaymentQuote
+GetOnRampPaymentQuote :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Text -> GetOnRampPaymentQuote
+
+-- | Unique identifier of the on-ramp provider
+[provider_id] :: GetOnRampPaymentQuote -> Maybe Text
+
+-- | The cryptocurrency that will be bought
+[cryptocurrency] :: GetOnRampPaymentQuote -> Maybe Text
+
+-- | ISO 4217 currency code of the currency that will be used for the
+--   purchase
+[base_currency] :: GetOnRampPaymentQuote -> Maybe Text
+
+-- | The amount of the cryptocurrency to buy; pass an empty string if the
+--   user selected base_currency_amount
+[cryptocurrency_amount] :: GetOnRampPaymentQuote -> Maybe Text
+
+-- | The amount of the base currency to spend; pass an empty string if the
+--   user selected cryptocurrency_amount
+[base_currency_amount] :: GetOnRampPaymentQuote -> Maybe Text
+
+-- | Name of the chosen payment method; pass an empty string if none
+[payment_method_name] :: GetOnRampPaymentQuote -> Maybe Text
+defaultGetOnRampPaymentQuote :: GetOnRampPaymentQuote
+instance GHC.Show.Show TD.Query.GetOnRampPaymentQuote.GetOnRampPaymentQuote
+instance GHC.Classes.Eq TD.Query.GetOnRampPaymentQuote.GetOnRampPaymentQuote
+instance TD.Lib.Internal.ShortShow TD.Query.GetOnRampPaymentQuote.GetOnRampPaymentQuote
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOnRampPaymentQuote.GetOnRampPaymentQuote
+
+module TD.Query.GetOnRampProviderBaseCurrencies
+
+-- | Returns the list of fiat currencies supported by an on-ramp provider
+--   for the given cryptocurrency. Returns <a>Currencies</a>
+data GetOnRampProviderBaseCurrencies
+GetOnRampProviderBaseCurrencies :: Maybe Text -> Maybe Text -> GetOnRampProviderBaseCurrencies
+
+-- | Unique identifier of the on-ramp provider; only for providers that
+--   support base currencies
+[provider_id] :: GetOnRampProviderBaseCurrencies -> Maybe Text
+
+-- | The cryptocurrency that will be bought
+[cryptocurrency] :: GetOnRampProviderBaseCurrencies -> Maybe Text
+defaultGetOnRampProviderBaseCurrencies :: GetOnRampProviderBaseCurrencies
+instance GHC.Show.Show TD.Query.GetOnRampProviderBaseCurrencies.GetOnRampProviderBaseCurrencies
+instance GHC.Classes.Eq TD.Query.GetOnRampProviderBaseCurrencies.GetOnRampProviderBaseCurrencies
+instance TD.Lib.Internal.ShortShow TD.Query.GetOnRampProviderBaseCurrencies.GetOnRampProviderBaseCurrencies
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOnRampProviderBaseCurrencies.GetOnRampProviderBaseCurrencies
+
+module TD.Query.GetOnRampProviders
+
+-- | Returns available on-ramp providers. Returns <a>OnRampProviders</a>
+data GetOnRampProviders
+GetOnRampProviders :: Maybe Text -> GetOnRampProviders
+
+-- | Pass a cryptocurrency to receive only providers that support it; pass
+--   an empty string to receive all providers
+[cryptocurrency] :: GetOnRampProviders -> Maybe Text
+instance GHC.Show.Show TD.Query.GetOnRampProviders.GetOnRampProviders
+instance GHC.Classes.Eq TD.Query.GetOnRampProviders.GetOnRampProviders
+instance TD.Lib.Internal.ShortShow TD.Query.GetOnRampProviders.GetOnRampProviders
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetOnRampProviders.GetOnRampProviders
 
 module TD.Query.GetOption
 
@@ -39630,8 +41134,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetPremiumStickers.GetPremiumSt
 
 module TD.Query.GetPreparedInlineMessage
 
--- | Saves an inline message to be sent by the given user. Returns
---   <a>PreparedInlineMessage</a>
+-- | Returns an inline message prepared by a bot to be sent by the current
+--   user. Returns <a>PreparedInlineMessage</a>
 data GetPreparedInlineMessage
 GetPreparedInlineMessage :: Maybe Int -> Maybe Text -> GetPreparedInlineMessage
 
@@ -40511,7 +42015,7 @@ module TD.Query.GetStoryAvailableReactions
 data GetStoryAvailableReactions
 GetStoryAvailableReactions :: Maybe Int -> GetStoryAvailableReactions
 
--- | Number of reaction per row, 5-25
+-- | Number of reactions per row, 5-25
 [row_size] :: GetStoryAvailableReactions -> Maybe Int
 instance GHC.Show.Show TD.Query.GetStoryAvailableReactions.GetStoryAvailableReactions
 instance GHC.Classes.Eq TD.Query.GetStoryAvailableReactions.GetStoryAvailableReactions
@@ -40792,8 +42296,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTextCompositionStyleExample.
 module TD.Query.GetTextEntities
 
 -- | Returns all entities (mentions, hashtags, cashtags, bot commands, bank
---   card numbers, URLs, and email addresses) found in the text. Can be
---   called synchronously. Returns <a>TextEntities</a>
+--   card numbers, TON blockchain addresses, URLs, and email addresses)
+--   found in the text. Can be called synchronously. Returns
+--   <a>TextEntities</a>
 data GetTextEntities
 GetTextEntities :: Maybe Text -> GetTextEntities
 
@@ -40851,10 +42356,74 @@ instance GHC.Classes.Eq TD.Query.GetTimeZones.GetTimeZones
 instance TD.Lib.Internal.ShortShow TD.Query.GetTimeZones.GetTimeZones
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTimeZones.GetTimeZones
 
+module TD.Query.GetTonCenterStreamingApiUrl
+
+-- | Returns a URL for TON Center Streaming API. Returns
+--   <a>TonCenterStreamingApiUrl</a>
+data GetTonCenterStreamingApiUrl
+GetTonCenterStreamingApiUrl :: GetTonCenterStreamingApiUrl
+instance GHC.Show.Show TD.Query.GetTonCenterStreamingApiUrl.GetTonCenterStreamingApiUrl
+instance GHC.Classes.Eq TD.Query.GetTonCenterStreamingApiUrl.GetTonCenterStreamingApiUrl
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonCenterStreamingApiUrl.GetTonCenterStreamingApiUrl
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonCenterStreamingApiUrl.GetTonCenterStreamingApiUrl
+
+module TD.Query.GetTonConnectDAppPendingRequests
+
+-- | Returns pending requests with a dApp through TON Connect. Returns
+--   <a>TonConnectRequests</a>
+data GetTonConnectDAppPendingRequests
+GetTonConnectDAppPendingRequests :: Maybe Text -> GetTonConnectDAppPendingRequests
+
+-- | Hex-encoded public X25519 key of the dApp
+[dapp_client_id] :: GetTonConnectDAppPendingRequests -> Maybe Text
+instance GHC.Show.Show TD.Query.GetTonConnectDAppPendingRequests.GetTonConnectDAppPendingRequests
+instance GHC.Classes.Eq TD.Query.GetTonConnectDAppPendingRequests.GetTonConnectDAppPendingRequests
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonConnectDAppPendingRequests.GetTonConnectDAppPendingRequests
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonConnectDAppPendingRequests.GetTonConnectDAppPendingRequests
+
+module TD.Query.GetTonConnectSessionNextEventId
+
+-- | Returns the next event identifier for the given TON Connect session.
+--   Returns <a>TonConnectSessionEventId</a>
+data GetTonConnectSessionNextEventId
+GetTonConnectSessionNextEventId :: Maybe Int -> GetTonConnectSessionNextEventId
+
+-- | Unique identifier of the TON Connect session
+[session_id] :: GetTonConnectSessionNextEventId -> Maybe Int
+instance GHC.Show.Show TD.Query.GetTonConnectSessionNextEventId.GetTonConnectSessionNextEventId
+instance GHC.Classes.Eq TD.Query.GetTonConnectSessionNextEventId.GetTonConnectSessionNextEventId
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonConnectSessionNextEventId.GetTonConnectSessionNextEventId
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonConnectSessionNextEventId.GetTonConnectSessionNextEventId
+
+module TD.Query.GetTonConnectSessionPendingRequests
+
+-- | Returns pending requests in a TON Connect session. Returns
+--   <a>TonConnectRequests</a>
+data GetTonConnectSessionPendingRequests
+GetTonConnectSessionPendingRequests :: Maybe Int -> GetTonConnectSessionPendingRequests
+
+-- | Unique identifier of the session
+[session_id] :: GetTonConnectSessionPendingRequests -> Maybe Int
+instance GHC.Show.Show TD.Query.GetTonConnectSessionPendingRequests.GetTonConnectSessionPendingRequests
+instance GHC.Classes.Eq TD.Query.GetTonConnectSessionPendingRequests.GetTonConnectSessionPendingRequests
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonConnectSessionPendingRequests.GetTonConnectSessionPendingRequests
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonConnectSessionPendingRequests.GetTonConnectSessionPendingRequests
+
+module TD.Query.GetTonConnectSessions
+
+-- | Returns active TON Connect sessions; can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>TonConnectSessions</a>
+data GetTonConnectSessions
+GetTonConnectSessions :: GetTonConnectSessions
+instance GHC.Show.Show TD.Query.GetTonConnectSessions.GetTonConnectSessions
+instance GHC.Classes.Eq TD.Query.GetTonConnectSessions.GetTonConnectSessions
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonConnectSessions.GetTonConnectSessions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonConnectSessions.GetTonConnectSessions
+
 module TD.Query.GetTonTransactions
 
--- | Returns the list of TON blockchain transactions of the current user.
---   Returns <a>TonTransactions</a>
+-- | Returns the list of TON Gram transactions of the current user. Returns
+--   <a>TonTransactions</a>
 data GetTonTransactions
 GetTonTransactions :: Maybe TransactionDirection -> Maybe Text -> Maybe Int -> GetTonTransactions
 
@@ -40873,6 +42442,108 @@ instance GHC.Show.Show TD.Query.GetTonTransactions.GetTonTransactions
 instance GHC.Classes.Eq TD.Query.GetTonTransactions.GetTonTransactions
 instance TD.Lib.Internal.ShortShow TD.Query.GetTonTransactions.GetTonTransactions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonTransactions.GetTonTransactions
+
+module TD.Query.GetTonWalletNfts
+
+-- | Returns NFTs stored on the TON wallet of the user; can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>TonNfts</a>
+data GetTonWalletNfts
+GetTonWalletNfts :: Maybe Text -> Maybe Int -> GetTonWalletNfts
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetTonWalletNfts -> Maybe Text
+
+-- | The maximum number of NFTs to be returned; must be positive and can't
+--   be greater than 20
+[limit] :: GetTonWalletNfts -> Maybe Int
+defaultGetTonWalletNfts :: GetTonWalletNfts
+instance GHC.Show.Show TD.Query.GetTonWalletNfts.GetTonWalletNfts
+instance GHC.Classes.Eq TD.Query.GetTonWalletNfts.GetTonWalletNfts
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletNfts.GetTonWalletNfts
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletNfts.GetTonWalletNfts
+
+module TD.Query.GetTonWalletOwnershipProofChallenge
+
+-- | Returns a challenge which may be used to prove ownership of a TON
+--   wallet; can be used only if getOption("can_use_ton_wallet"). Returns
+--   <a>TonWalletOwnershipProofChallenge</a>
+data GetTonWalletOwnershipProofChallenge
+GetTonWalletOwnershipProofChallenge :: GetTonWalletOwnershipProofChallenge
+instance GHC.Show.Show TD.Query.GetTonWalletOwnershipProofChallenge.GetTonWalletOwnershipProofChallenge
+instance GHC.Classes.Eq TD.Query.GetTonWalletOwnershipProofChallenge.GetTonWalletOwnershipProofChallenge
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletOwnershipProofChallenge.GetTonWalletOwnershipProofChallenge
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletOwnershipProofChallenge.GetTonWalletOwnershipProofChallenge
+
+module TD.Query.GetTonWalletSecretPhrase
+
+-- | Returns the secret phrase of the user's TON wallet as a space
+--   separated list of words. Works only if
+--   tonWalletState.can_export_phrase is true. Returns <a>Text</a>
+data GetTonWalletSecretPhrase
+GetTonWalletSecretPhrase :: Maybe Text -> GetTonWalletSecretPhrase
+
+-- | Password of the current user; pass an empty string unless receive an
+--   error with a message <a>PASSWORD_MISSING</a> for a passwordless
+--   request
+[password] :: GetTonWalletSecretPhrase -> Maybe Text
+instance GHC.Show.Show TD.Query.GetTonWalletSecretPhrase.GetTonWalletSecretPhrase
+instance GHC.Classes.Eq TD.Query.GetTonWalletSecretPhrase.GetTonWalletSecretPhrase
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletSecretPhrase.GetTonWalletSecretPhrase
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletSecretPhrase.GetTonWalletSecretPhrase
+
+module TD.Query.GetTonWalletTransaction
+
+-- | Returns a TON wallet transaction by its identifier. Returns
+--   <a>TonWalletTransaction</a>
+data GetTonWalletTransaction
+GetTonWalletTransaction :: Maybe Text -> GetTonWalletTransaction
+
+-- | Identifier of the transaction
+[transaction_id] :: GetTonWalletTransaction -> Maybe Text
+instance GHC.Show.Show TD.Query.GetTonWalletTransaction.GetTonWalletTransaction
+instance GHC.Classes.Eq TD.Query.GetTonWalletTransaction.GetTonWalletTransaction
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletTransaction.GetTonWalletTransaction
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletTransaction.GetTonWalletTransaction
+
+module TD.Query.GetTonWalletTransactionByMsgHash
+
+-- | Returns a TON wallet transaction by its msg_hash; returns an error if
+--   the transaction isn't finalized yet. Returns
+--   <a>TonWalletTransaction</a>
+data GetTonWalletTransactionByMsgHash
+GetTonWalletTransactionByMsgHash :: Maybe Text -> GetTonWalletTransactionByMsgHash
+
+-- | Value of msg_hash of the transaction
+[msg_hash] :: GetTonWalletTransactionByMsgHash -> Maybe Text
+instance GHC.Show.Show TD.Query.GetTonWalletTransactionByMsgHash.GetTonWalletTransactionByMsgHash
+instance GHC.Classes.Eq TD.Query.GetTonWalletTransactionByMsgHash.GetTonWalletTransactionByMsgHash
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletTransactionByMsgHash.GetTonWalletTransactionByMsgHash
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletTransactionByMsgHash.GetTonWalletTransactionByMsgHash
+
+module TD.Query.GetTonWalletTransactions
+
+-- | Returns the list of TON wallet transactions of the current user; can
+--   be used only if getOption("can_use_ton_wallet"). Returns
+--   <a>TonWalletTransactions</a>
+data GetTonWalletTransactions
+GetTonWalletTransactions :: Maybe TransactionDirection -> Maybe Text -> Maybe Int -> GetTonWalletTransactions
+
+-- | Direction of the transactions to receive; pass null to get all
+--   transactions
+[direction] :: GetTonWalletTransactions -> Maybe TransactionDirection
+
+-- | Offset of the first transaction to return as received from the
+--   previous request; use empty string to get the first chunk of results
+[offset] :: GetTonWalletTransactions -> Maybe Text
+
+-- | The maximum number of transactions to return
+[limit] :: GetTonWalletTransactions -> Maybe Int
+defaultGetTonWalletTransactions :: GetTonWalletTransactions
+instance GHC.Show.Show TD.Query.GetTonWalletTransactions.GetTonWalletTransactions
+instance GHC.Classes.Eq TD.Query.GetTonWalletTransactions.GetTonWalletTransactions
+instance TD.Lib.Internal.ShortShow TD.Query.GetTonWalletTransactions.GetTonWalletTransactions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTonWalletTransactions.GetTonWalletTransactions
 
 module TD.Query.GetTopChats
 
@@ -41135,6 +42806,22 @@ instance GHC.Show.Show TD.Query.GetUserSupportInfo.GetUserSupportInfo
 instance GHC.Classes.Eq TD.Query.GetUserSupportInfo.GetUserSupportInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetUserSupportInfo.GetUserSupportInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUserSupportInfo.GetUserSupportInfo
+
+module TD.Query.GetUserTonWalletAddresses
+
+-- | Returns TON wallet addresses of the specified users; can be used only
+--   if getOption("can_use_ton_wallet"). Returns
+--   <a>UserTonWalletAddresses</a>
+data GetUserTonWalletAddresses
+GetUserTonWalletAddresses :: Maybe [Int] -> GetUserTonWalletAddresses
+
+-- | Identifiers of the users whose wallet addresses have to be returned.
+--   If a user has no TON wallet, it will be skipped in the result
+[user_ids] :: GetUserTonWalletAddresses -> Maybe [Int]
+instance GHC.Show.Show TD.Query.GetUserTonWalletAddresses.GetUserTonWalletAddresses
+instance GHC.Classes.Eq TD.Query.GetUserTonWalletAddresses.GetUserTonWalletAddresses
+instance TD.Lib.Internal.ShortShow TD.Query.GetUserTonWalletAddresses.GetUserTonWalletAddresses
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetUserTonWalletAddresses.GetUserTonWalletAddresses
 
 module TD.Query.GetVideoChatAvailableParticipants
 
@@ -41686,20 +43373,6 @@ instance GHC.Classes.Eq TD.Query.LoadChats.LoadChats
 instance TD.Lib.Internal.ShortShow TD.Query.LoadChats.LoadChats
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadChats.LoadChats
 
-module TD.Query.LoadCommunityFullInfo
-
--- | Returns full information about a community. The data will be sent
---   through update.. Returns <a>Ok</a>
-data LoadCommunityFullInfo
-LoadCommunityFullInfo :: Maybe Int -> LoadCommunityFullInfo
-
--- | Community identifier
-[community_id] :: LoadCommunityFullInfo -> Maybe Int
-instance GHC.Show.Show TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
-instance GHC.Classes.Eq TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
-instance TD.Lib.Internal.ShortShow TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
-instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadCommunityFullInfo.LoadCommunityFullInfo
-
 module TD.Query.LoadDirectMessagesChatTopics
 
 -- | Loads more topics in a channel direct messages chat administered by
@@ -41789,6 +43462,29 @@ instance GHC.Classes.Eq TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
 instance TD.Lib.Internal.ShortShow TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadSavedMessagesTopics.LoadSavedMessagesTopics
 
+module TD.Query.LoadTonWalletGaslessTransfersInfo
+
+-- | Loads or reloads the current state of gasless transfers for the
+--   current user; can be used only if getOption("can_use_ton_wallet").
+--   Returns <a>Ok</a>
+data LoadTonWalletGaslessTransfersInfo
+LoadTonWalletGaslessTransfersInfo :: LoadTonWalletGaslessTransfersInfo
+instance GHC.Show.Show TD.Query.LoadTonWalletGaslessTransfersInfo.LoadTonWalletGaslessTransfersInfo
+instance GHC.Classes.Eq TD.Query.LoadTonWalletGaslessTransfersInfo.LoadTonWalletGaslessTransfersInfo
+instance TD.Lib.Internal.ShortShow TD.Query.LoadTonWalletGaslessTransfersInfo.LoadTonWalletGaslessTransfersInfo
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadTonWalletGaslessTransfersInfo.LoadTonWalletGaslessTransfersInfo
+
+module TD.Query.LoadTonWalletState
+
+-- | Loads state of the TON wallet of the current user; can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>Ok</a>
+data LoadTonWalletState
+LoadTonWalletState :: LoadTonWalletState
+instance GHC.Show.Show TD.Query.LoadTonWalletState.LoadTonWalletState
+instance GHC.Classes.Eq TD.Query.LoadTonWalletState.LoadTonWalletState
+instance TD.Lib.Internal.ShortShow TD.Query.LoadTonWalletState.LoadTonWalletState
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LoadTonWalletState.LoadTonWalletState
+
 module TD.Query.LogOut
 
 -- | Closes the TDLib instance after a proper logout. Requires an available
@@ -41804,7 +43500,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.LogOut.LogOut
 
 module TD.Query.MarkChecklistTasksAsDone
 
--- | Adds tasks of a checklist in a message as done or not done. Returns
+-- | Marks tasks of a checklist in a message as done or not done. Returns
 --   <a>Ok</a>
 data MarkChecklistTasksAsDone
 MarkChecklistTasksAsDone :: Maybe Int -> Maybe Int -> Maybe [Int] -> Maybe [Int] -> MarkChecklistTasksAsDone
@@ -41898,7 +43594,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.OpenGiftAuction.OpenGiftAuction
 module TD.Query.OpenMessageContent
 
 -- | Informs TDLib that the message content has been opened (e.g., the user
---   has opened a photo, video, document, location or venue, or has
+--   has opened a photo, video, document, location, or venue, or has
 --   listened to an audio file or voice note message). An
 --   updateMessageContentOpened update will be generated if something has
 --   changed. Returns <a>Ok</a>
@@ -42228,7 +43924,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.PreliminaryUploadFile.Prelimina
 
 module TD.Query.ProcessChatFolderNewChats
 
--- | Process new chats added to a shareable chat folder by its owner.
+-- | Processes new chats added to a shareable chat folder by its owner.
 --   Returns <a>Ok</a>
 data ProcessChatFolderNewChats
 ProcessChatFolderNewChats :: Maybe Int -> Maybe [Int] -> ProcessChatFolderNewChats
@@ -42256,7 +43952,7 @@ ProcessChatHasProtectedContentDisableRequest :: Maybe Int -> Maybe Int -> Maybe 
 [chat_id] :: ProcessChatHasProtectedContentDisableRequest -> Maybe Int
 
 -- | Identifier of the message with the request. The message must be
---   incoming and has content of the type
+--   incoming and have content of the type
 --   messageChatHasProtectedContentDisableRequested
 [request_message_id] :: ProcessChatHasProtectedContentDisableRequest -> Maybe Int
 
@@ -43421,6 +45117,31 @@ instance GHC.Classes.Eq TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
 instance TD.Lib.Internal.ShortShow TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceStickerInSet.ReplaceStickerInSet
 
+module TD.Query.ReplaceTonWallet
+
+-- | Replaces the current TON wallet with another existing v6r2 wallet or
+--   changes private key of the current TON wallet; can be used only if
+--   getOption("can_use_ton_wallet"). Returns <a>Ok</a>
+data ReplaceTonWallet
+ReplaceTonWallet :: Maybe Text -> Maybe ByteString -> Maybe TonWalletOwnershipProof -> ReplaceTonWallet
+
+-- | Password of the current user; pass an empty string unless receive an
+--   error with a message <a>PASSWORD_MISSING</a> for a passwordless
+--   request
+[password] :: ReplaceTonWallet -> Maybe Text
+
+-- | Original public key of the new TON wallet
+[anchor_public_key] :: ReplaceTonWallet -> Maybe ByteString
+
+-- | Proof of ownership of the new private key of the TON wallet; use
+--   getTonWalletOwnershipProofChallenge to get a challenge for the proof
+[proof] :: ReplaceTonWallet -> Maybe TonWalletOwnershipProof
+defaultReplaceTonWallet :: ReplaceTonWallet
+instance GHC.Show.Show TD.Query.ReplaceTonWallet.ReplaceTonWallet
+instance GHC.Classes.Eq TD.Query.ReplaceTonWallet.ReplaceTonWallet
+instance TD.Lib.Internal.ShortShow TD.Query.ReplaceTonWallet.ReplaceTonWallet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceTonWallet.ReplaceTonWallet
+
 module TD.Query.ReplaceVideoChatRtmpUrl
 
 -- | Replaces the current RTMP URL for streaming to the video chat of a
@@ -43434,6 +45155,39 @@ instance GHC.Show.Show TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 instance GHC.Classes.Eq TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 instance TD.Lib.Internal.ShortShow TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplaceVideoChatRtmpUrl.ReplaceVideoChatRtmpUrl
+
+module TD.Query.ReplyToCallbackQueryWithEphemeralMessage
+
+-- | Replies to a callback query with an ephemeral message; for bots only.
+--   Returns <a>Ok</a>
+data ReplyToCallbackQueryWithEphemeralMessage
+ReplyToCallbackQueryWithEphemeralMessage :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe ReplyMarkup -> Maybe InputMessageContent -> ReplyToCallbackQueryWithEphemeralMessage
+
+-- | Identifier of the callback query
+[callback_query_id] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe Int
+
+-- | Pass true if the ephemeral message must replace the message from which
+--   the callback query originated
+[replace_callback_query_message] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe Bool
+
+-- | Pass true if the content of the message must be protected from
+--   forwarding and saving
+[protect_content] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe Bool
+
+-- | The new message reply markup; pass null if none
+[reply_markup] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe ReplyMarkup
+
+-- | New content of the message. Must be one of the following types:
+--   inputMessageText, inputMessageAnimation, inputMessageAudio,
+--   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
+--   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
+--   inputMessageVoiceNote
+[input_message_content] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe InputMessageContent
+defaultReplyToCallbackQueryWithEphemeralMessage :: ReplyToCallbackQueryWithEphemeralMessage
+instance GHC.Show.Show TD.Query.ReplyToCallbackQueryWithEphemeralMessage.ReplyToCallbackQueryWithEphemeralMessage
+instance GHC.Classes.Eq TD.Query.ReplyToCallbackQueryWithEphemeralMessage.ReplyToCallbackQueryWithEphemeralMessage
+instance TD.Lib.Internal.ShortShow TD.Query.ReplyToCallbackQueryWithEphemeralMessage.ReplyToCallbackQueryWithEphemeralMessage
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReplyToCallbackQueryWithEphemeralMessage.ReplyToCallbackQueryWithEphemeralMessage
 
 module TD.Query.ReportAuthenticationCodeMissing
 
@@ -43453,8 +45207,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ReportAuthenticationCodeMissing
 module TD.Query.ReportChat
 
 -- | Reports a chat to the Telegram moderators. A chat can be reported only
---   from the chat action bar, or if chat.can_be_reported. Returns
---   <a>ReportChatResult</a>
+--   from the chat action bar, if chat.can_be_reported, or if
+--   messageProperties.can_report_chat. Returns <a>ReportChatResult</a>
 data ReportChat
 ReportChat :: Maybe Int -> Maybe ByteString -> Maybe [Int] -> Maybe Text -> ReportChat
 
@@ -43717,10 +45471,10 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RequestQrCodeAuthentication.Req
 module TD.Query.ResendAuthenticationCode
 
 -- | Resends an authentication code to the user. Works only when the
---   current authorization state is authorizationStateWaitCode, the
---   next_code_type of the result is not null and the server-specified
---   timeout has passed, or when the current authorization state is
---   authorizationStateWaitEmailCode. Returns <a>Ok</a>
+--   current authorization state is authorizationStateWaitCode,
+--   authorization_state.code_info.next_type is not null and the
+--   server-specified timeout has passed, or when the current authorization
+--   state is authorizationStateWaitEmailCode. Returns <a>Ok</a>
 data ResendAuthenticationCode
 ResendAuthenticationCode :: Maybe ResendCodeReason -> ResendAuthenticationCode
 
@@ -43790,8 +45544,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ResendMessages.ResendMessages
 module TD.Query.ResendPhoneNumberCode
 
 -- | Resends the authentication code sent to a phone number. Works only if
---   the previously received authenticationCodeInfo next_code_type was not
---   null and the server-specified timeout has passed. Returns
+--   the previously received authenticationCodeInfo.next_type was not null
+--   and the server-specified timeout has passed. Returns
 --   <a>AuthenticationCodeInfo</a>
 data ResendPhoneNumberCode
 ResendPhoneNumberCode :: Maybe ResendCodeReason -> ResendPhoneNumberCode
@@ -43831,7 +45585,8 @@ module TD.Query.ResetAuthenticationEmailAddress
 -- | Resets the login email address. May return an error with a message
 --   <a>TASK_ALREADY_EXISTS</a> if reset is still pending. Works only when
 --   the current authorization state is authorizationStateWaitEmailCode and
---   authorization_state.can_reset_email_address == true. Returns <a>Ok</a>
+--   authorization_state.email_address_reset_state != null. Returns
+--   <a>Ok</a>
 data ResetAuthenticationEmailAddress
 ResetAuthenticationEmailAddress :: ResetAuthenticationEmailAddress
 instance GHC.Show.Show TD.Query.ResetAuthenticationEmailAddress.ResetAuthenticationEmailAddress
@@ -45190,7 +46945,7 @@ SendEphemeralMessage :: Maybe Int -> Maybe MessageTopic -> Maybe Int -> Maybe In
 --   messages and corresponding updateNewMessage updates
 [sending_id] :: SendEphemeralMessage -> Maybe Int
 
--- | Pass true to get a fake message instead of actually sending them
+-- | Pass true to get a fake message instead of actually sending it
 [only_preview] :: SendEphemeralMessage -> Maybe Bool
 
 -- | Markup for replying to the message; pass null if none; for bots only
@@ -45660,6 +47415,100 @@ instance GHC.Show.Show TD.Query.SendTextMessageDraft.SendTextMessageDraft
 instance GHC.Classes.Eq TD.Query.SendTextMessageDraft.SendTextMessageDraft
 instance TD.Lib.Internal.ShortShow TD.Query.SendTextMessageDraft.SendTextMessageDraft
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendTextMessageDraft.SendTextMessageDraft
+
+module TD.Query.SendTonCenterApiRequest
+
+-- | Sends a request to TON Center API and returns its response in JSON
+--   format. Returns <a>Text</a>
+data SendTonCenterApiRequest
+SendTonCenterApiRequest :: Maybe Text -> Maybe TonCenterApiRequestType -> SendTonCenterApiRequest
+
+-- | The path of the requested endpoint. See
+--   <a>https://toncenter.com/api/v3/index.html</a> for the list of
+--   supported endpoints
+[endpoint] :: SendTonCenterApiRequest -> Maybe Text
+
+-- | Type of the request
+[_type] :: SendTonCenterApiRequest -> Maybe TonCenterApiRequestType
+defaultSendTonCenterApiRequest :: SendTonCenterApiRequest
+instance GHC.Show.Show TD.Query.SendTonCenterApiRequest.SendTonCenterApiRequest
+instance GHC.Classes.Eq TD.Query.SendTonCenterApiRequest.SendTonCenterApiRequest
+instance TD.Lib.Internal.ShortShow TD.Query.SendTonCenterApiRequest.SendTonCenterApiRequest
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendTonCenterApiRequest.SendTonCenterApiRequest
+
+module TD.Query.SendTonConnectSessionConnectResult
+
+-- | Accepts or rejects a TON Connect session. Returns <a>Ok</a>
+data SendTonConnectSessionConnectResult
+SendTonConnectSessionConnectResult :: Maybe Int -> Maybe ByteString -> Maybe Bool -> Maybe ByteString -> Maybe Text -> SendTonConnectSessionConnectResult
+
+-- | Unique identifier of the session
+[session_id] :: SendTonConnectSessionConnectResult -> Maybe Int
+
+-- | Answer to the challenge received from
+--   setTonConnectSessionWalletClientId
+[challenge_answer] :: SendTonConnectSessionConnectResult -> Maybe ByteString
+
+-- | Pass true to reject the request; pass false to accept it
+[is_error] :: SendTonConnectSessionConnectResult -> Maybe Bool
+
+-- | Body of the result
+[body] :: SendTonConnectSessionConnectResult -> Maybe ByteString
+
+-- | Identifier to trace the connection request
+[trace_id] :: SendTonConnectSessionConnectResult -> Maybe Text
+defaultSendTonConnectSessionConnectResult :: SendTonConnectSessionConnectResult
+instance GHC.Show.Show TD.Query.SendTonConnectSessionConnectResult.SendTonConnectSessionConnectResult
+instance GHC.Classes.Eq TD.Query.SendTonConnectSessionConnectResult.SendTonConnectSessionConnectResult
+instance TD.Lib.Internal.ShortShow TD.Query.SendTonConnectSessionConnectResult.SendTonConnectSessionConnectResult
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendTonConnectSessionConnectResult.SendTonConnectSessionConnectResult
+
+module TD.Query.SendTonWalletTransfer
+
+-- | Sends a cryptocurrency from the user's TON wallet; can be used only if
+--   getOption("can_use_ton_wallet"). Returns
+--   <a>TonWalletTransferResult</a>
+data SendTonWalletTransfer
+SendTonWalletTransfer :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe Bool -> Maybe Int -> Maybe ByteString -> Maybe ByteString -> SendTonWalletTransfer
+
+-- | Identifier of the user who will receive the transfer; pass 0 if
+--   unknown
+[user_id] :: SendTonWalletTransfer -> Maybe Int
+
+-- | Address in the TON blockchain of the transaction peer
+[address] :: SendTonWalletTransfer -> Maybe Text
+
+-- | The amount of the sent cryptocurrency, in the smallest units of the
+--   cryptocurrency
+[amount] :: SendTonWalletTransfer -> Maybe Int
+
+-- | Comment added to the transaction
+[comment] :: SendTonWalletTransfer -> Maybe Text
+
+-- | Pass true if the comment is encrypted and must be decrypted using the
+--   receiver's or sender's private key
+[is_comment_encrypted] :: SendTonWalletTransfer -> Maybe Bool
+
+-- | Non-persistent identifier, which will be returned back in
+--   messageSendingStatePending object and can be used to match sent
+--   messages and corresponding updateNewMessage updates
+[sending_id] :: SendTonWalletTransfer -> Maybe Int
+
+-- | Serialized data for regular cryptocurrency transfer request. The
+--   minimum allowed transfer amount is
+--   getOption("ton_wallet_transfer_amount_min")
+[regular_transfer_data] :: SendTonWalletTransfer -> Maybe ByteString
+
+-- | Serialized data for gasless cryptocurrency transfer request; pass an
+--   empty string to force a regular request. The minimum allowed transfer
+--   amount for a gasless transfer is
+--   getOption("ton_wallet_gasless_transfer_amount_min")
+[gasless_transfer_data] :: SendTonWalletTransfer -> Maybe ByteString
+defaultSendTonWalletTransfer :: SendTonWalletTransfer
+instance GHC.Show.Show TD.Query.SendTonWalletTransfer.SendTonWalletTransfer
+instance GHC.Classes.Eq TD.Query.SendTonWalletTransfer.SendTonWalletTransfer
+instance TD.Lib.Internal.ShortShow TD.Query.SendTonWalletTransfer.SendTonWalletTransfer
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SendTonWalletTransfer.SendTonWalletTransfer
 
 module TD.Query.SendWebAppCustomRequest
 
@@ -46571,7 +48420,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetChatMemberTag.SetChatMemberT
 module TD.Query.SetChatMessageAutoDeleteTime
 
 -- | Changes the message auto-delete or self-destruct (for secret chats)
---   time in a chat. Requires change_info administrator right in basic
+--   time in a chat. Requires can_change_info administrator right in basic
 --   groups, supergroups and channels. Message auto-delete time can't be
 --   changed in a chat with the current user (Saved Messages) and the chat
 --   777000 (Telegram).. Returns <a>Ok</a>
@@ -46852,6 +48701,43 @@ instance GHC.Classes.Eq TD.Query.SetCommunityName.SetCommunityName
 instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityName.SetCommunityName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityName.SetCommunityName
 
+module TD.Query.SetCommunityPermissions
+
+-- | Changes permissions of regular members in the given community;
+--   requires can_ban_members administrator right in the community. Returns
+--   <a>Ok</a>
+data SetCommunityPermissions
+SetCommunityPermissions :: Maybe Int -> Maybe CommunityPermissions -> SetCommunityPermissions
+
+-- | Identifier of the community
+[community_id] :: SetCommunityPermissions -> Maybe Int
+
+-- | New permissions of the community
+[permissions] :: SetCommunityPermissions -> Maybe CommunityPermissions
+defaultSetCommunityPermissions :: SetCommunityPermissions
+instance GHC.Show.Show TD.Query.SetCommunityPermissions.SetCommunityPermissions
+instance GHC.Classes.Eq TD.Query.SetCommunityPermissions.SetCommunityPermissions
+instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityPermissions.SetCommunityPermissions
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityPermissions.SetCommunityPermissions
+
+module TD.Query.SetCommunityPhoto
+
+-- | Changes the photo of a community; requires can_change_info
+--   administrator right in the community. Returns <a>Ok</a>
+data SetCommunityPhoto
+SetCommunityPhoto :: Maybe Int -> Maybe InputChatPhoto -> SetCommunityPhoto
+
+-- | Identifier of the community
+[community_id] :: SetCommunityPhoto -> Maybe Int
+
+-- | New community photo; pass null to delete the community photo
+[photo] :: SetCommunityPhoto -> Maybe InputChatPhoto
+defaultSetCommunityPhoto :: SetCommunityPhoto
+instance GHC.Show.Show TD.Query.SetCommunityPhoto.SetCommunityPhoto
+instance GHC.Classes.Eq TD.Query.SetCommunityPhoto.SetCommunityPhoto
+instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityPhoto.SetCommunityPhoto
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityPhoto.SetCommunityPhoto
+
 module TD.Query.SetCustomEmojiStickerSetThumbnail
 
 -- | Sets a custom emoji sticker set thumbnail. Returns <a>Ok</a>
@@ -46893,7 +48779,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCustomLanguagePack.SetCustom
 
 module TD.Query.SetCustomLanguagePackString
 
--- | Adds, edits or deletes a string in a custom local language pack. Can
+-- | Adds, edits, or deletes a string in a custom local language pack. Can
 --   be called before authorization. Returns <a>Ok</a>
 data SetCustomLanguagePackString
 SetCustomLanguagePackString :: Maybe Text -> Maybe LanguagePackString -> SetCustomLanguagePackString
@@ -47497,7 +49383,7 @@ module TD.Query.SetMessageSenderBotVerification
 -- | Changes the verification status of a user or a chat by an owned bot.
 --   Returns <a>Ok</a>
 data SetMessageSenderBotVerification
-SetMessageSenderBotVerification :: Maybe Int -> Maybe MessageSender -> Maybe Text -> SetMessageSenderBotVerification
+SetMessageSenderBotVerification :: Maybe Int -> Maybe MessageSender -> Maybe FormattedText -> SetMessageSenderBotVerification
 
 -- | Identifier of the owned bot, which will verify the user or the chat
 [bot_user_id] :: SetMessageSenderBotVerification -> Maybe Int
@@ -47507,11 +49393,12 @@ SetMessageSenderBotVerification :: Maybe Int -> Maybe MessageSender -> Maybe Tex
 [verified_id] :: SetMessageSenderBotVerification -> Maybe MessageSender
 
 -- | Custom description of verification reason;
---   0-getOption("bot_verification_custom_description_length_max"). If
---   empty, then "was verified by organization "organization_name"" will be
---   used as description. Can be specified only if the bot is allowed to
---   provide custom description
-[custom_description] :: SetMessageSenderBotVerification -> Maybe Text
+--   0-getOption("bot_verification_custom_description_length_max")
+--   characters. Only TextUrl entities are supported. If empty, then "was
+--   verified by organization "organization_name"" will be used as
+--   description. Can be specified only if the bot is allowed to provide
+--   custom description
+[custom_description] :: SetMessageSenderBotVerification -> Maybe FormattedText
 defaultSetMessageSenderBotVerification :: SetMessageSenderBotVerification
 instance GHC.Show.Show TD.Query.SetMessageSenderBotVerification.SetMessageSenderBotVerification
 instance GHC.Classes.Eq TD.Query.SetMessageSenderBotVerification.SetMessageSenderBotVerification
@@ -47779,7 +49666,7 @@ SetPollAnswer :: Maybe Int -> Maybe Int -> Maybe [Int] -> SetPollAnswer
 [message_id] :: SetPollAnswer -> Maybe Int
 
 -- | 0-based identifiers of answer options, chosen by the user. User can
---   choose more than 1 answer option only is the poll allows multiple
+--   choose more than 1 answer option only if the poll allows multiple
 --   answers
 [option_ids] :: SetPollAnswer -> Maybe [Int]
 defaultSetPollAnswer :: SetPollAnswer
@@ -48138,7 +50025,7 @@ module TD.Query.SetSupergroupCustomEmojiStickerSet
 -- | Changes the custom emoji sticker set of a supergroup; requires
 --   can_change_info administrator right. The chat must have at least
 --   chatBoostFeatures.min_custom_emoji_sticker_set_boost_level boost level
---   to pass the corresponding color. Returns <a>Ok</a>
+--   to set a custom emoji sticker set. Returns <a>Ok</a>
 data SetSupergroupCustomEmojiStickerSet
 SetSupergroupCustomEmojiStickerSet :: Maybe Int -> Maybe Int -> SetSupergroupCustomEmojiStickerSet
 
@@ -48297,6 +50184,26 @@ instance GHC.Show.Show TD.Query.SetTdlibParameters.SetTdlibParameters
 instance GHC.Classes.Eq TD.Query.SetTdlibParameters.SetTdlibParameters
 instance TD.Lib.Internal.ShortShow TD.Query.SetTdlibParameters.SetTdlibParameters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetTdlibParameters.SetTdlibParameters
+
+module TD.Query.SetTonConnectSessionWalletClientId
+
+-- | Sets wallet_client_id for a pending TON Connect session. Then,
+--   sendTonConnectSessionConnectResult must be used to accept or reject
+--   the session. Returns <a>TonConnectChallenge</a>
+data SetTonConnectSessionWalletClientId
+SetTonConnectSessionWalletClientId :: Maybe Int -> Maybe Text -> SetTonConnectSessionWalletClientId
+
+-- | Unique identifier of the session
+[session_id] :: SetTonConnectSessionWalletClientId -> Maybe Int
+
+-- | Hex-encoded public X25519 key of the current user's application
+--   calculated from the TON wallet private key and session parameters
+[wallet_client_id] :: SetTonConnectSessionWalletClientId -> Maybe Text
+defaultSetTonConnectSessionWalletClientId :: SetTonConnectSessionWalletClientId
+instance GHC.Show.Show TD.Query.SetTonConnectSessionWalletClientId.SetTonConnectSessionWalletClientId
+instance GHC.Classes.Eq TD.Query.SetTonConnectSessionWalletClientId.SetTonConnectSessionWalletClientId
+instance TD.Lib.Internal.ShortShow TD.Query.SetTonConnectSessionWalletClientId.SetTonConnectSessionWalletClientId
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetTonConnectSessionWalletClientId.SetTonConnectSessionWalletClientId
 
 module TD.Query.SetUpgradedGiftColors
 
@@ -48504,8 +50411,9 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SharePhoneNumber.SharePhoneNumb
 
 module TD.Query.ShareUsersWithBot
 
--- | Shares users after pressing a keyboardButtonTypeRequestUsers button
---   with the bot. Returns <a>Ok</a>
+-- | Shares users after pressing a keyboardButtonTypeRequestUsers or
+--   keyboardButtonTypeRequestManagedBot button with the bot. Returns
+--   <a>Ok</a>
 data ShareUsersWithBot
 ShareUsersWithBot :: Maybe KeyboardButtonSource -> Maybe Int -> Maybe [Int] -> Maybe Bool -> ShareUsersWithBot
 
@@ -49413,7 +51321,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleGroupCallIsMyVideoPaused.
 
 module TD.Query.ToggleGroupCallParticipantIsHandRaised
 
--- | Toggles whether a group call participant hand is rased; for video
+-- | Toggles whether a group call participant hand is raised; for video
 --   chats only. Returns <a>Ok</a>
 data ToggleGroupCallParticipantIsHandRaised
 ToggleGroupCallParticipantIsHandRaised :: Maybe Int -> Maybe MessageSender -> Maybe Bool -> ToggleGroupCallParticipantIsHandRaised

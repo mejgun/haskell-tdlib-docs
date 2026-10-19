@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.EnableTonWalletBackup</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier">EnableTonWalletBackup</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#defaultEnableTonWalletBackup"><span class="hs-identifier">defaultEnableTonWalletBackup</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.TonWalletOwnershipProof.html"><span class="hs-identifier">TD.Data.TonWalletOwnershipProof</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TonWalletOwnershipProof</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Enables backup of the TON wallet of the user. Works only if tonWalletState.can_enable_backup is true. Returns 'TD.Data.Ok.Ok'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="EnableTonWalletBackup"><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-var">EnableTonWalletBackup</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="EnableTonWalletBackup"><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-var">EnableTonWalletBackup</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="secret_phrase"><span class="annot"><span class="annottext">EnableTonWalletBackup -&gt; Maybe Text
+</span><a href="TD.Query.EnableTonWalletBackup.html#secret_phrase"><span class="hs-identifier hs-var hs-var">secret_phrase</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                          </span><span class="annot"><span class="hs-comment">-- ^ The secret phrase of the user's TON wallet as a space separated list of words</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="proof"><span class="annot"><span class="annottext">EnableTonWalletBackup -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.EnableTonWalletBackup.html#proof"><span class="hs-identifier hs-var hs-var">proof</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletOwnershipProof.html#TonWalletOwnershipProof"><span class="hs-identifier hs-type">TonWalletOwnershipProof.TonWalletOwnershipProof</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Proof of the TON wallet ownership; use getTonWalletOwnershipProofChallenge to get a challenge for the proof</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621680088054"><span id="local-6989586621680088061"><span class="annot"><span class="annottext">EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool
+(EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool)
+-&gt; (EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool)
+-&gt; Eq EnableTonWalletBackup
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool
+== :: EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool
+$c/= :: EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool
+/= :: EnableTonWalletBackup -&gt; EnableTonWalletBackup -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621680088068"><span id="local-6989586621680088077"><span id="local-6989586621680088081"><span class="annot"><span class="annottext">Int -&gt; EnableTonWalletBackup -&gt; ShowS
+[EnableTonWalletBackup] -&gt; ShowS
+EnableTonWalletBackup -&gt; String
+(Int -&gt; EnableTonWalletBackup -&gt; ShowS)
+-&gt; (EnableTonWalletBackup -&gt; String)
+-&gt; ([EnableTonWalletBackup] -&gt; ShowS)
+-&gt; Show EnableTonWalletBackup
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; EnableTonWalletBackup -&gt; ShowS
+showsPrec :: Int -&gt; EnableTonWalletBackup -&gt; ShowS
+$cshow :: EnableTonWalletBackup -&gt; String
+show :: EnableTonWalletBackup -&gt; String
+$cshowList :: [EnableTonWalletBackup] -&gt; ShowS
+showList :: [EnableTonWalletBackup] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621680088096"><span class="annot"><span class="annottext">shortShow :: EnableTonWalletBackup -&gt; String
+</span><a href="#local-6989586621680088096"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">secret_phrase :: EnableTonWalletBackup -&gt; Maybe Text
+</span><a href="TD.Query.EnableTonWalletBackup.html#secret_phrase"><span class="hs-identifier hs-var">secret_phrase</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680088098"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680088098"><span class="hs-identifier hs-var">secret_phrase_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: EnableTonWalletBackup -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.EnableTonWalletBackup.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680088099"><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680088099"><span class="hs-identifier hs-var">proof_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;EnableTonWalletBackup&quot;</span></span><span>
+</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;secret_phrase&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680088098"><span class="hs-identifier hs-var">secret_phrase_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;proof&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe TonWalletOwnershipProof -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680088099"><span class="hs-identifier hs-var">proof_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621680088104"><span id="local-6989586621680088108"><span id="local-6989586621680088111"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>  </span><span id="local-6989586621680088135"><span class="annot"><span class="annottext">toJSON :: EnableTonWalletBackup -&gt; Value
+</span><a href="#local-6989586621680088135"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">secret_phrase :: EnableTonWalletBackup -&gt; Maybe Text
+</span><a href="TD.Query.EnableTonWalletBackup.html#secret_phrase"><span class="hs-identifier hs-var">secret_phrase</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680088137"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680088137"><span class="hs-identifier hs-var">secret_phrase_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: EnableTonWalletBackup -&gt; Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.EnableTonWalletBackup.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680088138"><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680088138"><span class="hs-identifier hs-var">proof_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;enableTonWalletBackup&quot;</span></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;secret_phrase&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680088137"><span class="hs-identifier hs-var">secret_phrase_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;proof&quot;</span></span><span>         </span><span class="annot"><span class="annottext">Key -&gt; Maybe TonWalletOwnershipProof -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+</span><a href="#local-6989586621680088138"><span class="hs-identifier hs-var">proof_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#defaultEnableTonWalletBackup"><span class="hs-identifier hs-type">defaultEnableTonWalletBackup</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span><span>
+</span><span id="line-45"></span><span id="defaultEnableTonWalletBackup"><span class="annot"><span class="annottext">defaultEnableTonWalletBackup :: EnableTonWalletBackup
+</span><a href="TD.Query.EnableTonWalletBackup.html#defaultEnableTonWalletBackup"><span class="hs-identifier hs-var hs-var">defaultEnableTonWalletBackup</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>  </span><span class="annot"><a href="TD.Query.EnableTonWalletBackup.html#EnableTonWalletBackup"><span class="hs-identifier hs-type">EnableTonWalletBackup</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">secret_phrase :: Maybe Text
+</span><a href="TD.Query.EnableTonWalletBackup.html#secret_phrase"><span class="hs-identifier hs-var">secret_phrase</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proof :: Maybe TonWalletOwnershipProof
+</span><a href="TD.Query.EnableTonWalletBackup.html#proof"><span class="hs-identifier hs-var">proof</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletOwnershipProof
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span></pre></body></html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.TonConnectRequestState</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestState"><span class="hs-identifier">TonConnectRequestState</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="annot"><span class="hs-comment">-- | Describes state of a request received from a dApp through TON Connect</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="TonConnectRequestState"><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestState"><span class="hs-identifier hs-var">TonConnectRequestState</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TonConnectRequestStatePending"><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStatePending"><span class="hs-identifier hs-var">TonConnectRequestStatePending</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The request must be accepted or rejected if it isn't expired yet</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="expiration_date"><span class="annot"><span class="annottext">TonConnectRequestState -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectRequestState.html#expiration_date"><span class="hs-identifier hs-var hs-var">expiration_date</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the request will expire or has expired</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="TonConnectRequestStateAccepted"><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateAccepted"><span class="hs-identifier hs-var">TonConnectRequestStateAccepted</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The request was accepted</span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="TonConnectRequestStateRejected"><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateRejected"><span class="hs-identifier hs-var">TonConnectRequestStateRejected</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The request was rejected</span></span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679890797"><span id="local-6989586621679890802"><span class="annot"><span class="annottext">TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool
+(TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool)
+-&gt; (TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool)
+-&gt; Eq TonConnectRequestState
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool
+== :: TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool
+$c/= :: TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool
+/= :: TonConnectRequestState -&gt; TonConnectRequestState -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679890808"><span id="local-6989586621679890815"><span id="local-6989586621679890819"><span class="annot"><span class="annottext">Int -&gt; TonConnectRequestState -&gt; ShowS
+[TonConnectRequestState] -&gt; ShowS
+TonConnectRequestState -&gt; String
+(Int -&gt; TonConnectRequestState -&gt; ShowS)
+-&gt; (TonConnectRequestState -&gt; String)
+-&gt; ([TonConnectRequestState] -&gt; ShowS)
+-&gt; Show TonConnectRequestState
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; TonConnectRequestState -&gt; ShowS
+showsPrec :: Int -&gt; TonConnectRequestState -&gt; ShowS
+$cshow :: TonConnectRequestState -&gt; String
+show :: TonConnectRequestState -&gt; String
+$cshowList :: [TonConnectRequestState] -&gt; ShowS
+showList :: [TonConnectRequestState] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestState"><span class="hs-identifier hs-type">TonConnectRequestState</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-18"></span><span>  </span><span id="local-6989586621679890831"><span class="annot"><span class="annottext">shortShow :: TonConnectRequestState -&gt; String
+</span><a href="#local-6989586621679890831"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStatePending"><span class="hs-identifier hs-type">TonConnectRequestStatePending</span></a></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">expiration_date :: TonConnectRequestState -&gt; Maybe Int
+</span><a href="TD.Data.TonConnectRequestState.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679890833"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679890833"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectRequestStatePending&quot;</span></span><span>
+</span><span id="line-22"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-23"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679890833"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-24"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-25"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState
+</span><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateAccepted"><span class="hs-identifier hs-var">TonConnectRequestStateAccepted</span></a></span><span>
+</span><span id="line-26"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectRequestStateAccepted&quot;</span></span><span>
+</span><span id="line-27"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState
+</span><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateRejected"><span class="hs-identifier hs-var">TonConnectRequestStateRejected</span></a></span><span>
+</span><span id="line-28"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectRequestStateRejected&quot;</span></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679890838"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestState"><span class="hs-identifier hs-type">TonConnectRequestState</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-31"></span><span>  </span><span id="local-6989586621679890871"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser TonConnectRequestState
+</span><a href="#local-6989586621679890871"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679890873"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679890873"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679890875"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679890875"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-32"></span><span>    </span><span id="local-6989586621679890876"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679890876"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679890875"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679890876"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-35"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonConnectRequestStatePending&quot;</span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser TonConnectRequestState
+</span><a href="#local-6989586621679890878"><span class="hs-identifier hs-var">parseTonConnectRequestStatePending</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679890873"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-36"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonConnectRequestStateAccepted&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState -&gt; Parser TonConnectRequestState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState
+</span><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateAccepted"><span class="hs-identifier hs-var">TonConnectRequestStateAccepted</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;tonConnectRequestStateRejected&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState -&gt; Parser TonConnectRequestState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">TonConnectRequestState
+</span><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStateRejected"><span class="hs-identifier hs-var">TonConnectRequestStateRejected</span></a></span><span>
+</span><span id="line-38"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser TonConnectRequestState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-39"></span><span>    </span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><a href="#local-6989586621679890878"><span class="hs-identifier hs-type">parseTonConnectRequestStatePending</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestState"><span class="hs-identifier hs-type">TonConnectRequestState</span></a></span><span>
+</span><span id="line-42"></span><span>      </span><span id="local-6989586621679890878"><span class="annot"><span class="annottext">parseTonConnectRequestStatePending :: Value -&gt; Parser TonConnectRequestState
+</span><a href="#local-6989586621679890878"><span class="hs-identifier hs-var hs-var">parseTonConnectRequestStatePending</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser TonConnectRequestState)
+-&gt; Value
+-&gt; Parser TonConnectRequestState
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TonConnectRequestStatePending&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser TonConnectRequestState)
+ -&gt; Value -&gt; Parser TonConnectRequestState)
+-&gt; (Object -&gt; Parser TonConnectRequestState)
+-&gt; Value
+-&gt; Parser TonConnectRequestState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679890880"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679890880"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-43"></span><span>        </span><span id="local-6989586621679890881"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679890881"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679890880"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span>
+</span><span id="line-44"></span><span>        </span><span class="annot"><span class="annottext">TonConnectRequestState -&gt; Parser TonConnectRequestState
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TonConnectRequestState -&gt; Parser TonConnectRequestState)
+-&gt; TonConnectRequestState -&gt; Parser TonConnectRequestState
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.TonConnectRequestState.html#TonConnectRequestStatePending"><span class="hs-identifier hs-type">TonConnectRequestStatePending</span></a></span><span>
+</span><span id="line-45"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">expiration_date :: Maybe Int
+</span><a href="TD.Data.TonConnectRequestState.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679890881"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-47"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser TonConnectRequestState
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span></pre></body></html>

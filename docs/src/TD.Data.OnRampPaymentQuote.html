@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.OnRampPaymentQuote</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier">OnRampPaymentQuote</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="OnRampPaymentQuote"><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-var">OnRampPaymentQuote</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="OnRampPaymentQuote"><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-var">OnRampPaymentQuote</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes a quote for an on-ramp purchase</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="payment_method"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#payment_method"><span class="hs-identifier hs-var hs-var">payment_method</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The payment method to be used</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="expiration_date"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Int
+</span><a href="TD.Data.OnRampPaymentQuote.html#expiration_date"><span class="hs-identifier hs-var hs-var">expiration_date</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the quote will expire</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="base_currency_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#base_currency_amount"><span class="hs-identifier hs-var hs-var">base_currency_amount</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Paid amount of the base currency</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="cryptocurrency_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_amount"><span class="hs-identifier hs-var hs-var">cryptocurrency_amount</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Purchased amount of the cryptocurrency</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="cryptocurrency_price"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_price"><span class="hs-identifier hs-var hs-var">cryptocurrency_price</span></a></span></span><span>  </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The price of the cryptocurrency</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="fee_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#fee_amount"><span class="hs-identifier hs-var hs-var">fee_amount</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Fee amount</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="extra_fee_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#extra_fee_amount"><span class="hs-identifier hs-var hs-var">extra_fee_amount</span></a></span></span><span>      </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Extra fee amount</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="network_fee_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#network_fee_amount"><span class="hs-identifier hs-var hs-var">network_fee_amount</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Network fee amount</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="total_amount"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#total_amount"><span class="hs-identifier hs-var hs-var">total_amount</span></a></span></span><span>          </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Total paid amount</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679911799"><span id="local-6989586621679911813"><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool
+(OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool)
+-&gt; (OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool)
+-&gt; Eq OnRampPaymentQuote
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool
+== :: OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool
+$c/= :: OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool
+/= :: OnRampPaymentQuote -&gt; OnRampPaymentQuote -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679911820"><span id="local-6989586621679911836"><span id="local-6989586621679911840"><span class="annot"><span class="annottext">Int -&gt; OnRampPaymentQuote -&gt; ShowS
+[OnRampPaymentQuote] -&gt; ShowS
+OnRampPaymentQuote -&gt; String
+(Int -&gt; OnRampPaymentQuote -&gt; ShowS)
+-&gt; (OnRampPaymentQuote -&gt; String)
+-&gt; ([OnRampPaymentQuote] -&gt; ShowS)
+-&gt; Show OnRampPaymentQuote
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; OnRampPaymentQuote -&gt; ShowS
+showsPrec :: Int -&gt; OnRampPaymentQuote -&gt; ShowS
+$cshow :: OnRampPaymentQuote -&gt; String
+show :: OnRampPaymentQuote -&gt; String
+$cshowList :: [OnRampPaymentQuote] -&gt; ShowS
+showList :: [OnRampPaymentQuote] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-type">OnRampPaymentQuote</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679911862"><span class="annot"><span class="annottext">shortShow :: OnRampPaymentQuote -&gt; String
+</span><a href="#local-6989586621679911862"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-type">OnRampPaymentQuote</span></a></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">payment_method :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#payment_method"><span class="hs-identifier hs-var">payment_method</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911864"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911864"><span class="hs-identifier hs-var">payment_method_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">expiration_date :: OnRampPaymentQuote -&gt; Maybe Int
+</span><a href="TD.Data.OnRampPaymentQuote.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911865"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679911865"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">base_currency_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#base_currency_amount"><span class="hs-identifier hs-var">base_currency_amount</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911866"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911866"><span class="hs-identifier hs-var">base_currency_amount_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">cryptocurrency_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_amount"><span class="hs-identifier hs-var">cryptocurrency_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911867"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911867"><span class="hs-identifier hs-var">cryptocurrency_amount_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">cryptocurrency_price :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_price"><span class="hs-identifier hs-var">cryptocurrency_price</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911868"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911868"><span class="hs-identifier hs-var">cryptocurrency_price_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fee_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#fee_amount"><span class="hs-identifier hs-var">fee_amount</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911869"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911869"><span class="hs-identifier hs-var">fee_amount_</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">extra_fee_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#extra_fee_amount"><span class="hs-identifier hs-var">extra_fee_amount</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911870"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911870"><span class="hs-identifier hs-var">extra_fee_amount_</span></a></span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">network_fee_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#network_fee_amount"><span class="hs-identifier hs-var">network_fee_amount</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911871"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911871"><span class="hs-identifier hs-var">network_fee_amount_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">total_amount :: OnRampPaymentQuote -&gt; Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#total_amount"><span class="hs-identifier hs-var">total_amount</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679911872"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911872"><span class="hs-identifier hs-var">total_amount_</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;OnRampPaymentQuote&quot;</span></span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;payment_method&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911864"><span class="hs-identifier hs-var">payment_method_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679911865"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;base_currency_amount&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911866"><span class="hs-identifier hs-var">base_currency_amount_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;cryptocurrency_amount&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911867"><span class="hs-identifier hs-var">cryptocurrency_amount_</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;cryptocurrency_price&quot;</span></span><span>  </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911868"><span class="hs-identifier hs-var">cryptocurrency_price_</span></a></span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;fee_amount&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911869"><span class="hs-identifier hs-var">fee_amount_</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;extra_fee_amount&quot;</span></span><span>      </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911870"><span class="hs-identifier hs-var">extra_fee_amount_</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;network_fee_amount&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911871"><span class="hs-identifier hs-var">network_fee_amount_</span></a></span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;total_amount&quot;</span></span><span>          </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911872"><span class="hs-identifier hs-var">total_amount_</span></a></span><span>
+</span><span id="line-46"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679911877"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-type">OnRampPaymentQuote</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-49"></span><span>  </span><span id="local-6989586621679911929"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser OnRampPaymentQuote
+</span><a href="#local-6989586621679911929"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679911931"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679911931"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679911933"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911933"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-50"></span><span>    </span><span id="local-6989586621679911934"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679911934"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911933"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679911934"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-53"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;onRampPaymentQuote&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser OnRampPaymentQuote
+</span><a href="#local-6989586621679911936"><span class="hs-identifier hs-var">parseOnRampPaymentQuote</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679911931"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-54"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser OnRampPaymentQuote
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-55"></span><span>    </span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><a href="#local-6989586621679911936"><span class="hs-identifier hs-type">parseOnRampPaymentQuote</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-type">OnRampPaymentQuote</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span id="local-6989586621679911936"><span class="annot"><span class="annottext">parseOnRampPaymentQuote :: Value -&gt; Parser OnRampPaymentQuote
+</span><a href="#local-6989586621679911936"><span class="hs-identifier hs-var hs-var">parseOnRampPaymentQuote</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser OnRampPaymentQuote)
+-&gt; Value
+-&gt; Parser OnRampPaymentQuote
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;OnRampPaymentQuote&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser OnRampPaymentQuote)
+ -&gt; Value -&gt; Parser OnRampPaymentQuote)
+-&gt; (Object -&gt; Parser OnRampPaymentQuote)
+-&gt; Value
+-&gt; Parser OnRampPaymentQuote
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679911938"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679911939"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911939"><span class="hs-identifier hs-var">payment_method_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;payment_method&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679911941"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679911941"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679911942"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911942"><span class="hs-identifier hs-var">base_currency_amount_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;base_currency_amount&quot;</span></span><span>
+</span><span id="line-62"></span><span>        </span><span id="local-6989586621679911943"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911943"><span class="hs-identifier hs-var">cryptocurrency_amount_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;cryptocurrency_amount&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span id="local-6989586621679911944"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911944"><span class="hs-identifier hs-var">cryptocurrency_price_</span></a></span></span><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;cryptocurrency_price&quot;</span></span><span>
+</span><span id="line-64"></span><span>        </span><span id="local-6989586621679911945"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911945"><span class="hs-identifier hs-var">fee_amount_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;fee_amount&quot;</span></span><span>
+</span><span id="line-65"></span><span>        </span><span id="local-6989586621679911946"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911946"><span class="hs-identifier hs-var">extra_fee_amount_</span></a></span></span><span>      </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;extra_fee_amount&quot;</span></span><span>
+</span><span id="line-66"></span><span>        </span><span id="local-6989586621679911947"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911947"><span class="hs-identifier hs-var">network_fee_amount_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;network_fee_amount&quot;</span></span><span>
+</span><span id="line-67"></span><span>        </span><span id="local-6989586621679911948"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911948"><span class="hs-identifier hs-var">total_amount_</span></a></span></span><span>          </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679911938"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;total_amount&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">OnRampPaymentQuote -&gt; Parser OnRampPaymentQuote
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(OnRampPaymentQuote -&gt; Parser OnRampPaymentQuote)
+-&gt; OnRampPaymentQuote -&gt; Parser OnRampPaymentQuote
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.OnRampPaymentQuote.html#OnRampPaymentQuote"><span class="hs-identifier hs-type">OnRampPaymentQuote</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">payment_method :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#payment_method"><span class="hs-identifier hs-var">payment_method</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911939"><span class="hs-identifier hs-var">payment_method_</span></a></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">expiration_date :: Maybe Int
+</span><a href="TD.Data.OnRampPaymentQuote.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679911941"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-71"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">base_currency_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#base_currency_amount"><span class="hs-identifier hs-var">base_currency_amount</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911942"><span class="hs-identifier hs-var">base_currency_amount_</span></a></span><span>
+</span><span id="line-72"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">cryptocurrency_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_amount"><span class="hs-identifier hs-var">cryptocurrency_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911943"><span class="hs-identifier hs-var">cryptocurrency_amount_</span></a></span><span>
+</span><span id="line-73"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">cryptocurrency_price :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#cryptocurrency_price"><span class="hs-identifier hs-var">cryptocurrency_price</span></a></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911944"><span class="hs-identifier hs-var">cryptocurrency_price_</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fee_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#fee_amount"><span class="hs-identifier hs-var">fee_amount</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911945"><span class="hs-identifier hs-var">fee_amount_</span></a></span><span>
+</span><span id="line-75"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">extra_fee_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#extra_fee_amount"><span class="hs-identifier hs-var">extra_fee_amount</span></a></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911946"><span class="hs-identifier hs-var">extra_fee_amount_</span></a></span><span>
+</span><span id="line-76"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">network_fee_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#network_fee_amount"><span class="hs-identifier hs-var">network_fee_amount</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911947"><span class="hs-identifier hs-var">network_fee_amount_</span></a></span><span>
+</span><span id="line-77"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">total_amount :: Maybe Text
+</span><a href="TD.Data.OnRampPaymentQuote.html#total_amount"><span class="hs-identifier hs-var">total_amount</span></a></span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679911948"><span class="hs-identifier hs-var">total_amount_</span></a></span><span>
+</span><span id="line-78"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-79"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser OnRampPaymentQuote
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span></pre></body></html>
