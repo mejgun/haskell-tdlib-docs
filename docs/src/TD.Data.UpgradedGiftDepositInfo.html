@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.UpgradedGiftDepositInfo</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier">UpgradedGiftDepositInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">BS</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="UpgradedGiftDepositInfo"><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-var">UpgradedGiftDepositInfo</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="UpgradedGiftDepositInfo"><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-var">UpgradedGiftDepositInfo</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information needed to deposit an upgraded gift from the TON wallet of the current user to a Telegram account. The gift must be transferred by an internal message from the wallet to nft_address with gram_amount attached and with payload as the message body</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="nft_address"><span class="annot"><span class="annottext">UpgradedGiftDepositInfo -&gt; Maybe Text
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#nft_address"><span class="hs-identifier hs-var hs-var">nft_address</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>        </span><span class="annot"><span class="hs-comment">-- ^ Address in TON blockchain to which the message must be sent</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="payload"><span class="annot"><span class="annottext">UpgradedGiftDepositInfo -&gt; Maybe ByteString
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#payload"><span class="hs-identifier hs-var hs-var">payload</span></a></span></span><span>     </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">BS.ByteString</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Body of the NFT transfer message</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="gram_amount"><span class="annot"><span class="annottext">UpgradedGiftDepositInfo -&gt; Maybe Int
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#gram_amount"><span class="hs-identifier hs-var hs-var">gram_amount</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>           </span><span class="annot"><span class="hs-comment">-- ^ The amount of TON Grams that must be attached to the message to cover fees, in the smallest units of the cryptocurrency; excess amount will be returned to the wallet</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679899878"><span id="local-6989586621679899887"><span class="annot"><span class="annottext">UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool
+(UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool)
+-&gt; (UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool)
+-&gt; Eq UpgradedGiftDepositInfo
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool
+== :: UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool
+$c/= :: UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool
+/= :: UpgradedGiftDepositInfo -&gt; UpgradedGiftDepositInfo -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679899895"><span id="local-6989586621679899906"><span id="local-6989586621679899910"><span class="annot"><span class="annottext">Int -&gt; UpgradedGiftDepositInfo -&gt; ShowS
+[UpgradedGiftDepositInfo] -&gt; ShowS
+UpgradedGiftDepositInfo -&gt; String
+(Int -&gt; UpgradedGiftDepositInfo -&gt; ShowS)
+-&gt; (UpgradedGiftDepositInfo -&gt; String)
+-&gt; ([UpgradedGiftDepositInfo] -&gt; ShowS)
+-&gt; Show UpgradedGiftDepositInfo
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; UpgradedGiftDepositInfo -&gt; ShowS
+showsPrec :: Int -&gt; UpgradedGiftDepositInfo -&gt; ShowS
+$cshow :: UpgradedGiftDepositInfo -&gt; String
+show :: UpgradedGiftDepositInfo -&gt; String
+$cshowList :: [UpgradedGiftDepositInfo] -&gt; ShowS
+showList :: [UpgradedGiftDepositInfo] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-type">UpgradedGiftDepositInfo</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-19"></span><span>  </span><span id="local-6989586621679899928"><span class="annot"><span class="annottext">shortShow :: UpgradedGiftDepositInfo -&gt; String
+</span><a href="#local-6989586621679899928"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-type">UpgradedGiftDepositInfo</span></a></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">nft_address :: UpgradedGiftDepositInfo -&gt; Maybe Text
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#nft_address"><span class="hs-identifier hs-var">nft_address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679899930"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679899930"><span class="hs-identifier hs-var">nft_address_</span></a></span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">payload :: UpgradedGiftDepositInfo -&gt; Maybe ByteString
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#payload"><span class="hs-identifier hs-var">payload</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679899931"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679899931"><span class="hs-identifier hs-var">payload_</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gram_amount :: UpgradedGiftDepositInfo -&gt; Maybe Int
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#gram_amount"><span class="hs-identifier hs-var">gram_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679899932"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679899932"><span class="hs-identifier hs-var">gram_amount_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UpgradedGiftDepositInfo&quot;</span></span><span>
+</span><span id="line-25"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;nft_address&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679899930"><span class="hs-identifier hs-var">nft_address_</span></a></span><span>
+</span><span id="line-27"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;payload&quot;</span></span><span>     </span><span class="annot"><span class="annottext">String -&gt; Maybe ByteString -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679899931"><span class="hs-identifier hs-var">payload_</span></a></span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gram_amount&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679899932"><span class="hs-identifier hs-var">gram_amount_</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679899937"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-type">UpgradedGiftDepositInfo</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-32"></span><span>  </span><span id="local-6989586621679899975"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser UpgradedGiftDepositInfo
+</span><a href="#local-6989586621679899975"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679899977"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679899977"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679899979"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899979"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-33"></span><span>    </span><span id="local-6989586621679899980"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679899980"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899979"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679899980"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-36"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;upgradedGiftDepositInfo&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser UpgradedGiftDepositInfo
+</span><a href="#local-6989586621679899982"><span class="hs-identifier hs-var">parseUpgradedGiftDepositInfo</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679899977"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-37"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                         </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser UpgradedGiftDepositInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-38"></span><span>    </span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-40"></span><span>      </span><span class="annot"><a href="#local-6989586621679899982"><span class="hs-identifier hs-type">parseUpgradedGiftDepositInfo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-type">UpgradedGiftDepositInfo</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span id="local-6989586621679899982"><span class="annot"><span class="annottext">parseUpgradedGiftDepositInfo :: Value -&gt; Parser UpgradedGiftDepositInfo
+</span><a href="#local-6989586621679899982"><span class="hs-identifier hs-var hs-var">parseUpgradedGiftDepositInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser UpgradedGiftDepositInfo)
+-&gt; Value
+-&gt; Parser UpgradedGiftDepositInfo
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;UpgradedGiftDepositInfo&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser UpgradedGiftDepositInfo)
+ -&gt; Value -&gt; Parser UpgradedGiftDepositInfo)
+-&gt; (Object -&gt; Parser UpgradedGiftDepositInfo)
+-&gt; Value
+-&gt; Parser UpgradedGiftDepositInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679899984"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899984"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-42"></span><span>        </span><span id="local-6989586621679899985"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679899985"><span class="hs-identifier hs-var">nft_address_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899984"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;nft_address&quot;</span></span><span>
+</span><span id="line-43"></span><span>        </span><span id="local-6989586621679899987"><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679899987"><span class="hs-identifier hs-var">payload_</span></a></span></span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; ByteString) -&gt; Maybe String -&gt; Maybe ByteString
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; ByteString
+</span><a href="TD.Lib.Internal.html#readBytes"><span class="hs-identifier hs-var">I.readBytes</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe ByteString)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe ByteString)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899984"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;payload&quot;</span></span><span>
+</span><span id="line-44"></span><span>        </span><span id="local-6989586621679899990"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679899990"><span class="hs-identifier hs-var">gram_amount_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679899984"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gram_amount&quot;</span></span><span>
+</span><span id="line-45"></span><span>        </span><span class="annot"><span class="annottext">UpgradedGiftDepositInfo -&gt; Parser UpgradedGiftDepositInfo
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(UpgradedGiftDepositInfo -&gt; Parser UpgradedGiftDepositInfo)
+-&gt; UpgradedGiftDepositInfo -&gt; Parser UpgradedGiftDepositInfo
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.UpgradedGiftDepositInfo.html#UpgradedGiftDepositInfo"><span class="hs-identifier hs-type">UpgradedGiftDepositInfo</span></a></span><span>
+</span><span id="line-46"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">nft_address :: Maybe Text
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#nft_address"><span class="hs-identifier hs-var">nft_address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679899985"><span class="hs-identifier hs-var">nft_address_</span></a></span><span>
+</span><span id="line-47"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">payload :: Maybe ByteString
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#payload"><span class="hs-identifier hs-var">payload</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe ByteString
+</span><a href="#local-6989586621679899987"><span class="hs-identifier hs-var">payload_</span></a></span><span>
+</span><span id="line-48"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gram_amount :: Maybe Int
+</span><a href="TD.Data.UpgradedGiftDepositInfo.html#gram_amount"><span class="hs-identifier hs-var">gram_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679899990"><span class="hs-identifier hs-var">gram_amount_</span></a></span><span>
+</span><span id="line-49"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser UpgradedGiftDepositInfo
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span></pre></body></html>

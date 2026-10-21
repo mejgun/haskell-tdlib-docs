@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Query.SetTonWalletCardStickers</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier">SetTonWalletCardStickers</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#defaultSetTonWalletCardStickers"><span class="hs-identifier">defaultSetTonWalletCardStickers</span></a></span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.InputTonWalletCardSticker.html"><span class="hs-identifier">TD.Data.InputTonWalletCardSticker</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">InputTonWalletCardSticker</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><span class="hs-comment">-- | Changes the list of stickers on the TON wallet card of the current user; can be used only if getOption(&quot;can_use_ton_wallet&quot;). The whole list of stickers is replaced. The request can take up to 20 seconds to complete, so it must be called only on explicit user action. Stickers are removed automatically if the corresponding NFT leaves the wallet or the wallet is replaced. Returns the updated card. Returns 'TD.Data.TonWalletCard.TonWalletCard'</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">data</span><span> </span><span id="SetTonWalletCardStickers"><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-var">SetTonWalletCardStickers</span></a></span></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="SetTonWalletCardStickers"><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-var">SetTonWalletCardStickers</span></a></span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="stickers"><span class="annot"><span class="annottext">SetTonWalletCardStickers -&gt; Maybe [InputTonWalletCardSticker]
+</span><a href="TD.Query.SetTonWalletCardStickers.html#stickers"><span class="hs-identifier hs-var hs-var">stickers</span></a></span></span><span>               </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="TD.Data.InputTonWalletCardSticker.html#InputTonWalletCardSticker"><span class="hs-identifier hs-type">InputTonWalletCardSticker.InputTonWalletCardSticker</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="hs-comment">-- ^ The new list of stickers; pass an empty list to remove all stickers. Up to 10 stickers can be added. Each NFT can be used only once</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="background_nft_address"><span class="annot"><span class="annottext">SetTonWalletCardStickers -&gt; Maybe Text
+</span><a href="TD.Query.SetTonWalletCardStickers.html#background_nft_address"><span class="hs-identifier hs-var hs-var">background_nft_address</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                                                </span><span class="annot"><span class="hs-comment">-- ^ Address of the NFT from the new list of stickers, whose colors will be used for the card background; pass an empty string to use the default background. The NFT must correspond to an upgraded gift with can_be_ton_wallet_card_background == true</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621680182914"><span id="local-6989586621680182921"><span class="annot"><span class="annottext">SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool
+(SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool)
+-&gt; (SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool)
+-&gt; Eq SetTonWalletCardStickers
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool
+== :: SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool
+$c/= :: SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool
+/= :: SetTonWalletCardStickers -&gt; SetTonWalletCardStickers -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621680182930"><span id="local-6989586621680182939"><span id="local-6989586621680182943"><span class="annot"><span class="annottext">Int -&gt; SetTonWalletCardStickers -&gt; ShowS
+[SetTonWalletCardStickers] -&gt; ShowS
+SetTonWalletCardStickers -&gt; String
+(Int -&gt; SetTonWalletCardStickers -&gt; ShowS)
+-&gt; (SetTonWalletCardStickers -&gt; String)
+-&gt; ([SetTonWalletCardStickers] -&gt; ShowS)
+-&gt; Show SetTonWalletCardStickers
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; SetTonWalletCardStickers -&gt; ShowS
+showsPrec :: Int -&gt; SetTonWalletCardStickers -&gt; ShowS
+$cshow :: SetTonWalletCardStickers -&gt; String
+show :: SetTonWalletCardStickers -&gt; String
+$cshowList :: [SetTonWalletCardStickers] -&gt; ShowS
+showList :: [SetTonWalletCardStickers] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621680182962"><span class="annot"><span class="annottext">shortShow :: SetTonWalletCardStickers -&gt; String
+</span><a href="#local-6989586621680182962"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span><span>
+</span><span id="line-23"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">stickers :: SetTonWalletCardStickers -&gt; Maybe [InputTonWalletCardSticker]
+</span><a href="TD.Query.SetTonWalletCardStickers.html#stickers"><span class="hs-identifier hs-var">stickers</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680182964"><span class="annot"><span class="annottext">Maybe [InputTonWalletCardSticker]
+</span><a href="#local-6989586621680182964"><span class="hs-identifier hs-var">stickers_</span></a></span></span><span>
+</span><span id="line-24"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">background_nft_address :: SetTonWalletCardStickers -&gt; Maybe Text
+</span><a href="TD.Query.SetTonWalletCardStickers.html#background_nft_address"><span class="hs-identifier hs-var">background_nft_address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680182965"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680182965"><span class="hs-identifier hs-var">background_nft_address_</span></a></span></span><span>
+</span><span id="line-25"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;SetTonWalletCardStickers&quot;</span></span><span>
+</span><span id="line-27"></span><span>          </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-28"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;stickers&quot;</span></span><span>               </span><span class="annot"><span class="annottext">String -&gt; Maybe [InputTonWalletCardSticker] -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe [InputTonWalletCardSticker]
+</span><a href="#local-6989586621680182964"><span class="hs-identifier hs-var">stickers_</span></a></span><span>
+</span><span id="line-29"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;background_nft_address&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680182965"><span class="hs-identifier hs-var">background_nft_address_</span></a></span><span>
+</span><span id="line-30"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621680182970"><span id="local-6989586621680182974"><span id="local-6989586621680182977"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-33"></span><span>  </span><span id="local-6989586621680183003"><span class="annot"><span class="annottext">toJSON :: SetTonWalletCardStickers -&gt; Value
+</span><a href="#local-6989586621680183003"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span><span>
+</span><span id="line-35"></span><span>      </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">stickers :: SetTonWalletCardStickers -&gt; Maybe [InputTonWalletCardSticker]
+</span><a href="TD.Query.SetTonWalletCardStickers.html#stickers"><span class="hs-identifier hs-var">stickers</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680183005"><span class="annot"><span class="annottext">Maybe [InputTonWalletCardSticker]
+</span><a href="#local-6989586621680183005"><span class="hs-identifier hs-var">stickers_</span></a></span></span><span>
+</span><span id="line-36"></span><span>      </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">background_nft_address :: SetTonWalletCardStickers -&gt; Maybe Text
+</span><a href="TD.Query.SetTonWalletCardStickers.html#background_nft_address"><span class="hs-identifier hs-var">background_nft_address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621680183006"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680183006"><span class="hs-identifier hs-var">background_nft_address_</span></a></span></span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-special">}</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-39"></span><span>          </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                  </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;setTonWalletCardStickers&quot;</span></span><span>
+</span><span id="line-40"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;stickers&quot;</span></span><span>               </span><span class="annot"><span class="annottext">Key -&gt; Maybe [InputTonWalletCardSticker] -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe [InputTonWalletCardSticker]
+</span><a href="#local-6989586621680183005"><span class="hs-identifier hs-var">stickers_</span></a></span><span>
+</span><span id="line-41"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;background_nft_address&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621680183006"><span class="hs-identifier hs-var">background_nft_address_</span></a></span><span>
+</span><span id="line-42"></span><span>          </span><span class="hs-special">]</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#defaultSetTonWalletCardStickers"><span class="hs-identifier hs-type">defaultSetTonWalletCardStickers</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span><span>
+</span><span id="line-45"></span><span id="defaultSetTonWalletCardStickers"><span class="annot"><span class="annottext">defaultSetTonWalletCardStickers :: SetTonWalletCardStickers
+</span><a href="TD.Query.SetTonWalletCardStickers.html#defaultSetTonWalletCardStickers"><span class="hs-identifier hs-var hs-var">defaultSetTonWalletCardStickers</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>  </span><span class="annot"><a href="TD.Query.SetTonWalletCardStickers.html#SetTonWalletCardStickers"><span class="hs-identifier hs-type">SetTonWalletCardStickers</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">stickers :: Maybe [InputTonWalletCardSticker]
+</span><a href="TD.Query.SetTonWalletCardStickers.html#stickers"><span class="hs-identifier hs-var">stickers</span></a></span><span>               </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe [InputTonWalletCardSticker]
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">background_nft_address :: Maybe Text
+</span><a href="TD.Query.SetTonWalletCardStickers.html#background_nft_address"><span class="hs-identifier hs-var">background_nft_address</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span></pre></body></html>

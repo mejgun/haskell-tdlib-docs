@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.WebProxyCarrier</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier">WebProxyCarrier</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">data</span><span> </span><span id="WebProxyCarrier"><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-var">WebProxyCarrier</span></a></span></span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="WebProxyCarrier"><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-var">WebProxyCarrier</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes a web proxy carrier: an HTTPS relay page, which carries traffic of a web proxy and must be loaded by the application as the top-level document of a hidden web view. Before loading the page, the application must arrange for an object named carrier.bridge_object_name to be defined in the top-level document whenever its origin is exactly carrier.origin, and in no other document or frame. The object must be read-only and must have two members: a method postMessage(value), which passes an ArrayBuffer or a typed array to processWebProxyCarrierMessage as webProxyCarrierMessageBinary, passes a string as webProxyCarrierMessageText, and rejects any other value; and a property onmessage, which the page sets to a function. The application delivers data to the page by calling that function with an object {data: value}, where value is an ArrayBuffer for binary data and a string for text. Each carrier needs its own web view</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="_id"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#_id"><span class="hs-identifier hs-var hs-var">_id</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Unique identifier of the carrier</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="proxy_id"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#proxy_id"><span class="hs-identifier hs-var hs-var">proxy_id</span></a></span></span><span>           </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>    </span><span class="annot"><span class="hs-comment">-- ^ Identifier of the added proxy that uses the carrier; 0 if the carrier is used by pingProxy or testProxy</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="url"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#url"><span class="hs-identifier hs-var hs-var">url</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The HTTPS URL to load. The URL contains the capability for the proxy and a fragment, which must be kept; the URL must never be logged or shown to the user</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="origin"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#origin"><span class="hs-identifier hs-var hs-var">origin</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Origin of the relay page, for example, &quot;https://proxy.example.com&quot;. The web view must not be allowed to navigate to another origin</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="path_prefix"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#path_prefix"><span class="hs-identifier hs-var hs-var">path_prefix</span></a></span></span><span>        </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The only path prefix on carrier.origin from which the page may load resources or to which it may send requests, for example, &quot;/&quot; or &quot;/relay/&quot;</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="bridge_object_name"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#bridge_object_name"><span class="hs-identifier hs-var hs-var">bridge_object_name</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Name of the object to define in the top-level document; currently, always &quot;TelegramWebProxy&quot;</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="is_temporary"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Maybe Bool
+</span><a href="TD.Data.WebProxyCarrier.html#is_temporary"><span class="hs-identifier hs-var hs-var">is_temporary</span></a></span></span><span>       </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ True, if the carrier is needed only to test the proxy and will be closed after the test. The application may refuse to open such carriers, for example, to avoid creating a web view for every saved proxy</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679896397"><span id="local-6989586621679896410"><span class="annot"><span class="annottext">WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool
+(WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool)
+-&gt; (WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool)
+-&gt; Eq WebProxyCarrier
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool
+== :: WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool
+$c/= :: WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool
+/= :: WebProxyCarrier -&gt; WebProxyCarrier -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679896418"><span id="local-6989586621679896433"><span id="local-6989586621679896437"><span class="annot"><span class="annottext">Int -&gt; WebProxyCarrier -&gt; ShowS
+[WebProxyCarrier] -&gt; ShowS
+WebProxyCarrier -&gt; String
+(Int -&gt; WebProxyCarrier -&gt; ShowS)
+-&gt; (WebProxyCarrier -&gt; String)
+-&gt; ([WebProxyCarrier] -&gt; ShowS)
+-&gt; Show WebProxyCarrier
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; WebProxyCarrier -&gt; ShowS
+showsPrec :: Int -&gt; WebProxyCarrier -&gt; ShowS
+$cshow :: WebProxyCarrier -&gt; String
+show :: WebProxyCarrier -&gt; String
+$cshowList :: [WebProxyCarrier] -&gt; ShowS
+showList :: [WebProxyCarrier] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-type">WebProxyCarrier</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-22"></span><span>  </span><span id="local-6989586621679896459"><span class="annot"><span class="annottext">shortShow :: WebProxyCarrier -&gt; String
+</span><a href="#local-6989586621679896459"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-type">WebProxyCarrier</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: WebProxyCarrier -&gt; Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896461"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896461"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proxy_id :: WebProxyCarrier -&gt; Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#proxy_id"><span class="hs-identifier hs-var">proxy_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896462"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896462"><span class="hs-identifier hs-var">proxy_id_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">url :: WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#url"><span class="hs-identifier hs-var">url</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896463"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896463"><span class="hs-identifier hs-var">url_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">origin :: WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#origin"><span class="hs-identifier hs-var">origin</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896464"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896464"><span class="hs-identifier hs-var">origin_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">path_prefix :: WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#path_prefix"><span class="hs-identifier hs-var">path_prefix</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896465"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896465"><span class="hs-identifier hs-var">path_prefix_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bridge_object_name :: WebProxyCarrier -&gt; Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#bridge_object_name"><span class="hs-identifier hs-var">bridge_object_name</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896466"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896466"><span class="hs-identifier hs-var">bridge_object_name_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_temporary :: WebProxyCarrier -&gt; Maybe Bool
+</span><a href="TD.Data.WebProxyCarrier.html#is_temporary"><span class="hs-identifier hs-var">is_temporary</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679896467"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679896467"><span class="hs-identifier hs-var">is_temporary_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-31"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WebProxyCarrier&quot;</span></span><span>
+</span><span id="line-32"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;_id&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896461"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;proxy_id&quot;</span></span><span>           </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896462"><span class="hs-identifier hs-var">proxy_id_</span></a></span><span>
+</span><span id="line-35"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;url&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896463"><span class="hs-identifier hs-var">url_</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;origin&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896464"><span class="hs-identifier hs-var">origin_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;path_prefix&quot;</span></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896465"><span class="hs-identifier hs-var">path_prefix_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;bridge_object_name&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896466"><span class="hs-identifier hs-var">bridge_object_name_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;is_temporary&quot;</span></span><span>       </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679896467"><span class="hs-identifier hs-var">is_temporary_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679896472"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-type">WebProxyCarrier</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-43"></span><span>  </span><span id="local-6989586621679896519"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser WebProxyCarrier
+</span><a href="#local-6989586621679896519"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679896521"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679896521"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679896523"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896523"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-44"></span><span>    </span><span id="local-6989586621679896524"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679896524"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896523"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679896524"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-47"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;webProxyCarrier&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser WebProxyCarrier
+</span><a href="#local-6989586621679896526"><span class="hs-identifier hs-var">parseWebProxyCarrier</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679896521"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-48"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                 </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser WebProxyCarrier
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-49"></span><span>    </span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><a href="#local-6989586621679896526"><span class="hs-identifier hs-type">parseWebProxyCarrier</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-type">WebProxyCarrier</span></a></span><span>
+</span><span id="line-52"></span><span>      </span><span id="local-6989586621679896526"><span class="annot"><span class="annottext">parseWebProxyCarrier :: Value -&gt; Parser WebProxyCarrier
+</span><a href="#local-6989586621679896526"><span class="hs-identifier hs-var hs-var">parseWebProxyCarrier</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser WebProxyCarrier)
+-&gt; Value
+-&gt; Parser WebProxyCarrier
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WebProxyCarrier&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser WebProxyCarrier)
+ -&gt; Value -&gt; Parser WebProxyCarrier)
+-&gt; (Object -&gt; Parser WebProxyCarrier)
+-&gt; Value
+-&gt; Parser WebProxyCarrier
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679896528"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-53"></span><span>        </span><span id="local-6989586621679896529"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896529"><span class="hs-identifier hs-var">_id_</span></a></span></span><span>                </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;id&quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span id="local-6989586621679896531"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896531"><span class="hs-identifier hs-var">proxy_id_</span></a></span></span><span>           </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;proxy_id&quot;</span></span><span>
+</span><span id="line-55"></span><span>        </span><span id="local-6989586621679896532"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896532"><span class="hs-identifier hs-var">url_</span></a></span></span><span>                </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;url&quot;</span></span><span>
+</span><span id="line-56"></span><span>        </span><span id="local-6989586621679896533"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896533"><span class="hs-identifier hs-var">origin_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;origin&quot;</span></span><span>
+</span><span id="line-57"></span><span>        </span><span id="local-6989586621679896534"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896534"><span class="hs-identifier hs-var">path_prefix_</span></a></span></span><span>        </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;path_prefix&quot;</span></span><span>
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679896535"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896535"><span class="hs-identifier hs-var">bridge_object_name_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;bridge_object_name&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679896536"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679896536"><span class="hs-identifier hs-var">is_temporary_</span></a></span></span><span>       </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679896528"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;is_temporary&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span class="annot"><span class="annottext">WebProxyCarrier -&gt; Parser WebProxyCarrier
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(WebProxyCarrier -&gt; Parser WebProxyCarrier)
+-&gt; WebProxyCarrier -&gt; Parser WebProxyCarrier
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.WebProxyCarrier.html#WebProxyCarrier"><span class="hs-identifier hs-type">WebProxyCarrier</span></a></span><span>
+</span><span id="line-61"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">_id :: Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#_id"><span class="hs-identifier hs-var">_id</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896529"><span class="hs-identifier hs-var">_id_</span></a></span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">proxy_id :: Maybe Int
+</span><a href="TD.Data.WebProxyCarrier.html#proxy_id"><span class="hs-identifier hs-var">proxy_id</span></a></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679896531"><span class="hs-identifier hs-var">proxy_id_</span></a></span><span>
+</span><span id="line-63"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">url :: Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#url"><span class="hs-identifier hs-var">url</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896532"><span class="hs-identifier hs-var">url_</span></a></span><span>
+</span><span id="line-64"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">origin :: Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#origin"><span class="hs-identifier hs-var">origin</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896533"><span class="hs-identifier hs-var">origin_</span></a></span><span>
+</span><span id="line-65"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">path_prefix :: Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#path_prefix"><span class="hs-identifier hs-var">path_prefix</span></a></span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896534"><span class="hs-identifier hs-var">path_prefix_</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">bridge_object_name :: Maybe Text
+</span><a href="TD.Data.WebProxyCarrier.html#bridge_object_name"><span class="hs-identifier hs-var">bridge_object_name</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679896535"><span class="hs-identifier hs-var">bridge_object_name_</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">is_temporary :: Maybe Bool
+</span><a href="TD.Data.WebProxyCarrier.html#is_temporary"><span class="hs-identifier hs-var">is_temporary</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679896536"><span class="hs-identifier hs-var">is_temporary_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-69"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser WebProxyCarrier
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span></pre></body></html>
