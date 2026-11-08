@@ -7,7 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/mejgun/haskell-tdlib</a>
 @package haskell-tdlib
-@version 2.1.28.0
+@version 2.1.29.0
 
 module TD.Lib.Internal
 newtype Extra
@@ -33,6 +33,97 @@ instance TD.Lib.Internal.ShortShow Data.ByteString.Internal.Type.ByteString
 instance TD.Lib.Internal.ShortShow a => TD.Lib.Internal.ShortShow [a]
 instance Data.Hashable.Class.Hashable TD.Lib.Internal.Extra
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Lib.Internal.Extra
+
+module TD.Data.WidgetQueryWallet
+data WidgetQueryWallet
+
+-- | Describes a TON wallet of the user, who is used in a widget query
+WidgetQueryWallet :: Maybe Text -> Maybe Int -> Maybe ByteString -> Maybe ByteString -> WidgetQueryWallet
+
+-- | Address of the wallet
+[address] :: WidgetQueryWallet -> Maybe Text
+
+-- | Balance of the wallet, in the smallest units of the cryptocurrency
+[gram_amount] :: WidgetQueryWallet -> Maybe Int
+
+-- | Public key of the wallet; may be empty if unknown
+[public_key] :: WidgetQueryWallet -> Maybe ByteString
+
+-- | Serialized StateInit of the wallet contract; must be empty if and only
+--   if public_key is empty
+[state_init] :: WidgetQueryWallet -> Maybe ByteString
+defaultWidgetQueryWallet :: WidgetQueryWallet
+instance GHC.Show.Show TD.Data.WidgetQueryWallet.WidgetQueryWallet
+instance GHC.Classes.Eq TD.Data.WidgetQueryWallet.WidgetQueryWallet
+instance TD.Lib.Internal.ShortShow TD.Data.WidgetQueryWallet.WidgetQueryWallet
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WidgetQueryWallet.WidgetQueryWallet
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.WidgetQueryWallet.WidgetQueryWallet
+
+module TD.Data.WidgetQueryType
+
+-- | Describes type of a widget query
+data WidgetQueryType
+
+-- | The query contains data for the bot
+WidgetQueryTypeData :: Maybe Bool -> WidgetQueryType
+
+-- | True, if the TON wallet card of the user who sends the query is sent
+--   to the bot along with the query
+[with_wallet] :: WidgetQueryType -> Maybe Bool
+
+-- | The query contains data signed by a TON wallet of the user who sends
+--   the query
+WidgetQueryTypeSignData :: Maybe WidgetQueryWallet -> Maybe Text -> WidgetQueryType
+
+-- | The wallet that signed the data
+[wallet] :: WidgetQueryType -> Maybe WidgetQueryWallet
+
+-- | JSON-serialized signed data
+[sign_data] :: WidgetQueryType -> Maybe Text
+
+-- | The query notifies the bot about a transaction sent from a TON wallet
+--   of the user who sends the query
+WidgetQueryTypeSentTransaction :: Maybe WidgetQueryWallet -> Maybe Text -> WidgetQueryType
+
+-- | The wallet that signed the data
+[wallet] :: WidgetQueryType -> Maybe WidgetQueryWallet
+
+-- | Value of msg_hash of the transaction
+[msg_hash] :: WidgetQueryType -> Maybe Text
+instance GHC.Show.Show TD.Data.WidgetQueryType.WidgetQueryType
+instance GHC.Classes.Eq TD.Data.WidgetQueryType.WidgetQueryType
+instance TD.Lib.Internal.ShortShow TD.Data.WidgetQueryType.WidgetQueryType
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WidgetQueryType.WidgetQueryType
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.WidgetQueryType.WidgetQueryType
+
+module TD.Data.WidgetQueryAnswer
+data WidgetQueryAnswer
+
+-- | Contains an answer to a widget query
+WidgetQueryAnswer :: Maybe Text -> WidgetQueryAnswer
+
+-- | Data returned by the bot
+[_data] :: WidgetQueryAnswer -> Maybe Text
+instance GHC.Show.Show TD.Data.WidgetQueryAnswer.WidgetQueryAnswer
+instance GHC.Classes.Eq TD.Data.WidgetQueryAnswer.WidgetQueryAnswer
+instance TD.Lib.Internal.ShortShow TD.Data.WidgetQueryAnswer.WidgetQueryAnswer
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WidgetQueryAnswer.WidgetQueryAnswer
+
+module TD.Data.WidgetPublicData
+data WidgetPublicData
+
+-- | Contains public data of a widget
+WidgetPublicData :: Maybe Text -> Maybe Int -> WidgetPublicData
+
+-- | Public data of the widget
+[_data] :: WidgetPublicData -> Maybe Text
+
+-- | The number of seconds after which the public data can be polled again
+[poll_period] :: WidgetPublicData -> Maybe Int
+instance GHC.Show.Show TD.Data.WidgetPublicData.WidgetPublicData
+instance GHC.Classes.Eq TD.Data.WidgetPublicData.WidgetPublicData
+instance TD.Lib.Internal.ShortShow TD.Data.WidgetPublicData.WidgetPublicData
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WidgetPublicData.WidgetPublicData
 
 module TD.Data.WebProxyCarrierMessage
 
@@ -370,7 +461,7 @@ UserTypeRegular :: UserType
 UserTypeDeleted :: UserType
 
 -- | A bot (see <a>https://core.telegram.org/bots)</a>
-UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
+UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> UserType
 
 -- | True, if the bot is owned by the current user and can be edited using
 --   the methods toggleBotUsernameIsActive, reorderBotActiveUsernames,
@@ -391,6 +482,9 @@ UserTypeBot :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Boo
 
 -- | True, if the bot has topics
 [has_topics] :: UserType -> Maybe Bool
+
+-- | True, if the bot has topics, which are shown in a sidebar
+[has_topic_sidebar] :: UserType -> Maybe Bool
 
 -- | True, if users can create and delete topics in the chat with the bot
 [allows_users_to_create_topics] :: UserType -> Maybe Bool
@@ -1538,6 +1632,35 @@ instance TD.Lib.Internal.ShortShow TD.Data.WebAppOpenParameters.WebAppOpenParame
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.WebAppOpenParameters.WebAppOpenParameters
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.WebAppOpenParameters.WebAppOpenParameters
 
+module TD.Data.TextRange
+data TextRange
+
+-- | Describes a part of a text
+TextRange :: Maybe Int -> Maybe Int -> TextRange
+
+-- | Offset of the part, in UTF-16 code units
+[offset] :: TextRange -> Maybe Int
+
+-- | Length of the part, in UTF-16 code units
+[_length] :: TextRange -> Maybe Int
+instance GHC.Show.Show TD.Data.TextRange.TextRange
+instance GHC.Classes.Eq TD.Data.TextRange.TextRange
+instance TD.Lib.Internal.ShortShow TD.Data.TextRange.TextRange
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextRange.TextRange
+
+module TD.Data.TextRanges
+data TextRanges
+
+-- | Contains a list of text parts
+TextRanges :: Maybe [TextRange] -> TextRanges
+
+-- | List of text parts
+[ranges] :: TextRanges -> Maybe [TextRange]
+instance GHC.Show.Show TD.Data.TextRanges.TextRanges
+instance GHC.Classes.Eq TD.Data.TextRanges.TextRanges
+instance TD.Lib.Internal.ShortShow TD.Data.TextRanges.TextRanges
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.TextRanges.TextRanges
+
 module TD.Data.TextParseMode
 
 -- | Describes the way the text needs to be parsed for text entities
@@ -2413,6 +2536,20 @@ instance GHC.Show.Show TD.Data.SponsoredChats.SponsoredChats
 instance GHC.Classes.Eq TD.Data.SponsoredChats.SponsoredChats
 instance TD.Lib.Internal.ShortShow TD.Data.SponsoredChats.SponsoredChats
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SponsoredChats.SponsoredChats
+
+module TD.Data.SpeechRecognitionLanguages
+data SpeechRecognitionLanguages
+
+-- | Contains a list of probable languages of speech
+SpeechRecognitionLanguages :: Maybe [Text] -> SpeechRecognitionLanguages
+
+-- | IETF language tags of the languages in descending order of their
+--   probability; for example, "en-US"
+[language_codes] :: SpeechRecognitionLanguages -> Maybe [Text]
+instance GHC.Show.Show TD.Data.SpeechRecognitionLanguages.SpeechRecognitionLanguages
+instance GHC.Classes.Eq TD.Data.SpeechRecognitionLanguages.SpeechRecognitionLanguages
+instance TD.Lib.Internal.ShortShow TD.Data.SpeechRecognitionLanguages.SpeechRecognitionLanguages
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.SpeechRecognitionLanguages.SpeechRecognitionLanguages
 
 module TD.Data.SettingsSection
 
@@ -7138,16 +7275,6 @@ InputStoryAreaTypeLocation :: Maybe Location -> Maybe LocationAddress -> InputSt
 -- | Address of the location; pass null if unknown
 [address] :: InputStoryAreaType -> Maybe LocationAddress
 
--- | An area pointing to a venue found by the bot
---   getOption("venue_search_bot_username")
-InputStoryAreaTypeFoundVenue :: Maybe Int -> Maybe Text -> InputStoryAreaType
-
--- | Identifier of the inline query, used to find the venue
-[query_id] :: InputStoryAreaType -> Maybe Int
-
--- | Identifier of the inline query result
-[result_id] :: InputStoryAreaType -> Maybe Text
-
 -- | An area pointing to a venue already added to the story
 InputStoryAreaTypePreviousVenue :: Maybe Text -> Maybe Text -> InputStoryAreaType
 
@@ -7532,8 +7659,8 @@ data InputThumbnail
 --   format for stickers, and less than 200 KB in size
 InputThumbnail :: Maybe InputFile -> Maybe Int -> Maybe Int -> InputThumbnail
 
--- | Thumbnail file to send. Sending thumbnails by file_id is currently not
---   supported
+-- | Thumbnail file to send. Sending thumbnails by inputFileId or
+--   inputFileRemote is currently not supported
 [thumbnail] :: InputThumbnail -> Maybe InputFile
 
 -- | Thumbnail width, usually shouldn't exceed 320. Use 0 if unknown
@@ -14752,6 +14879,61 @@ InputMessageChecklist :: Maybe InputChecklist -> InputMessageContent
 -- | The checklist to send
 [checklist] :: InputMessageContent -> Maybe InputChecklist
 
+-- | A message with an HTML widget; for bots only
+InputMessageWidget :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> InputMessageContent
+
+-- | Width of the widget; 0 if the widget must occupy the whole width of
+--   the message bubble
+[width] :: InputMessageContent -> Maybe Int
+
+-- | Height of the widget; 0 if the height of the widget isn't fixed
+[height] :: InputMessageContent -> Maybe Int
+
+-- | HTML code of the widget; 1-32768 bytes; must not exceed 4096 bytes
+--   when compressed by zlib with the maximal compression level
+[html] :: InputMessageContent -> Maybe Text
+
+-- | Public data of the widget, which will be available in copies and
+--   forwards of the message
+[public_data] :: InputMessageContent -> Maybe Text
+
+-- | Data of the widget, which is specific to the chat
+[chat_data] :: InputMessageContent -> Maybe Text
+
+-- | Animation caption; pass null to use an empty caption;
+--   0-getOption("message_caption_length_max") characters
+[caption] :: InputMessageContent -> Maybe FormattedText
+
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
+[show_caption_above_media] :: InputMessageContent -> Maybe Bool
+
+-- | Pass true to allow the widget to send queries to the bot
+[allow_queries] :: InputMessageContent -> Maybe Bool
+
+-- | Pass true to create a shared widget, which can be sent again by its
+--   identifier
+[is_shared] :: InputMessageContent -> Maybe Bool
+
+-- | A message with an existing shared widget; for bots only
+InputMessageSharedWidget :: Maybe Int -> Maybe Text -> Maybe FormattedText -> Maybe Bool -> InputMessageContent
+
+-- | Identifier of the shared widget
+[widget_id] :: InputMessageContent -> Maybe Int
+
+-- | Data of the widget, which is specific to the chat
+[chat_data] :: InputMessageContent -> Maybe Text
+
+-- | Animation caption; pass null to use an empty caption;
+--   0-getOption("message_caption_length_max") characters
+[caption] :: InputMessageContent -> Maybe FormattedText
+
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation; not supported in secret
+--   chats
+[show_caption_above_media] :: InputMessageContent -> Maybe Bool
+
 -- | A forwarded message
 InputMessageForwarded :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe MessageCopyOptions -> InputMessageContent
 
@@ -14877,6 +15059,24 @@ instance TD.Lib.Internal.ShortShow TD.Data.CommunityPermissions.CommunityPermiss
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityPermissions.CommunityPermissions
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Data.CommunityPermissions.CommunityPermissions
 
+module TD.Data.CommunityMemberChats
+data CommunityMemberChats
+
+-- | Contains information about chats in a community, which are joined or
+--   owned by a member of the community
+CommunityMemberChats :: Maybe [Int] -> Maybe [Int] -> CommunityMemberChats
+
+-- | Identifiers of the chats owned by the member. The chats will be
+--   removed from the community if the member is banned in the community
+[owned_chat_ids] :: CommunityMemberChats -> Maybe [Int]
+
+-- | Identifiers of the non-owned chats joined by the member
+[joined_chat_ids] :: CommunityMemberChats -> Maybe [Int]
+instance GHC.Show.Show TD.Data.CommunityMemberChats.CommunityMemberChats
+instance GHC.Classes.Eq TD.Data.CommunityMemberChats.CommunityMemberChats
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityMemberChats.CommunityMemberChats
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityMemberChats.CommunityMemberChats
+
 module TD.Data.CommunityId
 data CommunityId
 
@@ -14972,6 +15172,62 @@ instance GHC.Show.Show TD.Data.CommunityMemberStatus.CommunityMemberStatus
 instance GHC.Classes.Eq TD.Data.CommunityMemberStatus.CommunityMemberStatus
 instance TD.Lib.Internal.ShortShow TD.Data.CommunityMemberStatus.CommunityMemberStatus
 instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityMemberStatus.CommunityMemberStatus
+
+module TD.Data.CommunityAddChatRequest
+data CommunityAddChatRequest
+
+-- | Describes a request to add a chat to a community
+CommunityAddChatRequest :: Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Int -> CommunityAddChatRequest
+
+-- | Identifier of the chat to be added
+[chat_id] :: CommunityAddChatRequest -> Maybe Int
+
+-- | True, if the chat will be visible only to administrators of the
+--   community
+[is_hidden] :: CommunityAddChatRequest -> Maybe Bool
+
+-- | Identifier of the user who sent the request
+[sender_user_id] :: CommunityAddChatRequest -> Maybe Int
+
+-- | Point in time (Unix timestamp) when the request was sent
+[date] :: CommunityAddChatRequest -> Maybe Int
+instance GHC.Show.Show TD.Data.CommunityAddChatRequest.CommunityAddChatRequest
+instance GHC.Classes.Eq TD.Data.CommunityAddChatRequest.CommunityAddChatRequest
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityAddChatRequest.CommunityAddChatRequest
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityAddChatRequest.CommunityAddChatRequest
+
+module TD.Data.CommunityAddChatRequests
+data CommunityAddChatRequests
+
+-- | Contains a list of requests to add chats to a community
+CommunityAddChatRequests :: Maybe Int -> Maybe [CommunityAddChatRequest] -> Maybe Text -> CommunityAddChatRequests
+
+-- | Approximate total number of requests found
+[total_count] :: CommunityAddChatRequests -> Maybe Int
+
+-- | List of the requests
+[requests] :: CommunityAddChatRequests -> Maybe [CommunityAddChatRequest]
+
+-- | The offset for the next getCommunityAddChatRequests request. If empty,
+--   then there are no more results
+[next_offset] :: CommunityAddChatRequests -> Maybe Text
+instance GHC.Show.Show TD.Data.CommunityAddChatRequests.CommunityAddChatRequests
+instance GHC.Classes.Eq TD.Data.CommunityAddChatRequests.CommunityAddChatRequests
+instance TD.Lib.Internal.ShortShow TD.Data.CommunityAddChatRequests.CommunityAddChatRequests
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.CommunityAddChatRequests.CommunityAddChatRequests
+
+module TD.Data.Communities
+data Communities
+
+-- | Represents a list of communities
+Communities :: Maybe [Int] -> Communities
+
+-- | List of community identifiers
+[community_ids] :: Communities -> Maybe [Int]
+instance GHC.Show.Show TD.Data.Communities.Communities
+instance GHC.Classes.Eq TD.Data.Communities.Communities
+instance TD.Lib.Internal.ShortShow TD.Data.Communities.Communities
+instance Data.Aeson.Types.FromJSON.FromJSON TD.Data.Communities.Communities
 
 module TD.Data.CollectibleItemType
 
@@ -15827,7 +16083,7 @@ data Community
 
 -- | Represents a community consisting of supergroup chats, channel chats
 --   and chats with bots
-Community :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe CommunityMemberStatus -> Maybe CommunityPermissions -> Community
+Community :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe ChatPhotoInfo -> Maybe Int -> Maybe CommunityMemberStatus -> Maybe CommunityPermissions -> Maybe Bool -> Community
 
 -- | Community identifier
 [_id] :: Community -> Maybe Int
@@ -15854,6 +16110,10 @@ Community :: Maybe Int -> Maybe Bool -> Maybe Text -> Maybe ChatPhotoInfo -> May
 -- | Actions that non-administrator community members are allowed to take
 --   in the community
 [permissions] :: Community -> Maybe CommunityPermissions
+
+-- | True, if all chats of the community are collapsed into one entry in
+--   the chat list
+[are_chats_collapsed] :: Community -> Maybe Bool
 instance GHC.Show.Show TD.Data.Community.Community
 instance GHC.Classes.Eq TD.Data.Community.Community
 instance TD.Lib.Internal.ShortShow TD.Data.Community.Community
@@ -15890,8 +16150,8 @@ ChatPermissions :: Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe
 -- | True, if the user can send polls and checklists
 [can_send_polls] :: ChatPermissions -> Maybe Bool
 
--- | True, if the user can send animations, games, stickers, and dice and
---   use inline bots
+-- | True, if the user can send animations, games, stickers, widgets, and
+--   dice and use inline bots
 [can_send_other_messages] :: ChatPermissions -> Maybe Bool
 
 -- | True, if the user may add a link preview to their messages
@@ -15928,61 +16188,62 @@ data ChatNotificationSettings
 --   topic
 ChatNotificationSettings :: Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ChatNotificationSettings
 
--- | If true, the value for the relevant type of chat or the forum chat is
---   used instead of mute_for
+-- | If true, the value for the topic's chat, the chat's community, or the
+--   relevant type of chat is used instead of mute_for
 [use_default_mute_for] :: ChatNotificationSettings -> Maybe Bool
 
 -- | Time left before notifications will be unmuted, in seconds
 [mute_for] :: ChatNotificationSettings -> Maybe Int
 
--- | If true, the value for the relevant type of chat or the forum chat is
---   used instead of sound_id
+-- | If true, the value for the topic's chat, the chat's community, or the
+--   relevant type of chat is used instead of sound_id
 [use_default_sound] :: ChatNotificationSettings -> Maybe Bool
 
 -- | Identifier of the notification sound to be played for messages; 0 if
 --   sound is disabled
 [sound_id] :: ChatNotificationSettings -> Maybe Int
 
--- | If true, the value for the relevant type of chat or the forum chat is
---   used instead of show_preview
+-- | If true, the value for the topic's chat, the chat's community, or the
+--   relevant type of chat is used instead of show_preview
 [use_default_show_preview] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if message content must be displayed in notifications
 [show_preview] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, the value for the relevant type of chat is used instead of
---   mute_stories
+-- | If true, the value for the chat's community or the relevant type of
+--   chat is used instead of mute_stories
 [use_default_mute_stories] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if story notifications are disabled for the chat
 [mute_stories] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, the value for the relevant type of chat is used instead of
---   story_sound_id
+-- | If true, the value for the chat's community or the relevant type of
+--   chat is used instead of story_sound_id
 [use_default_story_sound] :: ChatNotificationSettings -> Maybe Bool
 
 -- | Identifier of the notification sound to be played for stories; 0 if
 --   sound is disabled
 [story_sound_id] :: ChatNotificationSettings -> Maybe Int
 
--- | If true, the value for the relevant type of chat is used instead of
---   show_story_poster
+-- | If true, the value for the chat's community or the relevant type of
+--   chat is used instead of show_story_poster
 [use_default_show_story_poster] :: ChatNotificationSettings -> Maybe Bool
 
 -- | True, if the chat that posted a story must be displayed in
 --   notifications
 [show_story_poster] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, the value for the relevant type of chat or the forum chat is
---   used instead of disable_pinned_message_notifications
+-- | If true, the value for the topic's chat, the chat's community, or the
+--   relevant type of chat is used instead of
+--   disable_pinned_message_notifications
 [use_default_disable_pinned_message_notifications] :: ChatNotificationSettings -> Maybe Bool
 
 -- | If true, notifications for incoming pinned messages will be created as
 --   for an ordinary unread message
 [disable_pinned_message_notifications] :: ChatNotificationSettings -> Maybe Bool
 
--- | If true, the value for the relevant type of chat or the forum chat is
---   used instead of disable_mention_notifications
+-- | If true, the value for the topic's chat, the chat's community, or the
+--   relevant type of chat is used instead of disable_mention_notifications
 [use_default_disable_mention_notifications] :: ChatNotificationSettings -> Maybe Bool
 
 -- | If true, notifications for messages with mentions will be created as
@@ -18298,8 +18559,7 @@ ChatActiveStories :: Maybe Int -> Maybe StoryList -> Maybe Int -> Maybe Bool -> 
 
 -- | A parameter used to determine order of the stories in the story list;
 --   0 if the stories don't need to be shown in the story list. Stories
---   must be sorted by the pair (order, story_poster_chat_id) in descending
---   order
+--   must be sorted by the pair (order, chat_id) in descending order
 [order] :: ChatActiveStories -> Maybe Int
 
 -- | True, if the stories are shown in the main story list and can be
@@ -19032,7 +19292,8 @@ InputInlineQueryResultAnimation :: Maybe Text -> Maybe Text -> Maybe Text -> May
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an article or web page
@@ -19066,7 +19327,8 @@ InputInlineQueryResultArticle :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an MP3 audio file
@@ -19094,7 +19356,8 @@ InputInlineQueryResultAudio :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a user contact
@@ -19122,7 +19385,8 @@ InputInlineQueryResultContact :: Maybe Text -> Maybe Contact -> Maybe Text -> Ma
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a file
@@ -19160,7 +19424,8 @@ InputInlineQueryResultDocument :: Maybe Text -> Maybe Text -> Maybe Text -> Mayb
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a game
@@ -19208,7 +19473,8 @@ InputInlineQueryResultLocation :: Maybe Text -> Maybe Location -> Maybe Int -> M
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents link to a JPEG image
@@ -19242,7 +19508,8 @@ InputInlineQueryResultPhoto :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a WEBP, TGS, or WEBM sticker
@@ -19271,7 +19538,8 @@ InputInlineQueryResultSticker :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents information about a venue
@@ -19299,7 +19567,8 @@ InputInlineQueryResultVenue :: Maybe Text -> Maybe Venue -> Maybe Text -> Maybe 
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to a page containing an embedded video player or a
@@ -19341,7 +19610,8 @@ InputInlineQueryResultVideo :: Maybe Text -> Maybe Text -> Maybe Text -> Maybe T
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 
 -- | Represents a link to an opus-encoded audio file within an OGG
@@ -19367,7 +19637,8 @@ InputInlineQueryResultVoiceNote :: Maybe Text -> Maybe Text -> Maybe Text -> May
 -- | The content of the message to be sent. Must be one of the following
 --   types: inputMessageText, inputMessageRichMessage,
 --   inputMessageAnimation, inputMessageInvoice, inputMessageLiveLocation,
---   inputMessageLocation, inputMessageVenue, or inputMessageContact
+--   inputMessageLocation, inputMessageVenue, inputMessageWidget,
+--   inputMessageSharedWidget, or inputMessageContact
 [input_message_content] :: InputInlineQueryResult -> Maybe InputMessageContent
 instance GHC.Show.Show TD.Data.InputInlineQueryResult.InputInlineQueryResult
 instance GHC.Classes.Eq TD.Data.InputInlineQueryResult.InputInlineQueryResult
@@ -21813,7 +22084,7 @@ module TD.Data.Story
 data Story
 
 -- | Represents a story
-Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Maybe [Int] -> Story
+Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe StoryRepostInfo -> Maybe StoryInteractionInfo -> Maybe ReactionType -> Maybe StoryPrivacySettings -> Maybe StoryContent -> Maybe [StoryArea] -> Maybe FormattedText -> Maybe Audio -> Maybe [Int] -> Story
 
 -- | Unique story identifier among stories posted by the given chat
 [_id] :: Story -> Maybe Int
@@ -21904,6 +22175,9 @@ Story :: Maybe Int -> Maybe Int -> Maybe MessageSender -> Maybe Int -> Maybe Boo
 
 -- | Caption of the story
 [caption] :: Story -> Maybe FormattedText
+
+-- | Music attached to the story; may be null if none
+[music] :: Story -> Maybe Audio
 
 -- | Identifiers of story albums to which the story is added; only for
 --   manageable stories
@@ -22019,9 +22293,8 @@ data InputStoryAreas
 InputStoryAreas :: Maybe [InputStoryArea] -> InputStoryAreas
 
 -- | List of input story areas. Currently, a story can have up to 10
---   inputStoryAreaTypeLocation, inputStoryAreaTypeFoundVenue, and
---   inputStoryAreaTypePreviousVenue areas, up to
---   getOption("story_suggested_reaction_area_count_max")
+--   inputStoryAreaTypeLocation and inputStoryAreaTypePreviousVenue areas,
+--   up to getOption("story_suggested_reaction_area_count_max")
 --   inputStoryAreaTypeSuggestedReaction areas, up to 1
 --   inputStoryAreaTypeMessage area, up to
 --   getOption("story_link_area_count_max") inputStoryAreaTypeLink areas if
@@ -24070,7 +24343,7 @@ module TD.Data.CommunityFullInfo
 data CommunityFullInfo
 
 -- | Contains full information about a community
-CommunityFullInfo :: Maybe ChatPhoto -> Maybe [CommunityChat] -> Maybe Int -> Maybe Int -> Maybe Int -> CommunityFullInfo
+CommunityFullInfo :: Maybe ChatPhoto -> Maybe [CommunityChat] -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe ChatNotificationSettings -> CommunityFullInfo
 
 -- | Photo of the community
 [photo] :: CommunityFullInfo -> Maybe ChatPhoto
@@ -24089,6 +24362,10 @@ CommunityFullInfo :: Maybe ChatPhoto -> Maybe [CommunityChat] -> Maybe Int -> Ma
 -- | Number of pending requests for addition of chats to the community; 0
 --   if the current user isn't an administrator of the community
 [add_chat_request_count] :: CommunityFullInfo -> Maybe Int
+
+-- | Notification settings for the community. Default notification settings
+--   are chosen based on the type of a chat in the community
+[notification_settings] :: CommunityFullInfo -> Maybe ChatNotificationSettings
 instance GHC.Show.Show TD.Data.CommunityFullInfo.CommunityFullInfo
 instance GHC.Classes.Eq TD.Data.CommunityFullInfo.CommunityFullInfo
 instance TD.Lib.Internal.ShortShow TD.Data.CommunityFullInfo.CommunityFullInfo
@@ -25951,6 +26228,44 @@ MessageStory :: Maybe Int -> Maybe Int -> Maybe Bool -> MessageContent
 --   the user
 [via_mention] :: MessageContent -> Maybe Bool
 
+-- | A message with an HTML widget
+MessageWidget :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe FormattedText -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> MessageContent
+
+-- | Width of the widget; 0 if the widget must occupy the whole width of
+--   the message bubble
+[width] :: MessageContent -> Maybe Int
+
+-- | Height of the widget; 0 if the height of the widget isn't fixed
+[height] :: MessageContent -> Maybe Int
+
+-- | HTML code of the widget
+[html] :: MessageContent -> Maybe Text
+
+-- | Public data of the widget
+[public_data] :: MessageContent -> Maybe Text
+
+-- | Data of the widget, which is specific to the chat
+[chat_data] :: MessageContent -> Maybe Text
+
+-- | Identifier of the shared widget; 0 if the widget isn't shared
+[widget_id] :: MessageContent -> Maybe Int
+
+-- | Animation caption
+[caption] :: MessageContent -> Maybe FormattedText
+
+-- | True, if the caption must be shown above the animation; otherwise, the
+--   caption must be shown below the animation
+[show_caption_above_media] :: MessageContent -> Maybe Bool
+
+-- | True, if the message is a copy of the widget
+[is_copy] :: MessageContent -> Maybe Bool
+
+-- | True, if the widget can send queries to the bot
+[can_send_queries] :: MessageContent -> Maybe Bool
+
+-- | True, if the widget can send queries to the bot in the background
+[can_send_background_queries] :: MessageContent -> Maybe Bool
+
 -- | A message with a checklist
 MessageChecklist :: Maybe Checklist -> MessageContent
 
@@ -26678,8 +26993,9 @@ MessageTonWalletTransfer :: Maybe Int -> Maybe Text -> Maybe Text -> Maybe Int -
 -- | Address in the TON blockchain of the transaction peer
 [peer_address] :: MessageContent -> Maybe Text
 
--- | The paid amount, in the smallest units of the currency
-[amount] :: MessageContent -> Maybe Int
+-- | The amount of received cryptocurrency, in the smallest units of the
+--   cryptocurrency; negative for outgoing transactions
+[_amount] :: MessageContent -> Maybe Int
 
 -- | Comment added to the transaction
 [comment] :: MessageContent -> Maybe Text
@@ -27296,7 +27612,8 @@ MessageReplyToMessage :: Maybe Int -> Maybe Int -> Maybe TextQuote -> Maybe Int 
 --   messageGiveawayWinners, messageInvoice, messageLocation,
 --   messagePaidMedia, messagePhoto, messagePoll, messageStakeDice,
 --   messageSticker, messageStory, messageText (for link preview),
---   messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
+--   messageVenue, messageVideo, messageVideoNote, messageVoiceNote, or
+--   messageWidget
 [content] :: MessageReplyTo -> Maybe MessageContent
 
 -- | Describes a story replied by a given message
@@ -27803,7 +28120,7 @@ MessageThreadInfo :: Maybe Int -> Maybe Int -> Maybe MessageReplyInfo -> Maybe I
 
 -- | The messages from which the thread starts. The messages are returned
 --   in reverse chronological order (i.e., in order of decreasing
---   message_id)
+--   message.id)
 [messages] :: MessageThreadInfo -> Maybe [Message]
 
 -- | A draft of a message in the message thread; may be null if none
@@ -28942,7 +29259,7 @@ data Supergroup
 
 -- | Represents a supergroup or channel with zero or more members
 --   (subscribers in the case of channels)
-Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Int -> Maybe ActiveStoryState -> Supergroup
+Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatus -> Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe VerificationStatus -> Maybe Bool -> Maybe Bool -> Maybe Bool -> Maybe RestrictionInfo -> Maybe Int -> Maybe ActiveStoryState -> Supergroup
 
 -- | Supergroup or channel identifier
 [_id] :: Supergroup -> Maybe Int
@@ -29033,6 +29350,10 @@ Supergroup :: Maybe Int -> Maybe Usernames -> Maybe Int -> Maybe ChatMemberStatu
 -- | True, if the supergroup is a forum, which topics are shown in the same
 --   way as in channel direct messages groups
 [has_forum_tabs] :: Supergroup -> Maybe Bool
+
+-- | True, if the supergroup is a forum, which topics are shown in a
+--   sidebar. If true, then has_forum_tabs is false
+[has_forum_sidebar] :: Supergroup -> Maybe Bool
 
 -- | Information about the restrictions that must be applied to the
 --   corresponding supergroup or channel chat; may be null if none
@@ -31247,6 +31568,17 @@ UpdateSpeechRecognitionTrial :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
 --   reset; 0 if unknown
 [next_reset_date] :: Update -> Maybe Int
 
+-- | Speech in an audio file was partially recognized. The final result
+--   will be returned by the corresponding recognizeSpeechInFile request
+UpdateSpeechRecognitionInFile :: Maybe Int -> Maybe Text -> Update
+
+-- | Identifier of the speech recognition as specified in
+--   recognizeSpeechInFile
+[recognition_id] :: Update -> Maybe Int
+
+-- | Partially recognized text
+[partial_text] :: Update -> Maybe Text
+
 -- | The levels of live story group call messages have changed
 UpdateGroupCallMessageLevels :: Maybe [GroupCallMessageLevel] -> Update
 
@@ -31490,6 +31822,97 @@ UpdateNewBusinessCallbackQuery :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe 
 
 -- | Query payload
 [payload] :: Update -> Maybe CallbackQueryPayload
+
+-- | A new incoming widget query; for bots only
+UpdateNewWidgetQuery :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Text -> Maybe WidgetQueryType -> Maybe ByteString -> Maybe Int -> Maybe TonWalletCard -> Update
+
+-- | Unique query identifier
+[_id] :: Update -> Maybe Int
+
+-- | Identifier of the user who sent the query
+[sender_user_id] :: Update -> Maybe Int
+
+-- | The chat identifier of the sent message
+[chat_id] :: Update -> Maybe Int
+
+-- | A temporary message identifier
+[message_id] :: Update -> Maybe Int
+
+-- | Identifier that uniquely corresponds to the chat to which the message
+--   was sent
+[chat_instance] :: Update -> Maybe Int
+
+-- | Type of the chat to which the message was sent
+[_chat_type] :: Update -> Maybe Text
+
+-- | Type of the query
+[query_type] :: Update -> Maybe WidgetQueryType
+
+-- | The data
+[_data] :: Update -> Maybe ByteString
+
+-- | Identifier of the shared widget from which the query originated; 0 if
+--   the widget isn't shared
+[widget_id] :: Update -> Maybe Int
+
+-- | TON wallet card of the user who sent the query; may be null if none
+[wallet_card] :: Update -> Maybe TonWalletCard
+
+-- | A new incoming widget query from a message sent via a bot; for bots
+--   only
+UpdateNewInlineWidgetQuery :: Maybe Int -> Maybe Int -> Maybe Text -> Maybe Int -> Maybe Text -> Maybe WidgetQueryType -> Maybe ByteString -> Maybe Int -> Maybe TonWalletCard -> Update
+
+-- | Unique query identifier
+[_id] :: Update -> Maybe Int
+
+-- | Identifier of the user who sent the query
+[sender_user_id] :: Update -> Maybe Int
+
+-- | Identifier of the sent inline message, if known
+[inline_message_id] :: Update -> Maybe Text
+
+-- | Identifier that uniquely corresponds to the chat to which the message
+--   was sent
+[chat_instance] :: Update -> Maybe Int
+
+-- | Type of the chat to which the message was sent
+[_chat_type] :: Update -> Maybe Text
+
+-- | Type of the query
+[query_type] :: Update -> Maybe WidgetQueryType
+
+-- | The data
+[_data] :: Update -> Maybe ByteString
+
+-- | Identifier of the shared widget from which the query originated; 0 if
+--   the widget isn't shared
+[widget_id] :: Update -> Maybe Int
+
+-- | TON wallet card of the user who sent the query; may be null if none
+[wallet_card] :: Update -> Maybe TonWalletCard
+
+-- | A new incoming widget query from a copy of a shared widget; for bots
+--   only
+UpdateNewWidgetCopyQuery :: Maybe Int -> Maybe Int -> Maybe WidgetQueryType -> Maybe ByteString -> Maybe Int -> Maybe TonWalletCard -> Update
+
+-- | Unique query identifier
+[_id] :: Update -> Maybe Int
+
+-- | Identifier of the user who sent the query
+[sender_user_id] :: Update -> Maybe Int
+
+-- | Type of the query
+[query_type] :: Update -> Maybe WidgetQueryType
+
+-- | The data
+[_data] :: Update -> Maybe ByteString
+
+-- | Identifier of the shared widget from which the query originated; 0 if
+--   the widget isn't shared
+[widget_id] :: Update -> Maybe Int
+
+-- | TON wallet card of the user who sent the query; may be null if none
+[wallet_card] :: Update -> Maybe TonWalletCard
 
 -- | A new incoming shipping query; for bots only. Only for invoices with
 --   flexible price
@@ -31802,8 +32225,11 @@ Chats :: Chats -> GeneralResult
 CheckChatUsernameResult :: CheckChatUsernameResult -> GeneralResult
 CheckStickerSetNameResult :: CheckStickerSetNameResult -> GeneralResult
 CollectibleItemInfo :: CollectibleItemInfo -> GeneralResult
+Communities :: Communities -> GeneralResult
+CommunityAddChatRequests :: CommunityAddChatRequests -> GeneralResult
 CommunityFullInfo :: CommunityFullInfo -> GeneralResult
 CommunityId :: CommunityId -> GeneralResult
+CommunityMemberChats :: CommunityMemberChats -> GeneralResult
 ConnectedAffiliateProgram :: ConnectedAffiliateProgram -> GeneralResult
 ConnectedAffiliatePrograms :: ConnectedAffiliatePrograms -> GeneralResult
 ConnectedWebsites :: ConnectedWebsites -> GeneralResult
@@ -31961,6 +32387,7 @@ Seconds :: Seconds -> GeneralResult
 SecretChat :: SecretChat -> GeneralResult
 Session :: Session -> GeneralResult
 Sessions :: Sessions -> GeneralResult
+SpeechRecognitionLanguages :: SpeechRecognitionLanguages -> GeneralResult
 SponsoredChats :: SponsoredChats -> GeneralResult
 SponsoredMessages :: SponsoredMessages -> GeneralResult
 StakeDiceState :: StakeDiceState -> GeneralResult
@@ -32000,6 +32427,7 @@ Text :: Text -> GeneralResult
 TextCompositionStyle :: TextCompositionStyle -> GeneralResult
 TextCompositionStyleExample :: TextCompositionStyleExample -> GeneralResult
 TextEntities :: TextEntities -> GeneralResult
+TextRanges :: TextRanges -> GeneralResult
 TimeZones :: TimeZones -> GeneralResult
 TonCenterStreamingApiUrl :: TonCenterStreamingApiUrl -> GeneralResult
 TonConnectChallenge :: TonConnectChallenge -> GeneralResult
@@ -32038,6 +32466,8 @@ WebAppInfo :: WebAppInfo -> GeneralResult
 WebAppUrl :: WebAppUrl -> GeneralResult
 WebBrowserType :: WebBrowserType -> GeneralResult
 WebPageInstantView :: WebPageInstantView -> GeneralResult
+WidgetPublicData :: WidgetPublicData -> GeneralResult
+WidgetQueryAnswer :: WidgetQueryAnswer -> GeneralResult
 instance GHC.Show.Show TD.GeneralResult.GeneralResult
 instance GHC.Classes.Eq TD.GeneralResult.GeneralResult
 instance TD.Lib.Internal.ShortShow TD.GeneralResult.GeneralResult
@@ -32317,6 +32747,37 @@ instance GHC.Show.Show TD.Query.AddChecklistTasks.AddChecklistTasks
 instance GHC.Classes.Eq TD.Query.AddChecklistTasks.AddChecklistTasks
 instance TD.Lib.Internal.ShortShow TD.Query.AddChecklistTasks.AddChecklistTasks
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddChecklistTasks.AddChecklistTasks
+
+module TD.Query.AddCommunityChat
+
+-- | Adds a chat to a community. If the current user isn't allowed to
+--   change the list of chats in the community, then a request to add the
+--   chat is sent to administrators of the community instead and the method
+--   fails with the error <a>COMMUNITY_REQUEST_CREATED</a>. Returns
+--   <a>Ok</a>
+data AddCommunityChat
+AddCommunityChat :: Maybe Int -> Maybe Int -> Maybe Bool -> AddCommunityChat
+
+-- | Identifier of the community
+[community_id] :: AddCommunityChat -> Maybe Int
+
+-- | Identifier of the chat to add; only chats with owned bots and owned
+--   basic group, supergroup and channel chats are allowed; basic group
+--   chats will be automatically upgraded to supergroup chats. A community
+--   can have up to getOption("community_chat_count_max") supergroup and
+--   channel chats and up to getOption("community_bot_count_max") chats
+--   with bots; otherwise, the method fails with the error
+--   <a>COMMUNITY_PEERS_TOO_MUCH</a>
+[chat_id] :: AddCommunityChat -> Maybe Int
+
+-- | Pass true if the chat will be visible only to administrators of the
+--   community
+[is_hidden] :: AddCommunityChat -> Maybe Bool
+defaultAddCommunityChat :: AddCommunityChat
+instance GHC.Show.Show TD.Query.AddCommunityChat.AddCommunityChat
+instance GHC.Classes.Eq TD.Query.AddCommunityChat.AddCommunityChat
+instance TD.Lib.Internal.ShortShow TD.Query.AddCommunityChat.AddCommunityChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AddCommunityChat.AddCommunityChat
 
 module TD.Query.AddContact
 
@@ -32706,9 +33167,8 @@ AddQuickReplyShortcutInlineQueryResultMessage :: Maybe Text -> Maybe Int -> Mayb
 [result_id] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Text
 
 -- | Pass true to hide the bot, via which the message is sent. Can be used
---   only for bots getOption("animation_search_bot_username"),
---   getOption("photo_search_bot_username"), and
---   getOption("venue_search_bot_username")
+--   only for bots getOption("animation_search_bot_username") and
+--   getOption("photo_search_bot_username")
 [hide_via_bot] :: AddQuickReplyShortcutInlineQueryResultMessage -> Maybe Bool
 defaultAddQuickReplyShortcutInlineQueryResultMessage :: AddQuickReplyShortcutInlineQueryResultMessage
 instance GHC.Show.Show TD.Query.AddQuickReplyShortcutInlineQueryResultMessage.AddQuickReplyShortcutInlineQueryResultMessage
@@ -33154,6 +33614,23 @@ instance GHC.Show.Show TD.Query.AnswerWebAppQuery.AnswerWebAppQuery
 instance GHC.Classes.Eq TD.Query.AnswerWebAppQuery.AnswerWebAppQuery
 instance TD.Lib.Internal.ShortShow TD.Query.AnswerWebAppQuery.AnswerWebAppQuery
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerWebAppQuery.AnswerWebAppQuery
+
+module TD.Query.AnswerWidgetQuery
+
+-- | Sets the result of a widget query; for bots only. Returns <a>Ok</a>
+data AnswerWidgetQuery
+AnswerWidgetQuery :: Maybe Int -> Maybe Text -> AnswerWidgetQuery
+
+-- | Identifier of the widget query
+[widget_query_id] :: AnswerWidgetQuery -> Maybe Int
+
+-- | Data to be returned to the widget
+[_data] :: AnswerWidgetQuery -> Maybe Text
+defaultAnswerWidgetQuery :: AnswerWidgetQuery
+instance GHC.Show.Show TD.Query.AnswerWidgetQuery.AnswerWidgetQuery
+instance GHC.Classes.Eq TD.Query.AnswerWidgetQuery.AnswerWidgetQuery
+instance TD.Lib.Internal.ShortShow TD.Query.AnswerWidgetQuery.AnswerWidgetQuery
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.AnswerWidgetQuery.AnswerWidgetQuery
 
 module TD.Query.ApplyPremiumGiftCode
 
@@ -34414,8 +34891,10 @@ CraftGift :: Maybe [Text] -> CraftGift
 
 -- | Identifier of the gifts to use for crafting. In the case of a
 --   successful craft, the resulting gift will have the number of the first
---   gift. Consequently, the first gift must not have been withdrawn to the
---   TON blockchain as an NFT and must have an empty gift_address
+--   gift. Consequently, unless
+--   getOption("can_craft_from_withdrawn_first_gift") is true, the first
+--   gift must not have been withdrawn to the TON blockchain as an NFT and
+--   must have an empty gift_address
 [received_gift_ids] :: CraftGift -> Maybe [Text]
 instance GHC.Show.Show TD.Query.CraftGift.CraftGift
 instance GHC.Classes.Eq TD.Query.CraftGift.CraftGift
@@ -36945,6 +37424,34 @@ instance GHC.Classes.Eq TD.Query.EditInlineMessageText.EditInlineMessageText
 instance TD.Lib.Internal.ShortShow TD.Query.EditInlineMessageText.EditInlineMessageText
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditInlineMessageText.EditInlineMessageText
 
+module TD.Query.EditInlineMessageWidgetData
+
+-- | Edits data of a widget in an inline message sent via the bot; for bots
+--   only. Returns <a>Ok</a>
+data EditInlineMessageWidgetData
+EditInlineMessageWidgetData :: Maybe Text -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Text -> EditInlineMessageWidgetData
+
+-- | Inline message identifier
+[inline_message_id] :: EditInlineMessageWidgetData -> Maybe Text
+
+-- | Pass true to edit public data of the widget
+[edit_public_data] :: EditInlineMessageWidgetData -> Maybe Bool
+
+-- | New public data of the widget; ignored if edit_public_data is false
+[public_data] :: EditInlineMessageWidgetData -> Maybe Text
+
+-- | Pass true to edit data of the widget, which is specific to the chat
+[edit_chat_data] :: EditInlineMessageWidgetData -> Maybe Bool
+
+-- | New data of the widget, which is specific to the chat; ignored if
+--   edit_chat_data is false
+[chat_data] :: EditInlineMessageWidgetData -> Maybe Text
+defaultEditInlineMessageWidgetData :: EditInlineMessageWidgetData
+instance GHC.Show.Show TD.Query.EditInlineMessageWidgetData.EditInlineMessageWidgetData
+instance GHC.Classes.Eq TD.Query.EditInlineMessageWidgetData.EditInlineMessageWidgetData
+instance TD.Lib.Internal.ShortShow TD.Query.EditInlineMessageWidgetData.EditInlineMessageWidgetData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditInlineMessageWidgetData.EditInlineMessageWidgetData
+
 module TD.Query.EditMessageCaption
 
 -- | Edits the message content caption. Returns the edited message after
@@ -37139,6 +37646,37 @@ instance GHC.Classes.Eq TD.Query.EditMessageText.EditMessageText
 instance TD.Lib.Internal.ShortShow TD.Query.EditMessageText.EditMessageText
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageText.EditMessageText
 
+module TD.Query.EditMessageWidgetData
+
+-- | Edits data of a widget sent by the bot; for bots only. Returns
+--   <a>Ok</a>
+data EditMessageWidgetData
+EditMessageWidgetData :: Maybe Int -> Maybe Int -> Maybe Bool -> Maybe Text -> Maybe Bool -> Maybe Text -> EditMessageWidgetData
+
+-- | The chat the message belongs to
+[chat_id] :: EditMessageWidgetData -> Maybe Int
+
+-- | Identifier of the widget message
+[message_id] :: EditMessageWidgetData -> Maybe Int
+
+-- | Pass true to edit public data of the widget
+[edit_public_data] :: EditMessageWidgetData -> Maybe Bool
+
+-- | New public data of the widget; ignored if edit_public_data is false
+[public_data] :: EditMessageWidgetData -> Maybe Text
+
+-- | Pass true to edit data of the widget, which is specific to the chat
+[edit_chat_data] :: EditMessageWidgetData -> Maybe Bool
+
+-- | New data of the widget, which is specific to the chat; ignored if
+--   edit_chat_data is false
+[chat_data] :: EditMessageWidgetData -> Maybe Text
+defaultEditMessageWidgetData :: EditMessageWidgetData
+instance GHC.Show.Show TD.Query.EditMessageWidgetData.EditMessageWidgetData
+instance GHC.Classes.Eq TD.Query.EditMessageWidgetData.EditMessageWidgetData
+instance TD.Lib.Internal.ShortShow TD.Query.EditMessageWidgetData.EditMessageWidgetData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditMessageWidgetData.EditMessageWidgetData
+
 module TD.Query.EditProxy
 
 -- | Edits an existing proxy server for network requests. Can be called
@@ -37260,6 +37798,29 @@ instance GHC.Classes.Eq TD.Query.EditStoryCover.EditStoryCover
 instance TD.Lib.Internal.ShortShow TD.Query.EditStoryCover.EditStoryCover
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStoryCover.EditStoryCover
 
+module TD.Query.EditStoryMusic
+
+-- | Changes music attached to a story. Can be called only if
+--   story.can_be_edited == true and the story isn't being edited now.
+--   Returns <a>Ok</a>
+data EditStoryMusic
+EditStoryMusic :: Maybe Int -> Maybe Int -> Maybe InputAudio -> EditStoryMusic
+
+-- | Identifier of the chat that posted the story
+[story_poster_chat_id] :: EditStoryMusic -> Maybe Int
+
+-- | Identifier of the story to edit
+[story_id] :: EditStoryMusic -> Maybe Int
+
+-- | The new music; pass null to remove music from the story. The music can
+--   be up to 60 seconds long
+[music] :: EditStoryMusic -> Maybe InputAudio
+defaultEditStoryMusic :: EditStoryMusic
+instance GHC.Show.Show TD.Query.EditStoryMusic.EditStoryMusic
+instance GHC.Classes.Eq TD.Query.EditStoryMusic.EditStoryMusic
+instance TD.Lib.Internal.ShortShow TD.Query.EditStoryMusic.EditStoryMusic
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditStoryMusic.EditStoryMusic
+
 module TD.Query.EditTextCompositionStyle
 
 -- | Edits a custom text composition style that was created by the current
@@ -37311,6 +37872,28 @@ instance GHC.Show.Show TD.Query.EditUserStarSubscription.EditUserStarSubscriptio
 instance GHC.Classes.Eq TD.Query.EditUserStarSubscription.EditUserStarSubscription
 instance TD.Lib.Internal.ShortShow TD.Query.EditUserStarSubscription.EditUserStarSubscription
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditUserStarSubscription.EditUserStarSubscription
+
+module TD.Query.EditWidgetData
+
+-- | Edits public data of a shared widget created by the bot; for bots
+--   only. Returns <a>Ok</a>
+data EditWidgetData
+EditWidgetData :: Maybe Int -> Maybe Text -> Maybe Int -> EditWidgetData
+
+-- | Identifier of the shared widget
+[widget_id] :: EditWidgetData -> Maybe Int
+
+-- | New public data of the widget
+[public_data] :: EditWidgetData -> Maybe Text
+
+-- | Time during which the public data can be cached, in seconds; 5-3600.
+--   Pass 0 to keep the current value, which is 30 by default
+[cache_time] :: EditWidgetData -> Maybe Int
+defaultEditWidgetData :: EditWidgetData
+instance GHC.Show.Show TD.Query.EditWidgetData.EditWidgetData
+instance GHC.Classes.Eq TD.Query.EditWidgetData.EditWidgetData
+instance TD.Lib.Internal.ShortShow TD.Query.EditWidgetData.EditWidgetData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.EditWidgetData.EditWidgetData
 
 module TD.Query.EnableProxy
 
@@ -37430,6 +38013,40 @@ instance GHC.Show.Show TD.Query.FinishFileGeneration.FinishFileGeneration
 instance GHC.Classes.Eq TD.Query.FinishFileGeneration.FinishFileGeneration
 instance TD.Lib.Internal.ShortShow TD.Query.FinishFileGeneration.FinishFileGeneration
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.FinishFileGeneration.FinishFileGeneration
+
+module TD.Query.FixRecognizedRichMessageWithAi
+
+-- | Fixes a rich message with text received as a result of speech
+--   recognition using an AI model by correcting recognition errors and
+--   adding punctuation. May return an error with a message
+--   <a>AICOMPOSE_FLOOD_PREMIUM</a> if Telegram Premium is required to send
+--   further requests. Returns <a>RichMessage</a>
+data FixRecognizedRichMessageWithAi
+FixRecognizedRichMessageWithAi :: Maybe InputRichMessage -> FixRecognizedRichMessageWithAi
+
+-- | The message with the recognized text
+[message] :: FixRecognizedRichMessageWithAi -> Maybe InputRichMessage
+instance GHC.Show.Show TD.Query.FixRecognizedRichMessageWithAi.FixRecognizedRichMessageWithAi
+instance GHC.Classes.Eq TD.Query.FixRecognizedRichMessageWithAi.FixRecognizedRichMessageWithAi
+instance TD.Lib.Internal.ShortShow TD.Query.FixRecognizedRichMessageWithAi.FixRecognizedRichMessageWithAi
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.FixRecognizedRichMessageWithAi.FixRecognizedRichMessageWithAi
+
+module TD.Query.FixRecognizedTextWithAi
+
+-- | Fixes text received as a result of speech recognition using an AI
+--   model by correcting recognition errors and adding punctuation; must
+--   not be used in secret chats. May return an error with a message
+--   <a>AICOMPOSE_FLOOD_PREMIUM</a> if Telegram Premium is required to send
+--   further requests. Returns <a>FormattedText</a>
+data FixRecognizedTextWithAi
+FixRecognizedTextWithAi :: Maybe FormattedText -> FixRecognizedTextWithAi
+
+-- | The recognized text
+[text] :: FixRecognizedTextWithAi -> Maybe FormattedText
+instance GHC.Show.Show TD.Query.FixRecognizedTextWithAi.FixRecognizedTextWithAi
+instance GHC.Classes.Eq TD.Query.FixRecognizedTextWithAi.FixRecognizedTextWithAi
+instance TD.Lib.Internal.ShortShow TD.Query.FixRecognizedTextWithAi.FixRecognizedTextWithAi
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.FixRecognizedTextWithAi.FixRecognizedTextWithAi
 
 module TD.Query.FixRichMessageWithAi
 
@@ -38127,7 +38744,7 @@ module TD.Query.GetChatArchivedStories
 -- | Returns the list of all stories posted by the given chat; requires
 --   can_edit_stories administrator right in the chat. The stories are
 --   returned in reverse chronological order (i.e., in order of decreasing
---   story_id). For optimal performance, the number of returned stories is
+--   story.id). For optimal performance, the number of returned stories is
 --   chosen by TDLib. Returns <a>Stories</a>
 data GetChatArchivedStories
 GetChatArchivedStories :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatArchivedStories
@@ -38288,8 +38905,8 @@ module TD.Query.GetChatEventLog
 -- | Returns a list of service actions taken by chat members and
 --   administrators in the last 48 hours. Available only in supergroups and
 --   channels. Requires administrator rights. Returns results in reverse
---   chronological order (i.e., in order of decreasing event_id). Returns
---   <a>ChatEvents</a>
+--   chronological order (i.e., in order of decreasing chatEvent.id).
+--   Returns <a>ChatEvents</a>
 data GetChatEventLog
 GetChatEventLog :: Maybe Int -> Maybe Text -> Maybe Int -> Maybe Int -> Maybe ChatEventLogFilters -> Maybe [Int] -> GetChatEventLog
 
@@ -38410,7 +39027,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatFolderNewChats.GetChatFo
 module TD.Query.GetChatHistory
 
 -- | Returns messages in a chat. The messages are returned in reverse
---   chronological order (i.e., in order of decreasing message_id). For
+--   chronological order (i.e., in order of decreasing message.id). For
 --   optimal performance, the number of returned messages is chosen by
 --   TDLib. This is an offline method if only_local is true. Returns
 --   <a>Messages</a>
@@ -38777,7 +39394,7 @@ module TD.Query.GetChatPostedToChatPageStories
 -- | Returns the list of stories that were posted by the given chat to its
 --   chat page. If from_story_id == 0, then pinned stories are returned
 --   first. Then, stories are returned in reverse chronological order
---   (i.e., in order of decreasing story_id). For optimal performance, the
+--   (i.e., in order of decreasing story.id). For optimal performance, the
 --   number of returned stories is chosen by TDLib. Returns <a>Stories</a>
 data GetChatPostedToChatPageStories
 GetChatPostedToChatPageStories :: Maybe Int -> Maybe Int -> Maybe Int -> GetChatPostedToChatPageStories
@@ -38870,7 +39487,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetChatRevenueWithdrawalUrl.Get
 module TD.Query.GetChatScheduledMessages
 
 -- | Returns all scheduled messages in a chat. The messages are returned in
---   reverse chronological order (i.e., in order of decreasing message_id).
+--   reverse chronological order (i.e., in order of decreasing message.id).
 --   Returns <a>Messages</a>
 data GetChatScheduledMessages
 GetChatScheduledMessages :: Maybe Int -> GetChatScheduledMessages
@@ -39130,6 +39747,30 @@ instance GHC.Classes.Eq TD.Query.GetCommands.GetCommands
 instance TD.Lib.Internal.ShortShow TD.Query.GetCommands.GetCommands
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommands.GetCommands
 
+module TD.Query.GetCommunityAddChatRequests
+
+-- | Returns pending requests to add chats to a community. Administrators
+--   of the community with can_edit_chat_list right receive all requests;
+--   other users receive only requests sent by them. Returns
+--   <a>CommunityAddChatRequests</a>
+data GetCommunityAddChatRequests
+GetCommunityAddChatRequests :: Maybe Int -> Maybe Text -> Maybe Int -> GetCommunityAddChatRequests
+
+-- | Identifier of the community
+[community_id] :: GetCommunityAddChatRequests -> Maybe Int
+
+-- | Offset of the first entry to return as received from the previous
+--   request; use empty string to get the first chunk of results
+[offset] :: GetCommunityAddChatRequests -> Maybe Text
+
+-- | The maximum number of requests to return
+[limit] :: GetCommunityAddChatRequests -> Maybe Int
+defaultGetCommunityAddChatRequests :: GetCommunityAddChatRequests
+instance GHC.Show.Show TD.Query.GetCommunityAddChatRequests.GetCommunityAddChatRequests
+instance GHC.Classes.Eq TD.Query.GetCommunityAddChatRequests.GetCommunityAddChatRequests
+instance TD.Lib.Internal.ShortShow TD.Query.GetCommunityAddChatRequests.GetCommunityAddChatRequests
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommunityAddChatRequests.GetCommunityAddChatRequests
+
 module TD.Query.GetCommunityFullInfo
 
 -- | Returns full information about a community. Returns
@@ -39143,6 +39784,26 @@ instance GHC.Show.Show TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
 instance GHC.Classes.Eq TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
 instance TD.Lib.Internal.ShortShow TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommunityFullInfo.GetCommunityFullInfo
+
+module TD.Query.GetCommunityMemberChats
+
+-- | Returns chats in a community, which were joined by a member of the
+--   community; requires can_ban_members administrator right in the
+--   community. Can be used to show chats that will be affected by the
+--   member ban. Returns <a>CommunityMemberChats</a>
+data GetCommunityMemberChats
+GetCommunityMemberChats :: Maybe Int -> Maybe MessageSender -> GetCommunityMemberChats
+
+-- | Identifier of the community
+[community_id] :: GetCommunityMemberChats -> Maybe Int
+
+-- | Identifier of the member
+[member_id] :: GetCommunityMemberChats -> Maybe MessageSender
+defaultGetCommunityMemberChats :: GetCommunityMemberChats
+instance GHC.Show.Show TD.Query.GetCommunityMemberChats.GetCommunityMemberChats
+instance GHC.Classes.Eq TD.Query.GetCommunityMemberChats.GetCommunityMemberChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetCommunityMemberChats.GetCommunityMemberChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetCommunityMemberChats.GetCommunityMemberChats
 
 module TD.Query.GetConnectedAffiliateProgram
 
@@ -39453,7 +40114,7 @@ module TD.Query.GetDirectMessagesChatTopicHistory
 
 -- | Returns messages in the topic in a channel direct messages chat
 --   administered by the current user. The messages are returned in reverse
---   chronological order (i.e., in order of decreasing message_id). Returns
+--   chronological order (i.e., in order of decreasing message.id). Returns
 --   <a>Messages</a>
 data GetDirectMessagesChatTopicHistory
 GetDirectMessagesChatTopicHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetDirectMessagesChatTopicHistory
@@ -39727,7 +40388,7 @@ module TD.Query.GetForumTopicHistory
 
 -- | Returns messages in a topic in a forum supergroup chat or a chat with
 --   a bot with topics. The messages are returned in reverse chronological
---   order (i.e., in order of decreasing message_id). For optimal
+--   order (i.e., in order of decreasing message.id). For optimal
 --   performance, the number of returned messages is chosen by TDLib.
 --   Returns <a>Messages</a>
 data GetForumTopicHistory
@@ -39762,8 +40423,8 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetForumTopicHistory.GetForumTo
 
 module TD.Query.GetForumTopicLink
 
--- | Returns an HTTPS link to a topic in a forum supergroup chat. This is
---   an offline method. Returns <a>MessageLink</a>
+-- | Returns an HTTPS link to a topic in a forum supergroup chat or a chat
+--   with a bot. This is an offline method. Returns <a>MessageLink</a>
 data GetForumTopicLink
 GetForumTopicLink :: Maybe Int -> Maybe Int -> GetForumTopicLink
 
@@ -40275,6 +40936,17 @@ instance GHC.Show.Show TD.Query.GetInternalLinkType.GetInternalLinkType
 instance GHC.Classes.Eq TD.Query.GetInternalLinkType.GetInternalLinkType
 instance TD.Lib.Internal.ShortShow TD.Query.GetInternalLinkType.GetInternalLinkType
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetInternalLinkType.GetInternalLinkType
+
+module TD.Query.GetJoinedCommunities
+
+-- | Returns the list of communities joined by the current user. Returns
+--   <a>Communities</a>
+data GetJoinedCommunities
+GetJoinedCommunities :: GetJoinedCommunities
+instance GHC.Show.Show TD.Query.GetJoinedCommunities.GetJoinedCommunities
+instance GHC.Classes.Eq TD.Query.GetJoinedCommunities.GetJoinedCommunities
+instance TD.Lib.Internal.ShortShow TD.Query.GetJoinedCommunities.GetJoinedCommunities
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetJoinedCommunities.GetJoinedCommunities
 
 module TD.Query.GetJsonString
 
@@ -41081,7 +41753,7 @@ module TD.Query.GetMessageThreadHistory
 --   messageProperties.can_get_message_thread == true. Message thread of a
 --   channel message is in the channel's linked supergroup. The messages
 --   are returned in reverse chronological order (i.e., in order of
---   decreasing message_id). For optimal performance, the number of
+--   decreasing message.id). For optimal performance, the number of
 --   returned messages is chosen by TDLib. Returns <a>Messages</a>
 data GetMessageThreadHistory
 GetMessageThreadHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetMessageThreadHistory
@@ -42122,7 +42794,7 @@ module TD.Query.GetSavedMessagesTopicHistory
 
 -- | Returns messages in a Saved Messages topic. The messages are returned
 --   in reverse chronological order (i.e., in order of decreasing
---   message_id). Returns <a>Messages</a>
+--   message.id). Returns <a>Messages</a>
 data GetSavedMessagesTopicHistory
 GetSavedMessagesTopicHistory :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int -> GetSavedMessagesTopicHistory
 
@@ -42267,6 +42939,20 @@ instance GHC.Show.Show TD.Query.GetSecretChat.GetSecretChat
 instance GHC.Classes.Eq TD.Query.GetSecretChat.GetSecretChat
 instance TD.Lib.Internal.ShortShow TD.Query.GetSecretChat.GetSecretChat
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSecretChat.GetSecretChat
+
+module TD.Query.GetSpeechRecognitionLanguages
+
+-- | Returns 1-3 most probable languages of speech in voice notes. Returns
+--   <a>SpeechRecognitionLanguages</a>
+data GetSpeechRecognitionLanguages
+GetSpeechRecognitionLanguages :: Maybe Int -> GetSpeechRecognitionLanguages
+
+-- | Identifier of the chat; pass 0 if none
+[chat_id] :: GetSpeechRecognitionLanguages -> Maybe Int
+instance GHC.Show.Show TD.Query.GetSpeechRecognitionLanguages.GetSpeechRecognitionLanguages
+instance GHC.Classes.Eq TD.Query.GetSpeechRecognitionLanguages.GetSpeechRecognitionLanguages
+instance TD.Lib.Internal.ShortShow TD.Query.GetSpeechRecognitionLanguages.GetSpeechRecognitionLanguages
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSpeechRecognitionLanguages.GetSpeechRecognitionLanguages
 
 module TD.Query.GetStakeDiceState
 
@@ -42788,6 +43474,17 @@ instance GHC.Classes.Eq TD.Query.GetSuggestedStickerSetName.GetSuggestedStickerS
 instance TD.Lib.Internal.ShortShow TD.Query.GetSuggestedStickerSetName.GetSuggestedStickerSetName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSuggestedStickerSetName.GetSuggestedStickerSetName
 
+module TD.Query.GetSuitableCommunityChats
+
+-- | Returns a list of supergroup and channel chats owned by the current
+--   user, which can be added to a community. Returns <a>Chats</a>
+data GetSuitableCommunityChats
+GetSuitableCommunityChats :: GetSuitableCommunityChats
+instance GHC.Show.Show TD.Query.GetSuitableCommunityChats.GetSuitableCommunityChats
+instance GHC.Classes.Eq TD.Query.GetSuitableCommunityChats.GetSuitableCommunityChats
+instance TD.Lib.Internal.ShortShow TD.Query.GetSuitableCommunityChats.GetSuitableCommunityChats
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetSuitableCommunityChats.GetSuitableCommunityChats
+
 module TD.Query.GetSuitableDiscussionChats
 
 -- | Returns a list of basic group and supergroup chats, which can be used
@@ -42922,6 +43619,20 @@ instance GHC.Show.Show TD.Query.GetTextCompositionStyleExample.GetTextCompositio
 instance GHC.Classes.Eq TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
 instance TD.Lib.Internal.ShortShow TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTextCompositionStyleExample.GetTextCompositionStyleExample
+
+module TD.Query.GetTextEmojiRanges
+
+-- | Returns positions of all emoji found in the text in order of their
+--   appearance. Can be called synchronously. Returns <a>TextRanges</a>
+data GetTextEmojiRanges
+GetTextEmojiRanges :: Maybe Text -> GetTextEmojiRanges
+
+-- | The text in which to look for emoji
+[text] :: GetTextEmojiRanges -> Maybe Text
+instance GHC.Show.Show TD.Query.GetTextEmojiRanges.GetTextEmojiRanges
+instance GHC.Classes.Eq TD.Query.GetTextEmojiRanges.GetTextEmojiRanges
+instance TD.Lib.Internal.ShortShow TD.Query.GetTextEmojiRanges.GetTextEmojiRanges
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetTextEmojiRanges.GetTextEmojiRanges
 
 module TD.Query.GetTextEntities
 
@@ -43665,6 +44376,51 @@ instance GHC.Classes.Eq TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance TD.Lib.Internal.ShortShow TD.Query.GetWebPageInstantView.GetWebPageInstantView
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWebPageInstantView.GetWebPageInstantView
 
+module TD.Query.GetWidgetPublicData
+
+-- | Returns the current public data of a widget. Must be called only if
+--   the widget is visible on the screen and asked to poll its public data.
+--   Returns <a>WidgetPublicData</a>
+data GetWidgetPublicData
+GetWidgetPublicData :: Maybe Int -> Maybe Int -> GetWidgetPublicData
+
+-- | Identifier of the chat with the message
+[chat_id] :: GetWidgetPublicData -> Maybe Int
+
+-- | Identifier of the widget message. The message must not be scheduled
+[message_id] :: GetWidgetPublicData -> Maybe Int
+defaultGetWidgetPublicData :: GetWidgetPublicData
+instance GHC.Show.Show TD.Query.GetWidgetPublicData.GetWidgetPublicData
+instance GHC.Classes.Eq TD.Query.GetWidgetPublicData.GetWidgetPublicData
+instance TD.Lib.Internal.ShortShow TD.Query.GetWidgetPublicData.GetWidgetPublicData
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWidgetPublicData.GetWidgetPublicData
+
+module TD.Query.GetWidgetQueryAnswer
+
+-- | Sends a widget query to a bot and returns an answer. Returns an error
+--   with code 502 if the bot fails to answer the query before the query
+--   timeout expires. Returns <a>WidgetQueryAnswer</a>
+data GetWidgetQueryAnswer
+GetWidgetQueryAnswer :: Maybe Int -> Maybe Int -> Maybe WidgetQueryType -> Maybe ByteString -> GetWidgetQueryAnswer
+
+-- | Identifier of the chat with the message
+[chat_id] :: GetWidgetQueryAnswer -> Maybe Int
+
+-- | Identifier of the widget message from which the query originated. The
+--   message must not be scheduled
+[message_id] :: GetWidgetQueryAnswer -> Maybe Int
+
+-- | Type of the query
+[query_type] :: GetWidgetQueryAnswer -> Maybe WidgetQueryType
+
+-- | Data of the query
+[_data] :: GetWidgetQueryAnswer -> Maybe ByteString
+defaultGetWidgetQueryAnswer :: GetWidgetQueryAnswer
+instance GHC.Show.Show TD.Query.GetWidgetQueryAnswer.GetWidgetQueryAnswer
+instance GHC.Classes.Eq TD.Query.GetWidgetQueryAnswer.GetWidgetQueryAnswer
+instance TD.Lib.Internal.ShortShow TD.Query.GetWidgetQueryAnswer.GetWidgetQueryAnswer
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.GetWidgetQueryAnswer.GetWidgetQueryAnswer
+
 module TD.Query.GiftPremiumWithStars
 
 -- | Allows to buy a Telegram Premium subscription for another user with
@@ -44006,9 +44762,9 @@ module TD.Query.LoadActiveStories
 
 -- | Loads more active stories from a story list. The loaded stories will
 --   be sent through updates. Active stories are sorted by the pair
---   (active_stories.order, active_stories.story_poster_chat_id) in
---   descending order. Returns a 404 error if all active stories have been
---   loaded. Returns <a>Ok</a>
+--   (active_stories.order, active_stories.chat_id) in descending order.
+--   Returns a 404 error if all active stories have been loaded. Returns
+--   <a>Ok</a>
 data LoadActiveStories
 LoadActiveStories :: Maybe StoryList -> LoadActiveStories
 
@@ -44530,7 +45286,7 @@ module TD.Query.PostStory
 --   administrator right for supergroup and channel chats. Returns a
 --   temporary story. Returns <a>Story</a>
 data PostStory
-PostStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe StoryPrivacySettings -> Maybe [Int] -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> PostStory
+PostStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Maybe FormattedText -> Maybe InputAudio -> Maybe StoryPrivacySettings -> Maybe [Int] -> Maybe Int -> Maybe StoryFullId -> Maybe Bool -> Maybe Bool -> PostStory
 
 -- | Identifier of the chat that will post the story. Pass Saved Messages
 --   chat identifier when posting a story on behalf of the current user
@@ -44547,6 +45303,10 @@ PostStory :: Maybe Int -> Maybe InputStoryContent -> Maybe InputStoryAreas -> Ma
 --   0-getOption("story_caption_length_max") characters; can have entities
 --   only if getOption("can_use_text_entities_in_story_caption")
 [caption] :: PostStory -> Maybe FormattedText
+
+-- | Music to be attached to the story; pass null if none. The music can be
+--   up to 60 seconds long
+[music] :: PostStory -> Maybe InputAudio
 
 -- | The privacy settings for the story; ignored for stories posted on
 --   behalf of supergroup and channel chats
@@ -44691,6 +45451,51 @@ instance GHC.Show.Show TD.Query.ProcessChatJoinRequests.ProcessChatJoinRequests
 instance GHC.Classes.Eq TD.Query.ProcessChatJoinRequests.ProcessChatJoinRequests
 instance TD.Lib.Internal.ShortShow TD.Query.ProcessChatJoinRequests.ProcessChatJoinRequests
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ProcessChatJoinRequests.ProcessChatJoinRequests
+
+module TD.Query.ProcessCommunityAddChatRequest
+
+-- | Handles a pending request to add a chat to a community; requires
+--   can_edit_chat_list administrator right in the community. Returns
+--   <a>Ok</a>
+data ProcessCommunityAddChatRequest
+ProcessCommunityAddChatRequest :: Maybe Int -> Maybe Int -> Maybe Bool -> ProcessCommunityAddChatRequest
+
+-- | Identifier of the community
+[community_id] :: ProcessCommunityAddChatRequest -> Maybe Int
+
+-- | Identifier of the chat from the request
+[chat_id] :: ProcessCommunityAddChatRequest -> Maybe Int
+
+-- | Pass true to approve the request and add the chat to the community;
+--   pass false to decline it. If the community already has the maximum
+--   number of chats, then approval fails with the error
+--   <a>COMMUNITY_PEERS_TOO_MUCH</a>
+[approve] :: ProcessCommunityAddChatRequest -> Maybe Bool
+defaultProcessCommunityAddChatRequest :: ProcessCommunityAddChatRequest
+instance GHC.Show.Show TD.Query.ProcessCommunityAddChatRequest.ProcessCommunityAddChatRequest
+instance GHC.Classes.Eq TD.Query.ProcessCommunityAddChatRequest.ProcessCommunityAddChatRequest
+instance TD.Lib.Internal.ShortShow TD.Query.ProcessCommunityAddChatRequest.ProcessCommunityAddChatRequest
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ProcessCommunityAddChatRequest.ProcessCommunityAddChatRequest
+
+module TD.Query.ProcessCommunityAddChatRequests
+
+-- | Handles all pending requests to add chats to a community; requires
+--   can_edit_chat_list administrator right in the community. Returns
+--   <a>Ok</a>
+data ProcessCommunityAddChatRequests
+ProcessCommunityAddChatRequests :: Maybe Int -> Maybe Bool -> ProcessCommunityAddChatRequests
+
+-- | Identifier of the community
+[community_id] :: ProcessCommunityAddChatRequests -> Maybe Int
+
+-- | Pass true to approve all requests and add the chats to the community;
+--   pass false to decline them
+[approve] :: ProcessCommunityAddChatRequests -> Maybe Bool
+defaultProcessCommunityAddChatRequests :: ProcessCommunityAddChatRequests
+instance GHC.Show.Show TD.Query.ProcessCommunityAddChatRequests.ProcessCommunityAddChatRequests
+instance GHC.Classes.Eq TD.Query.ProcessCommunityAddChatRequests.ProcessCommunityAddChatRequests
+instance TD.Lib.Internal.ShortShow TD.Query.ProcessCommunityAddChatRequests.ProcessCommunityAddChatRequests
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ProcessCommunityAddChatRequests.ProcessCommunityAddChatRequests
 
 module TD.Query.ProcessGiftPurchaseOffer
 
@@ -44985,6 +45790,29 @@ instance GHC.Classes.Eq TD.Query.RecognizeSpeech.RecognizeSpeech
 instance TD.Lib.Internal.ShortShow TD.Query.RecognizeSpeech.RecognizeSpeech
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RecognizeSpeech.RecognizeSpeech
 
+module TD.Query.RecognizeSpeechInFile
+
+-- | Recognizes speech in an audio file and returns the recognized text.
+--   The file must be in OGG format with Opus codec and must have size up
+--   to 1 MB. The same rules as for recognizeSpeech apply to the Telegram
+--   Premium requirement and speech recognition trial; must not be used in
+--   secret chats. Returns <a>Text</a>
+data RecognizeSpeechInFile
+RecognizeSpeechInFile :: Maybe InputFile -> Maybe Int -> RecognizeSpeechInFile
+
+-- | The audio file
+[audio_file] :: RecognizeSpeechInFile -> Maybe InputFile
+
+-- | Unique identifier of the speech recognition, which will be used in
+--   updateSpeechRecognitionInFile to send partially recognized text; pass
+--   0 if partial results aren't needed
+[recognition_id] :: RecognizeSpeechInFile -> Maybe Int
+defaultRecognizeSpeechInFile :: RecognizeSpeechInFile
+instance GHC.Show.Show TD.Query.RecognizeSpeechInFile.RecognizeSpeechInFile
+instance GHC.Classes.Eq TD.Query.RecognizeSpeechInFile.RecognizeSpeechInFile
+instance TD.Lib.Internal.ShortShow TD.Query.RecognizeSpeechInFile.RecognizeSpeechInFile
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RecognizeSpeechInFile.RecognizeSpeechInFile
+
 module TD.Query.RecoverAuthenticationPassword
 
 -- | Recovers the 2-step verification password with a password recovery
@@ -45149,6 +45977,28 @@ instance GHC.Show.Show TD.Query.RemoveChatActionBar.RemoveChatActionBar
 instance GHC.Classes.Eq TD.Query.RemoveChatActionBar.RemoveChatActionBar
 instance TD.Lib.Internal.ShortShow TD.Query.RemoveChatActionBar.RemoveChatActionBar
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveChatActionBar.RemoveChatActionBar
+
+module TD.Query.RemoveCommunityChat
+
+-- | Removes a chat from a community. Members of the chat, which aren't
+--   members of other chats in the community, will be removed from the
+--   community. Requires owner privileges in the supergroup or channel
+--   chat, or ownership of the bot for chats with bots, or
+--   can_edit_chat_list administrator right in the community. Returns
+--   <a>Ok</a>
+data RemoveCommunityChat
+RemoveCommunityChat :: Maybe Int -> Maybe Int -> RemoveCommunityChat
+
+-- | Identifier of the community
+[community_id] :: RemoveCommunityChat -> Maybe Int
+
+-- | Identifier of the chat to remove
+[chat_id] :: RemoveCommunityChat -> Maybe Int
+defaultRemoveCommunityChat :: RemoveCommunityChat
+instance GHC.Show.Show TD.Query.RemoveCommunityChat.RemoveCommunityChat
+instance GHC.Classes.Eq TD.Query.RemoveCommunityChat.RemoveCommunityChat
+instance TD.Lib.Internal.ShortShow TD.Query.RemoveCommunityChat.RemoveCommunityChat
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.RemoveCommunityChat.RemoveCommunityChat
 
 module TD.Query.RemoveContacts
 
@@ -45885,7 +46735,8 @@ ReplyToCallbackQueryWithEphemeralMessage :: Maybe Int -> Maybe Bool -> Maybe Boo
 --   inputMessageText, inputMessageAnimation, inputMessageAudio,
 --   inputMessageDocument, inputMessagePhoto, inputMessageRichMessage,
 --   inputMessageSticker, inputMessageVideo, inputMessageVideoNote,
---   inputMessageVoiceNote
+--   inputMessageVoiceNote, inputMessageLocation, inputMessageVenue,
+--   inputMessageContact
 [input_message_content] :: ReplyToCallbackQueryWithEphemeralMessage -> Maybe InputMessageContent
 defaultReplyToCallbackQueryWithEphemeralMessage :: ReplyToCallbackQueryWithEphemeralMessage
 instance GHC.Show.Show TD.Query.ReplyToCallbackQueryWithEphemeralMessage.ReplyToCallbackQueryWithEphemeralMessage
@@ -45925,7 +46776,7 @@ ReportChat :: Maybe Int -> Maybe ByteString -> Maybe [Int] -> Maybe Text -> Repo
 
 -- | Identifiers of reported messages. Use
 --   messageProperties.can_report_chat to check whether the message can be
---   reported
+--   reported. Ephemeral messages must be reported separately
 [message_ids] :: ReportChat -> Maybe [Int]
 
 -- | Additional report details if asked by the server; 0-1024 characters;
@@ -46505,7 +47356,7 @@ instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SearchBackground.SearchBackgrou
 module TD.Query.SearchCallMessages
 
 -- | Searches for call and group call messages. Returns the results in
---   reverse chronological order (i.e., in order of decreasing message_id).
+--   reverse chronological order (i.e., in order of decreasing message.id).
 --   For optimal performance, the number of returned messages is chosen by
 --   TDLib. Returns <a>FoundMessages</a>
 data SearchCallMessages
@@ -46576,7 +47427,7 @@ module TD.Query.SearchChatMessages
 
 -- | Searches for messages with given words in the chat. Returns the
 --   results in reverse chronological order, i.e. in order of decreasing
---   message_id. Cannot be used in secret chats with a non-empty query
+--   message.id. Cannot be used in secret chats with a non-empty query
 --   (searchSecretMessages must be used instead), or without an enabled
 --   message database. For optimal performance, the number of returned
 --   messages is chosen by TDLib and can be smaller than the specified
@@ -46838,9 +47689,9 @@ module TD.Query.SearchMessages
 
 -- | Searches for messages in all chats except secret chats. Returns the
 --   results in reverse chronological order (i.e., in order of decreasing
---   (date, chat_id, message_id)). For optimal performance, the number of
---   returned messages is chosen by TDLib and can be smaller than the
---   specified limit. Returns <a>FoundMessages</a>
+--   (message.date, message.chat_id, message.id)). For optimal performance,
+--   the number of returned messages is chosen by TDLib and can be smaller
+--   than the specified limit. Returns <a>FoundMessages</a>
 data SearchMessages
 SearchMessages :: Maybe ChatList -> Maybe Text -> Maybe Text -> Maybe Int -> Maybe SearchMessagesFilter -> Maybe SearchMessagesChatTypeFilter -> Maybe Int -> Maybe Int -> SearchMessages
 
@@ -47127,7 +47978,7 @@ module TD.Query.SearchSavedMessages
 -- | Searches for messages tagged by the given reaction and with the given
 --   words in the Saved Messages chat; for Telegram Premium users only.
 --   Returns the results in reverse chronological order, i.e. in order of
---   decreasing message_id. For optimal performance, the number of returned
+--   decreasing message.id. For optimal performance, the number of returned
 --   messages is chosen by TDLib and can be smaller than the specified
 --   limit. Returns <a>FoundChatMessages</a>
 data SearchSavedMessages
@@ -47811,9 +48662,8 @@ SendInlineQueryResultMessage :: Maybe Int -> Maybe MessageTopic -> Maybe InputMe
 [result_id] :: SendInlineQueryResultMessage -> Maybe Text
 
 -- | Pass true to hide the bot, via which the message is sent. Can be used
---   only for bots getOption("animation_search_bot_username"),
---   getOption("photo_search_bot_username"), and
---   getOption("venue_search_bot_username")
+--   only for bots getOption("animation_search_bot_username") and
+--   getOption("photo_search_bot_username")
 [hide_via_bot] :: SendInlineQueryResultMessage -> Maybe Bool
 defaultSendInlineQueryResultMessage :: SendInlineQueryResultMessage
 instance GHC.Show.Show TD.Query.SendInlineQueryResultMessage.SendInlineQueryResultMessage
@@ -49423,6 +50273,23 @@ instance GHC.Show.Show TD.Query.SetCommunityName.SetCommunityName
 instance GHC.Classes.Eq TD.Query.SetCommunityName.SetCommunityName
 instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityName.SetCommunityName
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityName.SetCommunityName
+
+module TD.Query.SetCommunityNotificationSettings
+
+-- | Changes notification settings of a community. Returns <a>Ok</a>
+data SetCommunityNotificationSettings
+SetCommunityNotificationSettings :: Maybe Int -> Maybe ChatNotificationSettings -> SetCommunityNotificationSettings
+
+-- | Identifier of the community
+[community_id] :: SetCommunityNotificationSettings -> Maybe Int
+
+-- | New notification settings for the community
+[notification_settings] :: SetCommunityNotificationSettings -> Maybe ChatNotificationSettings
+defaultSetCommunityNotificationSettings :: SetCommunityNotificationSettings
+instance GHC.Show.Show TD.Query.SetCommunityNotificationSettings.SetCommunityNotificationSettings
+instance GHC.Classes.Eq TD.Query.SetCommunityNotificationSettings.SetCommunityNotificationSettings
+instance TD.Lib.Internal.ShortShow TD.Query.SetCommunityNotificationSettings.SetCommunityNotificationSettings
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.SetCommunityNotificationSettings.SetCommunityNotificationSettings
 
 module TD.Query.SetCommunityPermissions
 
@@ -51909,6 +52776,53 @@ instance GHC.Classes.Eq TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 instance TD.Lib.Internal.ShortShow TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleChatViewAsTopics.ToggleChatViewAsTopics
 
+module TD.Query.ToggleCommunityAreChatsCollapsed
+
+-- | Changes whether all chats of a community are collapsed into one entry
+--   in the chat list. If the chats are expanded, then the community is
+--   removed from all chat folders. Returns <a>Ok</a>
+data ToggleCommunityAreChatsCollapsed
+ToggleCommunityAreChatsCollapsed :: Maybe Int -> Maybe Bool -> ToggleCommunityAreChatsCollapsed
+
+-- | Identifier of the community
+[community_id] :: ToggleCommunityAreChatsCollapsed -> Maybe Int
+
+-- | Pass true to collapse all chats of the community into one entry in the
+--   chat list
+[are_chats_collapsed] :: ToggleCommunityAreChatsCollapsed -> Maybe Bool
+defaultToggleCommunityAreChatsCollapsed :: ToggleCommunityAreChatsCollapsed
+instance GHC.Show.Show TD.Query.ToggleCommunityAreChatsCollapsed.ToggleCommunityAreChatsCollapsed
+instance GHC.Classes.Eq TD.Query.ToggleCommunityAreChatsCollapsed.ToggleCommunityAreChatsCollapsed
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleCommunityAreChatsCollapsed.ToggleCommunityAreChatsCollapsed
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleCommunityAreChatsCollapsed.ToggleCommunityAreChatsCollapsed
+
+module TD.Query.ToggleCommunityMemberIsBanned
+
+-- | Bans or unbans a member of a community; requires can_ban_members
+--   administrator right in the community. A banned member is banned in all
+--   chats of the community. Administrators of the community can be banned
+--   only by the owner of the community and administrators, which can edit
+--   administrator rights of the member. If an owner of a chat in the
+--   community is banned, then the chat is removed from the community; in
+--   this case, can_edit_chat_list administrator right is also required.
+--   Returns <a>Ok</a>
+data ToggleCommunityMemberIsBanned
+ToggleCommunityMemberIsBanned :: Maybe Int -> Maybe MessageSender -> Maybe Bool -> ToggleCommunityMemberIsBanned
+
+-- | Identifier of the community
+[community_id] :: ToggleCommunityMemberIsBanned -> Maybe Int
+
+-- | Identifier of the member to ban or unban
+[member_id] :: ToggleCommunityMemberIsBanned -> Maybe MessageSender
+
+-- | Pass true to ban the member; pass false to unban the member
+[is_banned] :: ToggleCommunityMemberIsBanned -> Maybe Bool
+defaultToggleCommunityMemberIsBanned :: ToggleCommunityMemberIsBanned
+instance GHC.Show.Show TD.Query.ToggleCommunityMemberIsBanned.ToggleCommunityMemberIsBanned
+instance GHC.Classes.Eq TD.Query.ToggleCommunityMemberIsBanned.ToggleCommunityMemberIsBanned
+instance TD.Lib.Internal.ShortShow TD.Query.ToggleCommunityMemberIsBanned.ToggleCommunityMemberIsBanned
+instance Data.Aeson.Types.ToJSON.ToJSON TD.Query.ToggleCommunityMemberIsBanned.ToggleCommunityMemberIsBanned
+
 module TD.Query.ToggleDirectMessagesChatTopicCanSendUnpaidMessages
 
 -- | Allows to send unpaid messages to the given topic of the channel
@@ -52366,7 +53280,7 @@ module TD.Query.ToggleSupergroupIsForum
 --   in the supergroup. Discussion supergroups can't be converted to
 --   forums. Returns <a>Ok</a>
 data ToggleSupergroupIsForum
-ToggleSupergroupIsForum :: Maybe Int -> Maybe Bool -> Maybe Bool -> ToggleSupergroupIsForum
+ToggleSupergroupIsForum :: Maybe Int -> Maybe Bool -> Maybe Bool -> Maybe Bool -> ToggleSupergroupIsForum
 
 -- | Identifier of the supergroup
 [supergroup_id] :: ToggleSupergroupIsForum -> Maybe Int
@@ -52376,6 +53290,10 @@ ToggleSupergroupIsForum :: Maybe Int -> Maybe Bool -> Maybe Bool -> ToggleSuperg
 
 -- | New value of has_forum_tabs; ignored if is_forum is false
 [has_forum_tabs] :: ToggleSupergroupIsForum -> Maybe Bool
+
+-- | New value of has_forum_sidebar; ignored if is_forum is false. Must be
+--   false if has_forum_tabs is true
+[has_forum_sidebar] :: ToggleSupergroupIsForum -> Maybe Bool
 defaultToggleSupergroupIsForum :: ToggleSupergroupIsForum
 instance GHC.Show.Show TD.Query.ToggleSupergroupIsForum.ToggleSupergroupIsForum
 instance GHC.Classes.Eq TD.Query.ToggleSupergroupIsForum.ToggleSupergroupIsForum

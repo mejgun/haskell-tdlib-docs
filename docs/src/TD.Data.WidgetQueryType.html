@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.WidgetQueryType</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier">WidgetQueryType</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryWallet.html"><span class="hs-identifier">TD.Data.WidgetQueryWallet</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">WidgetQueryWallet</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><span class="hs-comment">-- | Describes type of a widget query</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="WidgetQueryType"><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-var">WidgetQueryType</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="WidgetQueryTypeData"><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeData"><span class="hs-identifier hs-var">WidgetQueryTypeData</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The query contains data for the bot</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="with_wallet"><span class="annot"><span class="annottext">WidgetQueryType -&gt; Maybe Bool
+</span><a href="TD.Data.WidgetQueryType.html#with_wallet"><span class="hs-identifier hs-var hs-var">with_wallet</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ True, if the TON wallet card of the user who sends the query is sent to the bot along with the query</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="WidgetQueryTypeSignData"><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSignData"><span class="hs-identifier hs-var">WidgetQueryTypeSignData</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The query contains data signed by a TON wallet of the user who sends the query</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="wallet"><span class="annot"><span class="annottext">WidgetQueryType -&gt; Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var hs-var">wallet</span></a></span></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryWallet.html#WidgetQueryWallet"><span class="hs-identifier hs-type">WidgetQueryWallet.WidgetQueryWallet</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The wallet that signed the data</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="sign_data"><span class="annot"><span class="annottext">WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#sign_data"><span class="hs-identifier hs-var hs-var">sign_data</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                              </span><span class="annot"><span class="hs-comment">-- ^ JSON-serialized signed data</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="WidgetQueryTypeSentTransaction"><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSentTransaction"><span class="hs-identifier hs-var">WidgetQueryTypeSentTransaction</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The query notifies the bot about a transaction sent from a TON wallet of the user who sends the query</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="wallet"><span class="annot"><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span></span><span>   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryWallet.html#WidgetQueryWallet"><span class="hs-identifier hs-type">WidgetQueryWallet.WidgetQueryWallet</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The wallet from which the transaction was sent</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="msg_hash"><span class="annot"><span class="annottext">WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#msg_hash"><span class="hs-identifier hs-var hs-var">msg_hash</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                              </span><span class="annot"><span class="hs-comment">-- ^ Value of msg_hash of the transaction</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-23"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679910164"><span id="local-6989586621679910175"><span class="annot"><span class="annottext">WidgetQueryType -&gt; WidgetQueryType -&gt; Bool
+(WidgetQueryType -&gt; WidgetQueryType -&gt; Bool)
+-&gt; (WidgetQueryType -&gt; WidgetQueryType -&gt; Bool)
+-&gt; Eq WidgetQueryType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: WidgetQueryType -&gt; WidgetQueryType -&gt; Bool
+== :: WidgetQueryType -&gt; WidgetQueryType -&gt; Bool
+$c/= :: WidgetQueryType -&gt; WidgetQueryType -&gt; Bool
+/= :: WidgetQueryType -&gt; WidgetQueryType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679910183"><span id="local-6989586621679910198"><span id="local-6989586621679910202"><span class="annot"><span class="annottext">Int -&gt; WidgetQueryType -&gt; ShowS
+[WidgetQueryType] -&gt; ShowS
+WidgetQueryType -&gt; String
+(Int -&gt; WidgetQueryType -&gt; ShowS)
+-&gt; (WidgetQueryType -&gt; String)
+-&gt; ([WidgetQueryType] -&gt; ShowS)
+-&gt; Show WidgetQueryType
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; WidgetQueryType -&gt; ShowS
+showsPrec :: Int -&gt; WidgetQueryType -&gt; ShowS
+$cshow :: WidgetQueryType -&gt; String
+show :: WidgetQueryType -&gt; String
+$cshowList :: [WidgetQueryType] -&gt; ShowS
+showList :: [WidgetQueryType] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span>  </span><span id="local-6989586621679910224"><span class="annot"><span class="annottext">shortShow :: WidgetQueryType -&gt; String
+</span><a href="#local-6989586621679910224"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeData"><span class="hs-identifier hs-type">WidgetQueryTypeData</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">with_wallet :: WidgetQueryType -&gt; Maybe Bool
+</span><a href="TD.Data.WidgetQueryType.html#with_wallet"><span class="hs-identifier hs-var">with_wallet</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910226"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910226"><span class="hs-identifier hs-var">with_wallet_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-29"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeData&quot;</span></span><span>
+</span><span id="line-30"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;with_wallet&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910226"><span class="hs-identifier hs-var">with_wallet_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-33"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSignData"><span class="hs-identifier hs-type">WidgetQueryTypeSignData</span></a></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: WidgetQueryType -&gt; Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910229"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910229"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sign_data :: WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#sign_data"><span class="hs-identifier hs-var">sign_data</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910230"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910230"><span class="hs-identifier hs-var">sign_data_</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-37"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeSignData&quot;</span></span><span>
+</span><span id="line-38"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>    </span><span class="annot"><span class="annottext">String -&gt; Maybe WidgetQueryWallet -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910229"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sign_data&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910230"><span class="hs-identifier hs-var">sign_data_</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-42"></span><span>  </span><span class="annot"><a href="TD.Lib.Internal.html#shortShow"><span class="hs-identifier hs-var">shortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSentTransaction"><span class="hs-identifier hs-type">WidgetQueryTypeSentTransaction</span></a></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: WidgetQueryType -&gt; Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910231"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910231"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">msg_hash :: WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#msg_hash"><span class="hs-identifier hs-var">msg_hash</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910232"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910232"><span class="hs-identifier hs-var">msg_hash_</span></a></span></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-46"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeSentTransaction&quot;</span></span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-48"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>   </span><span class="annot"><span class="annottext">String -&gt; Maybe WidgetQueryWallet -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910231"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-49"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;msg_hash&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910232"><span class="hs-identifier hs-var">msg_hash_</span></a></span><span>
+</span><span id="line-50"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679910235"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-53"></span><span>  </span><span id="local-6989586621679910282"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910282"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679910284"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679910284"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679910286"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910286"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-54"></span><span>    </span><span id="local-6989586621679910287"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679910287"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910286"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679910287"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-57"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;widgetQueryTypeData&quot;</span></span><span>            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910289"><span class="hs-identifier hs-var">parseWidgetQueryTypeData</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679910284"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-58"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;widgetQueryTypeSignData&quot;</span></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910290"><span class="hs-identifier hs-var">parseWidgetQueryTypeSignData</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679910284"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-59"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;widgetQueryTypeSentTransaction&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910291"><span class="hs-identifier hs-var">parseWidgetQueryTypeSentTransaction</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679910284"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-60"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser WidgetQueryType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-61"></span><span>    </span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-63"></span><span>      </span><span class="annot"><a href="#local-6989586621679910289"><span class="hs-identifier hs-type">parseWidgetQueryTypeData</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span><span>
+</span><span id="line-64"></span><span>      </span><span id="local-6989586621679910289"><span class="annot"><span class="annottext">parseWidgetQueryTypeData :: Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910289"><span class="hs-identifier hs-var hs-var">parseWidgetQueryTypeData</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeData&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser WidgetQueryType)
+ -&gt; Value -&gt; Parser WidgetQueryType)
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679910293"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910293"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-65"></span><span>        </span><span id="local-6989586621679910294"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910294"><span class="hs-identifier hs-var">with_wallet_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910293"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;with_wallet&quot;</span></span><span>
+</span><span id="line-66"></span><span>        </span><span class="annot"><span class="annottext">WidgetQueryType -&gt; Parser WidgetQueryType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(WidgetQueryType -&gt; Parser WidgetQueryType)
+-&gt; WidgetQueryType -&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeData"><span class="hs-identifier hs-type">WidgetQueryTypeData</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">with_wallet :: Maybe Bool
+</span><a href="TD.Data.WidgetQueryType.html#with_wallet"><span class="hs-identifier hs-var">with_wallet</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910294"><span class="hs-identifier hs-var">with_wallet_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-69"></span><span>      </span><span class="annot"><a href="#local-6989586621679910290"><span class="hs-identifier hs-type">parseWidgetQueryTypeSignData</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span><span>
+</span><span id="line-70"></span><span>      </span><span id="local-6989586621679910290"><span class="annot"><span class="annottext">parseWidgetQueryTypeSignData :: Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910290"><span class="hs-identifier hs-var hs-var">parseWidgetQueryTypeSignData</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeSignData&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser WidgetQueryType)
+ -&gt; Value -&gt; Parser WidgetQueryType)
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679910296"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910296"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-71"></span><span>        </span><span id="local-6989586621679910297"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910297"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910296"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe WidgetQueryWallet)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>
+</span><span id="line-72"></span><span>        </span><span id="local-6989586621679910298"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910298"><span class="hs-identifier hs-var">sign_data_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910296"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sign_data&quot;</span></span><span>
+</span><span id="line-73"></span><span>        </span><span class="annot"><span class="annottext">WidgetQueryType -&gt; Parser WidgetQueryType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(WidgetQueryType -&gt; Parser WidgetQueryType)
+-&gt; WidgetQueryType -&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSignData"><span class="hs-identifier hs-type">WidgetQueryTypeSignData</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910297"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-75"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sign_data :: Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#sign_data"><span class="hs-identifier hs-var">sign_data</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910298"><span class="hs-identifier hs-var">sign_data_</span></a></span><span>
+</span><span id="line-76"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-77"></span><span>      </span><span class="annot"><a href="#local-6989586621679910291"><span class="hs-identifier hs-type">parseWidgetQueryTypeSentTransaction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span><span>
+</span><span id="line-78"></span><span>      </span><span id="local-6989586621679910291"><span class="annot"><span class="annottext">parseWidgetQueryTypeSentTransaction :: Value -&gt; Parser WidgetQueryType
+</span><a href="#local-6989586621679910291"><span class="hs-identifier hs-var hs-var">parseWidgetQueryTypeSentTransaction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;WidgetQueryTypeSentTransaction&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser WidgetQueryType)
+ -&gt; Value -&gt; Parser WidgetQueryType)
+-&gt; (Object -&gt; Parser WidgetQueryType)
+-&gt; Value
+-&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679910299"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910299"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-79"></span><span>        </span><span id="local-6989586621679910300"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910300"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910299"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe WidgetQueryWallet)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>
+</span><span id="line-80"></span><span>        </span><span id="local-6989586621679910301"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910301"><span class="hs-identifier hs-var">msg_hash_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679910299"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;msg_hash&quot;</span></span><span>
+</span><span id="line-81"></span><span>        </span><span class="annot"><span class="annottext">WidgetQueryType -&gt; Parser WidgetQueryType
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(WidgetQueryType -&gt; Parser WidgetQueryType)
+-&gt; WidgetQueryType -&gt; Parser WidgetQueryType
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSentTransaction"><span class="hs-identifier hs-type">WidgetQueryTypeSentTransaction</span></a></span><span>
+</span><span id="line-82"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910300"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-83"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">msg_hash :: Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#msg_hash"><span class="hs-identifier hs-var">msg_hash</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910301"><span class="hs-identifier hs-var">msg_hash_</span></a></span><span>
+</span><span id="line-84"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-85"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser WidgetQueryType
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-86"></span><span>
+</span><span id="line-87"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679910304"><span id="local-6989586621679910308"><span id="local-6989586621679910311"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryType"><span class="hs-identifier hs-type">WidgetQueryType</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-88"></span><span>  </span><span id="local-6989586621679910353"><span class="annot"><span class="annottext">toJSON :: WidgetQueryType -&gt; Value
+</span><a href="#local-6989586621679910353"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeData"><span class="hs-identifier hs-type">WidgetQueryTypeData</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">with_wallet :: WidgetQueryType -&gt; Maybe Bool
+</span><a href="TD.Data.WidgetQueryType.html#with_wallet"><span class="hs-identifier hs-var">with_wallet</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910355"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910355"><span class="hs-identifier hs-var">with_wallet_</span></a></span></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-91"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-92"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>       </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;widgetQueryTypeData&quot;</span></span><span>
+</span><span id="line-93"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;with_wallet&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679910355"><span class="hs-identifier hs-var">with_wallet_</span></a></span><span>
+</span><span id="line-94"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-95"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSignData"><span class="hs-identifier hs-type">WidgetQueryTypeSignData</span></a></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: WidgetQueryType -&gt; Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910359"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910359"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">sign_data :: WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#sign_data"><span class="hs-identifier hs-var">sign_data</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910360"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910360"><span class="hs-identifier hs-var">sign_data_</span></a></span></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-99"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-100"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>     </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;widgetQueryTypeSignData&quot;</span></span><span>
+</span><span id="line-101"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Maybe WidgetQueryWallet -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910359"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-102"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;sign_data&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910360"><span class="hs-identifier hs-var">sign_data_</span></a></span><span>
+</span><span id="line-103"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-104"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">toJSON</span></span><span> </span><span class="annot"><a href="TD.Data.WidgetQueryType.html#WidgetQueryTypeSentTransaction"><span class="hs-identifier hs-type">WidgetQueryTypeSentTransaction</span></a></span><span>
+</span><span id="line-105"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">wallet :: WidgetQueryType -&gt; Maybe WidgetQueryWallet
+</span><a href="TD.Data.WidgetQueryType.html#wallet"><span class="hs-identifier hs-var">wallet</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910361"><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910361"><span class="hs-identifier hs-var">wallet_</span></a></span></span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">msg_hash :: WidgetQueryType -&gt; Maybe Text
+</span><a href="TD.Data.WidgetQueryType.html#msg_hash"><span class="hs-identifier hs-var">msg_hash</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679910362"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910362"><span class="hs-identifier hs-var">msg_hash_</span></a></span></span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-108"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-109"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>    </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;widgetQueryTypeSentTransaction&quot;</span></span><span>
+</span><span id="line-110"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;wallet&quot;</span></span><span>   </span><span class="annot"><span class="annottext">Key -&gt; Maybe WidgetQueryWallet -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe WidgetQueryWallet
+</span><a href="#local-6989586621679910361"><span class="hs-identifier hs-var">wallet_</span></a></span><span>
+</span><span id="line-111"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;msg_hash&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679910362"><span class="hs-identifier hs-var">msg_hash_</span></a></span><span>
+</span><span id="line-112"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-113"></span><span>
+</span><span id="line-114"></span></pre></body></html>
