@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.TextCompositionParameters</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier">TextCompositionParameters</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>    </span><span>
+</span><span id="line-3"></span><span>  </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#defaultTextCompositionParameters"><span class="hs-identifier">defaultTextCompositionParameters</span></a></span><span> </span><span>
+</span><span id="line-4"></span><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">data</span><span> </span><span id="TextCompositionParameters"><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-var">TextCompositionParameters</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="TextCompositionParameters"><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-var">TextCompositionParameters</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Describes parameters of text composition with AI</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="translate_to_language_code"><span class="annot"><span class="annottext">TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#translate_to_language_code"><span class="hs-identifier hs-var hs-var">translate_to_language_code</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Language code to which the text will be translated; may be empty if none. See translateText.to_language_code for the list of supported values</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="style_name"><span class="annot"><span class="annottext">TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#style_name"><span class="hs-identifier hs-var hs-var">style_name</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Name of the style of the resulting text; may be empty if none. Handle updateTextCompositionStyles to get the list of supported styles</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="add_emojis"><span class="annot"><span class="annottext">TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#add_emojis"><span class="hs-identifier hs-var hs-var">add_emojis</span></a></span></span><span>                 </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ True, if emoji will be added to the text</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="fix_text"><span class="annot"><span class="annottext">TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#fix_text"><span class="hs-identifier hs-var hs-var">fix_text</span></a></span></span><span>                   </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>   </span><span class="annot"><span class="hs-comment">-- ^ True, if the text will be fixed in the same way as by fixTextWithAi</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679935453"><span id="local-6989586621679935462"><span class="annot"><span class="annottext">TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool
+(TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool)
+-&gt; (TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool)
+-&gt; Eq TextCompositionParameters
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool
+== :: TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool
+$c/= :: TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool
+/= :: TextCompositionParameters -&gt; TextCompositionParameters -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679935469"><span id="local-6989586621679935480"><span id="local-6989586621679935484"><span class="annot"><span class="annottext">Int -&gt; TextCompositionParameters -&gt; ShowS
+[TextCompositionParameters] -&gt; ShowS
+TextCompositionParameters -&gt; String
+(Int -&gt; TextCompositionParameters -&gt; ShowS)
+-&gt; (TextCompositionParameters -&gt; String)
+-&gt; ([TextCompositionParameters] -&gt; ShowS)
+-&gt; Show TextCompositionParameters
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; TextCompositionParameters -&gt; ShowS
+showsPrec :: Int -&gt; TextCompositionParameters -&gt; ShowS
+$cshow :: TextCompositionParameters -&gt; String
+show :: TextCompositionParameters -&gt; String
+$cshowList :: [TextCompositionParameters] -&gt; ShowS
+showList :: [TextCompositionParameters] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-21"></span><span>  </span><span id="local-6989586621679935501"><span class="annot"><span class="annottext">shortShow :: TextCompositionParameters -&gt; String
+</span><a href="#local-6989586621679935501"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">translate_to_language_code :: TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#translate_to_language_code"><span class="hs-identifier hs-var">translate_to_language_code</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935503"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935503"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">style_name :: TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#style_name"><span class="hs-identifier hs-var">style_name</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935504"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935504"><span class="hs-identifier hs-var">style_name_</span></a></span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">add_emojis :: TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#add_emojis"><span class="hs-identifier hs-var">add_emojis</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935505"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935505"><span class="hs-identifier hs-var">add_emojis_</span></a></span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fix_text :: TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#fix_text"><span class="hs-identifier hs-var">fix_text</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935506"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935506"><span class="hs-identifier hs-var">fix_text_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-27"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TextCompositionParameters&quot;</span></span><span>
+</span><span id="line-28"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;translate_to_language_code&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935503"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;style_name&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935504"><span class="hs-identifier hs-var">style_name_</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;add_emojis&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935505"><span class="hs-identifier hs-var">add_emojis_</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;fix_text&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">String -&gt; Maybe Bool -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935506"><span class="hs-identifier hs-var">fix_text_</span></a></span><span>
+</span><span id="line-33"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679935511"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679935548"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser TextCompositionParameters
+</span><a href="#local-6989586621679935548"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679935550"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679935550"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679935552"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935552"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-37"></span><span>    </span><span id="local-6989586621679935553"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679935553"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935552"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679935553"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-40"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;textCompositionParameters&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser TextCompositionParameters
+</span><a href="#local-6989586621679935555"><span class="hs-identifier hs-var">parseTextCompositionParameters</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679935550"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-41"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                           </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser TextCompositionParameters
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-42"></span><span>    </span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-44"></span><span>      </span><span class="annot"><a href="#local-6989586621679935555"><span class="hs-identifier hs-type">parseTextCompositionParameters</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-45"></span><span>      </span><span id="local-6989586621679935555"><span class="annot"><span class="annottext">parseTextCompositionParameters :: Value -&gt; Parser TextCompositionParameters
+</span><a href="#local-6989586621679935555"><span class="hs-identifier hs-var hs-var">parseTextCompositionParameters</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser TextCompositionParameters)
+-&gt; Value
+-&gt; Parser TextCompositionParameters
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;TextCompositionParameters&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser TextCompositionParameters)
+ -&gt; Value -&gt; Parser TextCompositionParameters)
+-&gt; (Object -&gt; Parser TextCompositionParameters)
+-&gt; Value
+-&gt; Parser TextCompositionParameters
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679935557"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935557"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-46"></span><span>        </span><span id="local-6989586621679935558"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935558"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935557"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;translate_to_language_code&quot;</span></span><span>
+</span><span id="line-47"></span><span>        </span><span id="local-6989586621679935560"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935560"><span class="hs-identifier hs-var">style_name_</span></a></span></span><span>                 </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935557"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;style_name&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679935561"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935561"><span class="hs-identifier hs-var">add_emojis_</span></a></span></span><span>                 </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935557"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;add_emojis&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span id="local-6989586621679935562"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935562"><span class="hs-identifier hs-var">fix_text_</span></a></span></span><span>                   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679935557"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Bool)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;fix_text&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span class="annot"><span class="annottext">TextCompositionParameters -&gt; Parser TextCompositionParameters
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(TextCompositionParameters -&gt; Parser TextCompositionParameters)
+-&gt; TextCompositionParameters -&gt; Parser TextCompositionParameters
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-51"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">translate_to_language_code :: Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#translate_to_language_code"><span class="hs-identifier hs-var">translate_to_language_code</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935558"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span><span>
+</span><span id="line-52"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">style_name :: Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#style_name"><span class="hs-identifier hs-var">style_name</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935560"><span class="hs-identifier hs-var">style_name_</span></a></span><span>
+</span><span id="line-53"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">add_emojis :: Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#add_emojis"><span class="hs-identifier hs-var">add_emojis</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935561"><span class="hs-identifier hs-var">add_emojis_</span></a></span><span>
+</span><span id="line-54"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fix_text :: Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#fix_text"><span class="hs-identifier hs-var">fix_text</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935562"><span class="hs-identifier hs-var">fix_text_</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-56"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser TextCompositionParameters
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679935565"><span id="local-6989586621679935569"><span id="local-6989586621679935572"><span class="annot"><span class="hs-identifier hs-type">AT.ToJSON</span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-59"></span><span>  </span><span id="local-6989586621679935601"><span class="annot"><span class="annottext">toJSON :: TextCompositionParameters -&gt; Value
+</span><a href="#local-6989586621679935601"><span class="hs-identifier hs-var hs-var hs-var hs-var">toJSON</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">translate_to_language_code :: TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#translate_to_language_code"><span class="hs-identifier hs-var">translate_to_language_code</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935603"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935603"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">style_name :: TextCompositionParameters -&gt; Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#style_name"><span class="hs-identifier hs-var">style_name</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935604"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935604"><span class="hs-identifier hs-var">style_name_</span></a></span></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">add_emojis :: TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#add_emojis"><span class="hs-identifier hs-var">add_emojis</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935605"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935605"><span class="hs-identifier hs-var">add_emojis_</span></a></span></span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fix_text :: TextCompositionParameters -&gt; Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#fix_text"><span class="hs-identifier hs-var">fix_text</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679935606"><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935606"><span class="hs-identifier hs-var">fix_text_</span></a></span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-65"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Pair] -&gt; Value
+</span><span class="hs-identifier hs-var">A.object</span></span><span>
+</span><span id="line-66"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span>                      </span><span class="annot"><span class="annottext">Key -&gt; Value -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Value
+</span><span class="hs-identifier hs-var">AT.String</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><span class="hs-string">&quot;textCompositionParameters&quot;</span></span><span>
+</span><span id="line-67"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;translate_to_language_code&quot;</span></span><span> </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935603"><span class="hs-identifier hs-var">translate_to_language_code_</span></a></span><span>
+</span><span id="line-68"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;style_name&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Maybe Text -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679935604"><span class="hs-identifier hs-var">style_name_</span></a></span><span>
+</span><span id="line-69"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;add_emojis&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935605"><span class="hs-identifier hs-var">add_emojis_</span></a></span><span>
+</span><span id="line-70"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;fix_text&quot;</span></span><span>                   </span><span class="annot"><span class="annottext">Key -&gt; Maybe Bool -&gt; Pair
+forall kv v. (KeyValue kv, ToJSON v) =&gt; Key -&gt; v -&gt; kv
+forall v. ToJSON v =&gt; Key -&gt; v -&gt; Pair
+</span><span class="hs-operator hs-var">A..=</span></span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+</span><a href="#local-6989586621679935606"><span class="hs-identifier hs-var">fix_text_</span></a></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-72"></span><span>
+</span><span id="line-73"></span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#defaultTextCompositionParameters"><span class="hs-identifier hs-type">defaultTextCompositionParameters</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-74"></span><span id="defaultTextCompositionParameters"><span class="annot"><span class="annottext">defaultTextCompositionParameters :: TextCompositionParameters
+</span><a href="TD.Data.TextCompositionParameters.html#defaultTextCompositionParameters"><span class="hs-identifier hs-var hs-var">defaultTextCompositionParameters</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-75"></span><span>  </span><span class="annot"><a href="TD.Data.TextCompositionParameters.html#TextCompositionParameters"><span class="hs-identifier hs-type">TextCompositionParameters</span></a></span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">translate_to_language_code :: Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#translate_to_language_code"><span class="hs-identifier hs-var">translate_to_language_code</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">style_name :: Maybe Text
+</span><a href="TD.Data.TextCompositionParameters.html#style_name"><span class="hs-identifier hs-var">style_name</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">add_emojis :: Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#add_emojis"><span class="hs-identifier hs-var">add_emojis</span></a></span><span>                 </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fix_text :: Maybe Bool
+</span><a href="TD.Data.TextCompositionParameters.html#fix_text"><span class="hs-identifier hs-var">fix_text</span></a></span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Bool
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-81"></span><span>
+</span><span id="line-82"></span></pre></body></html>

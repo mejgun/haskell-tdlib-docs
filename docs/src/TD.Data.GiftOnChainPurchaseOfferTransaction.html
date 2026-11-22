@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">TD.Data.GiftOnChainPurchaseOfferTransaction</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier">GiftOnChainPurchaseOfferTransaction</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson.Types</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">AT</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html"><span class="hs-identifier">TD.Lib.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">I</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="TD.Data.TonWalletMessage.html"><span class="hs-identifier">TD.Data.TonWalletMessage</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">TonWalletMessage</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="GiftOnChainPurchaseOfferTransaction"><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-var">GiftOnChainPurchaseOfferTransaction</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="GiftOnChainPurchaseOfferTransaction"><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-var">GiftOnChainPurchaseOfferTransaction</span></a></span></span><span> </span><span class="annot"><span class="hs-comment">-- ^ Contains information about a transaction that must be sent from the TON wallet of the current user to send, accept, or cancel an on-chain gift purchase offer. Use sendTonWalletTransaction with regular_transaction_data and gasless_transaction_data created from message and gasless_message respectively to send the transaction. Successful sending of the transaction doesn't mean that the operation was completed; the result of the operation must be checked in the corresponding messageUpgradedGiftOnChainPurchaseOffer message in the chat 777000</span></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">{</span><span> </span><span id="offer_address"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Text
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#offer_address"><span class="hs-identifier hs-var hs-var">offer_address</span></a></span></span><span>              </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">T.Text</span></span><span>                            </span><span class="annot"><span class="hs-comment">-- ^ Address of the smart contract of the offer on the TON blockchain</span></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="expiration_date"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#expiration_date"><span class="hs-identifier hs-var hs-var">expiration_date</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                               </span><span class="annot"><span class="hs-comment">-- ^ Point in time (Unix timestamp) when the offer will expire</span></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="message"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#message"><span class="hs-identifier hs-var hs-var">message</span></a></span></span><span>                    </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletMessage.html#TonWalletMessage"><span class="hs-identifier hs-type">TonWalletMessage.TonWalletMessage</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The message that must be sent for a regular transfer</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="gasless_message"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#gasless_message"><span class="hs-identifier hs-var hs-var">gasless_message</span></a></span></span><span>            </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="TD.Data.TonWalletMessage.html#TonWalletMessage"><span class="hs-identifier hs-type">TonWalletMessage.TonWalletMessage</span></a></span><span> </span><span class="annot"><span class="hs-comment">-- ^ The message that must be sent for a gasless transfer; may be null if gasless transfer isn't available</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="rent_budget_amount"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#rent_budget_amount"><span class="hs-identifier hs-var hs-var">rent_budget_amount</span></a></span></span><span>         </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                               </span><span class="annot"><span class="hs-comment">-- ^ The amount included in the message for rent of the offer smart contract, in the smallest units of TON Grams; 0 if none</span></span><span>
+</span><span id="line-17"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="execution_allowance_amount"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#execution_allowance_amount"><span class="hs-identifier hs-var hs-var">execution_allowance_amount</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                               </span><span class="annot"><span class="hs-comment">-- ^ The amount included in the message for execution of the offer smart contract, in the smallest units of TON Grams; 0 if none</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="forward_amount"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#forward_amount"><span class="hs-identifier hs-var hs-var">forward_amount</span></a></span></span><span>             </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                               </span><span class="annot"><span class="hs-comment">-- ^ The amount forwarded with the gift transfer on acceptance of the offer, in the smallest units of TON Grams; 0 if none</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">,</span><span> </span><span id="fine_amount"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#fine_amount"><span class="hs-identifier hs-var hs-var">fine_amount</span></a></span></span><span>                </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>                               </span><span class="annot"><span class="hs-comment">-- ^ The expected fine for cancellation of the offer, in the smallest units of TON Grams; 0 if none. The final fine will be known after the cancellation is executed on the TON blockchain</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679980929"><span id="local-6989586621679980943"><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction
+-&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool
+(GiftOnChainPurchaseOfferTransaction
+ -&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool)
+-&gt; (GiftOnChainPurchaseOfferTransaction
+    -&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool)
+-&gt; Eq GiftOnChainPurchaseOfferTransaction
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+$c== :: GiftOnChainPurchaseOfferTransaction
+-&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool
+== :: GiftOnChainPurchaseOfferTransaction
+-&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool
+$c/= :: GiftOnChainPurchaseOfferTransaction
+-&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool
+/= :: GiftOnChainPurchaseOfferTransaction
+-&gt; GiftOnChainPurchaseOfferTransaction -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679980951"><span id="local-6989586621679980967"><span id="local-6989586621679980971"><span class="annot"><span class="annottext">Int -&gt; GiftOnChainPurchaseOfferTransaction -&gt; ShowS
+[GiftOnChainPurchaseOfferTransaction] -&gt; ShowS
+GiftOnChainPurchaseOfferTransaction -&gt; String
+(Int -&gt; GiftOnChainPurchaseOfferTransaction -&gt; ShowS)
+-&gt; (GiftOnChainPurchaseOfferTransaction -&gt; String)
+-&gt; ([GiftOnChainPurchaseOfferTransaction] -&gt; ShowS)
+-&gt; Show GiftOnChainPurchaseOfferTransaction
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+$cshowsPrec :: Int -&gt; GiftOnChainPurchaseOfferTransaction -&gt; ShowS
+showsPrec :: Int -&gt; GiftOnChainPurchaseOfferTransaction -&gt; ShowS
+$cshow :: GiftOnChainPurchaseOfferTransaction -&gt; String
+show :: GiftOnChainPurchaseOfferTransaction -&gt; String
+$cshowList :: [GiftOnChainPurchaseOfferTransaction] -&gt; ShowS
+showList :: [GiftOnChainPurchaseOfferTransaction] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><a href="TD.Lib.Internal.html#ShortShow"><span class="hs-identifier hs-type">I.ShortShow</span></a></span><span> </span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-type">GiftOnChainPurchaseOfferTransaction</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-24"></span><span>  </span><span id="local-6989586621679980994"><span class="annot"><span class="annottext">shortShow :: GiftOnChainPurchaseOfferTransaction -&gt; String
+</span><a href="#local-6989586621679980994"><span class="hs-identifier hs-var hs-var hs-var hs-var">shortShow</span></a></span></span><span> </span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-type">GiftOnChainPurchaseOfferTransaction</span></a></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">offer_address :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Text
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#offer_address"><span class="hs-identifier hs-var">offer_address</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679980996"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679980996"><span class="hs-identifier hs-var">offer_address_</span></a></span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">expiration_date :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679980997"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679980997"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#message"><span class="hs-identifier hs-var">message</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679980998"><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679980998"><span class="hs-identifier hs-var">message_</span></a></span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gasless_message :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#gasless_message"><span class="hs-identifier hs-var">gasless_message</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679980999"><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679980999"><span class="hs-identifier hs-var">gasless_message_</span></a></span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">rent_budget_amount :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#rent_budget_amount"><span class="hs-identifier hs-var">rent_budget_amount</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679981000"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981000"><span class="hs-identifier hs-var">rent_budget_amount_</span></a></span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">execution_allowance_amount :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#execution_allowance_amount"><span class="hs-identifier hs-var">execution_allowance_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679981001"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981001"><span class="hs-identifier hs-var">execution_allowance_amount_</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">forward_amount :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#forward_amount"><span class="hs-identifier hs-var">forward_amount</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679981002"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981002"><span class="hs-identifier hs-var">forward_amount_</span></a></span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fine_amount :: GiftOnChainPurchaseOfferTransaction -&gt; Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#fine_amount"><span class="hs-identifier hs-var">fine_amount</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679981003"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981003"><span class="hs-identifier hs-var">fine_amount_</span></a></span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">}</span><span>
+</span><span id="line-34"></span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiftOnChainPurchaseOfferTransaction&quot;</span></span><span>
+</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; ShowS
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="TD.Lib.Internal.html#cc"><span class="hs-identifier hs-var">I.cc</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;offer_address&quot;</span></span><span>              </span><span class="annot"><span class="annottext">String -&gt; Maybe Text -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679980996"><span class="hs-identifier hs-var">offer_address_</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679980997"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;message&quot;</span></span><span>                    </span><span class="annot"><span class="annottext">String -&gt; Maybe TonWalletMessage -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679980998"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;gasless_message&quot;</span></span><span>            </span><span class="annot"><span class="annottext">String -&gt; Maybe TonWalletMessage -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679980999"><span class="hs-identifier hs-var">gasless_message_</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;rent_budget_amount&quot;</span></span><span>         </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981000"><span class="hs-identifier hs-var">rent_budget_amount_</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;execution_allowance_amount&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981001"><span class="hs-identifier hs-var">execution_allowance_amount_</span></a></span><span>
+</span><span id="line-42"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;forward_amount&quot;</span></span><span>             </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981002"><span class="hs-identifier hs-var">forward_amount_</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;fine_amount&quot;</span></span><span>                </span><span class="annot"><span class="annottext">String -&gt; Maybe Int -&gt; String
+forall a. ShortShow a =&gt; String -&gt; Maybe a -&gt; String
+</span><a href="TD.Lib.Internal.html#p"><span class="hs-operator hs-var">`I.p`</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981003"><span class="hs-identifier hs-var">fine_amount_</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-special">]</span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679981008"><span class="annot"><span class="hs-identifier hs-type">AT.FromJSON</span></span><span> </span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-type">GiftOnChainPurchaseOfferTransaction</span></a></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-47"></span><span>  </span><span id="local-6989586621679981068"><span class="annot"><span class="annottext">parseJSON :: Value -&gt; Parser GiftOnChainPurchaseOfferTransaction
+</span><a href="#local-6989586621679981068"><span class="hs-identifier hs-var hs-var hs-var hs-var">parseJSON</span></a></span></span><span> </span><span id="local-6989586621679981070"><span class="annot"><span class="annottext">v :: Value
+</span><a href="#local-6989586621679981070"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">AT.Object</span></span><span> </span><span id="local-6989586621679981072"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981072"><span class="hs-identifier hs-var">obj</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>    </span><span id="local-6989586621679981073"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679981073"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981072"><span class="hs-identifier hs-var">obj</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser String
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser a
+</span><span class="hs-operator hs-var">A..:</span></span><span> </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;@type&quot;</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679981073"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-51"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;giftOnChainPurchaseOfferTransaction&quot;</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Value -&gt; Parser GiftOnChainPurchaseOfferTransaction
+</span><a href="#local-6989586621679981075"><span class="hs-identifier hs-var">parseGiftOnChainPurchaseOfferTransaction</span></a></span><span> </span><span class="annot"><span class="annottext">Value
+</span><a href="#local-6989586621679981070"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-52"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span>                                     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser GiftOnChainPurchaseOfferTransaction
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-53"></span><span>    </span><span>
+</span><span id="line-54"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-55"></span><span>      </span><span class="annot"><a href="#local-6989586621679981075"><span class="hs-identifier hs-type">parseGiftOnChainPurchaseOfferTransaction</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">A.Value</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">AT.Parser</span></span><span> </span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-type">GiftOnChainPurchaseOfferTransaction</span></a></span><span>
+</span><span id="line-56"></span><span>      </span><span id="local-6989586621679981075"><span class="annot"><span class="annottext">parseGiftOnChainPurchaseOfferTransaction :: Value -&gt; Parser GiftOnChainPurchaseOfferTransaction
+</span><a href="#local-6989586621679981075"><span class="hs-identifier hs-var hs-var">parseGiftOnChainPurchaseOfferTransaction</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+-&gt; (Object -&gt; Parser GiftOnChainPurchaseOfferTransaction)
+-&gt; Value
+-&gt; Parser GiftOnChainPurchaseOfferTransaction
+forall a. String -&gt; (Object -&gt; Parser a) -&gt; Value -&gt; Parser a
+</span><span class="hs-identifier hs-var">A.withObject</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;GiftOnChainPurchaseOfferTransaction&quot;</span></span><span> </span><span class="annot"><span class="annottext">((Object -&gt; Parser GiftOnChainPurchaseOfferTransaction)
+ -&gt; Value -&gt; Parser GiftOnChainPurchaseOfferTransaction)
+-&gt; (Object -&gt; Parser GiftOnChainPurchaseOfferTransaction)
+-&gt; Value
+-&gt; Parser GiftOnChainPurchaseOfferTransaction
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679981077"><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-57"></span><span>        </span><span id="local-6989586621679981078"><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679981078"><span class="hs-identifier hs-var">offer_address_</span></a></span></span><span>              </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Text)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;offer_address&quot;</span></span><span>
+</span><span id="line-58"></span><span>        </span><span id="local-6989586621679981080"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981080"><span class="hs-identifier hs-var">expiration_date_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe Int)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;expiration_date&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span id="local-6989586621679981081"><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679981081"><span class="hs-identifier hs-var">message_</span></a></span></span><span>                    </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe TonWalletMessage)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;message&quot;</span></span><span>
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679981082"><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679981082"><span class="hs-identifier hs-var">gasless_message_</span></a></span></span><span>            </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe TonWalletMessage)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>                       </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;gasless_message&quot;</span></span><span>
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679981083"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981083"><span class="hs-identifier hs-var">rent_budget_amount_</span></a></span></span><span>         </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;rent_budget_amount&quot;</span></span><span>
+</span><span id="line-62"></span><span>        </span><span id="local-6989586621679981086"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981086"><span class="hs-identifier hs-var">execution_allowance_amount_</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;execution_allowance_amount&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span id="local-6989586621679981087"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981087"><span class="hs-identifier hs-var">forward_amount_</span></a></span></span><span>             </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;forward_amount&quot;</span></span><span>
+</span><span id="line-64"></span><span>        </span><span id="local-6989586621679981088"><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981088"><span class="hs-identifier hs-var">fine_amount_</span></a></span></span><span>                </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">(String -&gt; Int) -&gt; Maybe String -&gt; Maybe Int
+forall a b. (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
+</span><a href="TD.Lib.Internal.html#readInt64"><span class="hs-identifier hs-var">I.readInt64</span></a></span><span> </span><span class="annot"><span class="annottext">(Maybe String -&gt; Maybe Int)
+-&gt; Parser (Maybe String) -&gt; Parser (Maybe Int)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Object
+</span><a href="#local-6989586621679981077"><span class="hs-identifier hs-var">o</span></a></span><span> </span><span class="annot"><span class="annottext">Object -&gt; Key -&gt; Parser (Maybe String)
+forall a. FromJSON a =&gt; Object -&gt; Key -&gt; Parser (Maybe a)
+</span><span class="hs-operator hs-var">A..:?</span></span><span>  </span><span class="annot"><span class="annottext">Key
+</span><span class="hs-string">&quot;fine_amount&quot;</span></span><span>
+</span><span id="line-65"></span><span>        </span><span class="annot"><span class="annottext">GiftOnChainPurchaseOfferTransaction
+-&gt; Parser GiftOnChainPurchaseOfferTransaction
+forall a. a -&gt; Parser a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(GiftOnChainPurchaseOfferTransaction
+ -&gt; Parser GiftOnChainPurchaseOfferTransaction)
+-&gt; GiftOnChainPurchaseOfferTransaction
+-&gt; Parser GiftOnChainPurchaseOfferTransaction
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#GiftOnChainPurchaseOfferTransaction"><span class="hs-identifier hs-type">GiftOnChainPurchaseOfferTransaction</span></a></span><span>
+</span><span id="line-66"></span><span>          </span><span class="hs-special">{</span><span> </span><span class="annot"><span class="annottext">offer_address :: Maybe Text
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#offer_address"><span class="hs-identifier hs-var">offer_address</span></a></span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Text
+</span><a href="#local-6989586621679981078"><span class="hs-identifier hs-var">offer_address_</span></a></span><span>
+</span><span id="line-67"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">expiration_date :: Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#expiration_date"><span class="hs-identifier hs-var">expiration_date</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981080"><span class="hs-identifier hs-var">expiration_date_</span></a></span><span>
+</span><span id="line-68"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">message :: Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#message"><span class="hs-identifier hs-var">message</span></a></span><span>                    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679981081"><span class="hs-identifier hs-var">message_</span></a></span><span>
+</span><span id="line-69"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">gasless_message :: Maybe TonWalletMessage
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#gasless_message"><span class="hs-identifier hs-var">gasless_message</span></a></span><span>            </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe TonWalletMessage
+</span><a href="#local-6989586621679981082"><span class="hs-identifier hs-var">gasless_message_</span></a></span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">rent_budget_amount :: Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#rent_budget_amount"><span class="hs-identifier hs-var">rent_budget_amount</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981083"><span class="hs-identifier hs-var">rent_budget_amount_</span></a></span><span>
+</span><span id="line-71"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">execution_allowance_amount :: Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#execution_allowance_amount"><span class="hs-identifier hs-var">execution_allowance_amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981086"><span class="hs-identifier hs-var">execution_allowance_amount_</span></a></span><span>
+</span><span id="line-72"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">forward_amount :: Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#forward_amount"><span class="hs-identifier hs-var">forward_amount</span></a></span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981087"><span class="hs-identifier hs-var">forward_amount_</span></a></span><span>
+</span><span id="line-73"></span><span>          </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">fine_amount :: Maybe Int
+</span><a href="TD.Data.GiftOnChainPurchaseOfferTransaction.html#fine_amount"><span class="hs-identifier hs-var">fine_amount</span></a></span><span>                </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679981088"><span class="hs-identifier hs-var">fine_amount_</span></a></span><span>
+</span><span id="line-74"></span><span>          </span><span class="hs-special">}</span><span>
+</span><span id="line-75"></span><span>  </span><span class="annot"><span class="hs-identifier hs-var">parseJSON</span></span><span> </span><span class="annot"><span class="annottext">Value
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser GiftOnChainPurchaseOfferTransaction
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span></pre></body></html>
